@@ -1,567 +1,1053 @@
-# DPT Math Research Map
+# DPT-R1 × OpenAI Math 研究利用图谱
 
-**Purpose.** This is a living, fork-specific research ledger for using `Gogoal-L/math` in DPT-R1 / Pro17D and later power-semiconductor work. It records which OpenAI Math families have actually been inspected, what part of each manuscript is useful, what can and cannot be transferred, and what concrete DPT theorem, analysis, or acquisition it motivates.
+**用途**：这是一份长期维护的研究台账，用来记录 Gogoal-L/math 中哪些数学工作真正进入了 DPT-R1 / Pro17D，进入的位置是什么，契合度有多高，以及它们会怎样改变我们的科学对象、证明方式、实验设计和证据标准。
 
-**Baseline revision reviewed:** `adc7f1241b42e322a6451854ab7e4b4c146bf78a`  
-**Initial DPT mapping date:** 2026-10-07
+**基线版本**：adc7f1241b42e322a6451854ab7e4b4c146bf78a  
+**首次系统整理**：2026-10-07
 
-The upstream release contains hundreds of manuscripts and explicitly notes that verification/formalization coverage varies. A manuscript in this repository is therefore a source of mathematical ideas and candidate proof architectures, not an automatic authority for a DPT claim. See the original [README](README.md), [CONTENTS](CONTENTS.md), [overview](overview.pdf), and the [Lean formalization catalogue](lean/formalization.yaml).
+这份文件不把 OpenAI Math 当成可以直接搬结论的定理库。仓库中的论文更适合承担三类作用：
 
-## 1. Reading-status convention
+1. 给出已经成熟的数学对象和证明结构，帮助我们把 DPT 中模糊的直觉变成可定义、可证伪的问题；
+2. 提供反例和适用边界，防止把 reduced-law 中成立的结果扩大到 native SPICE 或真实器件；
+3. 提高 computation-backed result 的证据标准，让数值结果更接近一个可以审计的数学论证。
 
-This map distinguishes reading depth from scientific transfer status.
+仓库原始入口仍保留在 [README](README.md)、[CONTENTS](CONTENTS.md)、[overview](overview.pdf) 和 [Lean formalization catalogue](lean/formalization.yaml)。
 
-| Tag | Meaning |
+---
+
+## 1. 这份图谱怎么判断契合度
+
+这里的契合不看论文有多难，也不看结论有多漂亮。真正重要的是它能不能改变 DPT 当前已经存在的一个具体研究对象。
+
+我用四个问题判断一篇工作的价值：
+
+| 维度 | 判断问题 |
 |---|---|
-| **D3 - deep source read** | The manuscript source/derivation sections relevant to DPT were read, including theorem assumptions and proof mechanism. |
-| **D2 - structural read** | Formalization scope, introduction, or decisive sections were read; enough to bound the possible transfer. |
-| **D1 - catalogue read** | The family was screened from `overview.tex` / README and retained only as a possible later source. |
-| **T0 - no transfer** | Interesting mathematics, but no current DPT use. |
-| **T1 - analogy/watchlist** | Useful conceptual warning or future direction only. |
-| **T2 - proof architecture** | A proof/design pattern can be adapted after a new DPT derivation. |
-| **T3 - active DPT construction** | The source already changes a current DPT theorem, experiment, or certificate plan. |
+| 对象契合 | 它研究的数学对象，能否对应 DPT 中已经存在的 state、observation、goal、command、interaction 或 inverse problem？ |
+| 证明契合 | 它的证明结构能否在 DPT 中重新推导，而不是只做类比？ |
+| 证据契合 | 它要求的数据、measurement 或 computation，DPT 是否有机会在 S09/S10 或现有仿真框架内得到？ |
+| 改变量 | 用了以后，能否改变 theorem、acquisition、certificate 或 claim ceiling，而不只是让文字更漂亮？ |
 
-**PDF note.** The repository PDF bytes are the canonical rendered manuscripts. In the current connected runtime, binary PDF rendering was not reliably available, so the present pass used the exact manuscript build/source TeX plus Lean scope files. No claim is made here that every PDF figure/layout was visually inspected. Where figures or page layout become scientifically material, add a separate visual-PDF pass and record it below.
+因此下面的等级表示“对 DPT 当前路线的贡献”，不是对数学工作的质量排名。
 
-## 2. Current DPT scientific object
+| 等级 | 含义 |
+|---|---|
+| **S+** | 已经可以改变 DPT 的数学对象或下一次关键 acquisition，值得优先继续推导 |
+| **S** | 很强的直接迁移对象，需要一轮 DPT-specific derivation |
+| **A** | 能明显提高证据标准或打开下一层问题，但暂时不是 S09 的主判据 |
+| **B** | 主要用于 claim discipline、未来 native extension 或局部工具 |
+| **C** | 有启发，但暂时不应占用当前有限的仿真和推导预算 |
 
-The most promising unifying object is not a generic waveform predictor. It is a **goal-dependent finite predictive representation** for switching histories.
+### 阅读深度标记
 
-Let
+| 标记 | 含义 |
+|---|---|
+| **D3** | 已读与 DPT 相关的正文 source、关键假设和 proof mechanism |
+| **D2** | 已读 scope / introduction / 决定性章节，足以判断能不能迁移 |
+| **D1** | 已完成 family-level 筛选，暂时保留在候选池 |
 
-- `H`: admissible preparation/history states;
-- `C`: future command family;
-- `O: H -> Y`: available observation map;
-- `G_c: H -> R^p`: goal under future command `c`.
+仓库中的 PDF 是正式渲染稿。本轮环境没有稳定完成所有 binary PDF 的逐页视觉检查，因此这份图谱主要依据论文对应的完整 TeX/source、Lean scope 和正文结构。涉及图形或版面本身的证据时，仍需单独补 visual PDF pass。
 
-Define goal equivalence by
+---
 
-`h1 ~_G h2` iff `G_c(h1) = G_c(h2)` for every `c` in `C`.
+## 2. 目前最值得统一的 DPT 科学对象
 
-The DPT question is then:
+Pro17D 现在已经出现了一个比“拟合 waveform”更清楚的方向：
 
-> What is the smallest information-bearing coordinate that is sufficient for the declared future goals, how can it be updated under commands, and what new measurement is minimally required when the current observation collapses goal-distinct histories?
+> 给定未来 command 和预测目标，寻找 switching history 中最小、可更新、足以支持这些目标的有限 predictive representation。
 
-Pro17D already contains an exact reduced-law example of this distinction: the same one-dimensional gate coordinate is sufficient for the declared increment/zero-sum goals, while an absolute drain goal requires an additional drain/charge anchor in that law class. Full-native observation-fiber sufficiency remains open.
+记：
 
-This map uses the OpenAI Math repository to push that object in six directions:
+- H：允许的 preparation / history 集合；
+- C：未来 command 集合；
+- O: H -> Y：当前可获得的 observation；
+- G_c: H -> R^p：施加未来 command c 后关心的 goal。
 
-1. information lower bounds;
-2. minimal measurement repair;
-3. noncommutative command representation;
-4. identifiability and regularity boundaries;
-5. approximate algebra/stability;
-6. certificate-grade computation.
+定义：
 
-## 3. Ranked family map
+h1 ~_G h2，当且仅当对所有 c in C，都有 G_c(h1) = G_c(h2)。
 
-| Priority | Family | Read / transfer | DPT value |
-|---|---|---|---|
-| **S+** | **F140 - Memory-sample lower bounds** | D3 / T3 | Turns “small sufficient state” into an information-budget question and suggests lower bounds on predictive representation size. |
-| **S+** | **F355 - Tangent-flow uniqueness** | D3 / T3 | Gives a concrete kernel-killing observation architecture for deriving the minimum number of extra measurements. |
-| **S** | **F116 - Noncommutative identity testing** | D3 / T3 | Ordered iterated-integral encoding can organize command order, mixed words, and higher interaction terms. Multiplicity machinery is already used in Pro17D. |
-| **S** | **F365 + F372 - inverse uniqueness / nonuniqueness** | D2-D3 / T3 | Provides the right claim grammar: identifiability depends on model class, observation operator, regularity, goal, and symmetry; uniqueness is not finite sufficiency or stable reconstruction. |
-| **A** | **F251 - Strong Ulam stability** | D2 / T2 | Defines the right future question for native “almost command algebra”: when does small composition defect imply proximity to a true reusable representation? |
-| **A** | **F266 - certified computation** | D3 / T3 | Supplies a disciplined certificate architecture separating candidate generation, exact verification, arithmetic assumptions, provenance, bounded failure handling, and terminal acceptance. |
-| **B** | **F139 - query complexity** | D2 / T2 | Useful for defining characterization-query budget and upper/lower query complexity, not a direct DPT theorem. |
-| **B** | **F289 - Kadison-Kastler stability** | D2 / T1-T2 | Strong warning that structural stability needs a symmetric metric and an explicit nearby-structure theorem; one-sided closeness is not enough. |
-| **B** | **F325 - complete Crouzeix** | D2 / T1-T2 | Potential operator-norm control for polynomial/rational functions of future nonnormal reduced propagators. Not load-bearing yet. |
-| **C** | **F357, F374, F098, F119, F229** | D1-D2 / T1 | Stable-coordinate, stability-exponent, finite-embedding, information-contraction, and reconstruction-threshold analogies. Keep as a watchlist, not current proof support. |
+这样以后讨论“需要多少 state”时，不再问完整内部状态能不能重建，而是问：
 
-## 4. F140 - information lower bounds and observation fibers
+> 为了当前声明的 future goals，哪些 history 差异必须保留，哪些可以安全压掉？
 
-**Files inspected**
+这个对象已经和现有 reduced-law 结果发生了实际连接：
+
+- 对 increment / zero-sum 类目标，当前一维 gate coordinate 已经表现出 exact sufficiency；
+- 对 absolute drain 类目标，同一个 coordinate 不够，需要额外 drain / charge anchor；
+- full-native vendor model 上是否仍存在类似有限 quotient，目前没有被证明。
+
+这也是下面各个 OpenAI Math family 的统一入口。
+
+---
+
+## 3. 当前优先级总表
+
+| 优先级 | Family | 契合度判断 | 最直接的 DPT 用法 | 如果做成，最可能带来的改变 |
+|---|---|---|---|---|
+| **S+** | **F140 Memory-sample lower bounds** | 很高 | 从 goal space 构造 information lower bound | 把“我们找到了一个小 state”推进到“任何更小 state 都不够” |
+| **S+** | **F355 Tangent-flow uniqueness** | 很高 | 从 observation kernel 推导最少缺几维 measurement | 把 P2 从经验性 sensor proposal 变成最小测量定理 |
+| **S** | **F116 Noncommutative identity testing** | 高 | 建立 ordered command / mixed interaction 的 word representation | 让 S09/S10 的 acquisition 对应“购买哪个缺失 functional” |
+| **S** | **F365 + F372 inverse uniqueness** | 高 | 明确 model class、observation、goal、symmetry 下的 identifiability | 避免 reduced-law uniqueness 被误写成 full-native identifiability |
+| **A** | **F266 certified computation** | 高 | 建立 algebraic / numerical / provenance / native 四层 certificate | 数值 coherence 可以升级成可审计 computation-backed claim |
+| **A** | **F251 Strong Ulam stability** | 中高 | 定义 native command composition defect | 为“近似 command algebra 能否靠近 exact algebra”提供长期问题 |
+| **B** | **F139 Query complexity** | 中 | 把一次 fresh simulation 当成有成本的 information query | 以后可以比较不同 characterization plan 的 query efficiency |
+| **B** | **F289 Kadison-Kastler stability** | 中 | 约束“两个 representation 很接近”到底要用什么 metric | 避免用单侧 waveform fit 推 structural stability |
+| **B** | **F325 Complete Crouzeix** | 中低 | 未来 nonnormal reduced propagator 的函数界 | 只有 representation 变复杂后才值得启用 |
+| **C** | F357 / F374 / F098 / F119 / F229 | 低到中 | 边界、反例、稳定性和 reconstruction 类比 | 暂时用于审查，不进入主线证明 |
+
+当前真正值得投入推导时间的是 **F140 + F355 + F116**。它们分别回答三个连续问题：
+
+1. 至少需要多少 predictive information；
+2. 当前 observation 到底缺了几维 goal-relevant information；
+3. 下一次 command / mixed query 应该去测哪个尚未确定的 functional。
+
+这三件事连起来后，DPT 的 S09/S10 就不再只是“多跑几个 case”，而会成为一个受数学结构约束的 bounded acquisition programme。
+
+---
+
+## 4. F140：Memory-sample lower bounds
+
+### 已读材料
 
 - [Lean scope](lean/docs/140.md)
-- [Replacing Gaussian observations - PDF](preprints/Replacing-Gaussian-observations-in-memory-constrained-inference-September-27-2026/paper.pdf)
+- [Replacing Gaussian observations](preprints/Replacing-Gaussian-observations-in-memory-constrained-inference-September-27-2026/paper.pdf)
 - [Introduction source](preprints/Replacing-Gaussian-observations-in-memory-constrained-inference-September-27-2026/build/sections/00-introduction.tex)
-- [Finite Gaussian-fiber comparison source](preprints/Replacing-Gaussian-observations-in-memory-constrained-inference-September-27-2026/build/sections/06-fiber.tex)
+- [Finite Gaussian-fiber comparison](preprints/Replacing-Gaussian-observations-in-memory-constrained-inference-September-27-2026/build/sections/06-fiber.tex)
 
-### What the family actually contributes
+### 论文中真正可借用的部分
 
-The family studies exact Gaussian observations under a finite persistent state. Its formalized results include memory-sample lower bounds, conditional-information comparisons, exact observation fibers, and two-point/fiber-block estimates. In the observation-replacement manuscript, conditioning on a finite message changes the law of the rows that produced that message; the proof compares those actual rows with fresh projections and explicitly accounts for the information cost.
+F140 研究的是 exact Gaussian observations 和 finite persistent state。它关心一个有限 memory learner 在保留有限信息以后，还剩多少与真实 signal 有关的信息，以及真实 observation rows 和 fresh rows 之间如何比较。
 
-### DPT transfer
+Gaussian regression 本身和 DPT 差得很远，不能直接套 theorem。真正契合 DPT 的地方是它把四件事明确分开：
 
-The Gaussian model itself does **not** transfer. The transferable object is the separation of:
+- 原始 observation history；
+- 被压缩后保留下来的 finite state；
+- observation 之后仍然无法区分的 fiber；
+- 为了完成目标任务，这个 fiber 上还必须保留多少信息。
 
-- physical observation history;
-- retained finite state;
-- the observation fiber left unresolved by that state;
-- information required to distinguish goal-relevant points on that fiber.
+这恰好对应我们现在的 predictive quotient。
 
-Define a DPT goal pseudometric
+### DPT 中可以怎么重写
 
-`d_G(h1,h2) = sup over c in C of ||G_c(h1) - G_c(h2)||`.
+定义 goal pseudometric：
 
-For an `M`-bit representation that must predict every `G_c` with uniform error at most `epsilon`, any subset of histories separated by more than `2 epsilon` in `d_G` must receive distinct codes. This suggests the elementary lower bound
+d_G(h1,h2) = sup over c in C of ||G_c(h1)-G_c(h2)||。
 
-`M >= log2 P(H, d_G, 2 epsilon)`,
+如果一个 M bit representation 要对所有 future command 保证不超过 epsilon 的误差，那么任何在 d_G 下两两距离大于 2 epsilon 的 history 都必须被编码成不同状态。
 
-where `P` is an appropriate packing number.
+因此自然得到一个候选 lower bound：
 
-**Status:** this is a **candidate DPT theorem / bound to formulate precisely**, not a theorem imported from F140. F140 is the methodological precedent for taking the observation fiber and finite retained information seriously.
+M >= log2 P(H, d_G, 2 epsilon)
 
-### Why this matters for the paper
+其中 P 是对应 packing number。
 
-It would give both sides of a representation-complexity story:
+这条式子本身是简单 counting argument，不是 F140 的 theorem。F140 的作用在于告诉我们：对有限 predictive state，真正该控制的是 observation 后的 goal-relevant information，而不是完整 physical state dimension。
 
-- **upper bound:** a constructive finite sufficient state, such as the exact reduced-law gate quotient already obtained;
-- **lower bound:** a proof that fewer distinguishable states cannot uniformly support the declared future goals.
+### 契合度为什么高
 
-That is stronger than merely saying the representation is “small.”
+DPT 当前已经有 representation 的上界结构：我们找到了一个很小的 coordinate，可以在某些 reduced-law goal class 中工作。
 
-### Next concrete work
+缺的正好是另一半：
 
-1. Specify the admissible history set and future-command set actually claimed in DPT-R1.
-2. Define `d_G` for scalar terminal goals first.
-3. Compute/construct goal-distinct packings in the reduced law and in any executable native preparation family.
-4. Only then consider noisy or probabilistic analogues.
+> 有没有可能再压？如果不可能，最少为什么需要这么多信息？
 
-## 5. F355 - kernel-killing observations and goal-visible nullity
+F140 正好推动这个问题。
 
-**Files inspected**
+### 用了以后会具体改变什么
 
-- [Tangent-flow manuscript - PDF](preprints/Tangent-flow-uniqueness-2026-09-24/paper.pdf)
+第一，论文中的“低维 representation”会从一个构造性结果升级成上下界问题。
+
+目前最容易说的是：
+
+> 这个一维 coordinate 足够。
+
+如果 information lower bound 能建立，论述可以变成：
+
+> 这个 coordinate 足够，而且在声明的误差和 command class 下，低于某个 information budget 的 representation 不可能统一完成目标。
+
+第二，它会改变 S09/S10 的选点标准。一个 query 的价值不再只看 forecast spread，而可以问：
+
+> 这个 query 能不能把当前同一 predictive code 里的 goal-distinct histories 分开？
+
+第三，它可能给“minimum measurement”提供 information-theoretic 版本，与 F355 的 local dimension bound 形成互补。
+
+### 目前不能从 F140 得到什么
+
+- 不能从 Gaussian regression theorem 推出 DPT native lower bound；
+- 不能由 memory bits 自动推出 sensor 个数；
+- 不能跳过 DPT 自己的 history class 和 goal pseudometric 定义；
+- 如果 native history space 没有明确的 admissible class，packing bound 也没有科学意义。
+
+### 下一步
+
+最小可做版本是先只处理 reduced law：
+
+1. 固定当前真正声明的 future command set；
+2. 固定一个 scalar terminal goal；
+3. 构造一组 goal-separated histories；
+4. 先给出 deterministic finite-code lower bound；
+5. 再判断 noisy / randomized 版本是否值得进入论文。
+
+**预期提升**：如果成功，这会是从“漂亮的 reduced representation”到“有 representation complexity 内容的研究对象”的实质提升。
+
+---
+
+## 5. F355：Tangent-flow uniqueness 与最小额外测量
+
+### 已读材料
+
+- [Tangent-flow manuscript](preprints/Tangent-flow-uniqueness-2026-09-24/paper.pdf)
 - [Normalized family / compact observations](preprints/Tangent-flow-uniqueness-2026-09-24/build/sections/linear.tex)
 - [Finite-jet obstruction](preprints/Tangent-flow-uniqueness-2026-09-24/build/sections/finite-jet.tex)
 
-### What is useful
+### 对 DPT 最有价值的证明结构
 
-The `Symmetric enlargement` lemma in `linear.tex` starts from a linearized operator `L` with finite-dimensional kernel `K`. It chooses finitely many compact observations whose pairing with a basis of `K` is nonsingular, making the augmented operator
+linear.tex 里的 Symmetric enlargement 从一个有 finite-dimensional kernel 的线性化 operator L 出发，选择有限 observation，使这些 observation 对 kernel 的作用足以消掉不可见方向。随后 augmented operator 变成可逆。
 
-`(u, lambda) -> (L u + P* lambda, P u)`
+对 DPT 来说，最值得保留的是这个结构：
 
-invertible. The proof explicitly separates the invisible kernel component from the invertible complement and then enlarges the observation list to control additional finite directions.
+> 先找当前 measurement 看不见的方向，再判断其中哪些方向会影响目标，最后只补足那些 goal-visible 的不可见方向。
 
-The later finite-jet argument is also methodologically useful: absence of a formal critical arc is converted into a finite analytic inequality, with the obstruction exponent fixed before the finite truncation order.
+这和我们当前 drain-translation 现象非常接近。
 
-### DPT transfer: goal-visible hidden dimension
+### DPT 中的候选定义
 
-At a reference history `h*`, define
+在参考 history h* 处令：
 
-`K = ker(DO(h*))`,
+K = ker(DO(h*))
 
-the tangent directions invisible to current measurements. Then define
+即当前 observation 一阶看不见的方向。
 
-`N = K ∩ (intersection over c in C of ker(DG_c(h*)))`,
+再令：
 
-the invisible directions that are also irrelevant to every declared future goal.
+N = K ∩ (intersection over c in C of ker(DG_c(h*)))
 
-The quotient
+即 observation 看不见，同时对所有目标也无影响的方向。
 
-`r_G = dim`K/N``
+于是定义：
 
-is a natural **goal-visible hidden dimension**.
+r_G = dim(K/N)
 
-For `k` added scalar measurements `P = (P1, ..., Pk)`, first-order goal sufficiency requires at minimum
+这里的 r_G 可以叫 **goal-visible hidden dimension**。
 
-`ker(DP restricted to K) ⊆ N`.
+它回答的是一个很具体的问题：
 
-By a dimension argument,
+> 当前 measurement 丢掉的信息里，有多少维真的会影响我们声明的 future goals？
 
-`k >= r_G`.
+如果增加 k 个 scalar measurement P1,...,Pk，一阶 sufficiency 至少需要：
 
-If `r_G` carefully chosen measurements are injective on `K/N`, then under appropriate constant-rank / local-coordinate assumptions they are candidates for a locally sufficient repair.
+ker(DP restricted to K) ⊆ N
 
-**Status:** this is a DPT theorem to prove in its own setting. F355 supplies the proof architecture, not the result.
+因此必然有：
 
-### Exact connection to the current reduced-law result
+k >= r_G
 
-The existing drain-translation direction is invisible to the gate observation.
+### 为什么它和现有 DPT 特别契合
 
-- For the increment/zero-sum goal, that direction is also goal-null. It lies in `N`, so no repair is needed.
-- For the absolute drain goal, the same direction is goal-visible. It survives in `K/N`, producing a one-dimensional deficiency and explaining why one independent drain/charge anchor is both sufficient and necessary in the declared law class.
+现有 reduced-law 里已经出现一个几乎教科书式的例子。
 
-This is a particularly strong route because it turns a model-specific one-scalar repair into a worked example of a general local measurement theorem.
+drain translation 方向对 gate observation 是不可见的。
 
-### Next concrete work
+- 对 increment / zero-sum goal，这个方向同时也是 goal-null，因此它属于 N，无需额外测量；
+- 对 absolute drain goal，这个方向会改变目标，因此它留在 K/N 中。此时 r_G = 1，一个独立 drain / charge anchor 正好补足这一维。
 
-1. Write the finite-dimensional tangent theorem cleanly, independent of the particular DPT equations.
-2. Verify constant-rank assumptions for the reduced model.
-3. Express candidate native preparation directions and compute a numerical `DO` / `DG_c` rank test only after an executable native preparation interface exists.
-4. Use the quotient `K/N`, not raw state dimension, to rank future sensors.
+也就是说，我们现在的一维 repair 有机会从一个 isolated trick 变成一个 general theorem 的 worked example。
 
-## 6. F116 - ordered command words, iterated integrals, and bounded detection
+### 用了以后会具体改变什么
 
-**Files inspected**
+第一，P2 的问题会更清楚。
+
+现在常见说法是：
+
+> gate waveform 不够，所以再测 drain。
+
+更强的版本是：
+
+> gate observation 的 nullspace 中恰好有一维对 absolute goal 可见，因此任何 local sufficient repair 至少需要一个 independent scalar；某个 drain / charge anchor 达到了这个下界。
+
+这两个说法的科学层级差很多。
+
+第二，它可以成为 future sensor design 的统一标准。
+
+以后不再按“哪个 sensor 看起来有信息”来挑，而是计算 candidate measurement 对 K/N 的 rank。
+
+第三，它能和 F140 形成两个互补的 lower bound：
+
+- F355 给 local geometric dimension；
+- F140 给 global / finite-code information requirement。
+
+### 风险和边界
+
+这条路线依赖 local differentiability 和 rank 条件。native SPICE 的 effective history space 很可能比 reduced law 复杂，也可能存在 nonlinear folding，此时 tangent rank 只能证明局部结果。
+
+所以它适合先在 reduced-law 上做严谨 theorem，再把 native 结果写成 numerical rank evidence，而不是直接宣布 global native sufficiency。
+
+### 下一步
+
+1. 把 K/N theorem 写成与 DPT 公式无关的有限维命题；
+2. 在 reduced law 上完整证明；
+3. 明确哪些 rank / regularity 条件让一阶 repair 升级成 local sufficiency；
+4. native interface 可执行后，再计算实际 preparation family 的 DO 和 DG_c。
+
+**预期提升**：这是目前最有希望把“需要什么 measurement”变成真正数学贡献的一条线。
+
+---
+
+## 6. F116：Noncommutative formula、ordered words 与 interaction acquisition
+
+### 已读材料
 
 - [Lean scope](lean/docs/116.md)
-- [One Rational Matrix Hitting Point - PDF](preprints/One-Rational-Matrix-Hitting-Point-for-Noncommutative-Formulas-September-24-2026/One-Rational-Matrix-Hitting-Point-for-Noncommutative-Formulas-September-24-2026.pdf)
+- [One Rational Matrix Hitting Point](preprints/One-Rational-Matrix-Hitting-Point-for-Noncommutative-Formulas-September-24-2026/One-Rational-Matrix-Hitting-Point-for-Noncommutative-Formulas-September-24-2026.pdf)
 - [Introduction / proof route](preprints/One-Rational-Matrix-Hitting-Point-for-Noncommutative-Formulas-September-24-2026/build/introduction.tex)
-- [Faithful iterated-integral encoding](preprints/One-Rational-Matrix-Hitting-Point-for-Noncommutative-Formulas-September-24-2026/build/iterated-integrals.tex)
+- [Iterated-integral encoding](preprints/One-Rational-Matrix-Hitting-Point-for-Noncommutative-Formulas-September-24-2026/build/iterated-integrals.tex)
 - [Multiplicity estimate](preprints/One-Rational-Matrix-Hitting-Point-for-Noncommutative-Formulas-September-24-2026/build/multiplicity.tex)
 
-### What the paper actually proves
+### 论文里和 DPT 最契合的部分
 
-For bounded-size division-free noncommutative formulas, the manuscript constructs a universal rational matrix tuple that detects every nonzero formula. Its proof has two parts particularly relevant to DPT:
+这个 family 的主结果是 noncommutative formula identity testing。对 DPT 来说，真正新鲜的部分是 ordered words 的 faithful encoding。
 
-1. ordered words are faithfully encoded by iterated integrals, with the recursive form `h_iw(z) = integral_0^z h_w(t)/(t+i) dt`;
-2. a rational differential-system multiplicity estimate bounds how many Taylor coefficients can vanish before a nonzero scalar component is detected.
+论文用 iterated integrals 把 word order 保留下来。即使两个表达式使用相同字母，AB 和 BA 仍然可以被区分。commutator 的非零性也说明了 cancellation 可能把第一次可见差异推迟到更高阶，但 order information 没有消失。
 
-The source explicitly shows that word order survives the encoding; e.g. the commutator (x_1x_2-x_2x_1) maps to a nonzero series even though cancellation delays its first nonzero coefficient.
+这和 DPT 的一个实际难点非常接近：
 
-### DPT transfer
-The source explicitly shows that word order survives the encoding; e.g. the commutator `x1*x2 - x2*x1` maps to a nonzero series even though cancellation delays its first nonzero coefficient.
-The most useful new transfer is **not** another multiplicity claim. Pro17D has already used the rational differential-system/multiplicity side. The higher-value object is a graded ordered-command signature.
+> aggregate pulse area 一样，并不保证 terminal response 一样；顺序、同时作用和 history 都可能产生不同 response。
 
-For primitive commands (A,B,ldots), organize response information by word degree:
+### 对 DPT 更合适的表示
 
-- degree 0: prepared baseline;
-For primitive commands `A, B, ...`, organize response information by word degree:
+可以把 command response 按 word degree 分层：
 
-- degree 0: prepared baseline;
-- degree 1: primitive response `A, B, ...`;
-- degree 2: `AA, BB, AB, BA, ...`;
-- higher degree: longer ordered command words.
-- axis characterization;
-- mixed simultaneous interaction;
-- ordered sequential interaction;
-- higher-order memory.
+- degree 0：prepared baseline；
+- degree 1：primitive command A、B；
+- degree 2：AA、BB、AB、BA；
+- 更高阶：更长的 ordered words。
 
-### Connection to S09 fusion
+同时要把两类 interaction 分开：
 
-The current prospective fusion query is naturally interpreted as the first acquisition of a coefficient not fixed by the primitive axes. In the declared quadratic class
+1. simultaneous mixed functional，例如 quadratic response 里的 alpha beta C_AB；
+2. sequential ordered interaction，例如 AB 与 BA 的差。
 
-`F(alpha,beta) = F0 + alpha L_A + beta L_B + alpha^2 D_A + beta^2 D_B + alpha beta C_AB`.
+这两类现象都可以放进一个 command-word hierarchy，但数学上不能混为一谈。
 
-The axis measurements do not determine `C_AB`. One mixed point with `alpha*beta != 0` identifies this scalar coefficient in that exact class.
+### S09 为什么因此更有意义
 
-This is stronger experimental logic than “try another pulse amplitude”: the query purchases the first missing mixed functional.
+现在 S09 fusion 可以写得更准确。
 
-### Prior-art boundary
+假设 declared quadratic class 是：
 
-Iterated-integral / word representations of nonlinear input-output systems have a substantial Chen-Fliess and nonlinear realization literature. Before any novelty claim, perform a closest-prior subtraction against that literature. The DPT novelty, if any, should come from the exact device-physics object, goal-dependent information budget, bounded characterization, or prospective falsification - not from claiming noncommutative word expansions themselves are new.
+F(alpha,beta) = F0 + alpha L_A + beta L_B + alpha^2 D_A + beta^2 D_B + alpha beta C_AB
 
-### Next concrete work
+只测 primitive axes 时，C_AB 完全没有被确定。
 
-1. Build a DPT command-word notation that separates simultaneous mixed terms from sequential `AB` vs `BA`.
-2. Derive the lowest-order word coefficients for the reduced law where possible.
-3. Decide whether optional S10 should target an ordered interaction that S09 cannot resolve.
-4. Read `formula-systems.tex` and `construction.tex` only if a finite universal detection argument becomes necessary.
+因此 mixed query 的价值很明确：
 
-## 7. F365 + F372 - identifiability is conditional on class, data, and symmetry
+> 它第一次直接测量 axis information 无法推出的 mixed functional。
 
-**Files inspected**
+这比“再加一个中间 amplitude 看看”更有 acquisition 意义。
+
+### 用了以后会具体改变什么
+
+第一，S09 和 optional S10 可以承担不同的数学角色。
+
+- S09：测 simultaneous mixed interaction；
+- S10：如果仍有预算，可以专门测 ordered AB vs BA，或者另一个未被 S09 消掉的 timing cross。
+
+第二，现有 A3 / N4 / phase / fusion 结果可以放到一个分层表示里。这样不同发现不再像独立的小规律，而是 command expansion 的不同 coefficient。
+
+第三，如果未来能证明某个有限 word truncation 对目标足够，就有机会得到一个真正 finite command representation。
+
+### 需要特别防止的过度解释
+
+ordered-word / iterated-integral 表示本身并不是 DPT 新发明。Chen-Fliess、nonlinear realization 等已有大量相关文献。
+
+所以未来真正可能形成贡献的是：
+
+- 这个表示在 power-semiconductor switching 的具体 scientific object；
+- goal-dependent truncation / sufficiency；
+- bounded acquisition；
+- prospective falsification；
+- 与 physical charge / parasitic state 的可解释连接。
+
+不能把“用了 noncommutative words”本身写成 novelty。
+
+### 下一步
+
+1. 为 DPT 固定 primitive command alphabet；
+2. 明确 simultaneous mixed 与 sequential ordered 两套 coefficient；
+3. 把 S09 对应到一个明确缺失 coefficient；
+4. 在 S09 后根据剩余 nullspace 决定 S10，而不是按最大 forecast spread 机械选点。
+
+**预期提升**：它能把 experiment design 从“选有差异的 case”推进到“有目的地识别 representation 中还未知的 coefficient”。
+
+---
+
+## 7. F365 + F372：inverse problem 给 identifiability 的边界
+
+### 已读材料
 
 - [F365 Lean scope](lean/docs/365.md)
-- [Joint metric/connection recovery - PDF](preprints/Determination-of-a-metric-and-a-unitary-connection-from-one-boundary-patch-October-5-2026/paper.pdf)
+- [Joint metric/connection recovery](preprints/Determination-of-a-metric-and-a-unitary-connection-from-one-boundary-patch-October-5-2026/paper.pdf)
 - [Joint recovery introduction](preprints/Determination-of-a-metric-and-a-unitary-connection-from-one-boundary-patch-October-5-2026/build/sections/01-introduction.tex)
 - [F372 Lean scope](lean/docs/372.md)
-- [Smooth isotropic elasticity - PDF](preprints/Global-Uniqueness-for-the-Smooth-Isotropic-Elasticity-Inverse-Problem-September-24-2026/article.pdf)
+- [Smooth isotropic elasticity](preprints/Global-Uniqueness-for-the-Smooth-Isotropic-Elasticity-Inverse-Problem-September-24-2026/article.pdf)
 - [Coefficient recovery](preprints/Global-Uniqueness-for-the-Smooth-Isotropic-Elasticity-Inverse-Problem-September-24-2026/build/sections/coefficient-recovery.tex)
 
-### Core lesson
+### 为什么这组论文和 DPT 有用
 
-The same broad inverse-problem family exhibits both strong uniqueness and nonuniqueness depending on regularity/model class. The positive joint-recovery result is also only unique up to intrinsic diffeomorphism/gauge. F372 proves uniqueness from the **full** displacement-to-traction operator and explicitly does not provide a reconstruction algorithm.
+这组 inverse-problem 工作最值得学习的是 claim discipline。
 
-The correct DPT grammar is therefore:
+同样是 inverse problem：
 
-`identifiability = (model class, observation operator, goal, allowed symmetry)`.
+- 在足够光滑、结构明确的 class 中，可以有很强的 uniqueness；
+- class 一放宽，nonuniqueness 可能立刻出现；
+- 某些 uniqueness 只在 gauge / diffeomorphism equivalence 下成立；
+- F372 使用的是 full boundary operator，结论也不是一个有限测量 reconstruction algorithm。
 
-Do not ask “is the device identifiable?” without all four qualifiers.
+这对 DPT 非常直接。
 
-### Three distinctions to preserve
+以后讨论 identifiability 时，至少要同时写出：
 
-`uniqueness != finite sufficiency != stable reconstruction`
+identifiability = (model class, observation operator, goal, allowed symmetry)
 
-A full response operator may determine a coefficient uniquely while a finite experiment bank does not. A finite set may be locally sufficient but poorly conditioned. A reduced structured class may be identifiable while a broader native class is not.
+### 对当前项目的具体改变
 
-### DPT use
+我们应该长期保留这三个区分：
 
-This directly supports the current claim boundary:
+uniqueness != finite sufficiency != stable reconstruction
 
-- exact one-coordinate sufficiency is a theorem only inside the declared reduced law/goal class;
-- one extra scalar is a minimal repair only for that declared absolute-goal class;
-- full-vendor native finite sufficiency remains open;
-- adding unknown nonlinear charge surfaces, thermal/diode state, or additional parasitic modes changes the unknown class and therefore changes the identifiability question.
+例如：
 
-## 8. F251 - approximate command algebra as a future theorem
+- reduced law 中一个 coordinate 足够，并不推出 native SPICE 也有同一个 quotient；
+- full waveform operator 可以唯一决定某个 parameter，也不代表有限几个 DPT case 足够；
+- 局部 injective 也不代表 reconstruction condition number 好。
 
-**Files inspected**
+### 契合度
 
-- [Strong Ulam Stability - PDF](preprints/Strong-Ulam-Stability-Characterizes-Amenability-October-5-2026/strong-ulam-stability.pdf)
-- [Source](preprints/Strong-Ulam-Stability-Characterizes-Amenability-October-5-2026/build/strong-ulam-stability.tex)
+它对 S09 的直接选点帮助不如 F140/F355/F116，但对论文 claim ceiling 非常重要，所以仍然是 S 级。
 
-The manuscript defines the multiplicative defect of a normalized unitary map
+它主要改变“我们允许自己说到哪里”。
 
-`def(mu) = sup_{g,h} || mu(gh) - mu(g)mu(h) ||`,
+### 用了以后会具体改变什么
 
-and asks when small defect guarantees proximity to a genuine representation. Its theorem is specifically about countable groups and unitary representations; those assumptions do not match a causal, generally noninvertible/nonunitary DPT command semigroup.
+以后每个 identifiability claim 都应该带 class qualifier。
 
-### DPT research question
+例如不再写：
 
-For an estimated native command map `R_hat`, define
+> drain state is identifiable from gate response.
 
-`delta_comp = sup_{c1,c2} || R_hat(c2 o c1) - R_hat(c2) R_hat(c1) ||`.
+而应写成类似：
 
-The future theorem would ask:
+> 在声明的 reduced law、command family 和 goal class 内，某 coordinate 对指定 goal 是 sufficient；扩大到 nonlinear charge surface、thermal state、diode state 或额外 parasitic mode 后需要重新判断。
 
-> Under which DPT-relevant command-semigroup, norm, domain, and regularity assumptions does small `delta_comp` imply the existence of a nearby exact finite reusable command representation?
+这种写法不会削弱结果，反而能把结果的数学对象说清楚。
 
-This is potentially important for deployment because native SPICE or hardware will not satisfy the reduced algebra exactly.
+**预期提升**：减少 claim drift，也方便把“为什么 native 还需要一层验证”写成科学结构，而不是防御性 disclaimer。
 
-**Status:** T2 only. Do not cite F251 as proving stability of DPT command maps.
+---
 
-## 9. F266 - certificate architecture for a computation-backed DPT theorem
+## 8. F266：把数值结果升级成 certificate
 
-**Files inspected**
+### 已读材料
 
 - [Lean scope](lean/docs/266.md)
-- [Exact Fourier certificates - PDF](preprints/Exact-Fourier-certificates-for-complex-Hadamard-matrices-of-order-six-September-24-2026/Exact-Fourier-certificates-for-complex-Hadamard-matrices-of-order-six-September-24-2026.pdf)
+- [Exact Fourier certificates](preprints/Exact-Fourier-certificates-for-complex-Hadamard-matrices-of-order-six-September-24-2026/Exact-Fourier-certificates-for-complex-Hadamard-matrices-of-order-six-September-24-2026.pdf)
 - [Exact verification section](preprints/Exact-Fourier-certificates-for-complex-Hadamard-matrices-of-order-six-September-24-2026/build/sections/05-verification.tex)
 - [Maximum MUB execution contract](preprints/The-maximum-number-of-mutually-unbiased-bases-in-dimension-six-September-24-2026/build/sections/execution.tex)
 
-### Most useful methodological details
+### 最值得移植的是证据结构
 
-1. **Candidate generation is not proof.** Modular elimination or numerical search may locate pivots/substitutions, but exact integer/rational checks establish the certificate.
-2. **Formalization scope must be stated literally.** The Lean scope file explicitly says the selected formalization is weaker than the paper's headline `N(6)=3` computation.
-3. **Execution provenance is part of the claim.** The computer-assisted result records source hashes, compiler/platform, arithmetic assumptions, control flow, record formats, terminal conditions, and output hashes.
-4. **Resource caps fail conservatively.** A cap or unresolved region is retained for fallback; it is never silently interpreted as nonexistence.
-5. **Finite execution and mathematical lemmas are separate evidence layers.** Hash/count agreement proves execution identity/completeness, not the analytic inequalities by itself.
+F266 对 DPT 很契合，因为我们大量依赖 LTspice、root solving、numerical scoring 和有限 simulation budget。
 
-### DPT certificate stack
+这类工作最容易出现的问题是：
 
-Use four layers:
+> 数值上非常漂亮，但无法回答“它到底证明了哪一层东西”。
 
-**C1 - exact algebraic certificate**
-- rank/determinant identities where rationalization is legitimate;
-- command-matrix composition identities;
-- finite linear elimination identities;
-- symbolic coefficient relations.
+F266 把几个证据层拆得很清楚：
 
-**C2 - one-sided numerical certificate**
-- interval or directed-rounding root enclosures;
-- saturation/domain margins;
-- monotonicity and denominator-separation bounds;
-- remainder envelopes when assumptions permit.
+- candidate generation 可以用数值或 modular elimination；
+- 真正 certificate 需要单独 exact check；
+- execution provenance 要记录 source、binary、hash、platform、arithmetic assumptions；
+- 资源上限不能被偷偷当成 negative certificate；
+- computation 执行正确和数学 lemma 正确是两件不同的事。
 
-**C3 - simulator provenance**
-- exact model/library hash;
-- LTspice version/operator;
-- netlist/configuration hash;
-- run commands;
-- waveform/CSV hashes;
-- scorer version;
-- no post-outcome parameter changes.
+### DPT 可以直接采用的四层 certificate
 
-**C4 - empirical/native validation**
-- fresh prospective outcomes;
-- convergence/refinement checks;
-- hardware data if later available.
+#### C1：exact algebraic certificate
 
-This would be a substantial improvement over reporting only machine-precision coherence.
+适合：
 
-## 10. F139 - characterization query complexity
+- rank / determinant；
+- command composition identity；
+- finite elimination；
+- symbolic coefficient relation。
 
-**Files inspected**
+#### C2：one-sided numerical certificate
+
+适合：
+
+- root enclosure；
+- domain / saturation margin；
+- monotonicity；
+- denominator separation；
+- 可证明的 remainder envelope。
+
+#### C3：simulator provenance
+
+至少记录：
+
+- vendor model/library hash；
+- LTspice version；
+- netlist/configuration hash；
+- run command；
+- waveform / CSV hash；
+- scorer version；
+- outcome 后没有修改 parameter。
+
+#### C4：native / empirical validation
+
+包括：
+
+- fresh prospective outcome；
+- convergence / refinement；
+- 后续若有 hardware，再作为单独证据层。
+
+### 用了以后会具体改变什么
+
+最直接的变化是，我们以后不再把 machine precision match 当成自动等价于 scientific proof，而是可以明确写：
+
+> 哪个部分是 exact identity，哪个部分是 numerical enclosure，哪个部分只是一次 simulator observation。
+
+这对 S03-S09 这种越来越数学化的项目很重要。
+
+另一个实际变化是，当 Pro run 找到很强的新 algebraic relation 时，后续 Codex 任务应该优先问：
+
+> 能不能把它变成独立 certificate？
+
+而不只是继续画更多 residual plots。
+
+### 契合度
+
+方法契合非常高，但它主要提高已有 claim 的可信度，不直接创造新的 physical law，所以放 A 级更合适。
+
+**预期提升**：让 DPT 的强数值结果具备更清楚的可复核性，也降低 reviewer 把它当成 simulator-specific coincidence 的空间。
+
+---
+
+## 9. F251：Strong Ulam stability 与 approximate command algebra
+
+### 已读材料
+
+- [Strong Ulam Stability](preprints/Strong-Ulam-Stability-Characterizes-Amenability-October-5-2026/strong-ulam-stability.pdf)
+- [Source](preprints/Strong-Ulam-Stability-Characterizes-Amenability-October-5-2026/build/strong-ulam-stability.tex)
+
+论文研究 unitary almost representation：
+
+def(mu) = sup ||mu(gh) - mu(g)mu(h)||
+
+并讨论什么时候 small defect 意味着它靠近真正 representation。
+
+### 和 DPT 的契合点
+
+DPT reduced law 中可能存在 exact command composition，但 native SPICE / hardware 上更现实的情况是近似 closure。
+
+因此可以定义 native composition defect：
+
+delta_comp = sup ||R_hat(c2 o c1) - R_hat(c2) R_hat(c1)||
+
+然后问：
+
+> 如果 delta_comp 很小，什么时候能推出存在一个真正 finite reusable command representation，且它与 native response 足够接近？
+
+这个问题很有价值，因为它连接 exact reduced mathematics 和 native deployment。
+
+### 为什么现在还不能作为主线
+
+F251 的 theorem 是 group + unitary representation。DPT command 通常：
+
+- 不可逆；
+- 非 unitary；
+- 更接近 semigroup；
+- 可能有 saturation / dissipation；
+- metric 也未定义。
+
+所以当前只能借问题形式和 stability philosophy，不能借 theorem。
+
+### 用了以后可能带来的提升
+
+如果未来真的建立 DPT-specific stability theorem，项目会从：
+
+> reduced model 有一个 exact algebra
+
+推进到：
+
+> native dynamics 虽然不 exact，但在一个可量化 defect 下靠近某个 finite algebra。
+
+这会明显提高 representation 的工程和科学意义。
+
+当前阶段先记录，不占用 S09/S10 预算。
+
+---
+
+## 10. F139：query complexity 与 characterization budget
+
+### 已读材料
 
 - [PDF](preprints/Subpolynomial-query-complexity-for-well-conditioned-log-concave-sampling-September-26-2026/article.pdf)
 - [Main source](preprints/Subpolynomial-query-complexity-for-well-conditioned-log-concave-sampling-September-26-2026/build/main.tex)
 - [Introduction](preprints/Subpolynomial-query-complexity-for-well-conditioned-log-concave-sampling-September-26-2026/build/sections/introduction.tex)
 - [Lower bound](preprints/Subpolynomial-query-complexity-for-well-conditioned-log-concave-sampling-September-26-2026/build/sections/lower.tex)
 
-The important methodological feature is the explicit **oracle model**: computation between queries is unrestricted, only information acquired from the unknown object is charged. The paper proves both an upper and lower query bound under a tightly specified object class.
+这篇工作的核心方法论是把 information acquisition 明确定义成 oracle query，同时允许 query 之间做任意 computation。
 
-### DPT use
+### DPT 的对应物
 
-This suggests defining a DPT characterization oracle and separating:
+可以把：
 
-- expensive simulator/hardware acquisitions;
-- free offline algebra/computation;
-- the model class guaranteed by those acquisitions;
-- worst-case vs expected acquisition count;
-- accuracy/goal tolerance.
+- fresh LTspice run；
+- hardware measurement；
+- 新 operating point；
+- 新 command sequence；
 
-This could eventually make statements such as “four fresh characterization calls are sufficient for this declared class” scientifically sharper.
+统一看作有成本的 characterization query。
 
-It does **not** imply a subpolynomial DPT query bound and should not be used as such.
+离线 algebra、symbolic derivation、Pro run reasoning 可以看作不增加 physical acquisition budget 的 computation。
 
-## 11. F289 - structural stability requires the right distance
+### 可能带来的改变
 
-**Files inspected**
+以后我们可以更严谨地比较：
+
+- 一个方案需要 4 个 fresh runs 才能识别；
+- 另一个方案需要 8 个；
+- 哪些 query 是 adaptive；
+- 哪些只是在重复已有 axis information。
+
+这能给 bounded project 一个很合适的评价标准：
+
+> 用多少真正新的 acquisition，换来了多少独立 predictive information。
+
+当前还没有必要追求完整 query-complexity theorem，所以保持 B 级。
+
+---
+
+## 11. F289：structural closeness 需要先定义 metric
+
+### 已读材料
 
 - [PDF](preprints/Universal-strong-Kadison-Kastler-stability-September-23-2026/paper.pdf)
 - [Introduction](preprints/Universal-strong-Kadison-Kastler-stability-September-23-2026/build/sections/01-introduction.tex)
 
-The Kadison-Kastler metric is explicitly symmetric: each unit ball must lie near the other. The manuscript's introduction also distinguishes ordinary gap, matrix-level control, spatial implementation, and one-sided near inclusion.
+Kadison-Kastler 的距离是对称的。论文也明确区分 ordinary gap、matrix-level control、spatial implementation 和 one-sided near inclusion。
 
-### DPT use
+### 对 DPT 的主要价值
 
-Treat this as a warning for future native-algebra claims:
+它提醒我们：
 
-- closeness of one observed waveform family to a reduced prediction is not the same as structural closeness of two command algebras;
-- one-sided fitting error is weaker than a symmetric distance between attainable response sets;
-- a stability theorem needs an explicit metric and an explicit nearby exact object.
+> 几个 waveform fit 得很近，与两个 command representation 在结构上很近，不是同一件事。
 
-This family currently supplies claim discipline, not a DPT proof.
+以后如果要说 native system 接近 reduced algebra，需要明确：
 
-## 12. F325 - nonnormal operator control, retained for later
+- 比较的是哪些 attainable responses；
+- metric 是否对称；
+- command composition 是否也接近；
+- 是否存在一个 nearby exact object。
 
-**Files inspected**
-
-- [Lean scope](lean/docs/325.md)
-- [Direct proof - PDF](preprints/A-direct-proof-of-the-complete-Crouzeix-inequality-September-26-2026/paper.pdf)
-- [Direct proof source](preprints/A-direct-proof-of-the-complete-Crouzeix-inequality-September-26-2026/build/main.tex)
-
-The complete Crouzeix inequality controls matrix-valued polynomial/rational functions of a nonnormal operator by their supremum over the numerical range, with sharp universal constant two.
-
-Potential use appears only if the DPT reduced representation grows beyond the current low-dimensional exact maps and needs certified polynomial/rational functional calculus for a nonnormal propagator. Do not introduce it merely because matrices are present.
-
-## 13. Secondary watchlist
-
-The full `overview.tex` catalogue was screened across all 372 families for inverse/recovery, measurement/observation, memory/information, finite representations, stability, query complexity, certification, moments/interactions, coordinates, and lower bounds.
-
-The following are retained but not promoted:
-
-- **F357 - Bi-Lipschitz coordinates at regular RCD points.** Example of a genuine stable local coordinate theorem requiring strong regularity hypotheses. Useful conceptual contrast to mere injective coordinates.
-- **F374 - sharp one-third stability of Brenier maps.** Good reminder that uniqueness and the quantitative stability exponent are different problems.
-- **F098 - no finite-dimensional bi-Lipschitz embedding for a compact doubling Hilbert subset.** Caution against assuming “compact/low-complexity-looking” automatically means stably finite-dimensional.
-- **F119 - sharp binary information contraction.** Possible information-bottleneck prior; currently too remote from DPT observation geometry.
-- **F229 - reconstruction thresholds.** Useful vocabulary for reconstructability/nonreconstructability transitions, but no current DPT mapping.
-- **F289 companion counterexamples.** Potentially useful when defining one-sided vs symmetric native distances.
-
-These are **D1/D2 watchlist sources**, not evidence for the present paper.
-
-## 14. Proposed theorem stack for DPT-R1
-
-The repository is most useful if it helps us build a coherent theorem stack rather than collect analogies.
-
-### T1. Exact goal quotient
-
-Prove, for the declared reduced law and command family, that a specified finite coordinate `z(h)` is sufficient and transition-closed for the chosen goals.
-
-**Current status:** substantial exact structure already exists.
-
-### T2. Goal-visible nullity and minimal local measurement count
-
-Define `K = ker`DO``, `N = K ∩ (intersection over c of ker`DG_c`)`, and `r_G = dim`K/N``. Prove the tangent-level minimum-measurement bound and a local sufficiency statement under explicit rank assumptions.
-
-**Repository drivers:** F355 + current reduced-law reachable-pair result.
-
-### T3. Predictive information lower bound
-
-Define a goal pseudometric and prove a finite-code/packing lower bound for uniform prediction. Extend only if necessary to noisy or randomized observation.
-
-**Repository driver:** F140.
-
-### T4. Ordered command signature
-
-Define the primitive/mixed/ordered word hierarchy and identify which coefficients are determined by existing axes and which require new acquisitions.
-
-**Repository driver:** F116, with external Chen-Fliess prior subtraction required.
-
-### T5. Approximate command-algebra stability
-
-Define a native composition defect and characterize conditions under which an approximate finite command map lies near an exact reusable representation.
-
-**Repository drivers:** F251, with F289 as a caution on metrics/structural closeness.
-
-### T6. Certificate-grade numerical layer
-
-Give exact or one-sided numerical certificates for every computation that carries a mathematical claim, and a separate provenance contract for simulator outcomes.
-
-**Repository driver:** F266.
-
-## 15. S09 / optional S10 consequence
-
-The existing S09 fusion should remain the primary fresh acquisition unless its freshness contract has already been invalidated.
-
-Its mathematical role is now sharper:
-
-> **S09 is the first mixed-functional acquisition outside the primitive axes.**
-
-For the declared quadratic response class, the primitive axes leave `C_AB` free. The mixed query purchases exactly that missing coefficient. This is preferable to another same-axis amplitude point if the main uncertainty is interaction rather than one-dimensional amplitude remainder.
-
-After S09 is scored:
-
-- if interaction is near zero, retain the affine/linear-memory null for this primitive pair only;
-- if it supports the Q/phase cluster, record prospective usefulness but do not infer unique charge mechanism;
-- if it lands outside all frozen candidates, reject those finite interaction rules and identify the new mixed functional rather than retrofitting gain/phase;
-- use post-score charge diagnostics only to localize whether the failure is charge additivity or transverse interaction.
-
-Optional S10 should be selected by the **remaining goal-visible / interaction nullspace**, not by an arbitrary “largest predicted difference” heuristic. A particularly valuable S10 may distinguish ordered `AB` from `BA` or another nonredundant timing cross if S09 leaves those coefficients unresolved.
-
-## 16. Claim-boundary checklist
-
-Before citing a family in the DPT paper or a Pro-run report, classify the use:
-
-| Question | Required answer |
-|---|---|
-| Is the OpenAI theorem itself being applied? | State the exact assumptions and prove the DPT object satisfies them. |
-| Is only a proof architecture being borrowed? | Say so; rederive the DPT theorem independently. |
-| Is it only an analogy? | Keep it out of the load-bearing proof. |
-| Does Lean formalize the exact headline used? | Check the family scope file; do not infer full-paper formalization. |
-| Does the source prove uniqueness, reconstruction, finite sufficiency, or stability? | Use only the one it actually proves. |
-| Is the result about a full operator while DPT has finite trajectories? | Do not collapse the distinction. |
-| Is the model group/unitary while DPT is a semigroup/nonunitary? | No theorem transfer without a new argument. |
-| Was a computation merely generated numerically? | Separate generation from exact/one-sided verification and provenance. |
-
-## 17. Recommended source bundles for future Pro runs
-
-Do not send the whole 722-manuscript repository to every model. Route only the bundle that matches the scientific bottleneck.
-
-### Measurement sufficiency / P2
-- `pro17d_scientific_report.md`
-- F355 `linear.tex`
-- F140 `06-fiber.tex` + relevant scope
-- current reduced-law derivations and reachable-pair evidence
-
-### Command algebra / interaction
-- Pro17D A3/N4 material
-- F116 `iterated-integrals.tex`, `multiplicity.tex`
-- frozen primitive/fusion data and exact command definitions
-
-### Native certification
-- F266 verification/execution sections
-- simulator/model manifests
-- scorer code/results
-- numerical-domain and remainder evidence
-
-### Identifiability claim review
-- F365 positive + negative pair
-- F372 scope and coefficient-recovery structure
-- explicit DPT model/observation/goal/symmetry declaration
-
-### Approximate native algebra
-- F251 definition/construction
-- F289 metric/stability introduction
-- measured composition defects for actual DPT command maps
-
-## 18. Reading queue
-
-The next useful deep reads are ordered by expected DPT decision impact:
-
-1. **F140:** `Posterior replicas and conditional information` and `Subsphere methods` - determine whether any sharper finite-fiber lower-bound device survives beyond the simple packing argument.
-2. **F355:** finish the finite-dimensional reduction around `finite-linear.tex` and related normalized-coordinate construction - look for a clean theorem template for minimal observation design.
-3. **F116:** `formula-systems.tex` and `construction.tex` only if we pursue finite universal tests for command words.
-4. **F266:** inspect rounding and verifier code when converting specific Pro17D numerical claims into certificates.
-5. **F365:** read the matrix continuation / global sections only if full-native inverse structure becomes central.
-6. **F251:** search the proof for quantitative defect-to-distance mechanisms that might inspire a semigroup analogue.
-7. **External prior subtraction:** Hermann-Krener nonlinear observability, Chen-Fliess series/realization, predictive-state representations, goal-oriented model reduction, and experiment design. These are required before novelty claims around T2-T5.
-
-## 19. Maintenance protocol
-
-Whenever a new OpenAI Math manuscript changes DPT work, append one entry with:
-
-1. family/manuscript and exact path;
-2. date and read depth;
-3. theorem actually used;
-4. DPT object it maps to;
-5. assumptions that survive the mapping;
-6. assumptions that fail;
-7. new derivation / acquisition / certificate created;
-8. claim ceiling after prior subtraction;
-9. next falsifier or unresolved dependency.
-
-Do not mark a source as “used” merely because it was cited or discussed. A source becomes **materially used** only if it changes a definition, proof, experiment, certificate, bound, or claim boundary.
+目前它主要是 claim discipline。
 
 ---
 
-### Current bottom line
+## 12. F325：Complete Crouzeix，暂时保留
 
-The repository has already contributed more than isolated mathematical tricks. The strongest coherent route is now:
+### 已读材料
 
-**Core stack:** `finite predictive quotient + goal-visible measurement lower bound + information lower bound + ordered interaction acquisition + certificate-grade validation`
+- [Lean scope](lean/docs/325.md)
+- [Direct proof](preprints/A-direct-proof-of-the-complete-Crouzeix-inequality-September-26-2026/paper.pdf)
+- [Source](preprints/A-direct-proof-of-the-complete-Crouzeix-inequality-September-26-2026/build/main.tex)
 
-F140, F355, and F116 are the most important sources for raising the mathematical ceiling. F365/F372 keep identifiability claims honest, F266 can raise the evidentiary standard, and F251 defines a plausible longer-term route from exact reduced algebra to robust native algebra.
+它控制 nonnormal operator 的 polynomial / rational functional calculus。
+
+如果 DPT 后续 representation 真的发展成较高维 nonnormal propagator，并需要对多步 command 的 polynomial function 做 norm bound，这个 family 会有价值。
+
+当前 representation 还没有复杂到需要它。现在引入会增加数学负担，却不改变 S09 或当前 theorem，所以先放 B 级。
+
+---
+
+## 13. 二级候选：目前不进入主线
+
+对全部 372 family 做过 DPT-oriented screening 后，下面这些工作值得保留，但暂时不应占用主要预算。
+
+### F357：Bi-Lipschitz coordinates
+
+它提醒我们：一个 coordinate 能区分，与稳定地能区分不同。真正 stable coordinate theorem 要有明确 regularity 条件。
+
+### F374：Brenier map stability
+
+它说明 uniqueness 和 quantitative stability exponent 是两层问题。以后 DPT 即使证明 unique representation，也还要问噪声放大率。
+
+### F098：finite-dimensional embedding counterexample
+
+它是一个反例提醒：看起来 low-complexity、compact 或 doubling，不自动意味着存在稳定 finite-dimensional embedding。
+
+### F119：information contraction
+
+可能为后续 information bottleneck 提供工具，但当前 DPT observation geometry 还没有需要它。
+
+### F229：reconstruction threshold
+
+可以帮助思考什么时候 information 足够恢复，但目前与 DPT 的直接数学接口还弱。
+
+这些 family 目前只承担边界审查，不作为论文主证明的依据。
+
+---
+
+## 14. 把这些工作组合起来后，DPT 可以形成什么 theorem stack
+
+单独引用很多高级数学并不会自动提高项目。真正有价值的是把它们组织成一条连续论证。
+
+### T1：exact goal quotient
+
+在声明的 reduced law 和 command class 内证明：
+
+- 某个 finite coordinate 对目标足够；
+- 它在 command 下可以闭合更新；
+- 因而不需要完整内部 physical state。
+
+这是现有工作基础最好的一层。
+
+### T2：goal-visible hidden dimension
+
+定义：
+
+K = ker(DO)
+
+N = K ∩ goal-null directions
+
+r_G = dim(K/N)
+
+然后证明：
+
+- 当前 measurement 至少缺多少维 goal-relevant information；
+- 至少需要几个 scalar repair；
+- 某个实际 measurement 达到了这个下界。
+
+这是 F355 最可能带来的新数学内容。
+
+### T3：predictive information lower bound
+
+对 d_G 构造 packing，证明：
+
+- 任何 uniform predictor 至少需要多少 finite states / bits；
+- 当前 representation 的复杂度离这个 lower bound 有多远。
+
+这是 F140 的主要价值。
+
+### T4：ordered command signature
+
+把 primitive、mixed、ordered response 统一到 finite word hierarchy，明确：
+
+- 现有 axes 决定了哪些 coefficient；
+- S09 新增了哪个 mixed functional；
+- optional S10 还要买哪一项信息。
+
+这是 F116 和 acquisition design 的连接。
+
+### T5：approximate native algebra
+
+定义 composition defect，并研究 small defect 是否意味着靠近 exact finite representation。
+
+这属于后续升级，不要求在 S09 前完成。
+
+### T6：certificate-grade numerical layer
+
+对真正 load-bearing 的 computation，明确分别给出：
+
+- exact identity；
+- numerical bound；
+- provenance；
+- prospective native outcome。
+
+这一层由 F266 支撑。
+
+---
+
+## 15. 这些 family 组合后会带来什么实质变化
+
+### 15.1 数学对象会更集中
+
+如果不引入这些结构，项目容易不断积累：
+
+- 一个 phase law；
+- 一个 charge observation；
+- 一个 fusion effect；
+- 一个 timing effect；
+- 一个新的 residual pattern。
+
+每个结果都可能是对的，但彼此比较散。
+
+把 F140、F355、F116 连起来以后，可以把这些结果重新解释成一个统一问题：
+
+> 一个 switching history 需要保留哪些 goal-relevant information，future commands 如何作用在这份 information 上，新的 measurement 如何补足当前 representation 看不见的部分。
+
+这样各个发现开始服务同一个 scientific object。
+
+### 15.2 为什么做 S09 会更强
+
+以前 S09 可以解释为模型之间 spread 大，因此值得测。
+
+现在还能加一层：
+
+> primitive axes 没有识别 mixed functional，S09 是第一次直接 acquisition 这个缺失项。
+
+如果 S09 成功，它增加的不只是一个 datapoint，而是一类新的 independent information。
+
+### 15.3 optional S10 会更容易裁决
+
+S10 不应自动选择 forecast disagreement 最大的点。
+
+更合适的规则是：
+
+> S09 之后还剩哪个 goal-visible direction 或 interaction coefficient 未被识别？
+
+如果 simultaneous interaction 已解决，但 order dependence 仍未解决，那么 AB vs BA 可能比再做一个 fusion amplitude 更值。
+
+### 15.4 P2 可以从 sensor suggestion 升级为 measurement theorem
+
+这可能是整个 map 中最明确的提升。
+
+从：
+
+> 我们建议加一个 drain observation。
+
+提升到：
+
+> 当前 observation 的 goal-visible hidden dimension 是 1，因此任何 local sufficient repair 至少需要一个 independent scalar，某个 drain / charge anchor 达到该下界。
+
+这会让 sensor choice 和数学贡献连起来。
+
+### 15.5 数值结果的证据层次会更清楚
+
+F266 可以让项目里的 proof、verification、simulation 不再混用。
+
+一个结果可以明确标注：
+
+- algebra exact；
+- numerical certified；
+- simulator observed；
+- native/hardware untested。
+
+这样既不需要为了谨慎写成满页“不能说明”，也不会把 simulator coincidence 写成 theorem。
+
+### 15.6 论文的 contribution 结构会更独立
+
+如果 T1-T4 能形成闭环，论文贡献不再主要依赖某个 SiC MOSFET 的几条仿真曲线拟合得很好。
+
+更可能形成这样的结构：
+
+1. 定义 goal-dependent predictive representation；
+2. 构造一个 exact low-information quotient；
+3. 给出 measurement / information lower bound；
+4. 用 prospective mixed acquisition 检验 representation 的下一项未知 interaction；
+5. 用 certificate-grade computation 支撑关键数学和数值接口。
+
+这类结构即使后续某个具体 physical mechanism 被否掉，研究对象本身仍然可以保留。
+
+---
+
+## 16. S09 与 optional S10 的当前解释
+
+现阶段仍建议保留 S09 fusion 作为主要 fresh acquisition，前提是它的 freshness contract 没有被破坏。
+
+### S09
+
+在 declared quadratic response class：
+
+F(alpha,beta) = F0 + alpha L_A + beta L_B + alpha^2 D_A + beta^2 D_B + alpha beta C_AB
+
+primitive axes 无法确定 C_AB。
+
+因此 S09 最清楚的科学角色是：
+
+> **第一次直接测量 primitive axes 之外的 mixed functional。**
+
+评分后：
+
+- interaction 接近零：保留该 primitive pair 上的 affine / linear-memory null；
+- 落在冻结的 Q / phase cluster：说明该 predictor 有 prospective usefulness，但不能单凭这一点认定唯一 charge mechanism；
+- 落在所有冻结 candidate 之外：直接否掉这些 finite interaction rules，不在 outcome 后重新调 gain / phase；
+- post-score charge diagnostics 只用于定位 failure 是 charge additivity 还是 transverse interaction。
+
+### optional S10
+
+S10 应该服从 S09 后的 remaining nullspace。
+
+高价值候选包括：
+
+- AB vs BA，检验 order-sensitive memory；
+- 一个能够区分两个仍然 observationally equivalent history 的 query；
+- 一个专门测试 measurement-repair sufficiency 的 case。
+
+如果 S09 已经把 interaction 问题解决，再做一个相似 fusion amplitude 的边际价值可能很低。
+
+---
+
+## 17. 对 Pro run / Codex 的实际使用方式
+
+不应该每次把 722 篇 manuscript 全塞进去。按问题选择最相关的数学 bundle 更有效。
+
+### 做 P2 / minimum measurement
+
+给：
+
+- 当前 Pro17D scientific report；
+- F355 linear.tex；
+- F140 06-fiber.tex；
+- reduced-law derivation；
+- reachable-pair / goal evidence。
+
+任务重点：
+
+> 推出 goal-visible hidden dimension、最少 measurement 数和 local sufficiency 条件。
+
+### 做 command algebra / interaction
+
+给：
+
+- A3 / N4；
+- F116 iterated-integrals.tex、multiplicity.tex；
+- primitive axes；
+- S09 frozen forecast；
+- exact command definitions。
+
+任务重点：
+
+> 建立 primitive / mixed / ordered coefficient hierarchy，并判断下一项最值得 acquisition 的 coefficient。
+
+### 做 numerical certificate
+
+给：
+
+- F266 verification / execution；
+- LTspice manifest；
+- model hashes；
+- scorer；
+- exact derivation；
+- numerical margins。
+
+任务重点：
+
+> 区分 candidate generation 与 verification，把 load-bearing numerical claims 变成 exact 或 one-sided certificate。
+
+### 做 identifiability review
+
+给：
+
+- F365 positive + negative pair；
+- F372；
+- 当前 DPT model class；
+- observation / goal / symmetry 声明。
+
+任务重点：
+
+> 检查 claim 是否只在 reduced class 成立，哪些 extension 会破坏 uniqueness。
+
+### 做 approximate native algebra
+
+给：
+
+- F251；
+- F289；
+- native composition residual；
+- reduced exact maps。
+
+任务重点：
+
+> 定义合适 defect 和 metric，先判断是否存在可证明的 stability question。
+
+---
+
+## 18. 下一轮阅读和推导优先级
+
+### 第一优先：F355
+
+继续读 finite-dimensional reduction 和相关 normalized-coordinate construction。
+
+目标不是多摘几个 lemma，而是写出一个 DPT 自己的：
+
+> minimum goal-relevant measurement theorem。
+
+### 第二优先：F140
+
+继续读 Posterior replicas、conditional information、subsphere / fiber 方法。
+
+目标是判断 simple packing lower bound 能否进一步加强，或者能否处理 noisy / randomized finite state。
+
+### 第三优先：F116
+
+只有当 command-word hierarchy 已经进入实际 DPT derivation 后，再深入 formula-systems.tex 和 construction.tex。
+
+### 第四优先：F266
+
+当某个 Pro17D numerical claim 真正准备进入论文时，再针对该 claim 阅读 rounding / verifier code，并制作同等级别的 DPT certificate。
+
+### 第五优先：外部 prior subtraction
+
+T2-T5 如果准备写 novelty，需要补：
+
+- Hermann-Krener nonlinear observability；
+- Chen-Fliess series / nonlinear realization；
+- predictive-state representation；
+- goal-oriented model reduction；
+- optimal experiment design。
+
+这一步决定我们到底是在重新表达已有理论，还是确实形成了 power-semiconductor 中新的 bounded object。
+
+---
+
+## 19. 如何长期维护这份文件
+
+以后每读一篇对 DPT 有实际影响的 manuscript，只记录真正发生了改变的内容：
+
+1. family / manuscript 和具体路径；
+2. 阅读深度；
+3. 原论文实际证明的 theorem；
+4. 和 DPT 哪个 object 对应；
+5. 哪些 assumptions 可以保留；
+6. 哪些 assumptions 在 DPT 中失效；
+7. 它改变了哪个 theorem、acquisition、certificate 或 claim；
+8. 使用后预计能提高哪一层科学内容；
+9. 下一条 falsifier 或未解决依赖。
+
+仅仅读过或引用过不算 materially used。
+
+一篇文献真正进入这个项目，至少要改变下面之一：
+
+- definition；
+- derivation；
+- experiment selection；
+- lower / upper bound；
+- certificate；
+- claim boundary。
+
+---
+
+## 20. 当前结论
+
+截至这一轮，OpenAI Math 对 DPT 最有价值的作用已经比较清楚。
+
+**F355** 最可能产生新的 DPT theorem，因为它直接对应当前 measurement 究竟少几维的问题。
+
+**F140** 最可能提高 representation 的数学上限，因为它把 sufficiency 推向 lower bound。
+
+**F116** 最直接改变 S09/S10 的 acquisition logic，因为它提供了 organized command / interaction hierarchy。
+
+**F266** 不一定创造新 physical law，但它能显著提高强数值结果的证据质量。
+
+**F365/F372** 负责把 identifiability 的边界说清楚。
+
+**F251/F289** 更适合下一阶段，把 exact reduced algebra 推向 approximate native algebra。
+
+如果这几条线能在剩余预算内形成闭环，DPT-R1 最有希望获得的升级是形成一个更完整的研究对象：
+
+有限 predictive quotient + 最小 goal-visible measurement + predictive information lower bound + 有目的的 mixed/ordered acquisition + certificate-grade validation
+
+这五部分彼此有依赖，也彼此能被反证。它们比单独继续增加 waveform fit、parameter inversion 或 post-hoc mechanism explanation 更有机会形成一个可以独立站住的数学与器件物理结合框架。
