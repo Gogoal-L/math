@@ -1,1053 +1,682 @@
-# DPT-R1 × OpenAI Math 研究利用图谱
+# DPT-R1 × OpenAI Math：主控研究利用图谱
 
-**用途**：这是一份长期维护的研究台账，用来记录 Gogoal-L/math 中哪些数学工作真正进入了 DPT-R1 / Pro17D，进入的位置是什么，契合度有多高，以及它们会怎样改变我们的科学对象、证明方式、实验设计和证据标准。
+这份文件服务于主控，不做论文摘要集。每篇文献只保留四件事：它在 Pro17D 中是什么身份、真正可迁移的数学动作、会改变哪个 DPT 决策、什么时候值得重新打开。
 
-**基线版本**：adc7f1241b42e322a6451854ab7e4b4c146bf78a  
-**首次系统整理**：2026-10-07
-
-这份文件不把 OpenAI Math 当成可以直接搬结论的定理库。仓库中的论文更适合承担三类作用：
-
-1. 给出已经成熟的数学对象和证明结构，帮助我们把 DPT 中模糊的直觉变成可定义、可证伪的问题；
-2. 提供反例和适用边界，防止把 reduced-law 中成立的结果扩大到 native SPICE 或真实器件；
-3. 提高 computation-backed result 的证据标准，让数值结果更接近一个可以审计的数学论证。
-
-仓库原始入口仍保留在 [README](README.md)、[CONTENTS](CONTENTS.md)、[overview](overview.pdf) 和 [Lean formalization catalogue](lean/formalization.yaml)。
+最后更新：2026-10-07  
+当前对象：DPT-R1 / Pro17D，预算上限 S09 + optional S10。
 
 ---
 
-## 1. 这份图谱怎么判断契合度
+## 0. 先读这一页：主控应当带走什么
 
-这里的契合不看论文有多难，也不看结论有多漂亮。真正重要的是它能不能改变 DPT 当前已经存在的一个具体研究对象。
+目前最有价值的统一问题是：
 
-我用四个问题判断一篇工作的价值：
+> 给定 future command family 和指定 goal，switching history 中最少需要保留什么信息，当前 observation 丢了哪些 goal-relevant directions，下一次 acquisition 应该购买哪一项尚未确定的信息？
 
-| 维度 | 判断问题 |
-|---|---|
-| 对象契合 | 它研究的数学对象，能否对应 DPT 中已经存在的 state、observation、goal、command、interaction 或 inverse problem？ |
-| 证明契合 | 它的证明结构能否在 DPT 中重新推导，而不是只做类比？ |
-| 证据契合 | 它要求的数据、measurement 或 computation，DPT 是否有机会在 S09/S10 或现有仿真框架内得到？ |
-| 改变量 | 用了以后，能否改变 theorem、acquisition、certificate 或 claim ceiling，而不只是让文字更漂亮？ |
+OpenAI Math 对这个问题提供了六个互补动作：
 
-因此下面的等级表示“对 DPT 当前路线的贡献”，不是对数学工作的质量排名。
+| 动作 | 主要来源 | 对 DPT 的直接作用 |
+|---|---|---|
+| 找最小缺失 measurement | F355 | 从 observation nullspace 中分离真正影响 goal 的方向 |
+| 给 predictive state 做信息下界 | F140 | 从“这个 state 足够”推进到“更少信息不可能统一完成任务” |
+| 建立有 definedness 的 command algebra | F116-A/B | command 顺序、mixed term、所有 inverse gate 的定义域一起管理 |
+| 判断新 measurement 是否真的增加信息 | F229 | 用 experiment dominance / garbling 剪掉信息上冗余的 acquisition |
+| 把 numerical fit 变成 certificate | F266 | center residual、approximate tangent、normal remainder、provenance 分层 |
+| 从 tangent 结论升级到 finite-radius / nonlinear 结论 | F365-B，辅以 F374 | rank 之后还要有 remainder/stability modulus，不能把局部 injective 当 robust sufficiency |
 
-| 等级 | 含义 |
-|---|---|
-| **S+** | 已经可以改变 DPT 的数学对象或下一次关键 acquisition，值得优先继续推导 |
-| **S** | 很强的直接迁移对象，需要一轮 DPT-specific derivation |
-| **A** | 能明显提高证据标准或打开下一层问题，但暂时不是 S09 的主判据 |
-| **B** | 主要用于 claim discipline、未来 native extension 或局部工具 |
-| **C** | 有启发，但暂时不应占用当前有限的仿真和推导预算 |
+另外两条是长期边界：
 
-### 阅读深度标记
+- F365-A/C：identifiability 必须先声明 model class、goal 和不可见 symmetry；regularity 一变，uniqueness 可能直接翻转。
+- F372：physical data 到 auxiliary representation 的 reduction 必须检查 injectivity；辅助变量上的 uniqueness 不能从 physical data 自动继承。
 
-| 标记 | 含义 |
-|---|---|
-| **D3** | 已读与 DPT 相关的正文 source、关键假设和 proof mechanism |
-| **D2** | 已读 scope / introduction / 决定性章节，足以判断能不能迁移 |
-| **D1** | 已完成 family-level 筛选，暂时保留在候选池 |
+如果主控只记一条执行规则：
 
-仓库中的 PDF 是正式渲染稿。本轮环境没有稳定完成所有 binary PDF 的逐页视觉检查，因此这份图谱主要依据论文对应的完整 TeX/source、Lean scope 和正文结构。涉及图形或版面本身的证据时，仍需单独补 visual PDF pass。
+> **每次准备增加一个 theorem、sensor 或 simulation 前，先问它究竟减少了哪个 goal-visible ambiguity；如果没有明确减少，就不占 fresh budget。**
 
 ---
 
-## 2. 目前最值得统一的 DPT 科学对象
+## 1. 文献身份：Pro17D 当时用了什么，后来又发现了什么
 
-Pro17D 现在已经出现了一个比“拟合 waveform”更清楚的方向：
+状态含义：
 
-> 给定未来 command 和预测目标，寻找 switching history 中最小、可更新、足以支持这些目标的有限 predictive representation。
+- **P17-承重**：已经实际改变 Pro17D 的构造或证据结构。
+- **P17-背景**：当时上传/可见，但 Pro17D 没有把它作为承重推导。
+- **POST-主动**：本轮重新深读后，已经形成可执行的 DPT 新路线。
+- **WATCH**：保留为边界或未来升级，不应占当前 S09/S10 预算。
 
-记：
+| 文献 | Pro17D 身份 | 当前身份 | 最值得保留的作用 |
+|---|---|---|---|
+| F116-A One Rational Matrix Hitting Point | **P17-承重** | **POST-主动** | bounded rational system、multiplicity、ordered-word encoding |
+| F116-B Polynomial Hitting Lists | P17-背景 | **POST-主动** | 每个 inverse occurrence 的 definedness；universal nonadaptive test bank |
+| F229 Three-state reconstruction threshold | P17-背景 | **POST-主动** | experiment dominance / garbling；保守 finite upper experiment |
+| F266 Maximum MUB in dimension six | **P17-承重** | **POST-主动** | Root-like certificate；未解决记录不能被当 negative evidence |
+| F365-A Metric + connection from one patch | P17-背景 | **POST-主动** | quotient-first identifiability；response embedding |
+| F365-B Smooth anisotropic Calderón | P17-背景 | **POST-主动** | finite probe-jet completeness + superlinear bootstrap |
+| F365-C Rough scalar conductivity nonuniqueness | P17-背景 | **POST-主动** | regularity/model-class 改变可辨识性本身 |
+| F372 Smooth isotropic elasticity uniqueness | P17-背景 | **POST-主动** | physical-to-auxiliary injectivity audit；full operator ≠ finite reconstruction |
+| F374 Brenier one-third stability | P17-背景 | WATCH / 方法主动 | uniqueness 与 stability modulus 分开；边界切换可造成非 Lipschitz 放大 |
+| F355 Tangent-flow uniqueness | Pro17D 后发现 | **最高优先 POST** | goal-visible hidden dimension / minimum measurement |
+| F140 Memory-constrained inference | Pro17D 后发现 | **最高优先 POST** | finite information lower bound；adaptive selection 的 information charge |
 
-- H：允许的 preparation / history 集合；
-- C：未来 command 集合；
-- O: H -> Y：当前可获得的 observation；
-- G_c: H -> R^p：施加未来 command c 后关心的 goal。
+Pro17D 自己在第 7 节明确把 F116-A 与 F266 作为重点亲读和实际采用的 OpenAI Math 来源；其余当时保持 navigation/background 身份。这里不会把后续发现倒写成 Pro17D 当时已经使用。
 
-定义：
+### 证据身份
 
-h1 ~_G h2，当且仅当对所有 c in C，都有 G_c(h1) = G_c(h2)。
+这些论文非常新。外部资料在 2026 年较早阶段仍把 smooth anisotropic Calderón 和同时恢复两个 Lamé moduli 列为 open problems，因此 F365-B/F372 属于需要高强度独立核验的 headline claims。当前图谱主要使用它们的 proof architecture，不让 DPT 的承重结论依赖“OpenAI 已解决该开放问题”这一事实。
 
-这样以后讨论“需要多少 state”时，不再问完整内部状态能不能重建，而是问：
+仓库自身的 formalization scope 也必须逐篇看：
 
-> 为了当前声明的 future goals，哪些 history 差异必须保留，哪些可以安全压掉？
+- F116：scope 覆盖 selected universal hitting theorem，并覆盖 rational-formula hitting-list 结果。
+- F229：当前 selected formalization 只覆盖 Kesten-Stigum 阈值以上的 reconstruction；临界/次临界 non-reconstruction 不在 selected statement 中。
+- F266：selected formalization 明确弱于论文 headline 的 N(6)=3。
+- F365：当前 365 scope 记录的是 bounded measurable scalar conductivity nonuniqueness，也就是这里的 F365-C。
+- F372、F374：对应 scope 文件声明覆盖各自主 uniqueness / stability statement。
 
-这个对象已经和现有 reduced-law 结果发生了实际连接：
-
-- 对 increment / zero-sum 类目标，当前一维 gate coordinate 已经表现出 exact sufficiency；
-- 对 absolute drain 类目标，同一个 coordinate 不够，需要额外 drain / charge anchor；
-- full-native vendor model 上是否仍存在类似有限 quotient，目前没有被证明。
-
-这也是下面各个 OpenAI Math family 的统一入口。
-
----
-
-## 3. 当前优先级总表
-
-| 优先级 | Family | 契合度判断 | 最直接的 DPT 用法 | 如果做成，最可能带来的改变 |
-|---|---|---|---|---|
-| **S+** | **F140 Memory-sample lower bounds** | 很高 | 从 goal space 构造 information lower bound | 把“我们找到了一个小 state”推进到“任何更小 state 都不够” |
-| **S+** | **F355 Tangent-flow uniqueness** | 很高 | 从 observation kernel 推导最少缺几维 measurement | 把 P2 从经验性 sensor proposal 变成最小测量定理 |
-| **S** | **F116 Noncommutative identity testing** | 高 | 建立 ordered command / mixed interaction 的 word representation | 让 S09/S10 的 acquisition 对应“购买哪个缺失 functional” |
-| **S** | **F365 + F372 inverse uniqueness** | 高 | 明确 model class、observation、goal、symmetry 下的 identifiability | 避免 reduced-law uniqueness 被误写成 full-native identifiability |
-| **A** | **F266 certified computation** | 高 | 建立 algebraic / numerical / provenance / native 四层 certificate | 数值 coherence 可以升级成可审计 computation-backed claim |
-| **A** | **F251 Strong Ulam stability** | 中高 | 定义 native command composition defect | 为“近似 command algebra 能否靠近 exact algebra”提供长期问题 |
-| **B** | **F139 Query complexity** | 中 | 把一次 fresh simulation 当成有成本的 information query | 以后可以比较不同 characterization plan 的 query efficiency |
-| **B** | **F289 Kadison-Kastler stability** | 中 | 约束“两个 representation 很接近”到底要用什么 metric | 避免用单侧 waveform fit 推 structural stability |
-| **B** | **F325 Complete Crouzeix** | 中低 | 未来 nonnormal reduced propagator 的函数界 | 只有 representation 变复杂后才值得启用 |
-| **C** | F357 / F374 / F098 / F119 / F229 | 低到中 | 边界、反例、稳定性和 reconstruction 类比 | 暂时用于审查，不进入主线证明 |
-
-当前真正值得投入推导时间的是 **F140 + F355 + F116**。它们分别回答三个连续问题：
-
-1. 至少需要多少 predictive information；
-2. 当前 observation 到底缺了几维 goal-relevant information；
-3. 下一次 command / mixed query 应该去测哪个尚未确定的 functional。
-
-这三件事连起来后，DPT 的 S09/S10 就不再只是“多跑几个 case”，而会成为一个受数学结构约束的 bounded acquisition programme。
+因此“Lean-backed”必须按具体 statement 使用，不能按 family 名整体继承。
 
 ---
 
-## 4. F140：Memory-sample lower bounds
+## 2. F116-A / F116-B：command algebra 的价值比 multiplicity 更大
 
-### 已读材料
+### 深读锚点
 
-- [Lean scope](lean/docs/140.md)
-- [Replacing Gaussian observations](preprints/Replacing-Gaussian-observations-in-memory-constrained-inference-September-27-2026/paper.pdf)
-- [Introduction source](preprints/Replacing-Gaussian-observations-in-memory-constrained-inference-September-27-2026/build/sections/00-introduction.tex)
-- [Finite Gaussian-fiber comparison](preprints/Replacing-Gaussian-observations-in-memory-constrained-inference-September-27-2026/build/sections/06-fiber.tex)
+- [F116-A PDF](preprints/One-Rational-Matrix-Hitting-Point-for-Noncommutative-Formulas-September-24-2026/One-Rational-Matrix-Hitting-Point-for-Noncommutative-Formulas-September-24-2026.pdf)
+- [formula-systems.tex](preprints/One-Rational-Matrix-Hitting-Point-for-Noncommutative-Formulas-September-24-2026/build/formula-systems.tex)
+- [construction.tex](preprints/One-Rational-Matrix-Hitting-Point-for-Noncommutative-Formulas-September-24-2026/build/construction.tex)
+- [F116-B PDF](preprints/Polynomial-Hitting-Lists-for-Noncommutative-Rational-Formulas-September-24-2026/Polynomial-Hitting-Lists-for-Noncommutative-Rational-Formulas-September-24-2026.pdf)
+- [encoding.tex](preprints/Polynomial-Hitting-Lists-for-Noncommutative-Rational-Formulas-September-24-2026/build/sections/encoding.tex)
+- [rank.tex](preprints/Polynomial-Hitting-Lists-for-Noncommutative-Rational-Formulas-September-24-2026/build/sections/rank.tex)
 
-### 论文中真正可借用的部分
+### 读完后最重要的三件事
 
-F140 研究的是 exact Gaussian observations 和 finite persistent state。它关心一个有限 memory learner 在保留有限信息以后，还剩多少与真实 signal 有关的信息，以及真实 observation rows 和 fresh rows 之间如何比较。
+**1. Pro17D 对 F116-A 的使用是正确的。**  
+F116-A 把 bounded formula 转成小维 rational differential system，再用 multiplicity 控制非零 scalar output 最晚何时出现。Pro17D 没有把 A3 强塞进其 Fuchsian degree 假设，而是转向直接 finite lift + definedness proof。这一点应保留。
 
-Gaussian regression 本身和 DPT 差得很远，不能直接套 theorem。真正契合 DPT 的地方是它把四件事明确分开：
+**2. F116-B 对 DPT 新增了一个更实用的规则：definedness 属于表达路径，不属于化简后的函数。**  
+Rational formula 里每个 inverse gate 都必须在原 expression tree 上可逆。后续代数 cancellation 不能替一个原本 undefined 的中间 inverse 洗白。
 
-- 原始 observation history；
-- 被压缩后保留下来的 finite state；
-- observation 之后仍然无法区分的 fiber；
-- 为了完成目标任务，这个 fiber 上还必须保留多少信息。
+对 Möbius / Riccati / matrix command composition，这意味着主控以后不能只检查最终 denominator。应当保存：
 
-这恰好对应我们现在的 predictive quotient。
+- 每个 inverse occurrence；
+- 它的 admissible domain；
+- composite command 后 domain 是否仍闭合；
+- 简化前后 definedness 是否一致。
 
-### DPT 中可以怎么重写
+这可以形成一个轻量 **command-domain certificate**。
 
-定义 goal pseudometric：
+**3. universal hitting list 给出一个远期但很有吸引力的 acquisition 思路。**  
+F116-B 的 test list 只依赖变量数和 size bound，不依赖 formula coefficients。DPT 如果以后能把 bounded command family 真正放进一个有限 rational representation class，就可以问：
 
-d_G(h1,h2) = sup over c in C of ||G_c(h1)-G_c(h2)||。
+> 是否存在一个 coefficient-independent、预先冻结的有限 query bank，只要 representation 非零/有额外 mode，就一定有一个 query 能击中它？
 
-如果一个 M bit representation 要对所有 future command 保证不超过 epsilon 的误差，那么任何在 d_G 下两两距离大于 2 epsilon 的 history 都必须被编码成不同状态。
+这比 outcome-aware 地找下一点更强，但目前只是研究方向，不应冒充已有 DPT theorem。
 
-因此自然得到一个候选 lower bound：
+### 对主控的触发规则
 
-M >= log2 P(H, d_G, 2 epsilon)
+当出现下面任一情况，重新打开 F116：
 
-其中 P 是对应 packing number。
-
-这条式子本身是简单 counting argument，不是 F140 的 theorem。F140 的作用在于告诉我们：对有限 predictive state，真正该控制的是 observation 后的 goal-relevant information，而不是完整 physical state dimension。
-
-### 契合度为什么高
-
-DPT 当前已经有 representation 的上界结构：我们找到了一个很小的 coordinate，可以在某些 reduced-law goal class 中工作。
-
-缺的正好是另一半：
-
-> 有没有可能再压？如果不可能，最少为什么需要这么多信息？
-
-F140 正好推动这个问题。
-
-### 用了以后会具体改变什么
-
-第一，论文中的“低维 representation”会从一个构造性结果升级成上下界问题。
-
-目前最容易说的是：
-
-> 这个一维 coordinate 足够。
-
-如果 information lower bound 能建立，论述可以变成：
-
-> 这个 coordinate 足够，而且在声明的误差和 command class 下，低于某个 information budget 的 representation 不可能统一完成目标。
-
-第二，它会改变 S09/S10 的选点标准。一个 query 的价值不再只看 forecast spread，而可以问：
-
-> 这个 query 能不能把当前同一 predictive code 里的 goal-distinct histories 分开？
-
-第三，它可能给“minimum measurement”提供 information-theoretic 版本，与 F355 的 local dimension bound 形成互补。
-
-### 目前不能从 F140 得到什么
-
-- 不能从 Gaussian regression theorem 推出 DPT native lower bound；
-- 不能由 memory bits 自动推出 sensor 个数；
-- 不能跳过 DPT 自己的 history class 和 goal pseudometric 定义；
-- 如果 native history space 没有明确的 admissible class，packing bound 也没有科学意义。
-
-### 下一步
-
-最小可做版本是先只处理 reduced law：
-
-1. 固定当前真正声明的 future command set；
-2. 固定一个 scalar terminal goal；
-3. 构造一组 goal-separated histories；
-4. 先给出 deterministic finite-code lower bound；
-5. 再判断 noisy / randomized 版本是否值得进入论文。
-
-**预期提升**：如果成功，这会是从“漂亮的 reduced representation”到“有 representation complexity 内容的研究对象”的实质提升。
+- 新的 command map 含 inverse / Möbius / rational matrix composition；
+- 想声称 finite Taylor/order 足以检测非零 discrepancy；
+- 想设计 outcome-blind 的固定 characterization bank；
+- S10 想区分 AB 与 BA 或更高 ordered interaction。
 
 ---
 
-## 5. F355：Tangent-flow uniqueness 与最小额外测量
+## 3. F229：先判断新 measurement 是否真的增加信息
 
-### 已读材料
+### 深读锚点
 
-- [Tangent-flow manuscript](preprints/Tangent-flow-uniqueness-2026-09-24/paper.pdf)
-- [Normalized family / compact observations](preprints/Tangent-flow-uniqueness-2026-09-24/build/sections/linear.tex)
-- [Finite-jet obstruction](preprints/Tangent-flow-uniqueness-2026-09-24/build/sections/finite-jet.tex)
+- [F229 PDF](preprints/The-exact-reconstruction-threshold-for-the-three-state-symmetric-channel-September-25-2026/paper.pdf)
+- [foundations](preprints/The-exact-reconstruction-threshold-for-the-three-state-symmetric-channel-September-25-2026/build/sections/02-foundations.tex)
+- [finite experiment / grid](preprints/The-exact-reconstruction-threshold-for-the-three-state-symmetric-channel-September-25-2026/build/sections/06-grid.tex)
+- [certificates](preprints/The-exact-reconstruction-threshold-for-the-three-state-symmetric-channel-September-25-2026/build/sections/appendix-certificates.tex)
 
-### 对 DPT 最有价值的证明结构
+### 真正可迁移的不是 Potts threshold
 
-linear.tex 里的 Symmetric enlargement 从一个有 finite-dimensional kernel 的线性化 operator L 出发，选择有限 observation，使这些 observation 对 kernel 的作用足以消掉不可见方向。随后 augmented operator 变成可逆。
+最值得 DPT 使用的是 **experiment order**。
 
-对 DPT 来说，最值得保留的是这个结构：
+F229 把 posterior 本身视为 sufficient experiment，并用 degradation / garbling 比较实验：如果一个 observation 可以由另一个 observation 通过 Markov kernel 生成，它不会更有信息。这个 order 在 edge transmission 和 branch composition 下保持。
 
-> 先找当前 measurement 看不见的方向，再判断其中哪些方向会影响目标，最后只补足那些 goal-visible 的不可见方向。
+对 DPT 的直接翻译：
 
-这和我们当前 drain-translation 现象非常接近。
+> 如果候选 readout 只是已有 waveform 的确定性 post-processing，它不能为 identifiability 新增 information dimension。
 
-### DPT 中的候选定义
+例如从同一 VGS trace 再计算一个 scalar feature，可能提高 numerics 或 robustness，但它不是独立 sensor evidence。新的 drain/charge/current measurement 则可能切开原 observation fiber。
 
-在参考 history h* 处令：
+### 更强的 proof architecture
 
-K = ker(DO(h*))
+F229 的负向证明还有一个值得保留的套路：
 
-即当前 observation 一阶看不见的方向。
+1. 先解析证明“任何非平凡固定点必须离 trivial state 至少有一个 gap”；
+2. 再构造一个 **更有信息的有限 surrogate experiment**；
+3. 如果连这个上界 experiment 都落在 gap 以下，那么真实 experiment 更不可能支撑非平凡解；
+4. 数值 rounding / omitted tails 全部朝“更有信息”方向补偿，因此计算误差不会制造假 negative。
 
-再令：
+DPT 以后若要证明某一 observation family 不足，可以尝试同样的方向性证书：
 
-N = K ∩ (intersection over c in C of ker(DG_c(h*)))
+> 不需要精确模拟所有 native uncertainty，只要构造一个明确比真实 observation 更有信息的 upper experiment；若它仍不能区分 goal-distinct states，真实 measurement 更不可能做到。
 
-即 observation 看不见，同时对所有目标也无影响的方向。
+这比“当前 optimizer 没找到”强很多。
 
-于是定义：
+### 当前边界
+
+DPT 现在主要是 deterministic simulation，没有完整 probabilistic experiment model，所以 Blackwell/garbling machinery不能直接搬 theorem。现阶段先使用它的 **information-dominance test**：
+
+- 是新增物理信息，还是已有数据的 post-processing？
+- 若是 surrogate，它相对真实 system 是信息上界还是下界？
+- numerical approximation 的方向是否保守？
+
+### 对主控的触发规则
+
+每次提出新 sensor、feature、query 或 surrogate 前，先做一次 dominance check。若新对象只是旧 observation 的函数，它不应被计成独立 identifiability evidence。
+
+---
+
+## 4. F266：把 E1/E2/N2 收成一个可复用 certificate object
+
+### 深读锚点
+
+- [F266 PDF](preprints/The-maximum-number-of-mutually-unbiased-bases-in-dimension-six-September-24-2026/The-maximum-number-of-mutually-unbiased-bases-in-dimension-six-September-24-2026.pdf)
+- [rounding](preprints/The-maximum-number-of-mutually-unbiased-bases-in-dimension-six-September-24-2026/build/sections/rounding.tex)
+- [phase-cover / Root certificate](preprints/The-maximum-number-of-mutually-unbiased-bases-in-dimension-six-September-24-2026/build/sections/phase-cover.tex)
+- [refinement](preprints/The-maximum-number-of-mutually-unbiased-bases-in-dimension-six-September-24-2026/build/sections/refinement.tex)
+- [execution](preprints/The-maximum-number-of-mutually-unbiased-bases-in-dimension-six-September-24-2026/build/sections/execution.tex)
+
+### Pro17D 已经吸收的部分
+
+F266 促使 Pro17D 不把小 tangent residual 当成完整 certificate，而是分开：
+
+- center defect；
+- approximate tangent / projector；
+- Gram / orthogonality defect；
+- nonlinear normal remainder；
+- operator/readout contribution。
+
+这已经进入 E1/E2/N2。
+
+### 本轮再往前一步
+
+F266 的 Root certificate 实际上提示我们把这些信息做成一个标准数据对象，而不只是散落在报告里。
+
+一个 DPT local certificate 至少应包含：
+
+center  
++ local coordinates / tangent basis  
++ center residual  
++ Gram/projector defect  
++ domain radius  
++ normal remainder bound  
++ readout/operator bound  
++ provenance
+
+这样主控以后拿到一个“局部 approximation 很准”的结论时，可以直接问：
+
+> certificate object 是否完整？
+
+而不用重新人工追 residual 是在哪个空间算的。
+
+另一个必须继承的执行规则：
+
+> **timeout、cap、unresolved cell、failed certificate 都保持 unresolved；任何资源失败都不能自动转成 nonexistence / exclusion。**
+
+### 为什么只借 methodology
+
+F266 的 headline MUB claim 很强，而 selected formalization 明确没有证明其 at-most-three headline。DPT 不需要依赖这个 headline。我们只使用可独立检查的 certificate architecture。
+
+---
+
+## 5. F365-A：先 quotient，再谈 uniqueness
+
+### 深读锚点
+
+- [F365-A PDF](preprints/Determination-of-a-metric-and-a-unitary-connection-from-one-boundary-patch-October-5-2026/paper.pdf)
+- [introduction](preprints/Determination-of-a-metric-and-a-unitary-connection-from-one-boundary-patch-October-5-2026/build/sections/01-introduction.tex)
+- [boundary/source evaluations](preprints/Determination-of-a-metric-and-a-unitary-connection-from-one-boundary-patch-October-5-2026/build/sections/02-boundary.tex)
+- [matrix moments](preprints/Determination-of-a-metric-and-a-unitary-connection-from-one-boundary-patch-October-5-2026/build/sections/06-matrix.tex)
+
+### 对 DPT 最有启发的两层
+
+**第一层：不可见 symmetry 必须先 quotient 掉。**  
+F365-A 的 uniqueness 从来不是裸 uniqueness，而是 modulo boundary-fixing diffeomorphism + unitary gauge。那些 transformation 本来就不会改变 measurement。
+
+DPT 对应地应当先定义：
+
+> 哪些 internal-history transformation 对所有 declared future goals 都不可见？
+
+这和 goal quotient 完全一致。我们不需要恢复“真实内部状态”本身，只需要恢复其 goal-equivalence class。
+
+**第二层：response embedding。**  
+论文用 source-generated solution evaluation 把一个内部 point / fiber 映射到它对一族 source 的响应，由这些 response functionals 区分 points。
+
+DPT 可以考虑对应对象：
+
+I(h): c ↦ G_c(h)
+
+也就是把 history 表示成“它对未来 probe commands 的响应函数”。有限 predictive representation 的目标，随后变成：
+
+> 有没有有限 probe set 可以在当前 admissible class 上保留 I(h) 对目标所需的信息？
+
+这是连接 PSR、F355 和 experiment design 的自然桥，但 general predictive-state idea 已有 prior，不能把 embedding 本身当 novelty。
+
+---
+
+## 6. F365-B：F355 之后最值得学的 nonlinear lift
+
+### 深读锚点
+
+- [F365-B PDF](preprints/Smooth-Anisotropic-Uniqueness-in-the-Calderon-Problem-from-One-Boundary-Patch-September-24-2026/paper.pdf)
+- [local extension](preprints/Smooth-Anisotropic-Uniqueness-in-the-Calderon-Problem-from-One-Boundary-Patch-September-24-2026/build/sections/03-product-continuation.tex)
+- [shrinking balls](preprints/Smooth-Anisotropic-Uniqueness-in-the-Calderon-Problem-from-One-Boundary-Patch-September-24-2026/build/sections/04-shrinking-balls.tex)
+
+### 最值得迁移的 proof pattern
+
+这篇论文不是只做 rank test。它先选择一个**有限 probe family**，使这些 harmonic jets span 所有 admissible second-order directions；然后：
+
+1. 假设 discrepancy 在半径 r 上只有 O(r) 的 provisional control；
+2. transfer functional 精确复现 constants 和 coordinates，因此 Taylor 的 affine 部分被消掉；
+3. 剩余项变成 O(r²)；
+4. finite-order interpolation + spanning jets 把结构 discrepancy 提升为 O(r^{3/2})；
+5. 这是对 O(r) 的严格改善，因此可以让 r 缩到 0，得到 local equality。
+
+### DPT 对应的问题
+
+F355 的 goal-visible nullity 只给 tangent-level 最小 measurement。真正写论文时，reviewer 会继续问：
+
+> rank 满了以后，为什么 finite perturbation 下仍然唯一/稳定？
+
+F365-B 给的是一个很好的 proof template：
+
+**finite probe completeness + first-order cancellation + superlinear remainder = nonlinear local lift**
+
+对 DPT 不需要照搬 shrinking spheres。更简单的 inverse/constant-rank theorem 若足够，优先用简单版本。但主控应当把“rank + remainder”当成两道 gate，而不是看到 Jacobian full rank 就停止。
+
+### 可以形成的实际判据
+
+对候选 measurement set P：
+
+1. 检查 DP 对 K/N 是否满秩；
+2. 检查这个 rank 在一个 finite neighborhood 内是否保持；
+3. 给二阶 remainder 一个明确 bound；
+4. 证明 measurement separation 的线性项压过 remainder。
+
+如果 2-4 做不到，只称 tangent identifiability，不升格为 finite-radius sufficiency。
+
+---
+
+## 7. F365-C：regularity 不是技术细节，它可能决定 uniqueness 是否存在
+
+### 深读锚点
+
+- [F365-C PDF](preprints/Nonuniqueness-for-Bounded-Measurable-Scalar-Conductivities-in-Three-Dimensions-September-23-2026/paper.pdf)
+- [scalarization](preprints/Nonuniqueness-for-Bounded-Measurable-Scalar-Conductivities-in-Three-Dimensions-September-23-2026/build/sections/scalarization.tex)
+- [nonuniqueness construction](preprints/Nonuniqueness-for-Bounded-Measurable-Scalar-Conductivities-in-Three-Dimensions-September-23-2026/build/sections/nonuniqueness.tex)
+
+### 对 DPT 最重要的反例意义
+
+这篇工作宣称：在 3D，两个不同的 uniformly positive bounded measurable scalar conductivities 可以拥有相同的 full Dirichlet-to-Neumann operator；而 smooth scalar class 中有强 uniqueness 结果。
+
+对 DPT 的警告非常直接：
+
+> “我把未知对象写得更灵活”并不只是增加 fitting freedom，它可能把一个可辨识问题变成根本不可辨识的问题。
+
+所以 native model class 以后不能只写“allow nonlinear Cgd / unknown charge surface”。还要明确：
+
+- finite-dimensional parameterization 还是 arbitrary function；
+- smoothness / monotonicity / bounded variation；
+- physical reciprocity / positivity；
+- operating-domain restriction。
+
+如果这些 class assumptions 不冻结，任何“minimum measurement”都没有稳定含义。
+
+### 一个可借的构造观念
+
+F365-C 的 scalarization 只精确保留有限个指定 Cauchy pairs，而不是完整 operator。这个区别对 DPT 很有用：
+
+> 一个 reduced model 能精确匹配若干 selected trajectories，不代表它等价于 native input-output operator。
+
+因此“finite trajectory match”和“operator equivalence”必须始终分开。
+
+---
+
+## 8. F372：physical-to-auxiliary reduction 要做 injectivity audit
+
+### 深读锚点
+
+- [F372 PDF](preprints/Global-Uniqueness-for-the-Smooth-Isotropic-Elasticity-Inverse-Problem-September-24-2026/article.pdf)
+- [introduction](preprints/Global-Uniqueness-for-the-Smooth-Isotropic-Elasticity-Inverse-Problem-September-24-2026/build/sections/introduction.tex)
+- [physical transfer](preprints/Global-Uniqueness-for-the-Smooth-Isotropic-Elasticity-Inverse-Problem-September-24-2026/build/sections/boundary-reduction.tex)
+- [transport matching](preprints/Global-Uniqueness-for-the-Smooth-Isotropic-Elasticity-Inverse-Problem-September-24-2026/build/sections/transport-matching.tex)
+- [coefficient recovery](preprints/Global-Uniqueness-for-the-Smooth-Isotropic-Elasticity-Inverse-Problem-September-24-2026/build/sections/coefficient-recovery.tex)
+
+### 为什么这篇对我们比原先想的更有用
+
+论文回顾一个历史错误：把 physical elasticity problem reduction 到 auxiliary vector-scalar system 后，原 reduction map 并非 injective，因此 physical boundary equality 不能自动提升成 unrestricted auxiliary Cauchy-data equality。
+
+这恰好是 DPT 常见风险。
+
+我们会不断引入：
+
+- deembedded waveform；
+- charge coordinate；
+- Riccati variable；
+- Möbius lift；
+- latent stage state；
+- surrogate feature。
+
+主控必须区分两类结论：
+
+1. auxiliary coordinate 足以 **forward predict goal**；
+2. physical observations 足以 **uniquely recover auxiliary coordinate**。
+
+前者不需要 injective；后者必须证明。
+
+### 主控的新检查项
+
+任何时候由 physical equality 推 auxiliary equality，都先问：
+
+> physical → auxiliary 的 map 在当前 class 上 injective 吗？如果不是，是否只需要 quotient / forward sufficiency？
+
+这条检查可以防止很多“变换之后看起来可解，所以原问题可辨识”的错误。
+
+### 另一个边界
+
+F372 使用 full displacement-to-traction operator，证明的是 uniqueness，不给 finite measurement reconstruction algorithm，也不给噪声稳定性。这再次提醒：
+
+full operator uniqueness ≠ finite sufficiency ≠ stable reconstruction。
+
+---
+
+## 9. F374：不要从 uniqueness 跳到 Lipschitz robustness
+
+### 深读锚点
+
+- [F374 PDF](preprints/Sharp-One-Third-Stability-of-Brenier-Maps-September-25-2026/article.pdf)
+- [introduction](preprints/Sharp-One-Third-Stability-of-Brenier-Maps-September-25-2026/build/source/sections/introduction.tex)
+- [finite stability](preprints/Sharp-One-Third-Stability-of-Brenier-Maps-September-25-2026/build/source/sections/finite_stability.tex)
+- [sharpness](preprints/Sharp-One-Third-Stability-of-Brenier-Maps-September-25-2026/build/source/sections/sharpness.tex)
+
+### 真正值得 DPT 学的东西
+
+F374 的 sharpness example 很有启发：target measure 的扰动很小，但最优 map 的 cell assignment 在一条薄区域上发生切换，最终 map distance 的尺度明显大于 target perturbation 的线性尺度。
+
+DPT 的对应风险是 regime boundary：
+
+- commutation stage boundary；
+- saturation boundary；
+- diode branch transition；
+- event timing crossing。
+
+这些地方即使 predictor 唯一，也可能只有 Hölder-like robustness，不能默认 Lipschitz。
+
+因此以后“stable identifiability”至少要报告一个 modulus：
+
+||prediction/state difference|| ≤ ω(||measurement difference||)
+
+哪怕 ω 只是 empirical envelope，也比只报告 local condition number 完整。
+
+### 不做什么
+
+不把 Brenier 的 1/3 exponent 移植到 DPT。这里只借两个结构：
+
+- stability exponent 是独立科学对象；
+- regime/cell reassignment 可以制造 sharp counterexample。
+
+如果 DPT 要声称 robust low-information predictor，应主动在 stage-transition 附近做 adversarial perturbation。
+
+---
+
+## 10. Pro17D 后新增的两个最高价值 family
+
+这两篇不在最初九个 PDF 里，但对下一阶段的价值高于多数背景论文。
+
+### F355：goal-visible hidden dimension
+
+核心对象：
+
+K = ker DO(h*)
+
+N = K ∩ (所有 future goals 的 kernel)
 
 r_G = dim(K/N)
 
-这里的 r_G 可以叫 **goal-visible hidden dimension**。
+解释：
 
-它回答的是一个很具体的问题：
+- K：当前 observation 看不见的方向；
+- N：虽然看不见，但对所有声明目标也没影响；
+- K/N：真正缺失、且会改变未来 goal 的信息。
 
-> 当前 measurement 丢掉的信息里，有多少维真的会影响我们声明的 future goals？
-
-如果增加 k 个 scalar measurement P1,...,Pk，一阶 sufficiency 至少需要：
+若增加 k 个 scalar measurements P，要在一阶消掉所有 goal-visible ambiguity，至少需要：
 
 ker(DP restricted to K) ⊆ N
 
-因此必然有：
+因此 k ≥ r_G。
 
-k >= r_G
+当前 reduced-law 的 drain-translation 例子正好可以成为 worked example：
 
-### 为什么它和现有 DPT 特别契合
+- increment goal：translation 属于 N，不用补；
+- absolute drain goal：translation 留在 K/N，一个 drain / charge anchor 补一维。
 
-现有 reduced-law 里已经出现一个几乎教科书式的例子。
+**主控用途**：sensor selection 以后优先最大化对 K/N 的 rank，而不是最大化 raw sensitivity。
 
-drain translation 方向对 gate observation 是不可见的。
+### F140：predictive information lower bound + adaptive-selection charge
 
-- 对 increment / zero-sum goal，这个方向同时也是 goal-null，因此它属于 N，无需额外测量；
-- 对 absolute drain goal，这个方向会改变目标，因此它留在 K/N 中。此时 r_G = 1，一个独立 drain / charge anchor 正好补足这一维。
+第一层是简单的 goal pseudometric：
 
-也就是说，我们现在的一维 repair 有机会从一个 isolated trick 变成一个 general theorem 的 worked example。
+d_G(h1,h2) = sup_c ||G_c(h1)-G_c(h2)||
 
-### 用了以后会具体改变什么
+如果 M-bit state 要 uniform error ≤ ε，则任何 2ε-separated goal packing 都需要不同 code：
 
-第一，P2 的问题会更清楚。
+M ≥ log2 P(H,d_G,2ε)
 
-现在常见说法是：
+第二层是这次深读后更重要的东西：**actual rows 和 fresh rows 不能在 adaptive selection 后假装等价。**
 
-> gate waveform 不够，所以再测 drain。
+F140 专门比较：
 
-更强的版本是：
+- learner 真正看过、并可能影响当前 finite state 的 observation；
+- 与当前 state 独立的 fresh observation。
 
-> gate observation 的 nullspace 中恰好有一维对 absolute goal 可见，因此任何 local sufficient repair 至少需要一个 independent scalar；某个 drain / charge anchor 达到了这个下界。
+conditioning on selected state 会 bias actual observations，替换成 fresh rows 要支付 conditional-information cost。
 
-这两个说法的科学层级差很多。
+**DPT 对应规则**：
 
-第二，它可以成为 future sensor design 的统一标准。
+- S10 若根据 S09 outcome 再选择，就属于 adaptive acquisition；
+- 可以做，但它的 evidentiary role 与预先冻结的 S10 不同；
+- outcome-aware query 不应再被描述成与 S09 同等级的 prospective test；
+- 如果要保留强 prospective claim，应在看 S09 前冻结 selection rule，而不是只冻结一个模糊候选集合。
 
-以后不再按“哪个 sensor 看起来有信息”来挑，而是计算 candidate measurement 对 K/N 的 rank。
-
-第三，它能和 F140 形成两个互补的 lower bound：
-
-- F355 给 local geometric dimension；
-- F140 给 global / finite-code information requirement。
-
-### 风险和边界
-
-这条路线依赖 local differentiability 和 rank 条件。native SPICE 的 effective history space 很可能比 reduced law 复杂，也可能存在 nonlinear folding，此时 tangent rank 只能证明局部结果。
-
-所以它适合先在 reduced-law 上做严谨 theorem，再把 native 结果写成 numerical rank evidence，而不是直接宣布 global native sufficiency。
-
-### 下一步
-
-1. 把 K/N theorem 写成与 DPT 公式无关的有限维命题；
-2. 在 reduced law 上完整证明；
-3. 明确哪些 rank / regularity 条件让一阶 repair 升级成 local sufficiency；
-4. native interface 可执行后，再计算实际 preparation family 的 DO 和 DG_c。
-
-**预期提升**：这是目前最有希望把“需要什么 measurement”变成真正数学贡献的一条线。
+这比单纯“不要 data snooping”更精确，因为它告诉我们 adaptation 本身是一种 information channel。
 
 ---
 
-## 6. F116：Noncommutative formula、ordered words 与 interaction acquisition
+## 11. 现在可以形成的 DPT 数学链
 
-### 已读材料
+把这些文献真正融合以后，最值得推进的是下面六层，不需要全部在本项目完成。
 
-- [Lean scope](lean/docs/116.md)
-- [One Rational Matrix Hitting Point](preprints/One-Rational-Matrix-Hitting-Point-for-Noncommutative-Formulas-September-24-2026/One-Rational-Matrix-Hitting-Point-for-Noncommutative-Formulas-September-24-2026.pdf)
-- [Introduction / proof route](preprints/One-Rational-Matrix-Hitting-Point-for-Noncommutative-Formulas-September-24-2026/build/introduction.tex)
-- [Iterated-integral encoding](preprints/One-Rational-Matrix-Hitting-Point-for-Noncommutative-Formulas-September-24-2026/build/iterated-integrals.tex)
-- [Multiplicity estimate](preprints/One-Rational-Matrix-Hitting-Point-for-Noncommutative-Formulas-September-24-2026/build/multiplicity.tex)
+### T1. Goal quotient
 
-### 论文里和 DPT 最契合的部分
+定义 history equivalence：
 
-这个 family 的主结果是 noncommutative formula identity testing。对 DPT 来说，真正新鲜的部分是 ordered words 的 faithful encoding。
+h1 ~_G h2 iff 对所有 c，G_c(h1)=G_c(h2)。
 
-论文用 iterated integrals 把 word order 保留下来。即使两个表达式使用相同字母，AB 和 BA 仍然可以被区分。commutator 的非零性也说明了 cancellation 可能把第一次可见差异推迟到更高阶，但 order information 没有消失。
+先解决“目标需要什么状态”，不追求完整 internal-state recovery。
 
-这和 DPT 的一个实际难点非常接近：
+### T2. Minimum local measurement
 
-> aggregate pulse area 一样，并不保证 terminal response 一样；顺序、同时作用和 history 都可能产生不同 response。
+用 F355 的 K/N 给 goal-visible hidden dimension，并证明 reduced law 上的一维 repair 是下界而不是经验选择。
 
-### 对 DPT 更合适的表示
+### T3. Finite-radius sufficiency
 
-可以把 command response 按 word degree 分层：
+在 T2 rank 之后，加：
 
-- degree 0：prepared baseline；
-- degree 1：primitive command A、B；
-- degree 2：AA、BB、AB、BA；
-- 更高阶：更长的 ordered words。
+- rank persistence；
+- finite neighborhood；
+- nonlinear remainder bound。
 
-同时要把两类 interaction 分开：
+优先用简单 constant-rank / inverse-function theorem；需要更强 bootstrap 时，再借 F365-B 的 finite-probe + superlinear remainder 思路。
 
-1. simultaneous mixed functional，例如 quadratic response 里的 alpha beta C_AB；
-2. sequential ordered interaction，例如 AB 与 BA 的差。
+### T4. Information lower bound
 
-这两类现象都可以放进一个 command-word hierarchy，但数学上不能混为一谈。
+用 F140 的 goal packing 给 state complexity 下界。只有在 history/command class 真正冻结后才做。
 
-### S09 为什么因此更有意义
+### T5. Command algebra + domain certificate
 
-现在 S09 fusion 可以写得更准确。
+把 primitive / mixed / ordered commands 放进同一 representation：
 
-假设 declared quadratic class 是：
+- primitive A, B；
+- simultaneous mixed coefficient C_AB；
+- sequential AB, BA；
+- composite rational maps。
 
-F(alpha,beta) = F0 + alpha L_A + beta L_B + alpha^2 D_A + beta^2 D_B + alpha beta C_AB
+每个 inverse occurrence 单独记录 definedness。S09 测 mixed functional；S10 若需要，可测 ordered interaction。
 
-只测 primitive axes 时，C_AB 完全没有被确定。
+### T6. Certificate-grade native bridge
 
-因此 mixed query 的价值很明确：
-
-> 它第一次直接测量 axis information 无法推出的 mixed functional。
-
-这比“再加一个中间 amplitude 看看”更有 acquisition 意义。
-
-### 用了以后会具体改变什么
-
-第一，S09 和 optional S10 可以承担不同的数学角色。
-
-- S09：测 simultaneous mixed interaction；
-- S10：如果仍有预算，可以专门测 ordered AB vs BA，或者另一个未被 S09 消掉的 timing cross。
-
-第二，现有 A3 / N4 / phase / fusion 结果可以放到一个分层表示里。这样不同发现不再像独立的小规律，而是 command expansion 的不同 coefficient。
-
-第三，如果未来能证明某个有限 word truncation 对目标足够，就有机会得到一个真正 finite command representation。
-
-### 需要特别防止的过度解释
-
-ordered-word / iterated-integral 表示本身并不是 DPT 新发明。Chen-Fliess、nonlinear realization 等已有大量相关文献。
-
-所以未来真正可能形成贡献的是：
-
-- 这个表示在 power-semiconductor switching 的具体 scientific object；
-- goal-dependent truncation / sufficiency；
-- bounded acquisition；
-- prospective falsification；
-- 与 physical charge / parasitic state 的可解释连接。
-
-不能把“用了 noncommutative words”本身写成 novelty。
-
-### 下一步
-
-1. 为 DPT 固定 primitive command alphabet；
-2. 明确 simultaneous mixed 与 sequential ordered 两套 coefficient；
-3. 把 S09 对应到一个明确缺失 coefficient；
-4. 在 S09 后根据剩余 nullspace 决定 S10，而不是按最大 forecast spread 机械选点。
-
-**预期提升**：它能把 experiment design 从“选有差异的 case”推进到“有目的地识别 representation 中还未知的 coefficient”。
+用 F266 的结构给每个 load-bearing numerical claim 一个 certificate object，并把 simulator provenance 分开保存。
 
 ---
 
-## 7. F365 + F372：inverse problem 给 identifiability 的边界
-
-### 已读材料
-
-- [F365 Lean scope](lean/docs/365.md)
-- [Joint metric/connection recovery](preprints/Determination-of-a-metric-and-a-unitary-connection-from-one-boundary-patch-October-5-2026/paper.pdf)
-- [Joint recovery introduction](preprints/Determination-of-a-metric-and-a-unitary-connection-from-one-boundary-patch-October-5-2026/build/sections/01-introduction.tex)
-- [F372 Lean scope](lean/docs/372.md)
-- [Smooth isotropic elasticity](preprints/Global-Uniqueness-for-the-Smooth-Isotropic-Elasticity-Inverse-Problem-September-24-2026/article.pdf)
-- [Coefficient recovery](preprints/Global-Uniqueness-for-the-Smooth-Isotropic-Elasticity-Inverse-Problem-September-24-2026/build/sections/coefficient-recovery.tex)
-
-### 为什么这组论文和 DPT 有用
-
-这组 inverse-problem 工作最值得学习的是 claim discipline。
-
-同样是 inverse problem：
-
-- 在足够光滑、结构明确的 class 中，可以有很强的 uniqueness；
-- class 一放宽，nonuniqueness 可能立刻出现；
-- 某些 uniqueness 只在 gauge / diffeomorphism equivalence 下成立；
-- F372 使用的是 full boundary operator，结论也不是一个有限测量 reconstruction algorithm。
-
-这对 DPT 非常直接。
-
-以后讨论 identifiability 时，至少要同时写出：
-
-identifiability = (model class, observation operator, goal, allowed symmetry)
-
-### 对当前项目的具体改变
-
-我们应该长期保留这三个区分：
-
-uniqueness != finite sufficiency != stable reconstruction
-
-例如：
-
-- reduced law 中一个 coordinate 足够，并不推出 native SPICE 也有同一个 quotient；
-- full waveform operator 可以唯一决定某个 parameter，也不代表有限几个 DPT case 足够；
-- 局部 injective 也不代表 reconstruction condition number 好。
-
-### 契合度
-
-它对 S09 的直接选点帮助不如 F140/F355/F116，但对论文 claim ceiling 非常重要，所以仍然是 S 级。
-
-它主要改变“我们允许自己说到哪里”。
-
-### 用了以后会具体改变什么
-
-以后每个 identifiability claim 都应该带 class qualifier。
-
-例如不再写：
-
-> drain state is identifiable from gate response.
-
-而应写成类似：
-
-> 在声明的 reduced law、command family 和 goal class 内，某 coordinate 对指定 goal 是 sufficient；扩大到 nonlinear charge surface、thermal state、diode state 或额外 parasitic mode 后需要重新判断。
-
-这种写法不会削弱结果，反而能把结果的数学对象说清楚。
-
-**预期提升**：减少 claim drift，也方便把“为什么 native 还需要一层验证”写成科学结构，而不是防御性 disclaimer。
-
----
-
-## 8. F266：把数值结果升级成 certificate
-
-### 已读材料
-
-- [Lean scope](lean/docs/266.md)
-- [Exact Fourier certificates](preprints/Exact-Fourier-certificates-for-complex-Hadamard-matrices-of-order-six-September-24-2026/Exact-Fourier-certificates-for-complex-Hadamard-matrices-of-order-six-September-24-2026.pdf)
-- [Exact verification section](preprints/Exact-Fourier-certificates-for-complex-Hadamard-matrices-of-order-six-September-24-2026/build/sections/05-verification.tex)
-- [Maximum MUB execution contract](preprints/The-maximum-number-of-mutually-unbiased-bases-in-dimension-six-September-24-2026/build/sections/execution.tex)
-
-### 最值得移植的是证据结构
-
-F266 对 DPT 很契合，因为我们大量依赖 LTspice、root solving、numerical scoring 和有限 simulation budget。
-
-这类工作最容易出现的问题是：
-
-> 数值上非常漂亮，但无法回答“它到底证明了哪一层东西”。
-
-F266 把几个证据层拆得很清楚：
-
-- candidate generation 可以用数值或 modular elimination；
-- 真正 certificate 需要单独 exact check；
-- execution provenance 要记录 source、binary、hash、platform、arithmetic assumptions；
-- 资源上限不能被偷偷当成 negative certificate；
-- computation 执行正确和数学 lemma 正确是两件不同的事。
-
-### DPT 可以直接采用的四层 certificate
-
-#### C1：exact algebraic certificate
-
-适合：
-
-- rank / determinant；
-- command composition identity；
-- finite elimination；
-- symbolic coefficient relation。
-
-#### C2：one-sided numerical certificate
-
-适合：
-
-- root enclosure；
-- domain / saturation margin；
-- monotonicity；
-- denominator separation；
-- 可证明的 remainder envelope。
-
-#### C3：simulator provenance
-
-至少记录：
-
-- vendor model/library hash；
-- LTspice version；
-- netlist/configuration hash；
-- run command；
-- waveform / CSV hash；
-- scorer version；
-- outcome 后没有修改 parameter。
-
-#### C4：native / empirical validation
-
-包括：
-
-- fresh prospective outcome；
-- convergence / refinement；
-- 后续若有 hardware，再作为单独证据层。
-
-### 用了以后会具体改变什么
-
-最直接的变化是，我们以后不再把 machine precision match 当成自动等价于 scientific proof，而是可以明确写：
-
-> 哪个部分是 exact identity，哪个部分是 numerical enclosure，哪个部分只是一次 simulator observation。
-
-这对 S03-S09 这种越来越数学化的项目很重要。
-
-另一个实际变化是，当 Pro run 找到很强的新 algebraic relation 时，后续 Codex 任务应该优先问：
-
-> 能不能把它变成独立 certificate？
-
-而不只是继续画更多 residual plots。
-
-### 契合度
-
-方法契合非常高，但它主要提高已有 claim 的可信度，不直接创造新的 physical law，所以放 A 级更合适。
-
-**预期提升**：让 DPT 的强数值结果具备更清楚的可复核性，也降低 reviewer 把它当成 simulator-specific coincidence 的空间。
-
----
-
-## 9. F251：Strong Ulam stability 与 approximate command algebra
-
-### 已读材料
-
-- [Strong Ulam Stability](preprints/Strong-Ulam-Stability-Characterizes-Amenability-October-5-2026/strong-ulam-stability.pdf)
-- [Source](preprints/Strong-Ulam-Stability-Characterizes-Amenability-October-5-2026/build/strong-ulam-stability.tex)
-
-论文研究 unitary almost representation：
-
-def(mu) = sup ||mu(gh) - mu(g)mu(h)||
-
-并讨论什么时候 small defect 意味着它靠近真正 representation。
-
-### 和 DPT 的契合点
-
-DPT reduced law 中可能存在 exact command composition，但 native SPICE / hardware 上更现实的情况是近似 closure。
-
-因此可以定义 native composition defect：
-
-delta_comp = sup ||R_hat(c2 o c1) - R_hat(c2) R_hat(c1)||
-
-然后问：
-
-> 如果 delta_comp 很小，什么时候能推出存在一个真正 finite reusable command representation，且它与 native response 足够接近？
-
-这个问题很有价值，因为它连接 exact reduced mathematics 和 native deployment。
-
-### 为什么现在还不能作为主线
-
-F251 的 theorem 是 group + unitary representation。DPT command 通常：
-
-- 不可逆；
-- 非 unitary；
-- 更接近 semigroup；
-- 可能有 saturation / dissipation；
-- metric 也未定义。
-
-所以当前只能借问题形式和 stability philosophy，不能借 theorem。
-
-### 用了以后可能带来的提升
-
-如果未来真的建立 DPT-specific stability theorem，项目会从：
-
-> reduced model 有一个 exact algebra
-
-推进到：
-
-> native dynamics 虽然不 exact，但在一个可量化 defect 下靠近某个 finite algebra。
-
-这会明显提高 representation 的工程和科学意义。
-
-当前阶段先记录，不占用 S09/S10 预算。
-
----
-
-## 10. F139：query complexity 与 characterization budget
-
-### 已读材料
-
-- [PDF](preprints/Subpolynomial-query-complexity-for-well-conditioned-log-concave-sampling-September-26-2026/article.pdf)
-- [Main source](preprints/Subpolynomial-query-complexity-for-well-conditioned-log-concave-sampling-September-26-2026/build/main.tex)
-- [Introduction](preprints/Subpolynomial-query-complexity-for-well-conditioned-log-concave-sampling-September-26-2026/build/sections/introduction.tex)
-- [Lower bound](preprints/Subpolynomial-query-complexity-for-well-conditioned-log-concave-sampling-September-26-2026/build/sections/lower.tex)
-
-这篇工作的核心方法论是把 information acquisition 明确定义成 oracle query，同时允许 query 之间做任意 computation。
-
-### DPT 的对应物
-
-可以把：
-
-- fresh LTspice run；
-- hardware measurement；
-- 新 operating point；
-- 新 command sequence；
-
-统一看作有成本的 characterization query。
-
-离线 algebra、symbolic derivation、Pro run reasoning 可以看作不增加 physical acquisition budget 的 computation。
-
-### 可能带来的改变
-
-以后我们可以更严谨地比较：
-
-- 一个方案需要 4 个 fresh runs 才能识别；
-- 另一个方案需要 8 个；
-- 哪些 query 是 adaptive；
-- 哪些只是在重复已有 axis information。
-
-这能给 bounded project 一个很合适的评价标准：
-
-> 用多少真正新的 acquisition，换来了多少独立 predictive information。
-
-当前还没有必要追求完整 query-complexity theorem，所以保持 B 级。
-
----
-
-## 11. F289：structural closeness 需要先定义 metric
-
-### 已读材料
-
-- [PDF](preprints/Universal-strong-Kadison-Kastler-stability-September-23-2026/paper.pdf)
-- [Introduction](preprints/Universal-strong-Kadison-Kastler-stability-September-23-2026/build/sections/01-introduction.tex)
-
-Kadison-Kastler 的距离是对称的。论文也明确区分 ordinary gap、matrix-level control、spatial implementation 和 one-sided near inclusion。
-
-### 对 DPT 的主要价值
-
-它提醒我们：
-
-> 几个 waveform fit 得很近，与两个 command representation 在结构上很近，不是同一件事。
-
-以后如果要说 native system 接近 reduced algebra，需要明确：
-
-- 比较的是哪些 attainable responses；
-- metric 是否对称；
-- command composition 是否也接近；
-- 是否存在一个 nearby exact object。
-
-目前它主要是 claim discipline。
-
----
-
-## 12. F325：Complete Crouzeix，暂时保留
-
-### 已读材料
-
-- [Lean scope](lean/docs/325.md)
-- [Direct proof](preprints/A-direct-proof-of-the-complete-Crouzeix-inequality-September-26-2026/paper.pdf)
-- [Source](preprints/A-direct-proof-of-the-complete-Crouzeix-inequality-September-26-2026/build/main.tex)
-
-它控制 nonnormal operator 的 polynomial / rational functional calculus。
-
-如果 DPT 后续 representation 真的发展成较高维 nonnormal propagator，并需要对多步 command 的 polynomial function 做 norm bound，这个 family 会有价值。
-
-当前 representation 还没有复杂到需要它。现在引入会增加数学负担，却不改变 S09 或当前 theorem，所以先放 B 级。
-
----
-
-## 13. 二级候选：目前不进入主线
-
-对全部 372 family 做过 DPT-oriented screening 后，下面这些工作值得保留，但暂时不应占用主要预算。
-
-### F357：Bi-Lipschitz coordinates
-
-它提醒我们：一个 coordinate 能区分，与稳定地能区分不同。真正 stable coordinate theorem 要有明确 regularity 条件。
-
-### F374：Brenier map stability
-
-它说明 uniqueness 和 quantitative stability exponent 是两层问题。以后 DPT 即使证明 unique representation，也还要问噪声放大率。
-
-### F098：finite-dimensional embedding counterexample
-
-它是一个反例提醒：看起来 low-complexity、compact 或 doubling，不自动意味着存在稳定 finite-dimensional embedding。
-
-### F119：information contraction
-
-可能为后续 information bottleneck 提供工具，但当前 DPT observation geometry 还没有需要它。
-
-### F229：reconstruction threshold
-
-可以帮助思考什么时候 information 足够恢复，但目前与 DPT 的直接数学接口还弱。
-
-这些 family 目前只承担边界审查，不作为论文主证明的依据。
-
----
-
-## 14. 把这些工作组合起来后，DPT 可以形成什么 theorem stack
-
-单独引用很多高级数学并不会自动提高项目。真正有价值的是把它们组织成一条连续论证。
-
-### T1：exact goal quotient
-
-在声明的 reduced law 和 command class 内证明：
-
-- 某个 finite coordinate 对目标足够；
-- 它在 command 下可以闭合更新；
-- 因而不需要完整内部 physical state。
-
-这是现有工作基础最好的一层。
-
-### T2：goal-visible hidden dimension
-
-定义：
-
-K = ker(DO)
-
-N = K ∩ goal-null directions
-
-r_G = dim(K/N)
-
-然后证明：
-
-- 当前 measurement 至少缺多少维 goal-relevant information；
-- 至少需要几个 scalar repair；
-- 某个实际 measurement 达到了这个下界。
-
-这是 F355 最可能带来的新数学内容。
-
-### T3：predictive information lower bound
-
-对 d_G 构造 packing，证明：
-
-- 任何 uniform predictor 至少需要多少 finite states / bits；
-- 当前 representation 的复杂度离这个 lower bound 有多远。
-
-这是 F140 的主要价值。
-
-### T4：ordered command signature
-
-把 primitive、mixed、ordered response 统一到 finite word hierarchy，明确：
-
-- 现有 axes 决定了哪些 coefficient；
-- S09 新增了哪个 mixed functional；
-- optional S10 还要买哪一项信息。
-
-这是 F116 和 acquisition design 的连接。
-
-### T5：approximate native algebra
-
-定义 composition defect，并研究 small defect 是否意味着靠近 exact finite representation。
-
-这属于后续升级，不要求在 S09 前完成。
-
-### T6：certificate-grade numerical layer
-
-对真正 load-bearing 的 computation，明确分别给出：
-
-- exact identity；
-- numerical bound；
-- provenance；
-- prospective native outcome。
-
-这一层由 F266 支撑。
-
----
-
-## 15. 这些 family 组合后会带来什么实质变化
-
-### 15.1 数学对象会更集中
-
-如果不引入这些结构，项目容易不断积累：
-
-- 一个 phase law；
-- 一个 charge observation；
-- 一个 fusion effect；
-- 一个 timing effect；
-- 一个新的 residual pattern。
-
-每个结果都可能是对的，但彼此比较散。
-
-把 F140、F355、F116 连起来以后，可以把这些结果重新解释成一个统一问题：
-
-> 一个 switching history 需要保留哪些 goal-relevant information，future commands 如何作用在这份 information 上，新的 measurement 如何补足当前 representation 看不见的部分。
-
-这样各个发现开始服务同一个 scientific object。
-
-### 15.2 为什么做 S09 会更强
-
-以前 S09 可以解释为模型之间 spread 大，因此值得测。
-
-现在还能加一层：
-
-> primitive axes 没有识别 mixed functional，S09 是第一次直接 acquisition 这个缺失项。
-
-如果 S09 成功，它增加的不只是一个 datapoint，而是一类新的 independent information。
-
-### 15.3 optional S10 会更容易裁决
-
-S10 不应自动选择 forecast disagreement 最大的点。
-
-更合适的规则是：
-
-> S09 之后还剩哪个 goal-visible direction 或 interaction coefficient 未被识别？
-
-如果 simultaneous interaction 已解决，但 order dependence 仍未解决，那么 AB vs BA 可能比再做一个 fusion amplitude 更值。
-
-### 15.4 P2 可以从 sensor suggestion 升级为 measurement theorem
-
-这可能是整个 map 中最明确的提升。
-
-从：
-
-> 我们建议加一个 drain observation。
-
-提升到：
-
-> 当前 observation 的 goal-visible hidden dimension 是 1，因此任何 local sufficient repair 至少需要一个 independent scalar，某个 drain / charge anchor 达到该下界。
-
-这会让 sensor choice 和数学贡献连起来。
-
-### 15.5 数值结果的证据层次会更清楚
-
-F266 可以让项目里的 proof、verification、simulation 不再混用。
-
-一个结果可以明确标注：
-
-- algebra exact；
-- numerical certified；
-- simulator observed；
-- native/hardware untested。
-
-这样既不需要为了谨慎写成满页“不能说明”，也不会把 simulator coincidence 写成 theorem。
-
-### 15.6 论文的 contribution 结构会更独立
-
-如果 T1-T4 能形成闭环，论文贡献不再主要依赖某个 SiC MOSFET 的几条仿真曲线拟合得很好。
-
-更可能形成这样的结构：
-
-1. 定义 goal-dependent predictive representation；
-2. 构造一个 exact low-information quotient；
-3. 给出 measurement / information lower bound；
-4. 用 prospective mixed acquisition 检验 representation 的下一项未知 interaction；
-5. 用 certificate-grade computation 支撑关键数学和数值接口。
-
-这类结构即使后续某个具体 physical mechanism 被否掉，研究对象本身仍然可以保留。
-
----
-
-## 16. S09 与 optional S10 的当前解释
-
-现阶段仍建议保留 S09 fusion 作为主要 fresh acquisition，前提是它的 freshness contract 没有被破坏。
+## 12. S09 / optional S10：当前最有信息效率的解释
 
 ### S09
 
-在 declared quadratic response class：
+若 frozen quadratic class 为：
 
-F(alpha,beta) = F0 + alpha L_A + beta L_B + alpha^2 D_A + beta^2 D_B + alpha beta C_AB
+F(α,β)=F0+αL_A+βL_B+α²D_A+β²D_B+αβC_AB
 
 primitive axes 无法确定 C_AB。
 
-因此 S09 最清楚的科学角色是：
+因此 S09 fusion 的角色不是“再跑一个 pulse”，而是：
 
-> **第一次直接测量 primitive axes 之外的 mixed functional。**
+> **第一次直接 acquisition 一个 primitive characterization 无法推出的 mixed functional。**
 
-评分后：
+这仍然是当前最合理的 fresh query。
 
-- interaction 接近零：保留该 primitive pair 上的 affine / linear-memory null；
-- 落在冻结的 Q / phase cluster：说明该 predictor 有 prospective usefulness，但不能单凭这一点认定唯一 charge mechanism；
-- 落在所有冻结 candidate 之外：直接否掉这些 finite interaction rules，不在 outcome 后重新调 gain / phase；
-- post-score charge diagnostics 只用于定位 failure 是 charge additivity 还是 transverse interaction。
+### S09 后再决定 S10 时，按这个顺序
 
-### optional S10
-
-S10 应该服从 S09 后的 remaining nullspace。
-
-高价值候选包括：
-
-- AB vs BA，检验 order-sensitive memory；
-- 一个能够区分两个仍然 observationally equivalent history 的 query；
-- 一个专门测试 measurement-repair sufficiency 的 case。
-
-如果 S09 已经把 interaction 问题解决，再做一个相似 fusion amplitude 的边际价值可能很低。
+1. **先做 F229 dominance check**：候选 S10 是否真的新增 physical information，还是 S09/已有 waveform 的 post-processing？
+2. **看 remaining K/N**：还有哪个 goal-visible direction 没被当前 observations 切开？
+3. **看 command-word residual**：simultaneous mixed 已解决后，AB vs BA 是否成为最小新方向？
+4. **看 adaptation 身份**：如果 S10 是看到 S09 后才挑的，明确记录为 adaptive follow-up，不再包装成同等级 prospective test。
+5. 若没有一个 query 能明显改变 theorem / representation / rival set，S10 不必使用。
 
 ---
 
-## 17. 对 Pro run / Codex 的实际使用方式
+## 13. 主控的七个固定问题
 
-不应该每次把 722 篇 manuscript 全塞进去。按问题选择最相关的数学 bundle 更有效。
+以后每次有新 idea，先过这七个问题。这样比继续增加文献摘要更有用。
 
-### 做 P2 / minimum measurement
+1. **Goal**：它解决的是哪个 future goal？换 goal 后结论还成立吗？
+2. **Fiber**：当前 observation fiber 上是否存在 goal-distinct histories？
+3. **Information**：新 measurement 真增加信息，还是已有 observation 的 post-processing？
+4. **Domain**：所有 rational/inverse intermediate states 是否都 defined？
+5. **Local-to-finite**：现在只有 Jacobian/rank，还是已有 finite-radius remainder guarantee？
+6. **Physical-to-auxiliary**：从 physical waveform 推 auxiliary state 时，injectivity 是否真的证明？
+7. **Certificate**：承重 numerical claim 是否有 center defect、tangent defect、remainder、domain 和 provenance？
 
-给：
-
-- 当前 Pro17D scientific report；
-- F355 linear.tex；
-- F140 06-fiber.tex；
-- reduced-law derivation；
-- reachable-pair / goal evidence。
-
-任务重点：
-
-> 推出 goal-visible hidden dimension、最少 measurement 数和 local sufficiency 条件。
-
-### 做 command algebra / interaction
-
-给：
-
-- A3 / N4；
-- F116 iterated-integrals.tex、multiplicity.tex；
-- primitive axes；
-- S09 frozen forecast；
-- exact command definitions。
-
-任务重点：
-
-> 建立 primitive / mixed / ordered coefficient hierarchy，并判断下一项最值得 acquisition 的 coefficient。
-
-### 做 numerical certificate
-
-给：
-
-- F266 verification / execution；
-- LTspice manifest；
-- model hashes；
-- scorer；
-- exact derivation；
-- numerical margins。
-
-任务重点：
-
-> 区分 candidate generation 与 verification，把 load-bearing numerical claims 变成 exact 或 one-sided certificate。
-
-### 做 identifiability review
-
-给：
-
-- F365 positive + negative pair；
-- F372；
-- 当前 DPT model class；
-- observation / goal / symmetry 声明。
-
-任务重点：
-
-> 检查 claim 是否只在 reduced class 成立，哪些 extension 会破坏 uniqueness。
-
-### 做 approximate native algebra
-
-给：
-
-- F251；
-- F289；
-- native composition residual；
-- reduced exact maps。
-
-任务重点：
-
-> 定义合适 defect 和 metric，先判断是否存在可证明的 stability question。
+任何 idea 如果七个问题里没有一个答案发生变化，通常不值得占 fresh simulation budget。
 
 ---
 
-## 18. 下一轮阅读和推导优先级
+## 14. 主控调用文献的最小 bundle
 
-### 第一优先：F355
+不要把 722 篇论文一次性交给模型。
 
-继续读 finite-dimensional reduction 和相关 normalized-coordinate construction。
+### P2 / minimum measurement
 
-目标不是多摘几个 lemma，而是写出一个 DPT 自己的：
+- Pro17D relevant derivation
+- F355 linear / finite-observation sections
+- F365-B local-extension proof architecture
+- F140 information comparison
+- reachable-pair evidence
 
-> minimum goal-relevant measurement theorem。
+目标：证明 K/N 下界，并判断能否从 tangent sufficiency 升到 finite-radius sufficiency。
 
-### 第二优先：F140
+### Command algebra / S09-S10
 
-继续读 Posterior replicas、conditional information、subsphere / fiber 方法。
+- F116-A formula-system / iterated-integral sections
+- F116-B encoding / rank
+- frozen primitive and fusion definitions
+- current command matrices
 
-目标是判断 simple packing lower bound 能否进一步加强，或者能否处理 noisy / randomized finite state。
+目标：定义 missing mixed/ordered functional，并做 inverse-occurrence definedness audit。
 
-### 第三优先：F116
+### Acquisition pruning
 
-只有当 command-word hierarchy 已经进入实际 DPT derivation 后，再深入 formula-systems.tex 和 construction.tex。
+- F229 foundations + finite experiment section
+- candidate sensor/readout map
+- existing observations
 
-### 第四优先：F266
+目标：建立 measurement dominance / redundancy map，剪掉不增加独立信息的 acquisition。
 
-当某个 Pro17D numerical claim 真正准备进入论文时，再针对该 claim 阅读 rounding / verifier code，并制作同等级别的 DPT certificate。
+### Numerical certificate
 
-### 第五优先：外部 prior subtraction
+- F266 Root / refinement / execution sections
+- exact derivations
+- simulator/model hashes
+- scorer and numerical margins
 
-T2-T5 如果准备写 novelty，需要补：
+目标：生成 reusable DPT certificate object，而不是更多 residual screenshots。
 
-- Hermann-Krener nonlinear observability；
-- Chen-Fliess series / nonlinear realization；
-- predictive-state representation；
-- goal-oriented model reduction；
-- optimal experiment design。
+### Identifiability boundary
 
-这一步决定我们到底是在重新表达已有理论，还是确实形成了 power-semiconductor 中新的 bounded object。
+- F365-A/B/C
+- F372
+- explicit DPT model class / regularity / allowed symmetry
+
+目标：检查 claim 究竟是 quotient uniqueness、finite sufficiency 还是 stable reconstruction。
 
 ---
 
-## 19. 如何长期维护这份文件
+## 15. 什么时候不要继续挖这条数学线
 
-以后每读一篇对 DPT 有实际影响的 manuscript，只记录真正发生了改变的内容：
+保持 bounded programme 很重要。
 
-1. family / manuscript 和具体路径；
-2. 阅读深度；
-3. 原论文实际证明的 theorem；
-4. 和 DPT 哪个 object 对应；
-5. 哪些 assumptions 可以保留；
-6. 哪些 assumptions 在 DPT 中失效；
-7. 它改变了哪个 theorem、acquisition、certificate 或 claim；
-8. 使用后预计能提高哪一层科学内容；
-9. 下一条 falsifier 或未解决依赖。
+- F140：如果 admissible history class 还没冻结，不做复杂 entropy theorem；先用 elementary packing。
+- F355：如果 native preparation interface 还不能生成 independent hidden directions，不把 numerical rank 当 native theorem。
+- F116-B：如果 DPT command map 不能诚实写成 bounded rational / matrix class，不追 universal hitting-list theorem。
+- F229：没有 probabilistic/noise experiment model时，只用 dominance / data-processing logic，不写 Blackwell-theory headline。
+- F365-B：如果 inverse-function theorem 已足够给 finite-radius result，不复制 PDE 的 shrinking-sphere machinery。
+- F251/F289/F325：等 approximate native algebra 或高维 nonnormal propagator 真正出现后再打开。
 
-仅仅读过或引用过不算 materially used。
+---
 
-一篇文献真正进入这个项目，至少要改变下面之一：
+## 16. 当前优先级
 
-- definition；
-- derivation；
-- experiment selection；
-- lower / upper bound；
+如果只允许主控再投入三块高强度数学工作：
+
+**第一：F355 + F365-B**  
+把一维 charge repair 推成“minimum measurement + nonlinear local sufficiency”。
+
+**第二：F116-A/B**  
+把 command algebra 补上 ordered interaction 和 definedness certificate，并给 S09/S10 一个真正的 acquisition basis。
+
+**第三：F140 + F229**  
+建立“多少信息是必要的”以及“哪个 measurement 真的新增信息”的双层框架。
+
+F266 作为所有承重 numerical work 的固定证据层并行执行，不需要再单独开一个大理论方向。
+
+---
+
+## 17. 维护规则
+
+以后只有在文献改变下面至少一项时，才更新这份 map：
+
+- scientific object；
+- theorem assumption；
+- lower/upper bound；
+- measurement choice；
+- falsifier；
 - certificate；
-- claim boundary。
+- claim ceiling。
 
----
+“读过”“很像”“可以引用”都不算 materially used。
 
-## 20. 当前结论
+当前最值得争取的最终结构仍是：
 
-截至这一轮，OpenAI Math 对 DPT 最有价值的作用已经比较清楚。
+> **finite predictive quotient  
+> + minimum goal-visible measurement  
+> + predictive information lower bound  
+> + mixed/ordered command acquisition  
+> + certificate-grade native validation**
 
-**F355** 最可能产生新的 DPT theorem，因为它直接对应当前 measurement 究竟少几维的问题。
-
-**F140** 最可能提高 representation 的数学上限，因为它把 sufficiency 推向 lower bound。
-
-**F116** 最直接改变 S09/S10 的 acquisition logic，因为它提供了 organized command / interaction hierarchy。
-
-**F266** 不一定创造新 physical law，但它能显著提高强数值结果的证据质量。
-
-**F365/F372** 负责把 identifiability 的边界说清楚。
-
-**F251/F289** 更适合下一阶段，把 exact reduced algebra 推向 approximate native algebra。
-
-如果这几条线能在剩余预算内形成闭环，DPT-R1 最有希望获得的升级是形成一个更完整的研究对象：
-
-有限 predictive quotient + 最小 goal-visible measurement + predictive information lower bound + 有目的的 mixed/ordered acquisition + certificate-grade validation
-
-这五部分彼此有依赖，也彼此能被反证。它们比单独继续增加 waveform fit、parameter inversion 或 post-hoc mechanism explanation 更有机会形成一个可以独立站住的数学与器件物理结合框架。
+但现在每一项的来源、触发条件和失败边界已经更清楚。主控下一步应该优先把其中一项做成真正的新 theorem 或 prospective discriminator，而不是继续扩充方法名词。
