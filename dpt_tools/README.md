@@ -1,6 +1,6 @@
 # DPT mechanical audit tools
 
-These scripts turn two recurrent DPT research checks into reproducible numerical artifacts. They are deliberately conservative: a PASS never upgrades a numerical linearization into a native theorem.
+These scripts turn two recurrent DPT research checks into reproducible numerical artifacts. They are deliberately conservative: a PASS never upgrades a numerical linearization into a native theorem. They require Python 3.10+ and NumPy (`pip install -r requirements.txt`).
 
 ## `predictive_state_audit.py`
 
