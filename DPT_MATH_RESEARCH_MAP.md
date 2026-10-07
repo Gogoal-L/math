@@ -673,7 +673,7 @@ primitive axes 无法确定 C_AB。
 
 ## 13. 主控的九个固定问题
 
-以后每次有新 idea，先过这七个问题。这样比继续增加文献摘要更有用。
+以后每次有新 idea，先过这九个问题。这样比继续增加文献摘要更有用。
 
 1. **Goal**：它解决的是哪个 future goal？换 goal 后结论还成立吗？
 2. **Fiber**：当前 observation fiber 上是否存在 goal-distinct histories？
@@ -809,7 +809,7 @@ F266 继续作为所有承重 numerical work 的固定证据层并行执行。F3
 - `r_G = rank(DG|K) = dim(K/N)`；
 - scalar measurement 下界 `k >= r_G`；
 - `ker(DP|K) subseteq ker(DG|K)` 的 numerical row-space test；
-- measurement-to-goal minimum-norm linear factor及其 2-norm gain；
+- measurement-to-goal minimum-norm linear factor 及其 2-norm gain；
 - candidate sensor rows 的小规模 exact subset search + greedy fallback；
 - 若提供 scale-indexed Jacobians，则逐尺度重复上述 audit；
 - 若另外提供已经独立认证的二阶 remainder coefficients，则输出 `(C_G + ||A|| C_P) r^2` 形式的 mechanical finite-radius bound。
