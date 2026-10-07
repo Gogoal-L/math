@@ -29,18 +29,14 @@ The most promising unifying object is not a generic waveform predictor. It is a 
 
 Let
 
-- (mathcal H): admissible preparation/history states;
-- (mathcal C): future command family;
-- (O:mathcal H	omathcal Y): available observation map;
-- (G_c:mathcal H	omathbb R^p): goal under future command (c).
+- `H`: admissible preparation/history states;
+- `C`: future command family;
+- `O: H -> Y`: available observation map;
+- `G_c: H -> R^p`: goal under future command `c`.
 
-Define goal equivalence
+Define goal equivalence by
 
-[
-h_1sim_G h_2
-quadLongleftrightarrowquad
-G_c(h_1)=G_c(h_2);;	ext{for every }cinmathcal C.
-]
+`h1 ~_G h2` iff `G_c(h1) = G_c(h2)` for every `c` in `C`.
 
 The DPT question is then:
 
@@ -96,19 +92,13 @@ The Gaussian model itself does **not** transfer. The transferable object is the 
 
 Define a DPT goal pseudometric
 
-[
-d_G(h_1,h_2)=sup_{cinmathcal C}
-|G_c(h_1)-G_c(h_2)|.
-]
+`d_G(h1,h2) = sup over c in C of ||G_c(h1) - G_c(h2)||`.
 
-For an (M)-bit representation that must predict every (G_c) with uniform error at most (arepsilon), any subset of histories separated by more than (2arepsilon) in (d_G) must receive distinct codes. This suggests the elementary lower bound
+For an `M`-bit representation that must predict every `G_c` with uniform error at most `epsilon`, any subset of histories separated by more than `2 epsilon` in `d_G` must receive distinct codes. This suggests the elementary lower bound
 
-[
-Mge
-log_2 mathcal P(mathcal H,d_G,2arepsilon),
-]
+`M >= log2 P(H, d_G, 2 epsilon)`,
 
-where (mathcal P) is an appropriate packing number.
+where `P` is an appropriate packing number.
 
 **Status:** this is a **candidate DPT theorem / bound to formulate precisely**, not a theorem imported from F140. F140 is the methodological precedent for taking the observation fiber and finite retained information seriously.
 
@@ -138,11 +128,9 @@ That is stronger than merely saying the representation is “small.”
 
 ### What is useful
 
-The `Symmetric enlargement` lemma in `linear.tex` starts from a linearized operator (L) with finite-dimensional kernel (K). It chooses finitely many compact observations whose pairing with a basis of (K) is nonsingular, making the augmented operator
+The `Symmetric enlargement` lemma in `linear.tex` starts from a linearized operator `L` with finite-dimensional kernel `K`. It chooses finitely many compact observations whose pairing with a basis of `K` is nonsingular, making the augmented operator
 
-[
-(u,lambda)mapsto(Lu+P^*lambda,Pu)
-]
+`(u, lambda) -> (L u + P* lambda, P u)`
 
 invertible. The proof explicitly separates the invisible kernel component from the invertible complement and then enlarges the observation list to control additional finite directions.
 
@@ -150,46 +138,31 @@ The later finite-jet argument is also methodologically useful: absence of a form
 
 ### DPT transfer: goal-visible hidden dimension
 
-At a reference history (h_*), define
+At a reference history `h*`, define
 
-[
-K=ker DO(h_*),
-]
+`K = ker(DO(h*))`,
 
 the tangent directions invisible to current measurements. Then define
 
-[
-N=
-Kcap
-igcap_{cinmathcal C}
-ker DG_c(h_*),
-]
+`N = K ∩ (intersection over c in C of ker(DG_c(h*)))`,
 
 the invisible directions that are also irrelevant to every declared future goal.
 
 The quotient
 
-[
-oxed{
-r_G=dim(K/N)
-}
-]
+`r_G = dim`K/N``
 
 is a natural **goal-visible hidden dimension**.
 
-For (k) added scalar measurements (P=(P_1,ldots,P_k)), first-order goal sufficiency requires at minimum
+For `k` added scalar measurements `P = (P1, ..., Pk)`, first-order goal sufficiency requires at minimum
 
-[
-ker(DP|_K)subseteq N.
-]
+`ker(DP restricted to K) ⊆ N`.
 
 By a dimension argument,
 
-[
-kge r_G.
-]
+`k >= r_G`.
 
-If (r_G) carefully chosen measurements are injective on (K/N), then under appropriate constant-rank / local-coordinate assumptions they are candidates for a locally sufficient repair.
+If `r_G` carefully chosen measurements are injective on `K/N`, then under appropriate constant-rank / local-coordinate assumptions they are candidates for a locally sufficient repair.
 
 **Status:** this is a DPT theorem to prove in its own setting. F355 supplies the proof architecture, not the result.
 
@@ -197,8 +170,8 @@ If (r_G) carefully chosen measurements are injective on (K/N), then under approp
 
 The existing drain-translation direction is invisible to the gate observation.
 
-- For the increment/zero-sum goal, that direction is also goal-null. It lies in (N), so no repair is needed.
-- For the absolute drain goal, the same direction is goal-visible. It survives in (K/N), producing a one-dimensional deficiency and explaining why one independent drain/charge anchor is both sufficient and necessary in the declared law class.
+- For the increment/zero-sum goal, that direction is also goal-null. It lies in `N`, so no repair is needed.
+- For the absolute drain goal, the same direction is goal-visible. It survives in `K/N`, producing a one-dimensional deficiency and explaining why one independent drain/charge anchor is both sufficient and necessary in the declared law class.
 
 This is a particularly strong route because it turns a model-specific one-scalar repair into a worked example of a general local measurement theorem.
 
@@ -206,8 +179,8 @@ This is a particularly strong route because it turns a model-specific one-scalar
 
 1. Write the finite-dimensional tangent theorem cleanly, independent of the particular DPT equations.
 2. Verify constant-rank assumptions for the reduced model.
-3. Express candidate native preparation directions and compute a numerical (DO) / (DG_c) rank test only after an executable native preparation interface exists.
-4. Use the quotient (K/N), not raw state dimension, to rank future sensors.
+3. Express candidate native preparation directions and compute a numerical `DO` / `DG_c` rank test only after an executable native preparation interface exists.
+4. Use the quotient `K/N`, not raw state dimension, to rank future sensors.
 
 ## 6. F116 - ordered command words, iterated integrals, and bounded detection
 
@@ -223,27 +196,24 @@ This is a particularly strong route because it turns a model-specific one-scalar
 
 For bounded-size division-free noncommutative formulas, the manuscript constructs a universal rational matrix tuple that detects every nonzero formula. Its proof has two parts particularly relevant to DPT:
 
-1. ordered words are faithfully encoded by iterated integrals
-   [
-   h_{iw}(z)=int_0^zrac{h_w(t)}{t+i},dt;
-   ]
+1. ordered words are faithfully encoded by iterated integrals, with the recursive form `h_iw(z) = integral_0^z h_w(t)/(t+i) dt`;
 2. a rational differential-system multiplicity estimate bounds how many Taylor coefficients can vanish before a nonzero scalar component is detected.
 
 The source explicitly shows that word order survives the encoding; e.g. the commutator (x_1x_2-x_2x_1) maps to a nonzero series even though cancellation delays its first nonzero coefficient.
 
 ### DPT transfer
-
+The source explicitly shows that word order survives the encoding; e.g. the commutator `x1*x2 - x2*x1` maps to a nonzero series even though cancellation delays its first nonzero coefficient.
 The most useful new transfer is **not** another multiplicity claim. Pro17D has already used the rational differential-system/multiplicity side. The higher-value object is a graded ordered-command signature.
 
 For primitive commands (A,B,ldots), organize response information by word degree:
 
 - degree 0: prepared baseline;
-- degree 1: primitive response (A,B,ldots);
-- degree 2: (AA,BB,AB,BA,ldots);
+For primitive commands `A, B, ...`, organize response information by word degree:
+
+- degree 0: prepared baseline;
+- degree 1: primitive response `A, B, ...`;
+- degree 2: `AA, BB, AB, BA, ...`;
 - higher degree: longer ordered command words.
-
-This fits the existing empirical fact that equal aggregate command area does not imply equal terminal response when the order changes. It also gives a principled way to distinguish:
-
 - axis characterization;
 - mixed simultaneous interaction;
 - ordered sequential interaction;
@@ -253,16 +223,9 @@ This fits the existing empirical fact that equal aggregate command area does not
 
 The current prospective fusion query is naturally interpreted as the first acquisition of a coefficient not fixed by the primitive axes. In the declared quadratic class
 
-[
-F(alpha,eta)
-=
-F_0+alpha L_A+eta L_B
-+alpha^2D_A+eta^2D_B
-+alphaeta C_{AB},
-]
+`F(alpha,beta) = F0 + alpha L_A + beta L_B + alpha^2 D_A + beta^2 D_B + alpha beta C_AB`.
 
-the axis measurements do not determine (C_{AB}). One mixed point with (alphaeta
-eq0) identifies this scalar coefficient in that exact class.
+The axis measurements do not determine `C_AB`. One mixed point with `alpha*beta != 0` identifies this scalar coefficient in that exact class.
 
 This is stronger experimental logic than “try another pulse amplitude”: the query purchases the first missing mixed functional.
 
@@ -272,7 +235,7 @@ Iterated-integral / word representations of nonlinear input-output systems have 
 
 ### Next concrete work
 
-1. Build a DPT command-word notation that separates simultaneous mixed terms from sequential (AB) vs (BA).
+1. Build a DPT command-word notation that separates simultaneous mixed terms from sequential `AB` vs `BA`.
 2. Derive the lowest-order word coefficients for the reduced law where possible.
 3. Decide whether optional S10 should target an ordered interaction that S09 cannot resolve.
 4. Read `formula-systems.tex` and `construction.tex` only if a finite universal detection argument becomes necessary.
@@ -339,33 +302,19 @@ This directly supports the current claim boundary:
 
 The manuscript defines the multiplicative defect of a normalized unitary map
 
-[
-operatorname{def}(mu)
-=
-sup_{g,h}
-|mu(gh)-mu(g)mu(h)|
-]
+`def(mu) = sup_{g,h} || mu(gh) - mu(g)mu(h) ||`,
 
 and asks when small defect guarantees proximity to a genuine representation. Its theorem is specifically about countable groups and unitary representations; those assumptions do not match a causal, generally noninvertible/nonunitary DPT command semigroup.
 
 ### DPT research question
 
-For an estimated native command map (widehat R), define
+For an estimated native command map `R_hat`, define
 
-[
-delta_{m comp}
-=
-sup_{c_1,c_2}
-|
-widehat R(c_2circ c_1)
--
-widehat R(c_2)widehat R(c_1)
-|.
-]
+`delta_comp = sup_{c1,c2} || R_hat(c2 o c1) - R_hat(c2) R_hat(c1) ||`.
 
 The future theorem would ask:
 
-> Under which DPT-relevant command-semigroup, norm, domain, and regularity assumptions does small (delta_{m comp}) imply the existence of a nearby exact finite reusable command representation?
+> Under which DPT-relevant command-semigroup, norm, domain, and regularity assumptions does small `delta_comp` imply the existence of a nearby exact finite reusable command representation?
 
 This is potentially important for deployment because native SPICE or hardware will not satisfy the reduced algebra exactly.
 
@@ -383,7 +332,7 @@ This is potentially important for deployment because native SPICE or hardware wi
 ### Most useful methodological details
 
 1. **Candidate generation is not proof.** Modular elimination or numerical search may locate pivots/substitutions, but exact integer/rational checks establish the certificate.
-2. **Formalization scope must be stated literally.** The Lean scope file explicitly says the selected formalization is weaker than the paper's headline (N(6)=3) computation.
+2. **Formalization scope must be stated literally.** The Lean scope file explicitly says the selected formalization is weaker than the paper's headline `N(6)=3` computation.
 3. **Execution provenance is part of the claim.** The computer-assisted result records source hashes, compiler/platform, arithmetic assumptions, control flow, record formats, terminal conditions, and output hashes.
 4. **Resource caps fail conservatively.** A cap or unresolved region is retained for fallback; it is never silently interpreted as nonexistence.
 5. **Finite execution and mathematical lemmas are separate evidence layers.** Hash/count agreement proves execution identity/completeness, not the analytic inequalities by itself.
@@ -497,13 +446,13 @@ The repository is most useful if it helps us build a coherent theorem stack rath
 
 ### T1. Exact goal quotient
 
-Prove, for the declared reduced law and command family, that a specified finite coordinate (z(h)) is sufficient and transition-closed for the chosen goals.
+Prove, for the declared reduced law and command family, that a specified finite coordinate `z(h)` is sufficient and transition-closed for the chosen goals.
 
 **Current status:** substantial exact structure already exists.
 
 ### T2. Goal-visible nullity and minimal local measurement count
 
-Define (K=ker DO), (N=Kcapigcap_cker DG_c), and (r_G=dim(K/N)). Prove the tangent-level minimum-measurement bound and a local sufficiency statement under explicit rank assumptions.
+Define `K = ker`DO``, `N = K ∩ (intersection over c of ker`DG_c`)`, and `r_G = dim`K/N``. Prove the tangent-level minimum-measurement bound and a local sufficiency statement under explicit rank assumptions.
 
 **Repository drivers:** F355 + current reduced-law reachable-pair result.
 
@@ -539,7 +488,7 @@ Its mathematical role is now sharper:
 
 > **S09 is the first mixed-functional acquisition outside the primitive axes.**
 
-For the declared quadratic response class, the primitive axes leave (C_{AB}) free. The mixed query purchases exactly that missing coefficient. This is preferable to another same-axis amplitude point if the main uncertainty is interaction rather than one-dimensional amplitude remainder.
+For the declared quadratic response class, the primitive axes leave `C_AB` free. The mixed query purchases exactly that missing coefficient. This is preferable to another same-axis amplitude point if the main uncertainty is interaction rather than one-dimensional amplitude remainder.
 
 After S09 is scored:
 
@@ -548,7 +497,7 @@ After S09 is scored:
 - if it lands outside all frozen candidates, reject those finite interaction rules and identify the new mixed functional rather than retrofitting gain/phase;
 - use post-score charge diagnostics only to localize whether the failure is charge additivity or transverse interaction.
 
-Optional S10 should be selected by the **remaining goal-visible / interaction nullspace**, not by an arbitrary “largest predicted difference” heuristic. A particularly valuable S10 may distinguish ordered (AB) from (BA) or another nonredundant timing cross if S09 leaves those coefficients unresolved.
+Optional S10 should be selected by the **remaining goal-visible / interaction nullspace**, not by an arbitrary “largest predicted difference” heuristic. A particularly valuable S10 may distinguish ordered `AB` from `BA` or another nonredundant timing cross if S09 leaves those coefficients unresolved.
 
 ## 16. Claim-boundary checklist
 
@@ -630,18 +579,6 @@ Do not mark a source as “used” merely because it was cited or discussed. A s
 
 The repository has already contributed more than isolated mathematical tricks. The strongest coherent route is now:
 
-[
-oxed{
-	ext{finite predictive quotient}
-+
-	ext{goal-visible measurement lower bound}
-+
-	ext{information lower bound}
-+
-	ext{ordered interaction acquisition}
-+
-	ext{certificate-grade validation}
-}
-]
+**Core stack:** `finite predictive quotient + goal-visible measurement lower bound + information lower bound + ordered interaction acquisition + certificate-grade validation`
 
 F140, F355, and F116 are the most important sources for raising the mathematical ceiling. F365/F372 keep identifiability claims honest, F266 can raise the evidentiary standard, and F251 defines a plausible longer-term route from exact reduced algebra to robust native algebra.
