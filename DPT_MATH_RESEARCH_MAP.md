@@ -62,7 +62,7 @@ Pro17D 自己在第 7 节明确把 F116-A 与 F266 作为重点亲读和实际�
 
 ### 证据身份
 
-这些论文非常新。外部资料在 2026 年较早阶段仍把 smooth anisotropic Calderón 和同时恢复两个 Lamé moduli 列为 open problems，因此 F365-B/F372 属于需要高强度独立核验的 headline claims。当前图谱主要使用它们的 proof architecture，不让 DPT 的承重结论依赖“OpenAI 已解决该开放问题”这一事实。
+这些论文非常新。外部资料在 2026 年较早阶段仍把 smooth anisotropic Calderón 和同时恢复两个 Lamé moduli 列为 open problems，因此 F365-B/F372 属于需要高强度独立核验的 headline claims。当前图谱主要使用它们的 proof architecture，不让 DPT 的承重结论依赖“OpenAI 已解决该开放问题”这一事实。状态校准可参考 [AIM inverse-problem catalog](https://github.com/MColbrook/AIM/blob/main/CATALOG.md) 和 [2026 ICM satellite inverse-problem talk](https://sites.math.rutgers.edu/~mv715/schedule)。F374 目前也有独立工作复用了其 three-atom sharpness construction，但该工作明确不验证 OpenAI 的 general one-third theorem，见 [Evidence Press transport-map certificate](https://evidencepress.org/releases/planar-transport-map-sensitivity-certificates/)。
 
 仓库自身的 formalization scope 也必须逐篇看：
 
