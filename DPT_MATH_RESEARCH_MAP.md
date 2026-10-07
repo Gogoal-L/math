@@ -114,7 +114,7 @@ That is stronger than merely saying the representation is “small.”
 ### Next concrete work
 
 1. Specify the admissible history set and future-command set actually claimed in DPT-R1.
-2. Define (d_G) for scalar terminal goals first.
+2. Define `d_G` for scalar terminal goals first.
 3. Compute/construct goal-distinct packings in the reduced law and in any executable native preparation family.
 4. Only then consider noisy or probabilistic analogues.
 
@@ -257,30 +257,13 @@ The same broad inverse-problem family exhibits both strong uniqueness and nonuni
 
 The correct DPT grammar is therefore:
 
-[
-	ext{identifiability}
-=
-(	ext{model class},
-	ext{observation operator},
-	ext{goal},
-	ext{allowed symmetry}).
-]
+`identifiability = (model class, observation operator, goal, allowed symmetry)`.
 
 Do not ask “is the device identifiable?” without all four qualifiers.
 
 ### Three distinctions to preserve
 
-[
-oxed{
-	ext{uniqueness}
-
-eq
-	ext{finite sufficiency}
-
-eq
-	ext{stable reconstruction}
-}
-]
+`uniqueness != finite sufficiency != stable reconstruction`
 
 A full response operator may determine a coefficient uniquely while a finite experiment bank does not. A finite set may be locally sufficient but poorly conditioned. A reduced structured class may be identifiable while a broader native class is not.
 
