@@ -2,7 +2,7 @@
 
 这份文件服务于主控，不做论文摘要集。每篇文献只保留四件事：它在 Pro17D 中是什么身份、真正可迁移的数学动作、会改变哪个 DPT 决策、什么时候值得重新打开。
 
-最后更新：2026-10-07  
+最后更新：2026-10-08（对照官方 fd4aeeb2；扩展 F332/F324/F329/F376 proof transfer）  
 当前对象：DPT-R1 / Pro17D，预算上限 S09 + optional S10。
 
 ---
@@ -17,13 +17,16 @@ OpenAI Math 对这个问题目前提供了七个互补动作：
 
 | 动作 | 主要来源 | 对 DPT 的直接作用 |
 |---|---|---|
-| 找最小缺失 measurement | F355 | 从 observation nullspace 中分离真正影响 goal 的方向 |
+| 找最小缺失 measurement | 独立有限维 K/N lemma；F355 为 finite-jet 方法启发 | 从 observation nullspace 中分离真正影响 goal 的方向；需声明局部稳定性假设 |
 | 给 predictive state 做信息下界 | F140 | 从“这个 state 足够”推进到“更少信息不可能统一完成任务” |
 | 建立有 definedness 的 command algebra | F116-A/B | command 顺序、mixed term、所有 inverse gate 的定义域一起管理 |
 | 判断新 measurement 是否真的增加信息 | F229 | 用 experiment dominance / garbling 剪掉信息上冗余的 acquisition |
 | 把 numerical fit 变成 certificate | F266 | center residual、approximate tangent、normal remainder、provenance 分层 |
 | 从 tangent 结论升级到 finite-radius / nonlinear 结论 | F357 + F365-B，辅以 F374 | rank 之后还要有 multiscale directional/remainder control，不能把单点 Jacobian 当 neighborhood chart |
-| 区分低维 approximation 与可部署的 stable representation | F330 + F094/F098 | 同时追 dimension、error、gain/condition number 和作用域；finite-bank success 不自动外推到 continuous class |
+| 区分低维 approximation 与可部署的 stable representation | F330 + F094/F098 + F324 | 追 dimension、error、gain 和作用域；低失真 metric encoding 不直接决定 linear/physical coordinates | 
+| 已有观测下的 deterministic worst-case goal ambiguity | 独立 finite-bank minimax；F329 作为反面启发 | 直接检验噪声 fiber 中的 goal gap，区分 archived feature 与新仿真 | 
+| 稳定 goal factor 的延拓 | F332 | 在全类 observation image 已有 Lipschitz factor 时，研究如何延拓到 ambient observation space | 
+| 可组合 predictive state | F376 + F116 + F129 + 经典 future-context equivalence | 检验未来命令词的 definedness、goal 与 stage telemetry，不只看 primitive endpoint |
 
 另外两条是长期边界：
 
@@ -70,6 +73,10 @@ OpenAI Math 对这个问题目前提供了七个互补动作：
 | F325 Complete Crouzeix | Pro17D 后发现 | WATCH / 触发即主动 | fixed nonnormal propagator 的 polynomial/rational functional control |
 | F363 Boltzmann nonuniqueness refinement | Pro17D 后发现 | WATCH / claim guard | conservation / consistency 不等于 uniqueness |
 | F129 Exponential state cost | Pro17D 后发现 | WATCH / 长期 | future-context separation 可转成真正的 discrete state-complexity lower bound |
+| F332 Metric Markov cotype of ell1 | 后续深读 | POST-条件主动 | 已稳定 ell1-valued goal factor 的 dimension-free Lipschitz extension，不提供可辨识性 |
+| F324 Lipschitz-equivalent nonisomorphic Banach spaces | 后续深读 | WATCH / 表示边界 | metric equivalence 不推出无限维 linear isomorphism；与有限维 DPT rank 判据区分 |
+| F329 Metric-entropy duality counterexample | 后续深读 | POST-主动（边界启发） | 用 direct noise-fiber / packing audit，避免无假设的 polar entropy shortcut |
+| F376 Universal computation in forced Navier–Stokes | 后续深读 | POST-主动（方法） | original-domain command semantics、history record、within-command guard；不引申流体物理 headline |
 
 Pro17D 自己在第 7 节明确把 F116-A 与 F266 作为重点亲读和实际采用的 OpenAI Math 来源；其余当时保持 navigation/background 身份。这里不会把后续发现倒写成 Pro17D 当时已经使用。
 
@@ -90,6 +97,9 @@ Pro17D 自己在第 7 节明确把 F116-A 与 F266 作为重点亲读和实际�
 - F357：当前仓库未见 `lean/docs/357.md`，所以这里只把它当 proof architecture 使用。
 - F363：selected formalization 覆盖较早 periodic nonuniqueness 结果；October 的 exact local-conservation refinement 是更强版本，不能借旧 scope 替它背书。
 - F129：selected formalization 覆盖 one-way liveness 的 exponential deterministic state lower bound。
+- F324 的 lean/docs/324.md 涵盖 separable Banach 反例；F329 的 lean/docs/329.md 涵盖 dimension-free entropy-duality 反例。其 Lean scope 仅覆盖该 family 的指定 statements，不替 DPT 迁移证明背书。
+- F332：本轮未发现 lean/docs/332.md；按未经本项目独立证明核验的预印本使用。
+- F376：lean/docs/376.md 分别覆盖若干 sheet、box、particle/velocity detector statements；October 6 修订与各种 pressure/clock companions 不可整体继承旧 scope。
 
 因此“Lean-backed”必须按具体 statement 使用，不能按 family 名整体继承。
 
@@ -448,7 +458,7 @@ DPT 的对应风险是 regime boundary：
 
 下面先保留 F355/F140 两个直接承重 family，再加入第二轮筛选中会改变 claim ceiling 或验证路线的 family。
 
-### F355：goal-visible hidden dimension
+### 独立 K/N lemma：goal-visible hidden dimension（F355 用于 finite-jet 方法启发）
 
 核心对象：
 
@@ -468,7 +478,9 @@ r_G = dim(K/N)
 
 ker(DP restricted to K) ⊆ N
 
-因此 k ≥ r_G。
+因此在要求 G=Phi(O,P) 为局部 Lipschitz 因子且 O/P/G 在中心可微时，k ≥ r_G。证明：对被 DO 与 DP 同时消去的方向 v，观测增量是 o(t)，Lipschitz 因子使目标增量也是 o(t)，所以 DG(v)=0。此下界是本项目的独立有限维微分引理，**并非 F355 mean-curvature-flow 论文定理**。F355 真正可迁移的是 finite-jet obstruction / exponent-independent certificate 的证明程序。
+
+非 Lipschitz exact-recovery 反例：O(x)=x^3, G(x)=x 在零点 r_G=1，却有 G=cuberoot(O)，无需新测量但局部 gain 发散。另有候选可实现性限制：O=x, G=y，只允许 P1=y+z、P2=z 时，虽然 r_G=1，单个候选都不能 suffices，必须配合两个。
 
 当前 reduced-law 的 drain-translation 例子正好可以成为 worked example：
 
@@ -503,7 +515,7 @@ conditioning on selected state 会 bias actual observations，替换成 fresh ro
 - outcome-aware query 不应再被描述成与 S09 同等级的 prospective test；
 - 如果要保留强 prospective claim，应在看 S09 前冻结 selection rule，而不是只冻结一个模糊候选集合。
 
-这比单纯“不要 data snooping”更精确，因为它告诉我们 adaptation 本身是一种 information channel。
+这比单纯“不要 data snooping”更精确，因为它告诉我们 adaptation 本身是一种 information channel。F140 的 O(d) conditional-information surcharge 严格依赖 spherical/Gaussian/memory 假设，**不能变成 DPT 的数值信息税**。此外必须区分 full acquired waveform Y、当前压缩 feature O=f(Y)、新提取的 existing-waveform feature P=g(Y) 和真正 fresh simulation。相对于 O，P 可以补足已经丢弃的信息，尽管无法超过完整 Y 的信息量。
 
 
 ### F357：把 tangent regularity 升级成 multiscale predictive chart
@@ -597,7 +609,7 @@ h1 ~_G h2 iff 对所有 c，G_c(h1)=G_c(h2)。
 
 ### T2. Minimum local measurement
 
-用 F355 的 K/N 给 goal-visible hidden dimension，并证明 reduced law 上的一维 repair 是下界而不是经验选择。候选 measurement 的第一道 gate 是：
+用独立 K/N lemma 给 goal-visible hidden dimension（F355 仅作为有限阶证明启发），并在明确局部 Lipschitz 因子或一阶模型假设下证明 reduced law 上的一维 repair 下界。候选 measurement 的第一道 gate 是：
 
 ker(DP restricted to K) subseteq N。
 
@@ -625,7 +637,7 @@ ker(DP restricted to K) subseteq N。
 
 ### T5. Information lower bound + acquisition order
 
-用 F140 的 goal packing 给 state complexity 下界；用 F229 的 dominance test 判断新 sensor/readout 是否真正增加信息。只有在 history/command class 真正冻结后才做复杂 information theorem。
+用独立 goal-packing lemma 给 state complexity 下界（F140 是严格条件下的 memory/sample 方法启发）；用 F229 的 dominance test 判断新 sensor/readout 是否真正增加信息。只有在 history/command class 真正冻结后才做复杂 information theorem。
 
 ### T6. Command algebra + domain + correction boundary
 
@@ -659,15 +671,16 @@ primitive axes 无法确定 C_AB。
 
 > **第一次直接 acquisition 一个 primitive characterization 无法推出的 mixed functional。**
 
-这仍然是当前最合理的 fresh query。
+这仍然是当前最合理的 fresh query，但一次有限幅度 fusion 还不足以识别中心的 mixed Taylor coefficient。对矩形上 C² 的 F，mixed finite difference D_AB F(a,b) 等于从 0 到 a、0 到 b 的混合二阶导数积分，所以 D_AB/(ab) 是矩形平均导数；只有严格 quadratic class 或额外导数变化界才能称它为中心 C_AB。
 
 ### S09 后再决定 S10 时，按这个顺序
 
 1. **先做 F229 dominance check**：候选 S10 是否真的新增 physical information，还是 S09/已有 waveform 的 post-processing？
 2. **看 remaining K/N**：还有哪个 goal-visible direction 没被当前 observations 切开？
 3. **看 command-word residual**：simultaneous mixed 已解决后，AB vs BA 是否成为最小新方向？
-4. **看 adaptation 身份**：如果 S10 是看到 S09 后才挑的，明确记录为 adaptive follow-up，不再包装成同等级 prospective test。
-5. 若没有一个 query 能明显改变 theorem / representation / rival set，S10 不必使用。
+4. **看 within-command event**：相同 endpoint 的 VDS peak、stage-boundary crossing 是否已被同一 waveform 区分？
+5. **看 adaptation 身份**：如果 S10 是看到 S09 后才挑的，明确记录为 adaptive follow-up，不再包装成同等级 prospective test。
+6. 若没有一个 query 能明显改变 theorem / representation / rival set，S10 不必使用。
 
 ---
 
@@ -812,7 +825,7 @@ F266 继续作为所有承重 numerical work 的固定证据层并行执行。F3
 - measurement-to-goal minimum-norm linear factor 及其 2-norm gain；
 - candidate sensor rows 的小规模 exact subset search + greedy fallback；
 - 若提供 scale-indexed Jacobians，则逐尺度重复上述 audit；
-- 若另外提供已经独立认证的二阶 remainder coefficients，则输出 `(C_G + ||A|| C_P) r^2` 形式的 mechanical finite-radius bound。
+- 原版 (C_G + ||A|| C_P) r² 只在受限 tangent/fiber 特殊条件下可用，不能作为任意状态扰动的 general bound。新方案须使用 DG = B DO + A DP + E，并计入 observation remainder C_O、linear residual E 和噪声增益。
 
 它故意把 claim ceiling 写进输出：rank PASS 仍只是 tangent statement；remainder coefficient 的真实性必须由 derivation / interval / native evidence 单独保证。
 
