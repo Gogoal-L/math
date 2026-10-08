@@ -900,7 +900,7 @@ primitive axes 无法确定 C_AB。
 2. **Fiber**：当前 observation fiber 上是否存在 goal-distinct histories？
 3. **Information**：新 measurement 真增加信息，还是已有 observation 的 post-processing？
 4. **Domain**：所有 rational/inverse intermediate states 是否都 defined？
-5. **Local-to-finite**：现在只有 Jacobian/rank，还是已有 finite-radius remainder guarantee？
+5. **Local-to-finite / mixed model**：现在只有 Jacobian/rank，还是已有 finite-radius remainder guarantee？S09 所估的是 finite mixed response、严格 quadratic 系数，还是带明确 C² variation/noise envelope 的系数区间？
 6. **Physical-to-auxiliary**：从 physical waveform 推 auxiliary state 时，injectivity 是否真的证明？
 7. **Certificate**：承重 numerical claim 是否有 center defect、tangent defect、remainder、domain 和 provenance？
 8. **Stability**：低维 representation 的 gain / condition number 是否在 frozen neighborhood 与 scales 内有界，还是只在某个 finite bank 上能 fit？
@@ -912,7 +912,7 @@ primitive axes 无法确定 C_AB。
 
 ## 14. 主控调用文献的最小 bundle
 
-不要把 722 篇论文一次性交给模型。
+不要把整个 OpenAI Math 论文集一次性交给模型。
 
 ### P2 / minimum measurement
 
@@ -992,7 +992,10 @@ primitive axes 无法确定 C_AB。
 - F357：没有 multiscale neighborhood data 或 certified remainder 时，不把单点 Jacobian 成功包装成 bi-Lipschitz-like predictive chart。
 - F330/F094/F098：如果 operational history/command class 还没冻结，不从 finite-bank fit 推 global/continuous low-dimensional representation。
 - F251/F289：只有 approximate command algebra 或 surrogate structural-equivalence claim 真正承重时才打开；普通 waveform fit 不需要上升到 operator-algebra correction。
-- F325：只有 fixed nonnormal propagator / rational functional 真正成为 scientific object 时才打开。
+- F325：只有 fixed nonnormal propagator / polynomial 或 rational functional 真正承重时才打开；对纯指数半群的欧氏范数先试经典 logarithmic-norm bound。
+- F132：不能把 Boolean block-sensitivity 的全局超二次分离当作连续 DPT 的 query-complexity 定理；只迁移 coupled/joint intervention proof pattern。
+- F122：若原始 waveform 有精确 timestamps、并未经历未知位置的独立 deletion channel，禁止搬用 trace-reconstruction sample-complexity theorem。
+- F119：若没有独立均匀 bits 与已标定 symmetric flip channel，不使用它的 sharp mutual-information 数值下界。
 - F363/F129：分别作为 uniqueness claim guard 与 discrete-state lower-bound reserve，不主动占 fresh simulation budget。
 
 ---
@@ -1017,7 +1020,7 @@ primitive axes 无法确定 C_AB。
 
 ## 17. 主控可直接运行的审计工具
 
-这次不只更新文字图谱，也加入两个小型 mechanical auditor。它们的角色是把容易在口头推理里滑过去的条件固定成可复查 JSON；**PASS 只代表对应 numerical/algebraic condition 通过，不自动升级 scientific claim。**
+图谱现有多项轻量 mechanical auditor。它们的角色是把容易在口头推理里滑过去的条件固定成可复查 JSON；**PASS 只代表对应 numerical/algebraic condition 通过，不自动升级 scientific claim。**
 
 ### goal-visible measurement / multiscale audit
 
