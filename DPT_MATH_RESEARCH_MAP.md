@@ -624,6 +624,55 @@ L=\sup_{Y(h)\ne Y(h')}\frac{\|G(h)-G(h')\|_1}{\|Y(h)-Y(h')\|_2}<\infty,
 
 
 
+
+### F329：直接 goal ambiguity 优先于无假设的 polar-entropy 推断
+
+**证据 locator**：[PDF](preprints/Counterexamples-to-the-duality-conjecture-for-metric-entropy-September-24-2026/main.pdf)；[matrix-to-body lemma](preprints/Counterexamples-to-the-duality-conjecture-for-metric-entropy-September-24-2026/build/sections/02-matrix-contract.tex)；[partition compression + pivot 图](preprints/Counterexamples-to-the-duality-conjecture-for-metric-entropy-September-24-2026/build/sections/03-compression.tex)；[parameter-order proof](preprints/Counterexamples-to-the-duality-conjecture-for-metric-entropy-September-24-2026/build/sections/05-counterexample.tex)；[Lean selected scope](lean/docs/329.md)。
+
+作者的反例不是笼统的“covering number 不可信”。对任意提出的 dimension-free 比较常数 \(a,b\ge1\)，论文在**可随参数增加的维度**构造 origin-symmetric convex body \(K\)，另一体为 cube \(L=B_\infty^n\)，使 primal/polar covering entropy 的统一比较失败。主证明先制造实矩阵：rows 的 sup-norm separation 至少为 1，而 columns 的绝对凸包有非常小的 uniform approximation list。用 \(K=3\,\mathrm{absconv}\{R_x\}+tB_\infty\) 得
+\[
+N(K,L)\ge|X|,\qquad
+N\bigl(L^\circ,(6\varepsilon+2t)K^\circ\bigr)\le M.
+\]
+partition-compression 的关键是保留 class label，而非原中心：图中 pivot 换为固定代表元后，控制路径长度由 \(j\) 放宽到 \(3j+2\)，再用 logarithmic profile 将其变为可控误差。该结论否定的是**无结构、跨维度**的 universal polarity shortcut；欧氏球/椭球等附加假设下的已有正面 duality 理论仍可用。
+
+**独立、可直接证明的 DPT 正向对象**。给定指定 finite 或 compact history class \(\mathcal H\)，scalar goal \(g:\mathcal H\to\mathbb R\)，带单位白化的 observation \(Y:\mathcal H\to\mathbb R^m\)，确定性噪声 \(\|e\|_2\le\sigma\)，定义
+\[
+E_*(Y,\sigma)=\inf_{\hat g}\sup_{h\in\mathcal H,\|e\|_2\le\sigma}
+|\hat g(Y(h)+e)-g(h)|.
+\]
+只要每个非空可行 fiber 上的 goal 有界，就有初等恒等式
+\[
+\boxed{E_*(Y,\sigma)=\tfrac12
+\sup_{\|Y(h)-Y(h')\|_2\le 2\sigma}|g(h)-g(h')|.}
+\]
+**证明**：观测噪声球相交的任意一对 history 可以给出同一测量值，任意 estimator 至少对其中一个误差达到目标间隔的一半；反向，在每个非空观测 fiber 上取 goal 的 supremum/infimum 中点作为 estimator，误差至多该 fiber diameter 一半。两个 Euclidean 半径 \(\sigma\) 的球相交当且仅当中心间距离至多 \(2\sigma\)。这条 minimax lemma 属于我们在指定条件下的**独立初等构造，并非 F329 的定理或新数学发现**。对一般向量 \(\ell_2/\ell_1\) goal，最小 enclosing radius 通常不等于半径一半，必须另解 Chebyshev-center 问题。
+
+**DPT 可证伪产物**：现有 finite history bank 上的 worst indistinguishable pair、goal gap、目标误差下界和 candidate feature 的改善。新工具 goal_ambiguity_audit.py 计算的是**supplied finite bank 的 exact scalar minimax 值**；当完整可行 history class 大于 bank，它仅是全类最坏误差的 lower bound。不要把局部 Jacobian dual singular-vector heuristic 冒充跨所有 history 的 information lower bound。结合 F229 的 experiment dominance，应优先重读已保存 raw waveform，看是否已有 feature 就能拆开最危险 pair，再决定 fresh acquisition。
+
+### F376：从完整命令定义域到可更新的 predictive-state quotient
+
+**证据 locator**：[shear-flow companion PDF](preprints/Finite-Instructions-and-Solenoidal-Shear-Flows-September-27-2026/manuscript.pdf)；[七阶段 shear、recording 和 observer proof](preprints/Finite-Instructions-and-Solenoidal-Shear-Flows-September-27-2026/build/main.tex)；[October 6 box revision PDF](preprints/Incompressible-Box-Transport-and-Finite-Computation-October-6-2026/manuscript.pdf)；[guarded-history proof](preprints/Incompressible-Box-Transport-and-Finite-Computation-October-6-2026/build/guarded-history.tex)；[torus scaling / physical-viscosity proof](preprints/Incompressible-Box-Transport-and-Finite-Computation-October-6-2026/build/torus-routing.tex)；[Lean 376 的 selected scope](lean/docs/376.md)。
+
+必须先说明原论文为何引入 reversibility：作者需要把有限 symbolic instructions 嵌入**光滑不可压缩流的可逆 time map**，故以历史 record 保存被覆盖的旧信息。recorder lemma 要求 destination control 固定 incoming displacement，且 destination + written symbol 能唯一找回 predecessor；证明先检查**完整允许的 transition domain**，再看 special initialized run 的 checkpoint invariants。七阶段 lift/shears/translation/drop 作用于整个 closed source rectangle，而非某条被观察到的典型轨迹；observer 不是只核每个周期的 endpoint，还核所有 intermediate times 是否误入 forbidden strip。October 6 companion 进一步在不同 torus/box/force classes 下精确追踪尺度与投影，physical viscosity 不能在坐标伸缩中悄悄替换。
+
+**真正可迁移的命题是有限 future-word congruence**，不是流体计算的普适性。设有限 history states \(H\) 和 partial deterministic command updates \(T_a:H\rightharpoonup H\)，每个 state 具有 goal \(g(h)\)，并可选择提供每个 command 的 within-stage readout \(q_a(h)\)（例如完整过程的 VDS peak 是否越阈）。定义
+\[
+h\equiv h'
+\quad\Longleftrightarrow\quad
+\text{对每个允许 future command word，全部 prefix definedness、
+已声明的 stage readout 与 terminal goal 一致。}
+\]
+**Elementary proof**：若 \(h\equiv h'\) 且 \(a\) 对两状态均定义，则对任一后续 word \(w\)，从 \(T_a(h)\) 与 \(T_a(h')\) 运行 \(w\) 等同于分别从 \(h,h'\) 运行 \(aw\) 的后缀，故 \(T_a(h)\equiv T_a(h')\)。因此 quotient 支持 well-defined next-state update；对显式给出的有限确定性模型，反复 partition refinement 得到最粗的 goal/definedness/stage-output 等价类。这是 Myhill–Nerode-style 标准推论在 DPT command 语义上的使用，**不是 F376 已证明的 DPT 定理**。
+
+两个 concrete falsifiers：① primitive A、B endpoint/goal 相同，但 \(G(T_B T_Ah_1)\ne G(T_B T_Ah_2)\)，说明单步 calibration 不足以支持 compositional prediction；② 两 history 的 A endpoint 完全相同，但一个 A 过程中 VDS peak 越阈，另一条不越阈，则仅保存 endpoint 的观测语义不足。command_word_audit.py 在 supplied finite transition table 上给出最短 distinguishing word，并比较用户明确输入的 transition_outputs；**工具不能从缺失的 native stage trace 自动推断输出**。
+
+**最重要的作用域差异**：真实 SiC DPT 是含耗散、寄生和 switch-mode branch changes 的物理过程，既不需要 Turing-complete forced fluid，也不需要每个物理 command update 逆映射存在。F376 强制记录 reversible history 是为了其 fluid embedding；DPT 应借用的是显式定义域、命令前缀和全过程观察约束。如果同一已有 waveform 已经含完整 switching-stage trace，优先 zero-fresh 计算 within-command events。optional S10 只有在现存具体 rival 恰好被某个 admissible ordered command / stage observable 分开时才值得购买，而且 AB 和 BA 两个顺序不能假定由一次 simulation 免费同时提供。
+
+**四文合成的最好研究对象**不是更复杂的 fit，而是一个证据三元组：有物理含义的 goal-visible ambiguity pair（F329 + 噪声 minimax），有明确 gain/extension 前提的低信息 observation state（F332，F324 作结构边界），以及一个最短的 admissible command-word/stage-output discriminator（F376 + F116）。输出至少保留：history/domain 身份、\(Y/G\) 端口、噪声归一化、最大歧义对、distinguishing word、程序/原生 waveform 来源和 claim ceiling。此组合若在既定 S09/S10 预算内得到 fresh independent evidence，才值得进一步升级为前瞻性数学-物理命题。
+
+
+
 ---
 
 ## 11. 现在可以形成的 DPT 数学链
