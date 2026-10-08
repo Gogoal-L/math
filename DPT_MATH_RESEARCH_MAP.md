@@ -593,6 +593,37 @@ F129 则提供另一种 state lower-bound 语言：如果两个 histories 不同
 F119、F136、F139 继续保留在 WATCH：分别对应 noisy one-bit information retention、adversarial local-check robustness、adaptive-query lower bounds。当前都不应占 S09/S10 主预算。
 
 
+
+### F332：已存在的稳定预测因子如何延拓为部署映射
+
+**证据 locator**：[PDF](preprints/Metric-Markov-Cotype-Two-of-l1-October-5-2026/l1-markov-cotype.pdf)；[完整主证明及第 6 节 extension corollary](preprints/Metric-Markov-Cotype-Two-of-l1-October-5-2026/build/main.tex)；[Mendel–Naor 2013 先验](https://arxiv.org/abs/1301.3963)。目前未发现 lean/docs/332.md。本项目核对了主证明的 cut representation、cubic remainder、martingale telescoping 以及 corollary 的前提；**没有独立证明整篇预印本的全部细节**。
+
+这篇论文的有用性必须从证明链理解。有限 \(\ell_1\) 点集可编码为 weighted binary cuts，使 \(\|x_i-x_j\|_1=\|z_i-z_j\|_H^2\)。作者取 cubic \(\phi(t)=3t^2-2t^3\)；其导数在 binary vertices 处消失，因此两点的平方 \(\ell_1\) 距离增量被 Hilbert 四次方势的 Bregman remainder 控制。条件于 martingale 旧状态时，Bregman 的一次项均值为零，累计损失 telescopes。论文给出 \(N_2(\ell_1)\le12\sqrt{21}\)，然后使用 Hilbert source 的 Markov type 2、\(\ell_1=c_0^*\) 和 Mendel–Naor extension theorem，得到 universal \(K\) 使任意已有的 Lipschitz \(f:S\subset H\to\ell_1\) 可以延拓到整个 Hilbert space，\(\operatorname{Lip}F\le K\operatorname{Lip}f\)。**\(K\) 并未被证明等于 \(12\sqrt{21}\)**。
+
+**与 DPT 真正兼容的条件命题：** 令 \(\mathcal H\) 为已经声明的 switching-history class，\(Y=(O,P):\mathcal H\to\mathbb R^m\) 为单位白化的观测，\(G:\mathcal H\to\ell_1\) 为未来 goal readout。如果：(i) \(Y(h_1)=Y(h_2)\Rightarrow G(h_1)=G(h_2)\)；(ii) 对不同观测 pair 存在统一有限的
+\[
+L=\sup_{Y(h)\ne Y(h')}\frac{\|G(h)-G(h')\|_1}{\|Y(h)-Y(h')\|_2}<\infty,
+\]
+则 \(G\) 在 image \(Y(\mathcal H)\) 上才构成 Lipschitz map；**在接受 F332 所述 theorem 的前提下**，可将它延拓到全部 Euclidean observation space，放大至多 \(K\) 倍。extension 不是 identifiability theorem、不是 simulator validation、也不自动给 predictor 算法。若只关心单个 scalar readout，可直接考虑更简单的 McShane extension；F332 的特有价值是多通道 \(\ell_1\) goal 在目标维度增长时仍有 dimension-free existence framing。
+
+**最小测试**：先在已有波形的 finite history bank 报 \(L_{\rm bank}\)。若存在相同 \(Y\) 但不同 \(G\)，有限 gain 不存在，必须找新 measurement 或收窄目标；若 \(L_{\rm bank}\) 过大，先比较从 raw waveform 提取新 feature 与真正新增 sensing 哪个能改善 condition。finite bank 上的低 gain 只是一项观察，无法给出 continuous-class 的 uniform upper bound。工具中新增的 scalar gain 是这一步的局部 indicator，不应标成部署 certificate。**S09 新仿真并非由 F332 自动触发。**
+
+### F324：低失真 metric state 与 linear/physical state 的层级差别
+
+**证据 locator**：[PDF](preprints/Lipschitz-Equivalent-Separable-Banach-Spaces-Need-Not-Be-Linearly-Isomorphic-September-24-2026/paper.pdf)；[Hilbert slots 及图示](preprints/Lipschitz-Equivalent-Separable-Banach-Spaces-Need-Not-Be-Linearly-Isomorphic-September-24-2026/build/sections/05-hilbert.tex)；[localized linearization](preprints/Lipschitz-Equivalent-Separable-Banach-Spaces-Need-Not-Be-Linearly-Isomorphic-September-24-2026/build/sections/04-localization.tex)；[最终证明](preprints/Lipschitz-Equivalent-Separable-Banach-Spaces-Need-Not-Be-Linearly-Isomorphic-September-24-2026/build/sections/06-assembly.tex)；[Lean selected scope](lean/docs/324.md)。
+
+预印本的准确结果是：可分**无限维**实 Banach 空间 \(X,Y\) 具有双 Lipschitz bijection，满足
+\[
+(4/21)\|s-t\|_X\le\|\Psi(s)-\Psi(t)\|_Y\le(76/25)\|s-t\|_X,
+\]
+但 \(X,Y\) 并不线性同构。关键并非凭空找一个 nonlinear embedding：先在 Hilbert blocks 中对 frozen slots 构造严格 isometry，保留各块的 perpendicular components，把旧 slot scalars 移到 even blocks、额外 scalar coordinates 移到 odd blocks（论文图示）；随后让 slots 依输入变化，借 derivative budget 保持全局双 Lipschitz，且在有限多点邻域形成 tail-coordinate local orthogonality；通过 Lipschitz-free linearization 得到 completely continuous operator，再用该线性结构不变量构造不可同构的 graph spaces。
+
+**DPT 正向用途**：将四件事分开验收——goal-distance metric encoding、局部可微 Jacobian structure、可以依命令更新的 compositional state、物理参数语义。一个 nonlinear latent 能低失真预测 \(V_{DS},I_D,E_{\rm on/off}\)，并不因此揭示唯一的 \(L_g,L_s,R_g,\ldots\) 物理坐标，更不自动保持 composition law。先从现有数据检查两个 state 的 goal distance 与 latent distance 是否满足双向 bound，再检查其是否支持正确的 command update；不要直接回归参数唯一性。
+
+**边界与反例作用域**：F324 的不可同构构造依赖无限维 Banach geometry，**不是**有限维 DPT tangent-rank lemma 的反例，也不给出任何 DPT 必须使用无限 latent dimension 的下界。对于光滑有限维历史流形，仍优先使用 inverse/constant-rank theorem。这里只在主控准备作 structural-identity 或“学到了唯一 physical state”的强解释时触发；当前 S09/S10 无须为其另增 query。
+
+
+
 ---
 
 ## 11. 现在可以形成的 DPT 数学链
