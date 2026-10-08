@@ -139,7 +139,7 @@ namespace HomotopyMaps
 variable {X Y Z : Type u} [TopologicalSpace X] [TopologicalSpace Y]
   [TopologicalSpace Z]
 
-def loopMap (f : C(X, Y)) {x : X} {N : Type*} (p : GenLoop N X x) : GenLoop N Y (f x) :=
+noncomputable def loopMap (f : C(X, Y)) {x : X} {N : Type*} (p : GenLoop N X x) : GenLoop N Y (f x) :=
   Thomason.WeakHomotopy.loopMap N f x p
 
 theorem loopMap_homotopic (f : C(X, Y)) {x : X} {N : Type*}
@@ -147,11 +147,11 @@ theorem loopMap_homotopic (f : C(X, Y)) {x : X} {N : Type*}
     GenLoop.Homotopic (loopMap f p) (loopMap f q) :=
   h.comp_continuousMap f
 
-def groupMap (f : C(X, Y)) (n : ℕ) (x : X) :
+noncomputable def groupMap (f : C(X, Y)) (n : ℕ) (x : X) :
     HomotopyGroup.Pi n X x → HomotopyGroup.Pi n Y (f x) :=
   Thomason.WeakHomotopy.groupMap (Fin n) f x
 
-def componentsMap (f : C(X, Y)) : ZerothHomotopy X → ZerothHomotopy Y :=
+noncomputable def componentsMap (f : C(X, Y)) : ZerothHomotopy X → ZerothHomotopy Y :=
   Thomason.WeakHomotopy.componentsMap f
 
 @[simp]
@@ -284,7 +284,7 @@ namespace HomotopyMaps
 variable {X Y : Type u} [TopologicalSpace X] [TopologicalSpace Y]
 
 /-- A homeomorphism gives an actual equivalence on based generalized loops. -/
-def loopHomeomorphEquiv (e : X ≃ₜ Y) (x : X) (N : Type*) :
+noncomputable def loopHomeomorphEquiv (e : X ≃ₜ Y) (x : X) (N : Type*) :
     GenLoop N X x ≃ GenLoop N Y (e x) where
   toFun := loopMap (e : C(X, Y))
   invFun q := ⟨(e.symm : C(Y, X)).comp q.val, fun t ht =>
@@ -459,7 +459,7 @@ theorem map_bijective_iff {X Y : TopCat.{u}} (f : X ⟶ Y) {x : X} {y : Y}
   HomotopyMaps.basedGroupMap_bijective_iff f.hom e n
 
 /-- Path components form a functor on unbased spaces. -/
-def componentsFunctor : TopCat.{u} ⥤ Type u where
+noncomputable def componentsFunctor : TopCat.{u} ⥤ Type u where
   obj X := ZerothHomotopy X
   map f := ↾(HomotopyMaps.componentsMap f.hom)
   map_id X := by

@@ -181,7 +181,7 @@ private def omegaRoundtripIso (C : OmegaCategory.{u}) :
   inv_hom_id := by apply OmegaCategory.Functor.ext; rfl
 
 /-- The two presentations describe equivalent categories of strict omega-categories. -/
-def representationEquivalence : StrictOmegaCategory.{u} ≌ OmegaCategory.{u} where
+noncomputable def representationEquivalence : StrictOmegaCategory.{u} ≌ OmegaCategory.{u} where
   functor := toOmega
   inverse := fromOmega
   unitIso := NatIso.ofComponents strictRoundtripIso (by intro C D f; apply StrictOmegaCategory.Hom.ext; rfl)
@@ -205,7 +205,7 @@ def fromFiniteOmega (n : ℕ) : OmegaCategory.NCategory.{u} n ⥤
   map_comp _ _ := by apply StrictOmegaCategory.Hom.ext; rfl
 
 /-- The presentation equivalence restricts in every finite dimension. -/
-def finiteRepresentationEquivalence (n : ℕ) : StrictOmegaCategory.Truncated.{u} n ≌
+noncomputable def finiteRepresentationEquivalence (n : ℕ) : StrictOmegaCategory.Truncated.{u} n ≌
     OmegaCategory.NCategory.{u} n where
   functor := toFiniteOmega n
   inverse := fromFiniteOmega n
