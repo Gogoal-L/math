@@ -64,5 +64,69 @@ class CommandDomainAuditTests(unittest.TestCase):
         self.assertEqual(rep["inverse_summary_by_label"]["singular"]["undefined_samples"], ["singular"])
 
 
+
+class RepairedMultiscaleBoundTests(unittest.TestCase):
+    def _run(self, *, include_observation_curvature):
+        from pathlib import Path
+        from tempfile import TemporaryDirectory
+        with TemporaryDirectory() as folder:
+            path = Path(folder) / "finite.npz"
+            kwargs = {
+                "DO": np.array([[1.0, 0.0]]),
+                "DG": np.array([[1.0, 1.0]]),
+                "DP": np.array([[0.0, 1.0]]),
+                "DO_scales": np.array([[[1.0, 0.0]]]),
+                "DG_scales": np.array([[[1.0, 1.0]]]),
+                "DP_scales": np.array([[[0.0, 1.0]]]),
+                "radii": np.array([0.2]),
+                "remainder_goal_coeff": np.array([0.0]),
+                "remainder_measurement_coeff": np.array([0.0]),
+            }
+            if include_observation_curvature:
+                kwargs["remainder_observation_coeff"] = np.array([1.0])
+            np.savez(path, **kwargs)
+            return psa.audit_npz(path, 1e-10, 1e-12, 1e-9, 4, 100)["multiscale"][0]
+
+    def test_missing_observation_remainder_prohibits_quadratic_report(self):
+        row = self._run(include_observation_curvature=False)
+        self.assertNotIn("certified_quadratic_prediction_bound", row)
+        self.assertNotIn("conditional_all_direction_prediction", row)
+        self.assertEqual(row["prediction_status"], "MISSING_OBSERVATION_GOAL_MEASUREMENT_REMAINDER_OR_RADIUS")
+
+    def test_general_bound_contains_observation_factor_and_curvature(self):
+        row = self._run(include_observation_curvature=True)
+        factor = row["conditional_all_direction_prediction"]
+        self.assertAlmostEqual(factor["observation_gain_2norm"], 1.0)
+        self.assertAlmostEqual(factor["measurement_gain_2norm"], 1.0)
+        self.assertAlmostEqual(factor["conditional_prediction_bound"], 0.04)
+
+
+class InverseOccurrenceCoverageRegressionTests(unittest.TestCase):
+    def test_fail_fast_keeps_unreached_original_inverse(self):
+        expr = {"op": "matmul", "args": [
+            {"op": "inv", "label": "same", "arg": {"op": "var", "name": "A"}},
+            {"op": "inv", "label": "same", "arg": {"op": "var", "name": "B"}},
+        ]}
+        samples = [{"id": "bad", "vars": {"A": [[1.0, 0.0], [0.0, 0.0]],
+                                            "B": [[1.0, 0.0], [0.0, 1.0]]}}]
+        report = cda.audit(expr, samples, 1e-10, 1e-12)
+        self.assertFalse(report["all_samples_defined"])
+        self.assertFalse(report["all_original_inverse_occurrences_evaluated"])
+        self.assertEqual(len(report["static_inverse_inventory"]), 2)
+        status = {x["path"]: x["status"] for x in report["inverse_coverage_by_sample"]}
+        self.assertEqual(status["$.args[0]"], "SINGULAR")
+        self.assertEqual(status["$.args[1]"], "NOT_REACHED_DEPENDENCY")
+
+    def test_same_labels_still_have_distinct_path_identifiers(self):
+        expr = {"op": "add", "args": [
+            {"op": "inv", "label": "duplicated", "arg": {"op": "var", "name": "A"}},
+            {"op": "inv", "label": "duplicated", "arg": {"op": "var", "name": "B"}},
+        ]}
+        samples = [{"id": "ok", "vars": {"A": 2.0, "B": 4.0}}]
+        report = cda.audit(expr, samples, 1e-10, 1e-12)
+        self.assertTrue(report["all_samples_defined"])
+        self.assertEqual(set(report["inverse_summary_by_path"]), {"$.args[0]", "$.args[1]"})
+
+
 if __name__ == "__main__":
     unittest.main()
