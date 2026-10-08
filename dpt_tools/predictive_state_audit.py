@@ -13,8 +13,9 @@ first-order sufficiency condition
     ker(DP|_K) subseteq ker(DG|_K).
 
 This is a numerical auditor, not a proof of finite-radius identifiability.
-Optional certified quadratic remainder coefficients can be supplied to turn
-an exact/near-exact tangent factorization into a finite-radius error bound.
+Only user-supplied observation, measurement and goal Taylor bounds can produce
+a CONDITIONAL all-direction finite-radius formula. It is not a certified
+native prediction statement without independent remainder/domain evidence.
 """
 
 from __future__ import annotations
@@ -27,8 +28,10 @@ from typing import Any
 
 import numpy as np
 
+import measurement_factor_audit as mfa
 
-SCHEMA_VERSION = 1
+
+SCHEMA_VERSION = 2
 
 
 def _svd_rank(a: np.ndarray, rtol: float, atol: float) -> tuple[int, np.ndarray, float]:
@@ -307,6 +310,9 @@ def _multiscale_report(data: Any, rtol: float, atol: float, sufficiency_tol: flo
     radii = _as_float_vector(data["radii"] if "radii" in keys else None, scale_count, "radii")
     cg = _as_float_vector(data["remainder_goal_coeff"] if "remainder_goal_coeff" in keys else None, scale_count, "remainder_goal_coeff")
     cp = _as_float_vector(data["remainder_measurement_coeff"] if "remainder_measurement_coeff" in keys else None, scale_count, "remainder_measurement_coeff")
+    co = _as_float_vector(data["remainder_observation_coeff"] if "remainder_observation_coeff" in keys else None, scale_count, "remainder_observation_coeff")
+    sigma_o = _as_float_vector(data["observation_noise_radii"] if "observation_noise_radii" in keys else None, scale_count, "observation_noise_radii")
+    sigma_p = _as_float_vector(data["measurement_noise_radii"] if "measurement_noise_radii" in keys else None, scale_count, "measurement_noise_radii")
 
     out: list[dict[str, Any]] = []
     for i in range(scale_count):
@@ -316,24 +322,31 @@ def _multiscale_report(data: Any, rtol: float, atol: float, sufficiency_tol: flo
         item: dict[str, Any] = {"scale_index": i, "audit": rep}
         if radii is not None:
             item["radius"] = float(radii[i])
-        meas = rep.get("measurement")
-        if (
-            radii is not None
-            and cg is not None
-            and cp is not None
-            and meas is not None
-            and meas["tangent_goal_sufficient"]
-        ):
-            gain = float(meas["minimum_norm_goal_from_measurement_gain_2norm"])
-            coeff = float(cg[i] + gain * cp[i])
-            item["certified_quadratic_prediction_bound"] = {
-                "coefficient": coeff,
-                "radius_squared_bound": coeff * float(radii[i] ** 2),
-                "assumption": (
-                    "Uses supplied certified bounds ||R_G|| <= C_G r^2 and ||R_P|| <= C_P r^2; "
-                    "the script does not validate those remainder bounds."
-                ),
-            }
+        # Tangent sufficiency on ker(DO) does not imply a whole-state
+        # quadratic prediction bound: the observation contribution B DO
+        # and its curvature must also be included.
+        supplied = (radii is not None and cg is not None
+                    and cp is not None and co is not None)
+        if supplied and dp_s is not None:
+            conditional = mfa.audit(
+                do_s[i], dg_s[i], dp_s[i],
+                radius=float(radii[i]), c_obs=float(co[i]),
+                c_goal=float(cg[i]), c_measurement=float(cp[i]),
+                observation_noise_radius=0.0 if sigma_o is None else float(sigma_o[i]),
+                measurement_noise_radius=0.0 if sigma_p is None else float(sigma_p[i]),
+                rtol=rtol, atol=atol, factor_residual_tol=sufficiency_tol,
+            )
+            item["conditional_all_direction_prediction"] = conditional
+            item["prediction_status"] = "CONDITIONAL_ON_USER_SUPPLIED_REMAINDER_AND_NOISE_ENVELOPES"
+            item["noise_assumption"] = (
+                "Zero observation/measurement noise assumed for missing noise-radius arrays; "
+                "supplied coefficients and domain are not independently verified."
+            )
+        else:
+            item["prediction_status"] = (
+                "MISSING_OBSERVATION_GOAL_MEASUREMENT_REMAINDER_OR_RADIUS"
+                if dp_s is not None else "MISSING_MEASUREMENT_JACOBIAN"
+            )
         out.append(item)
     return out
 
@@ -398,7 +411,7 @@ def audit_npz(
                     int(x["audit"]["goal_visible_hidden_dim"]) for x in multi
                 ],
                 "note": (
-                    "Scale persistence is a diagnostic only. A finite-radius theorem still needs valid remainder/domain bounds."
+                    "Scale persistence is a diagnostic only. Any conditional finite-radius numerical bound is valid only with independently verified observation/measurement/goal remainder, noise and domain envelopes."
                 ),
             }
     return report
