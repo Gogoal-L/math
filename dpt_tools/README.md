@@ -2,6 +2,13 @@
 
 These scripts turn tangent information, bounded-noise goal ambiguity, finite command congruence and original-expression definedness checks into reproducible numerical artifacts. They are deliberately conservative: a PASS never upgrades a numerical linearization into a native theorem. They require Python 3.10+ and NumPy (`pip install -r requirements.txt`).
 
+The controller's entry remains [DPT_MATH_RESEARCH_MAP.md](../DPT_MATH_RESEARCH_MAP.md).
+The [literature bundle](../literature/README.md) provides stable PDF names and
+statement-level Lean correspondence. No S09 archive adapter is required to read
+or run these tools. Before native replay, record history/command identity,
+units and time convention, reference/query, information budget and provenance
+alongside the input; array compatibility alone does not validate that contract.
+
 ## `predictive_state_audit.py`
 
 Input is an `.npz` file with:
@@ -53,6 +60,16 @@ Missing observation, goal or measurement remainder means **no quadratic
 bound is emitted**. The output is a conditional algebraic estimate, not
 a verified native-model certificate. Rank thresholds, channel units and
 the validity domain remain independent audit requirements.
+
+Rank and pseudoinverse now use the same strict singular cutoff
+`s > max(atol, rtol*s_max)`. The reported factor is the minimum-norm factor
+on the retained singular directions; discarded goal components stay in `E`.
+For the analytic example `O=0, P=eps*y, G=y`, retaining `eps` gives gain
+`1/abs(eps)` and noise error `sigma_P/abs(eps)`. Discarding `eps` gives
+`E=DG` and the state-ball bound `r`, rather than an exact-recovery report
+using a direction rejected by the rank audit. This is numerical truncation,
+not proof of physical unobservability. Fix units/whitening before interpreting
+the cutoff and compare plausible thresholds near weak singular values.
 
 
 ## `command_domain_audit.py`
@@ -156,7 +173,7 @@ inverse AST nodes and classifies sampled occurrence coverage as
 ## Tests
 
 ```bash
-python -m unittest -v test_dpt_tools.py test_frontier_tools.py
+python -m unittest discover -v -p 'test_*.py'
 ```
 
 ## `mixed_interaction_audit.py` (S09 scalar four-corner mixed query)

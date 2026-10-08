@@ -1,0 +1,1998 @@
+{
+  "schema_version": 1,
+  "source_repository": "openai/math",
+  "source_commit": "fd4aeeb2ee4fc729c18d98444fed42fd0529eeeb",
+  "snapshot_date": "2026-10-08",
+  "map_base_commit": "8bd799cfba17133171e57523d1d6d3064d935649",
+  "verification_scope": "PDF first-page identity, source-commit byte comparison, selected Lean scope/link mapping, 37 synthetic Python tests. No independent full-paper proof or local Lean build. No S09 archive supplied.",
+  "papers": [
+    {
+      "id": "F116-A",
+      "family": "116",
+      "title": "One Rational Matrix Hitting Point for Noncommutative Formulas",
+      "question": "command-algebra",
+      "pdf": "literature/F116-A_noncommutative_hitting_point.pdf",
+      "upstream_path": "preprints/One-Rational-Matrix-Hitting-Point-for-Noncommutative-Formulas-September-24-2026/One-Rational-Matrix-Hitting-Point-for-Noncommutative-Formulas-September-24-2026.pdf",
+      "version_notes": "preprints/One-Rational-Matrix-Hitting-Point-for-Noncommutative-Formulas-September-24-2026/README.md",
+      "map_locator": "F116-A",
+      "theorem_transfer": "Independent DPT derivation or proof-pattern use; see MAP, not a native claim.",
+      "lean_scope": "literature/lean/F116_scope.md",
+      "lean_coverage": "有 family selected scope；对应原模型与 selected statement，DPT transfer 另行证明。"
+    },
+    {
+      "id": "F116-B",
+      "family": "116",
+      "title": "Polynomial Hitting Lists for Noncommutative Rational Formulas",
+      "question": "command-algebra",
+      "pdf": "literature/F116-B_rational_hitting_lists.pdf",
+      "upstream_path": "preprints/Polynomial-Hitting-Lists-for-Noncommutative-Rational-Formulas-September-24-2026/Polynomial-Hitting-Lists-for-Noncommutative-Rational-Formulas-September-24-2026.pdf",
+      "version_notes": "preprints/Polynomial-Hitting-Lists-for-Noncommutative-Rational-Formulas-September-24-2026/README.md",
+      "map_locator": "F116-B",
+      "theorem_transfer": "Independent DPT derivation or proof-pattern use; see MAP, not a native claim.",
+      "lean_scope": "literature/lean/F116_scope.md",
+      "lean_coverage": "有 family selected scope；对应原模型与 selected statement，DPT transfer 另行证明。"
+    },
+    {
+      "id": "F229",
+      "family": "229",
+      "title": "The exact reconstruction threshold for the three-state symmetric channel",
+      "question": "acquisition",
+      "pdf": "literature/F229_three_state_reconstruction.pdf",
+      "upstream_path": "preprints/The-exact-reconstruction-threshold-for-the-three-state-symmetric-channel-September-25-2026/paper.pdf",
+      "version_notes": "preprints/The-exact-reconstruction-threshold-for-the-three-state-symmetric-channel-September-25-2026/README.md",
+      "map_locator": "F229",
+      "theorem_transfer": "Independent DPT derivation or proof-pattern use; see MAP, not a native claim.",
+      "lean_scope": "literature/lean/F229_scope.md",
+      "lean_coverage": "有 family selected scope；对应原模型与 selected statement，DPT transfer 另行证明。"
+    },
+    {
+      "id": "F266",
+      "family": "266",
+      "title": "The maximum number of mutually unbiased bases in dimension six",
+      "question": "certificate",
+      "pdf": "literature/F266_dimension_six_MUB_certificate.pdf",
+      "upstream_path": "preprints/The-maximum-number-of-mutually-unbiased-bases-in-dimension-six-September-24-2026/The-maximum-number-of-mutually-unbiased-bases-in-dimension-six-September-24-2026.pdf",
+      "version_notes": "preprints/The-maximum-number-of-mutually-unbiased-bases-in-dimension-six-September-24-2026/README.md",
+      "map_locator": "F266",
+      "theorem_transfer": "Independent DPT derivation or proof-pattern use; see MAP, not a native claim.",
+      "lean_scope": "literature/lean/F266_scope.md",
+      "lean_coverage": "selected family bound 为 at most five；不证明 headline N(6)=3。"
+    },
+    {
+      "id": "F365-A",
+      "family": "365",
+      "title": "Determination of a metric and a unitary connection from one boundary patch",
+      "question": "identifiability",
+      "pdf": "literature/F365-A_metric_connection_partial_boundary.pdf",
+      "upstream_path": "preprints/Determination-of-a-metric-and-a-unitary-connection-from-one-boundary-patch-October-5-2026/paper.pdf",
+      "version_notes": "preprints/Determination-of-a-metric-and-a-unitary-connection-from-one-boundary-patch-October-5-2026/README.md",
+      "map_locator": "F365-A",
+      "theorem_transfer": "Independent DPT derivation or proof-pattern use; see MAP, not a native claim.",
+      "lean_scope": "literature/lean/F365_scope.md",
+      "lean_coverage": "未覆盖：365 scope 仅覆盖 F365-C。"
+    },
+    {
+      "id": "F365-B",
+      "family": "365",
+      "title": "Smooth anisotropic uniqueness in the Calderón problem from one boundary patch",
+      "question": "finite-radius",
+      "pdf": "literature/F365-B_smooth_anisotropic_Calderon.pdf",
+      "upstream_path": "preprints/Smooth-Anisotropic-Uniqueness-in-the-Calderon-Problem-from-One-Boundary-Patch-September-24-2026/paper.pdf",
+      "version_notes": "preprints/Smooth-Anisotropic-Uniqueness-in-the-Calderon-Problem-from-One-Boundary-Patch-September-24-2026/README.md",
+      "map_locator": "F365-B",
+      "theorem_transfer": "Independent DPT derivation or proof-pattern use; see MAP, not a native claim.",
+      "lean_scope": "literature/lean/F365_scope.md",
+      "lean_coverage": "未覆盖：365 scope 仅覆盖 F365-C。"
+    },
+    {
+      "id": "F365-C",
+      "family": "365",
+      "title": "Nonuniqueness for Bounded Measurable Scalar Conductivities in Three Dimensions",
+      "question": "identifiability",
+      "pdf": "literature/F365-C_rough_scalar_conductivity_nonuniqueness.pdf",
+      "upstream_path": "preprints/Nonuniqueness-for-Bounded-Measurable-Scalar-Conductivities-in-Three-Dimensions-September-23-2026/paper.pdf",
+      "version_notes": "preprints/Nonuniqueness-for-Bounded-Measurable-Scalar-Conductivities-in-Three-Dimensions-September-23-2026/README.md",
+      "map_locator": "F365-C",
+      "theorem_transfer": "Independent DPT derivation or proof-pattern use; see MAP, not a native claim.",
+      "lean_scope": "literature/lean/F365_scope.md",
+      "lean_coverage": "覆盖 selected scalar-conductivity nonuniqueness statement。"
+    },
+    {
+      "id": "F372",
+      "family": "372",
+      "title": "Global Uniqueness for the Smooth Isotropic Elasticity Inverse Problem",
+      "question": "identifiability",
+      "pdf": "literature/F372_smooth_isotropic_elasticity_uniqueness.pdf",
+      "upstream_path": "preprints/Global-Uniqueness-for-the-Smooth-Isotropic-Elasticity-Inverse-Problem-September-24-2026/article.pdf",
+      "version_notes": "preprints/Global-Uniqueness-for-the-Smooth-Isotropic-Elasticity-Inverse-Problem-September-24-2026/README.md",
+      "map_locator": "F372",
+      "theorem_transfer": "Independent DPT derivation or proof-pattern use; see MAP, not a native claim.",
+      "lean_scope": "literature/lean/F372_scope.md",
+      "lean_coverage": "有 family selected scope；对应原模型与 selected statement，DPT transfer 另行证明。"
+    },
+    {
+      "id": "F374",
+      "family": "374",
+      "title": "SHARP ONE-THIRD STABILITY OF BRENIER MAPS",
+      "question": "stability",
+      "pdf": "literature/F374_Brenier_one_third_stability.pdf",
+      "upstream_path": "preprints/Sharp-One-Third-Stability-of-Brenier-Maps-September-25-2026/article.pdf",
+      "version_notes": "preprints/Sharp-One-Third-Stability-of-Brenier-Maps-September-25-2026/README.md",
+      "map_locator": "F374",
+      "theorem_transfer": "Independent DPT derivation or proof-pattern use; see MAP, not a native claim.",
+      "lean_scope": "literature/lean/F374_scope.md",
+      "lean_coverage": "有 family selected scope；对应原模型与 selected statement，DPT transfer 另行证明。"
+    },
+    {
+      "id": "F357",
+      "family": "357",
+      "title": "Bi-Lipschitz Coordinates at Regular Points of Noncollapsed RCD Spaces",
+      "question": "finite-radius",
+      "pdf": "literature/F357_regular_RCD_bi_Lipschitz_coordinates.pdf",
+      "upstream_path": "preprints/Bi-Lipschitz-Coordinates-at-Regular-Points-of-Noncollapsed-RCD-Spaces-September-25-2026/paper.pdf",
+      "version_notes": "preprints/Bi-Lipschitz-Coordinates-at-Regular-Points-of-Noncollapsed-RCD-Spaces-September-25-2026/README.md",
+      "map_locator": "F357",
+      "theorem_transfer": "Independent DPT derivation or proof-pattern use; see MAP, not a native claim.",
+      "lean_scope": null,
+      "lean_coverage": "本版本无 357 scope。"
+    },
+    {
+      "id": "F330",
+      "family": "330",
+      "title": "A uniformly discrete counterexample to bounded approximation in Lipschitz-free spaces",
+      "question": "stability",
+      "pdf": "literature/F330_discrete_Lipschitz_free_bounded_approximation.pdf",
+      "upstream_path": "preprints/Failure-of-Bounded-Approximation-in-a-Lipschitz-Free-Space-over-a-Uniformly-Discrete-Metric-Space-September-26-2026/main.pdf",
+      "version_notes": "preprints/Failure-of-Bounded-Approximation-in-a-Lipschitz-Free-Space-over-a-Uniformly-Discrete-Metric-Space-September-26-2026/README.md",
+      "map_locator": "F330",
+      "theorem_transfer": "Independent DPT derivation or proof-pattern use; see MAP, not a native claim.",
+      "lean_scope": "literature/lean/F330_scope.md",
+      "lean_coverage": "有 family selected scope；对应原模型与 selected statement，DPT transfer 另行证明。"
+    },
+    {
+      "id": "F094",
+      "family": "094",
+      "title": "Subpolynomial dimension reduction in Lp",
+      "question": "stability",
+      "pdf": "literature/F094_Lp_subpolynomial_dimension_reduction.pdf",
+      "upstream_path": "preprints/Subpolynomial-dimension-reduction-in-Lp-September-23-2026/paper.pdf",
+      "version_notes": "preprints/Subpolynomial-dimension-reduction-in-Lp-September-23-2026/README.md",
+      "map_locator": "F094",
+      "theorem_transfer": "Independent DPT derivation or proof-pattern use; see MAP, not a native claim.",
+      "lean_scope": "literature/lean/F094_scope.md",
+      "lean_coverage": "有 family selected scope；对应原模型与 selected statement，DPT transfer 另行证明。"
+    },
+    {
+      "id": "F098",
+      "family": "098",
+      "title": "A doubling Hilbert subset with no finite-dimensional bi-Lipschitz embedding",
+      "question": "stability",
+      "pdf": "literature/F098_doubling_Hilbert_embedding_obstruction.pdf",
+      "upstream_path": "preprints/A-doubling-Hilbert-subset-with-no-finite-dimensional-bi-Lipschitz-embedding-September-25-2026/main.pdf",
+      "version_notes": "preprints/A-doubling-Hilbert-subset-with-no-finite-dimensional-bi-Lipschitz-embedding-September-25-2026/README.md",
+      "map_locator": "F098",
+      "theorem_transfer": "Independent DPT derivation or proof-pattern use; see MAP, not a native claim.",
+      "lean_scope": "literature/lean/F098_scope.md",
+      "lean_coverage": "有 family selected scope；对应原模型与 selected statement，DPT transfer 另行证明。"
+    },
+    {
+      "id": "F289-A",
+      "family": "289",
+      "title": "Universal strong Kadison–Kastler stability",
+      "question": "command-algebra",
+      "pdf": "literature/F289-A_strong_Kadison_Kastler_stability.pdf",
+      "upstream_path": "preprints/Universal-strong-Kadison-Kastler-stability-September-23-2026/paper.pdf",
+      "version_notes": "preprints/Universal-strong-Kadison-Kastler-stability-September-23-2026/README.md",
+      "map_locator": "F289-A",
+      "theorem_transfer": "Independent DPT derivation or proof-pattern use; see MAP, not a native claim.",
+      "lean_scope": "literature/lean/F289_scope.md",
+      "lean_coverage": "有 family selected scope；对应原模型与 selected statement，DPT transfer 另行证明。"
+    },
+    {
+      "id": "F289-B",
+      "family": "289",
+      "title": "Near Inclusions of von Neumann Algebras Without Small Spatial Embeddings",
+      "question": "command-algebra",
+      "pdf": "literature/F289-B_one_sided_near_inclusion_counterexample.pdf",
+      "upstream_path": "preprints/Near-Inclusions-of-von-Neumann-Algebras-Without-Small-Spatial-Embeddings-October-5-2026/near-inclusions.pdf",
+      "version_notes": "preprints/Near-Inclusions-of-von-Neumann-Algebras-Without-Small-Spatial-Embeddings-October-5-2026/README.md",
+      "map_locator": "F289-B",
+      "theorem_transfer": "Independent DPT derivation or proof-pattern use; see MAP, not a native claim.",
+      "lean_scope": "literature/lean/F289_scope.md",
+      "lean_coverage": "未覆盖本篇 one-sided companion。"
+    },
+    {
+      "id": "F251",
+      "family": "251",
+      "title": "Strong Ulam Stability Characterizes Amenability",
+      "question": "command-algebra",
+      "pdf": "literature/F251_strong_Ulam_stability_amenability.pdf",
+      "upstream_path": "preprints/Strong-Ulam-Stability-Characterizes-Amenability-October-5-2026/strong-ulam-stability.pdf",
+      "version_notes": "preprints/Strong-Ulam-Stability-Characterizes-Amenability-October-5-2026/README.md",
+      "map_locator": "F251",
+      "theorem_transfer": "Independent DPT derivation or proof-pattern use; see MAP, not a native claim.",
+      "lean_scope": "literature/lean/F251_scope.md",
+      "lean_coverage": "未覆盖本篇：251 scope 覆盖 unitarizability 主结果。"
+    },
+    {
+      "id": "F325-A",
+      "family": "325",
+      "title": "The complete Crouzeix theorem Structural route The complete Crouzeix theorem: optimal similarity and a common positive boundary representation",
+      "question": "operator-envelope",
+      "pdf": "literature/F325-A_complete_Crouzeix_structural.pdf",
+      "upstream_path": "preprints/The-complete-Crouzeix-theorem-September-23-2026/paper.pdf",
+      "version_notes": "preprints/The-complete-Crouzeix-theorem-September-23-2026/README.md",
+      "map_locator": "F325-A",
+      "theorem_transfer": "Independent DPT derivation or proof-pattern use; see MAP, not a native claim.",
+      "lean_scope": "literature/lean/F325_scope.md",
+      "lean_coverage": "有 family selected scope；对应原模型与 selected statement，DPT transfer 另行证明。"
+    },
+    {
+      "id": "F363",
+      "family": "363",
+      "title": "Nonuniqueness with local conservation for the hard-sphere Boltzmann equation",
+      "question": "identifiability",
+      "pdf": "literature/F363_local_conservation_Boltzmann_nonuniqueness.pdf",
+      "upstream_path": "preprints/Nonuniqueness-with-local-conservation-for-the-hard-sphere-Boltzmann-equation-October-5-2026/paper.pdf",
+      "version_notes": "preprints/Nonuniqueness-with-local-conservation-for-the-hard-sphere-Boltzmann-equation-October-5-2026/README.md",
+      "map_locator": "F363",
+      "theorem_transfer": "Independent DPT derivation or proof-pattern use; see MAP, not a native claim.",
+      "lean_scope": "literature/lean/F363_scope.md",
+      "lean_coverage": "仅有较早 periodic theorem scope；不覆盖本篇全部 local-conservation refinement。"
+    },
+    {
+      "id": "F129",
+      "family": "129",
+      "title": "An exponential two-way deterministic state lower bound for one-way liveness",
+      "question": "information",
+      "pdf": "literature/F129_one_way_liveness_state_lower_bound.pdf",
+      "upstream_path": "preprints/An-exponential-two-way-deterministic-state-lower-bound-for-one-way-liveness-September-25-2026/main.pdf",
+      "version_notes": "preprints/An-exponential-two-way-deterministic-state-lower-bound-for-one-way-liveness-September-25-2026/README.md",
+      "map_locator": "F129",
+      "theorem_transfer": "Independent DPT derivation or proof-pattern use; see MAP, not a native claim.",
+      "lean_scope": "literature/lean/F129_scope.md",
+      "lean_coverage": "有 family selected scope；对应原模型与 selected statement，DPT transfer 另行证明。"
+    },
+    {
+      "id": "F332",
+      "family": "332",
+      "title": "Metric Markov Cotype Two of ℓ1",
+      "question": "stability",
+      "pdf": "literature/F332_l1_Markov_cotype_extension.pdf",
+      "upstream_path": "preprints/Metric-Markov-Cotype-Two-of-l1-October-5-2026/l1-markov-cotype.pdf",
+      "version_notes": "preprints/Metric-Markov-Cotype-Two-of-l1-October-5-2026/README.md",
+      "map_locator": "F332",
+      "theorem_transfer": "Independent DPT derivation or proof-pattern use; see MAP, not a native claim.",
+      "lean_scope": null,
+      "lean_coverage": "本版本无 332 scope。"
+    },
+    {
+      "id": "F324",
+      "family": "324",
+      "title": "Lipschitz Equivalent Separable Banach Spaces Need Not Be Linearly Isomorphic",
+      "question": "stability",
+      "pdf": "literature/F324_metric_equivalent_nonisomorphic_Banach.pdf",
+      "upstream_path": "preprints/Lipschitz-Equivalent-Separable-Banach-Spaces-Need-Not-Be-Linearly-Isomorphic-September-24-2026/paper.pdf",
+      "version_notes": "preprints/Lipschitz-Equivalent-Separable-Banach-Spaces-Need-Not-Be-Linearly-Isomorphic-September-24-2026/README.md",
+      "map_locator": "F324",
+      "theorem_transfer": "Independent DPT derivation or proof-pattern use; see MAP, not a native claim.",
+      "lean_scope": "literature/lean/F324_scope.md",
+      "lean_coverage": "有 family selected scope；对应原模型与 selected statement，DPT transfer 另行证明。"
+    },
+    {
+      "id": "F329",
+      "family": "329",
+      "title": "Counterexamples to the duality conjecture for metric entropy",
+      "question": "goal-ambiguity",
+      "pdf": "literature/F329_metric_entropy_duality_counterexample.pdf",
+      "upstream_path": "preprints/Counterexamples-to-the-duality-conjecture-for-metric-entropy-September-24-2026/main.pdf",
+      "version_notes": "preprints/Counterexamples-to-the-duality-conjecture-for-metric-entropy-September-24-2026/README.md",
+      "map_locator": "F329",
+      "theorem_transfer": "Independent DPT derivation or proof-pattern use; see MAP, not a native claim.",
+      "lean_scope": "literature/lean/F329_scope.md",
+      "lean_coverage": "有 family selected scope；对应原模型与 selected statement，DPT transfer 另行证明。"
+    },
+    {
+      "id": "F376-A",
+      "family": "376",
+      "title": "Finite Instructions and Solenoidal Shear Flows",
+      "question": "command-algebra",
+      "pdf": "literature/F376-A_solenoidal_shear_instructions.pdf",
+      "upstream_path": "preprints/Finite-Instructions-and-Solenoidal-Shear-Flows-September-27-2026/manuscript.pdf",
+      "version_notes": "preprints/Finite-Instructions-and-Solenoidal-Shear-Flows-September-27-2026/README.md",
+      "map_locator": "F376-A",
+      "theorem_transfer": "Independent DPT derivation or proof-pattern use; see MAP, not a native claim.",
+      "lean_scope": "literature/lean/F376_scope.md",
+      "lean_coverage": "family scope 指向其他 sheet/detector papers；本 companion 的 exact statement 对应未独立核验。"
+    },
+    {
+      "id": "F376-B",
+      "family": "376",
+      "title": "Incompressible Box Transport and Finite Computation",
+      "question": "command-algebra",
+      "pdf": "literature/F376-B_incompressible_box_computation.pdf",
+      "upstream_path": "preprints/Incompressible-Box-Transport-and-Finite-Computation-October-6-2026/manuscript.pdf",
+      "version_notes": "preprints/Incompressible-Box-Transport-and-Finite-Computation-October-6-2026/README.md",
+      "map_locator": "F376-B",
+      "theorem_transfer": "Independent DPT derivation or proof-pattern use; see MAP, not a native claim.",
+      "lean_scope": "literature/lean/F376_scope.md",
+      "lean_coverage": "scope 链接 September 27 box edition；October 6 edition 与 October 7 repairs 不自动继承覆盖。"
+    },
+    {
+      "id": "F132",
+      "family": "132",
+      "title": "A superquadratic separation between sensitivity and block sensitivity",
+      "question": "mixed-interaction",
+      "pdf": "literature/F132_sensitivity_block_sensitivity_separation.pdf",
+      "upstream_path": "preprints/A-superquadratic-separation-between-sensitivity-and-block-sensitivity-September-25-2026/paper.pdf",
+      "version_notes": "preprints/A-superquadratic-separation-between-sensitivity-and-block-sensitivity-September-25-2026/README.md",
+      "map_locator": "F132",
+      "theorem_transfer": "Independent DPT derivation or proof-pattern use; see MAP, not a native claim.",
+      "lean_scope": "literature/lean/F132_scope.md",
+      "lean_coverage": "有 family selected scope；对应原模型与 selected statement，DPT transfer 另行证明。"
+    },
+    {
+      "id": "F122-A",
+      "family": "122",
+      "title": "Uniform quasipolynomial-time trace reconstruction",
+      "question": "information",
+      "pdf": "literature/F122-A_uniform_trace_reconstruction.pdf",
+      "upstream_path": "preprints/Uniform-quasipolynomial-time-trace-reconstruction-October-5-2026/uniform-trace-reconstruction.pdf",
+      "version_notes": "preprints/Uniform-quasipolynomial-time-trace-reconstruction-October-5-2026/README.md",
+      "map_locator": "F122-A",
+      "theorem_transfer": "Independent DPT derivation or proof-pattern use; see MAP, not a native claim.",
+      "lean_scope": "literature/lean/F122_scope.md",
+      "lean_coverage": "未覆盖本篇 uniform decoder；122 scope 为 lower bound。"
+    },
+    {
+      "id": "F122-B",
+      "family": "122",
+      "title": "Quantitative lower bounds for trace reconstruction",
+      "question": "information",
+      "pdf": "literature/F122-B_trace_reconstruction_lower_bound.pdf",
+      "upstream_path": "preprints/quantitative-lower-bounds-for-trace-reconstruction-September-24-2026/paper.pdf",
+      "version_notes": "preprints/quantitative-lower-bounds-for-trace-reconstruction-September-24-2026/README.md",
+      "map_locator": "F122-B",
+      "theorem_transfer": "Independent DPT derivation or proof-pattern use; see MAP, not a native claim.",
+      "lean_scope": "literature/lean/F122_scope.md",
+      "lean_coverage": "覆盖 selected deletion-trace lower bound。"
+    },
+    {
+      "id": "F355",
+      "family": "355",
+      "title": "UNIQUENESS OF TANGENT FLOWS AT THE FIRST SINGULAR TIME OF EMBEDDED SURFACE MEAN-CURVATURE FLOW",
+      "question": "finite-radius",
+      "pdf": "literature/F355_tangent_flow_uniqueness.pdf",
+      "upstream_path": "preprints/Tangent-flow-uniqueness-2026-09-24/paper.pdf",
+      "version_notes": "preprints/Tangent-flow-uniqueness-2026-09-24/README.md",
+      "map_locator": "F355",
+      "theorem_transfer": "Independent DPT derivation or proof-pattern use; see MAP, not a native claim.",
+      "lean_scope": null,
+      "lean_coverage": "本版本无 355 scope。"
+    },
+    {
+      "id": "F140-A",
+      "family": "140",
+      "title": "Memory and precision in noiseless Gaussian regression",
+      "question": "information",
+      "pdf": "literature/F140-A_Gaussian_regression_memory_precision.pdf",
+      "upstream_path": "preprints/Memory-and-precision-in-noiseless-Gaussian-regression-September-27-2026/paper.pdf",
+      "version_notes": "preprints/Memory-and-precision-in-noiseless-Gaussian-regression-September-27-2026/README.md",
+      "map_locator": "F140-A",
+      "theorem_transfer": "Independent DPT derivation or proof-pattern use; see MAP, not a native claim.",
+      "lean_scope": "literature/lean/F140_scope.md",
+      "lean_coverage": "有 family selected scope；对应原模型与 selected statement，DPT transfer 另行证明。"
+    },
+    {
+      "id": "F140-B",
+      "family": "140",
+      "title": "Posterior replicas and conditional information in Gaussian regression",
+      "question": "information",
+      "pdf": "literature/F140-B_posterior_replicas_information.pdf",
+      "upstream_path": "preprints/Posterior-replicas-and-conditional-information-in-Gaussian-regression-September-27-2026/paper.pdf",
+      "version_notes": "preprints/Posterior-replicas-and-conditional-information-in-Gaussian-regression-September-27-2026/README.md",
+      "map_locator": "F140-B",
+      "theorem_transfer": "Independent DPT derivation or proof-pattern use; see MAP, not a native claim.",
+      "lean_scope": "literature/lean/F140_scope.md",
+      "lean_coverage": "有 family selected scope；对应原模型与 selected statement，DPT transfer 另行证明。"
+    },
+    {
+      "id": "F140-C",
+      "family": "140",
+      "title": "Localization costs and information growth for exact Gaussian observations",
+      "question": "information",
+      "pdf": "literature/F140-C_exact_Gaussian_localization.pdf",
+      "upstream_path": "preprints/Localization-costs-and-information-growth-for-exact-Gaussian-observations-September-27-2026/paper.pdf",
+      "version_notes": "preprints/Localization-costs-and-information-growth-for-exact-Gaussian-observations-September-27-2026/README.md",
+      "map_locator": "F140-C",
+      "theorem_transfer": "Independent DPT derivation or proof-pattern use; see MAP, not a native claim.",
+      "lean_scope": "literature/lean/F140_scope.md",
+      "lean_coverage": "有 family selected scope；对应原模型与 selected statement，DPT transfer 另行证明。"
+    },
+    {
+      "id": "F119",
+      "family": "119",
+      "title": "Sharp binary-information contraction on the discrete cube",
+      "question": "information",
+      "pdf": "literature/F119_binary_information_contraction.pdf",
+      "upstream_path": "preprints/Sharp-binary-information-contraction-on-the-discrete-cube-September-24-2026/main.pdf",
+      "version_notes": "preprints/Sharp-binary-information-contraction-on-the-discrete-cube-September-24-2026/README.md",
+      "map_locator": "F119",
+      "theorem_transfer": "Independent DPT derivation or proof-pattern use; see MAP, not a native claim.",
+      "lean_scope": "literature/lean/F119_scope.md",
+      "lean_coverage": "有 family selected scope；对应原模型与 selected statement，DPT transfer 另行证明。"
+    },
+    {
+      "id": "F325-B",
+      "family": "325",
+      "title": "A direct proof of the complete Crouzeix inequality",
+      "question": "operator-envelope",
+      "pdf": "literature/F325-B_complete_Crouzeix_direct.pdf",
+      "upstream_path": "preprints/A-direct-proof-of-the-complete-Crouzeix-inequality-September-26-2026/paper.pdf",
+      "version_notes": "preprints/A-direct-proof-of-the-complete-Crouzeix-inequality-September-26-2026/README.md",
+      "map_locator": "F325-B",
+      "theorem_transfer": "Independent DPT derivation or proof-pattern use; see MAP, not a native claim.",
+      "lean_scope": "literature/lean/F325_scope.md",
+      "lean_coverage": "有 family selected scope；对应原模型与 selected statement，DPT transfer 另行证明。"
+    }
+  ],
+  "formalization": [
+    {
+      "family": "094",
+      "scope": "literature/lean/F094_scope.md",
+      "scope_status": "Upstream selected statements; no local Lean compilation",
+      "selected_statements": [
+        {
+          "snapshot": "literature/lean/F094_SubpolynomialLp.lean",
+          "source_path": "lean/ComparatorChallenges/SubpolynomialLp.lean",
+          "comparator_config": "lean/ComparatorChallenges/SubpolynomialLp.json",
+          "solution_module": "OAI.Analysis.LpDimension.Main",
+          "theorem_names": [
+            "OAI.SubpolynomialLp.source_main"
+          ]
+        }
+      ]
+    },
+    {
+      "family": "098",
+      "scope": "literature/lean/F098_scope.md",
+      "scope_status": "Upstream selected statements; no local Lean compilation",
+      "selected_statements": [
+        {
+          "snapshot": "literature/lean/F098_DoublingHilbert.lean",
+          "source_path": "lean/ComparatorChallenges/DoublingHilbert.lean",
+          "comparator_config": "lean/ComparatorChallenges/DoublingHilbert.json",
+          "solution_module": "OAI.Geometry.DoublingHilbert.Main",
+          "theorem_names": [
+            "OAI.DoublingHilbert.main"
+          ]
+        },
+        {
+          "snapshot": "literature/lean/F098_CompactBanach.lean",
+          "source_path": "lean/ComparatorChallenges/CompactBanach.lean",
+          "comparator_config": "lean/ComparatorChallenges/CompactBanach.json",
+          "solution_module": "OAI.Geometry.DoublingHilbert.CompactBanach",
+          "theorem_names": [
+            "OAI.CompactBanach.main"
+          ]
+        }
+      ]
+    },
+    {
+      "family": "116",
+      "scope": "literature/lean/F116_scope.md",
+      "scope_status": "Upstream selected statements; no local Lean compilation",
+      "selected_statements": [
+        {
+          "snapshot": "literature/lean/F116_FormulaHitting.lean",
+          "source_path": "lean/ComparatorChallenges/FormulaHitting.lean",
+          "comparator_config": "lean/ComparatorChallenges/FormulaHitting.json",
+          "solution_module": "OAI.Algebra.FormulaHitting.Hitting",
+          "theorem_names": [
+            "OAI.NCHitting.universal_hitting"
+          ]
+        },
+        {
+          "snapshot": "literature/lean/F116_RationalHitting.lean",
+          "source_path": "lean/ComparatorChallenges/RationalHitting.lean",
+          "comparator_config": "lean/ComparatorChallenges/RationalHitting.json",
+          "solution_module": "OAI.Computability.RationalHitting.Main",
+          "theorem_names": [
+            "OAI.RationalHitting.main"
+          ]
+        }
+      ]
+    },
+    {
+      "family": "119",
+      "scope": "literature/lean/F119_scope.md",
+      "scope_status": "Upstream selected statements; no local Lean compilation",
+      "selected_statements": [
+        {
+          "snapshot": "literature/lean/F119_CourtadeKumar.lean",
+          "source_path": "lean/ComparatorChallenges/CourtadeKumar.lean",
+          "comparator_config": "lean/ComparatorChallenges/CourtadeKumar.json",
+          "solution_module": "OAI.InformationTheory.BooleanNoise.Main",
+          "theorem_names": [
+            "OAI.LeanBlast.CourtadeKumar.courtadeKumarAndAttainment"
+          ]
+        },
+        {
+          "snapshot": "literature/lean/F119_SoftChannel204.lean",
+          "source_path": "lean/ComparatorChallenges/SoftChannel204.lean",
+          "comparator_config": "lean/ComparatorChallenges/SoftChannel204.json",
+          "solution_module": "OAI.InformationTheory.SoftChannel.Main",
+          "theorem_names": [
+            "OAI.SoftChannel204.fullMain"
+          ]
+        }
+      ]
+    },
+    {
+      "family": "122",
+      "scope": "literature/lean/F122_scope.md",
+      "scope_status": "Upstream selected statements; no local Lean compilation",
+      "selected_statements": [
+        {
+          "snapshot": "literature/lean/F122_TraceReconstruction.lean",
+          "source_path": "lean/ComparatorChallenges/TraceReconstruction.lean",
+          "comparator_config": "lean/ComparatorChallenges/TraceReconstruction.json",
+          "solution_module": "OAI.Probability.TraceReconstruction",
+          "theorem_names": [
+            "OAI.TraceReconstruction.quantitative_sample_lower_bound",
+            "OAI.TraceReconstruction.superpolynomial_one_trace",
+            "OAI.TraceReconstruction.superpolynomial_sample_complexity"
+          ]
+        }
+      ]
+    },
+    {
+      "family": "129",
+      "scope": "literature/lean/F129_scope.md",
+      "scope_status": "Upstream selected statements; no local Lean compilation",
+      "selected_statements": [
+        {
+          "snapshot": "literature/lean/F129_TwoWayComplementation.lean",
+          "source_path": "lean/ComparatorChallenges/TwoWayComplementation.lean",
+          "comparator_config": "lean/ComparatorChallenges/TwoWayComplementation.json",
+          "solution_module": "OAI.Combinatorics.TwoWayAutomata.Main",
+          "theorem_names": [
+            "OAI.TwoWayComplementation.complementation_lower_bound_finite"
+          ]
+        },
+        {
+          "snapshot": "literature/lean/F129_TwoWayDeterminization.lean",
+          "source_path": "lean/ComparatorChallenges/TwoWayDeterminization.lean",
+          "comparator_config": "lean/ComparatorChallenges/TwoWayDeterminization.json",
+          "solution_module": "OAI.Combinatorics.TwoWayAutomata.ExplicitFamily",
+          "theorem_names": [
+            "OAI.TwoWayComplementation.explicit_family_main"
+          ]
+        },
+        {
+          "snapshot": "literature/lean/F129_OneWayLiveness.lean",
+          "source_path": "lean/ComparatorChallenges/OneWayLiveness.lean",
+          "comparator_config": "lean/ComparatorChallenges/OneWayLiveness.json",
+          "solution_module": "OAI.Combinatorics.Automata.Main",
+          "theorem_names": [
+            "OAI.OneWayLiveness.main_theorem"
+          ]
+        }
+      ]
+    },
+    {
+      "family": "132",
+      "scope": "literature/lean/F132_scope.md",
+      "scope_status": "Upstream selected statements; no local Lean compilation",
+      "selected_statements": [
+        {
+          "snapshot": "literature/lean/F132_SensitivitySeparation.lean",
+          "source_path": "lean/ComparatorChallenges/SensitivitySeparation.lean",
+          "comparator_config": "lean/ComparatorChallenges/SensitivitySeparation.json",
+          "solution_module": "OAI.Combinatorics.Sensitivity.Separation",
+          "theorem_names": [
+            "OAI.Paper320.quantitative_separation"
+          ]
+        }
+      ]
+    },
+    {
+      "family": "140",
+      "scope": "literature/lean/F140_scope.md",
+      "scope_status": "Upstream selected statements; no local Lean compilation",
+      "selected_statements": [
+        {
+          "snapshot": "literature/lean/F140_MemoryPrecision.lean",
+          "source_path": "lean/ComparatorChallenges/MemoryPrecision.lean",
+          "comparator_config": "lean/ComparatorChallenges/MemoryPrecision.json",
+          "solution_module": "OAI.Probability.MemoryPrecision.Main",
+          "theorem_names": [
+            "OAI.MemoryPrecision.main"
+          ]
+        },
+        {
+          "snapshot": "literature/lean/F140_NoiselessRegression.lean",
+          "source_path": "lean/ComparatorChallenges/NoiselessRegression.lean",
+          "comparator_config": "lean/ComparatorChallenges/NoiselessRegression.json",
+          "solution_module": "OAI.Probability.GaussianRegression.Main",
+          "theorem_names": [
+            "OAI.NoiselessRegression.main"
+          ]
+        },
+        {
+          "snapshot": "literature/lean/F140_PosteriorReplicas.lean",
+          "source_path": "lean/ComparatorChallenges/PosteriorReplicas.lean",
+          "comparator_config": "lean/ComparatorChallenges/PosteriorReplicas.json",
+          "solution_module": "OAI.Probability.PosteriorReplicas.Main",
+          "theorem_names": [
+            "OAI.PosteriorReplicas.source_main"
+          ]
+        },
+        {
+          "snapshot": "literature/lean/F140_GaussianFiniteEntropy.lean",
+          "source_path": "lean/ComparatorChallenges/GaussianFiniteEntropy.lean",
+          "comparator_config": "lean/ComparatorChallenges/GaussianFiniteEntropy.json",
+          "solution_module": "OAI.Probability.Localization.Main",
+          "theorem_names": [
+            "OAI.RepeatedLocalization.FiniteEntropy.finite_expected_regularization"
+          ]
+        },
+        {
+          "snapshot": "literature/lean/F140_GaussianInformation.lean",
+          "source_path": "lean/ComparatorChallenges/GaussianInformation.lean",
+          "comparator_config": "lean/ComparatorChallenges/GaussianInformation.json",
+          "solution_module": "OAI.Probability.GaussianInformation.Main",
+          "theorem_names": [
+            "OAI.RepeatedLocalization.repeated_localization",
+            "OAI.AllScaleInverseVolume.inverse_volume_without_support",
+            "OAI.KernelPotential.kernel_coercivity",
+            "OAI.KernelPotential.actual_row_drift"
+          ]
+        },
+        {
+          "snapshot": "literature/lean/F140_ProjectionMoments.lean",
+          "source_path": "lean/ComparatorChallenges/ProjectionMoments.lean",
+          "comparator_config": "lean/ComparatorChallenges/ProjectionMoments.json",
+          "solution_module": "OAI.Probability.ProjectionMoments.Main",
+          "theorem_names": [
+            "OAI.ProjectionMoments.main"
+          ]
+        },
+        {
+          "snapshot": "literature/lean/F140_GaussianReplacement.lean",
+          "source_path": "lean/ComparatorChallenges/GaussianReplacement.lean",
+          "comparator_config": "lean/ComparatorChallenges/GaussianReplacement.json",
+          "solution_module": "OAI.Probability.GaussianReplacement.FiberEquality",
+          "theorem_names": [
+            "OAI.CurrentProjection.mixedMomentMain",
+            "OAI.CurrentProjection.actualRowMain",
+            "OAI.CurrentProjection.actualRowRefinement",
+            "OAI.CurrentProjection.actualRowSourceMain",
+            "OAI.CurrentProjection.actualRowSourceRefinement",
+            "OAI.CurrentProjection.criticalComparisonMain",
+            "OAI.CurrentProjection.oneLevelComparisonMain",
+            "OAI.CurrentProjection.twoLabelComparisonMain",
+            "OAI.CurrentProjection.hybridBlockMain",
+            "OAI.CurrentProjection.fiberTwoPointMain",
+            "OAI.CurrentProjection.fiberBlockMain"
+          ]
+        },
+        {
+          "snapshot": "literature/lean/F140_SubsphereCurrent.lean",
+          "source_path": "lean/ComparatorChallenges/SubsphereCurrent.lean",
+          "comparator_config": "lean/ComparatorChallenges/SubsphereCurrent.json",
+          "solution_module": "OAI.Probability.Subsphere.Main",
+          "theorem_names": [
+            "OAI.SubsphereCurrent.full_current_main_scope"
+          ]
+        }
+      ]
+    },
+    {
+      "family": "229",
+      "scope": "literature/lean/F229_scope.md",
+      "scope_status": "Upstream selected statements; no local Lean compilation",
+      "selected_statements": [
+        {
+          "snapshot": "literature/lean/F229_ThreeStateSupercritical.lean",
+          "source_path": "lean/ComparatorChallenges/ThreeStateSupercritical.lean",
+          "comparator_config": "lean/ComparatorChallenges/ThreeStateSupercritical.json",
+          "solution_module": "OAI.Probability.ThreeState.Main",
+          "theorem_names": [
+            "OAI.ThreeState.regular_supercritical",
+            "OAI.ThreeState.poisson_supercritical"
+          ]
+        },
+        {
+          "snapshot": "literature/lean/F229_ThreeStateTreeClauses.lean",
+          "source_path": "lean/ComparatorChallenges/ThreeStateTreeClauses.lean",
+          "comparator_config": "lean/ComparatorChallenges/ThreeStateTreeClauses.json",
+          "solution_module": "OAI.Probability.ThreeStateClauses.Main",
+          "theorem_names": [
+            "OAI.ThreeState.TreeClauses.Tree.regular_reconstructs_above_KS",
+            "OAI.ThreeState.TreeClauses.Tree.poisson_reconstructs_above_KS"
+          ]
+        }
+      ]
+    },
+    {
+      "family": "251",
+      "scope": "literature/lean/F251_scope.md",
+      "scope_status": "Upstream selected statements; no local Lean compilation",
+      "selected_statements": [
+        {
+          "snapshot": "literature/lean/F251_DixmierAllDiscrete.lean",
+          "source_path": "lean/ComparatorChallenges/DixmierAllDiscrete.lean",
+          "comparator_config": "lean/ComparatorChallenges/DixmierAllDiscrete.json",
+          "solution_module": "OAI.Analysis.Unitarizability.AllDiscrete",
+          "theorem_names": [
+            "OAI.Dixmier.current_main_theorem"
+          ]
+        },
+        {
+          "snapshot": "literature/lean/F251_Dixmier.lean",
+          "source_path": "lean/ComparatorChallenges/Dixmier.lean",
+          "comparator_config": "lean/ComparatorChallenges/Dixmier.json",
+          "solution_module": "OAI.Analysis.Unitarizability.UniverseTransport",
+          "theorem_names": [
+            "OAI.Dixmier.main_theorem_all_universes"
+          ]
+        }
+      ]
+    },
+    {
+      "family": "266",
+      "scope": "literature/lean/F266_scope.md",
+      "scope_status": "Upstream selected statements; no local Lean compilation",
+      "selected_statements": [
+        {
+          "snapshot": "literature/lean/F266_MUBSix.lean",
+          "source_path": "lean/ComparatorChallenges/MUBSix.lean",
+          "comparator_config": "lean/ComparatorChallenges/MUBSix.json",
+          "solution_module": "OAI.Analysis.MutuallyUnbiased.Main",
+          "theorem_names": [
+            "OAI.MUB6.fourier_and_family_bound"
+          ]
+        },
+        {
+          "snapshot": "literature/lean/F266_HadamardCubeFiber.lean",
+          "source_path": "lean/ComparatorChallenges/HadamardCubeFiber.lean",
+          "comparator_config": "lean/ComparatorChallenges/HadamardCubeFiber.json",
+          "solution_module": "OAI.LinearAlgebra.Hadamard.Main",
+          "theorem_names": [
+            "OAI.HadamardSix.rowRatio_cubeFiber_sum_zero"
+          ]
+        }
+      ]
+    },
+    {
+      "family": "289",
+      "scope": "literature/lean/F289_scope.md",
+      "scope_status": "Upstream selected statements; no local Lean compilation",
+      "selected_statements": [
+        {
+          "snapshot": "literature/lean/F289_StrongKadisonKastler.lean",
+          "source_path": "lean/ComparatorChallenges/StrongKadisonKastler.lean",
+          "comparator_config": "lean/ComparatorChallenges/StrongKadisonKastler.json",
+          "solution_module": "OAI.Analysis.KadisonKastler.StrongStability",
+          "theorem_names": [
+            "OAI.KadisonKastler.universal_strong_stability"
+          ]
+        }
+      ]
+    },
+    {
+      "family": "324",
+      "scope": "literature/lean/F324_scope.md",
+      "scope_status": "Upstream selected statements; no local Lean compilation",
+      "selected_statements": [
+        {
+          "snapshot": "literature/lean/F324_LipschitzEquivalence.lean",
+          "source_path": "lean/ComparatorChallenges/LipschitzEquivalence.lean",
+          "comparator_config": "lean/ComparatorChallenges/LipschitzEquivalence.json",
+          "solution_module": "OAI.Analysis.LipschitzEquivalence.Main",
+          "theorem_names": [
+            "OAI.LipschitzCounterexample.main"
+          ]
+        },
+        {
+          "snapshot": "literature/lean/F324_C0Absorption.lean",
+          "source_path": "lean/ComparatorChallenges/C0Absorption.lean",
+          "comparator_config": "lean/ComparatorChallenges/C0Absorption.json",
+          "solution_module": "OAI.Analysis.C0Absorption.Main",
+          "theorem_names": [
+            "OAI.C0Absorption.main_result"
+          ]
+        }
+      ]
+    },
+    {
+      "family": "325",
+      "scope": "literature/lean/F325_scope.md",
+      "scope_status": "Upstream selected statements; no local Lean compilation",
+      "selected_statements": [
+        {
+          "snapshot": "literature/lean/F325_DirectCrouzeix.lean",
+          "source_path": "lean/ComparatorChallenges/DirectCrouzeix.lean",
+          "comparator_config": "lean/ComparatorChallenges/DirectCrouzeix.json",
+          "solution_module": "OAI.Analysis.DirectCrouzeix.Main",
+          "theorem_names": [
+            "OAI.DirectCrouzeix.complete_crouzeix",
+            "OAI.DirectCrouzeix.uniform_sharpness"
+          ]
+        },
+        {
+          "snapshot": "literature/lean/F325_CompleteCrouzeix.lean",
+          "source_path": "lean/ComparatorChallenges/CompleteCrouzeix.lean",
+          "comparator_config": "lean/ComparatorChallenges/CompleteCrouzeix.json",
+          "solution_module": "OAI.Analysis.NumericalRange.Main",
+          "theorem_names": [
+            "OAI.CompleteCrouzeix.main"
+          ]
+        },
+        {
+          "snapshot": "literature/lean/F325_StructuralCrouzeix.lean",
+          "source_path": "lean/ComparatorChallenges/StructuralCrouzeix.lean",
+          "comparator_config": "lean/ComparatorChallenges/StructuralCrouzeix.json",
+          "solution_module": "OAI.Analysis.StructuralCrouzeix.Endpoint",
+          "theorem_names": [
+            "OAI.StructuralCrouzeixReference.challenge"
+          ]
+        },
+        {
+          "snapshot": "literature/lean/F325_CrouzeixHilbert.lean",
+          "source_path": "lean/ComparatorChallenges/CrouzeixHilbert.lean",
+          "comparator_config": "lean/ComparatorChallenges/CrouzeixHilbert.json",
+          "solution_module": "OAI.Analysis.Crouzeix.Main",
+          "theorem_names": [
+            "OAI.CrouzeixHilbert.hilbert"
+          ]
+        },
+        {
+          "snapshot": "literature/lean/F325_HilbertCrouzeix.lean",
+          "source_path": "lean/ComparatorChallenges/HilbertCrouzeix.lean",
+          "comparator_config": "lean/ComparatorChallenges/HilbertCrouzeix.json",
+          "solution_module": "OAI.Analysis.HilbertCrouzeix.Main",
+          "theorem_names": [
+            "OAI.HilbertCrouzeix.numericalClosure_geometry",
+            "OAI.HilbertCrouzeix.exists_finite_compression",
+            "OAI.HilbertCrouzeix.rational_denominator_isUnit",
+            "OAI.HilbertCrouzeix.zeroConclusion"
+          ]
+        }
+      ]
+    },
+    {
+      "family": "329",
+      "scope": "literature/lean/F329_scope.md",
+      "scope_status": "Upstream selected statements; no local Lean compilation",
+      "selected_statements": [
+        {
+          "snapshot": "literature/lean/F329_MetricEntropyDuality.lean",
+          "source_path": "lean/ComparatorChallenges/MetricEntropyDuality.lean",
+          "comparator_config": "lean/ComparatorChallenges/MetricEntropyDuality.json",
+          "solution_module": "OAI.Analysis.MetricEntropy.Main",
+          "theorem_names": [
+            "OAI.MetricEntropyDuality.exists_entropy_duality_counterexample_with_covers"
+          ]
+        }
+      ]
+    },
+    {
+      "family": "330",
+      "scope": "literature/lean/F330_scope.md",
+      "scope_status": "Upstream selected statements; no local Lean compilation",
+      "selected_statements": [
+        {
+          "snapshot": "literature/lean/F330_RealL1Renorming.lean",
+          "source_path": "lean/ComparatorChallenges/RealL1Renorming.lean",
+          "comparator_config": "lean/ComparatorChallenges/RealL1Renorming.json",
+          "solution_module": "OAI.Analysis.LipschitzFree.Renorming",
+          "theorem_names": [
+            "OAI.DiscreteFree.real_l1_quantitative_renorming"
+          ]
+        },
+        {
+          "snapshot": "literature/lean/F330_DiscreteLipschitzFree.lean",
+          "source_path": "lean/ComparatorChallenges/DiscreteLipschitzFree.lean",
+          "comparator_config": "lean/ComparatorChallenges/DiscreteLipschitzFree.json",
+          "solution_module": "OAI.Analysis.LipschitzFree.Main",
+          "theorem_names": [
+            "OAI.DiscreteFree.source_endpoints"
+          ]
+        }
+      ]
+    },
+    {
+      "family": "332",
+      "scope": null,
+      "scope_status": "No lean/docs/332.md at pinned commit",
+      "selected_statements": []
+    },
+    {
+      "family": "355",
+      "scope": null,
+      "scope_status": "No lean/docs/355.md at pinned commit",
+      "selected_statements": []
+    },
+    {
+      "family": "357",
+      "scope": null,
+      "scope_status": "No lean/docs/357.md at pinned commit",
+      "selected_statements": []
+    },
+    {
+      "family": "363",
+      "scope": "literature/lean/F363_scope.md",
+      "scope_status": "Upstream selected statements; no local Lean compilation",
+      "selected_statements": [
+        {
+          "snapshot": "literature/lean/F363_BoltzmannNonuniqueness.lean",
+          "source_path": "lean/ComparatorChallenges/BoltzmannNonuniqueness.lean",
+          "comparator_config": "lean/ComparatorChallenges/BoltzmannNonuniqueness.json",
+          "solution_module": "OAI.MathematicalPhysics.Boltzmann.Main",
+          "theorem_names": [
+            "OAI.BoltzmannNonuniqueness.nonuniqueness"
+          ]
+        }
+      ]
+    },
+    {
+      "family": "365",
+      "scope": "literature/lean/F365_scope.md",
+      "scope_status": "Upstream selected statements; no local Lean compilation",
+      "selected_statements": [
+        {
+          "snapshot": "literature/lean/F365_Conductivity.lean",
+          "source_path": "lean/ComparatorChallenges/Conductivity.lean",
+          "comparator_config": "lean/ComparatorChallenges/Conductivity.json",
+          "solution_module": "OAI.Analysis.Conductivity.Main",
+          "theorem_names": [
+            "OAI.ScalarConductivity.main_nonuniqueness"
+          ]
+        }
+      ]
+    },
+    {
+      "family": "372",
+      "scope": "literature/lean/F372_scope.md",
+      "scope_status": "Upstream selected statements; no local Lean compilation",
+      "selected_statements": [
+        {
+          "snapshot": "literature/lean/F372_ElasticityUniqueness.lean",
+          "source_path": "lean/ComparatorChallenges/ElasticityUniqueness.lean",
+          "comparator_config": "lean/ComparatorChallenges/ElasticityUniqueness.json",
+          "solution_module": "OAI.MathematicalPhysics.Elasticity.Uniqueness",
+          "theorem_names": [
+            "OAI.Elasticity.global_uniqueness"
+          ]
+        }
+      ]
+    },
+    {
+      "family": "374",
+      "scope": "literature/lean/F374_scope.md",
+      "scope_status": "Upstream selected statements; no local Lean compilation",
+      "selected_statements": [
+        {
+          "snapshot": "literature/lean/F374_Brenier.lean",
+          "source_path": "lean/ComparatorChallenges/Brenier.lean",
+          "comparator_config": "lean/ComparatorChallenges/Brenier.json",
+          "solution_module": "OAI.Analysis.Brenier.Stability",
+          "theorem_names": [
+            "OAI.Problem358.one_third_stability",
+            "OAI.Problem358.one_third_exponent_is_sharp"
+          ]
+        }
+      ]
+    },
+    {
+      "family": "376",
+      "scope": "literature/lean/F376_scope.md",
+      "scope_status": "Upstream selected statements; no local Lean compilation",
+      "selected_statements": [
+        {
+          "snapshot": "literature/lean/F376_SolenoidalSheetPrograms.lean",
+          "source_path": "lean/ComparatorChallenges/SolenoidalSheetPrograms.lean",
+          "comparator_config": "lean/ComparatorChallenges/SolenoidalSheetPrograms.json",
+          "solution_module": "OAI.MathematicalPhysics.SheetFlows.SheetProgram",
+          "theorem_names": [
+            "OAI.Solenoidal.sheet_theorem"
+          ]
+        },
+        {
+          "snapshot": "literature/lean/F376_NavierStokesAlternating.lean",
+          "source_path": "lean/ComparatorChallenges/NavierStokesAlternating.lean",
+          "comparator_config": "lean/ComparatorChallenges/NavierStokesAlternating.json",
+          "solution_module": "OAI.MathematicalPhysics.AlternatingFlow.Development",
+          "theorem_names": [
+            "OAI.AlternatingNS.alternating"
+          ]
+        },
+        {
+          "snapshot": "literature/lean/F376_NavierStokesVelocity.lean",
+          "source_path": "lean/ComparatorChallenges/NavierStokesVelocity.lean",
+          "comparator_config": "lean/ComparatorChallenges/NavierStokesVelocity.json",
+          "solution_module": "OAI.MathematicalPhysics.NavierStokes.VelocityDetection.Main",
+          "theorem_names": [
+            "OAI.VelocityDetection.main_result"
+          ]
+        },
+        {
+          "snapshot": "literature/lean/F376_BalancedBoxRouting.lean",
+          "source_path": "lean/ComparatorChallenges/BalancedBoxRouting.lean",
+          "comparator_config": "lean/ComparatorChallenges/BalancedBoxRouting.json",
+          "solution_module": "OAI.Analysis.BoxTransport.Routing",
+          "theorem_names": [
+            "OAI.BoxTransport.Routing.balanced_box_routing"
+          ]
+        },
+        {
+          "snapshot": "literature/lean/F376_BalancedThreeStack.lean",
+          "source_path": "lean/ComparatorChallenges/BalancedThreeStack.lean",
+          "comparator_config": "lean/ComparatorChallenges/BalancedThreeStack.json",
+          "solution_module": "OAI.MathematicalPhysics.NavierStokes.BalancedTransport.MainResult",
+          "theorem_names": [
+            "OAI.BalancedTransport.balanced_three_stack_realization"
+          ]
+        },
+        {
+          "snapshot": "literature/lean/F376_ForcedNavierStokesComputation.lean",
+          "source_path": "lean/ComparatorChallenges/ForcedNavierStokesComputation.lean",
+          "comparator_config": "lean/ComparatorChallenges/ForcedNavierStokesComputation.json",
+          "solution_module": "OAI.MathematicalPhysics.NavierStokes.BalancedTransport.MainResult",
+          "theorem_names": [
+            "OAI.BalancedTransport.balanced_three_stack_realization"
+          ]
+        }
+      ]
+    }
+  ],
+  "questions": {
+    "goal-ambiguity": {
+      "map": "T2b / F329",
+      "derivation": "Finite-bank scalar minimax: two noise balls meet iff distance<=2 sigma; half their largest goal gap is the exact finite-bank risk.",
+      "code": [
+        "dpt_tools/goal_ambiguity_audit.py"
+      ],
+      "tests": [
+        "dpt_tools/test_frontier_tools.py"
+      ],
+      "ceiling": "Supplied finite bank; lower bound on any containing operational class.",
+      "reopen": "Matched unseen command/history goal gaps or an observation/noise-model change."
+    },
+    "finite-radius": {
+      "map": "T2-T3 / independent K/N lemma / F355/F357/F365-B",
+      "derivation": "ker(DP|K) subset ker(DG|K) implies linear factorization and a rank lower bound; Lipschitz recovery needed for the nonlinear lower bound. Full-direction bound carries E, B DO and all three remainders.",
+      "code": [
+        "dpt_tools/predictive_state_audit.py",
+        "dpt_tools/measurement_factor_audit.py"
+      ],
+      "tests": [
+        "dpt_tools/test_dpt_tools.py",
+        "dpt_tools/test_frontier_tools.py"
+      ],
+      "ceiling": "Numerical tangent conditions and conditional radius/error bounds; native remainder and units require independent evidence.",
+      "reopen": "Rank persistence, bounded noise gain and independently bounded remainder on a declared DPT neighborhood."
+    },
+    "command-algebra": {
+      "map": "T5b-T6 / F116/F376/F251/F289",
+      "derivation": "Finite future-word congruence and original-expression inverse definedness are independently checked; theorem families motivate the audit.",
+      "code": [
+        "dpt_tools/command_word_audit.py",
+        "dpt_tools/command_domain_audit.py",
+        "dpt_tools/expression_domain_inventory.py"
+      ],
+      "tests": [
+        "dpt_tools/test_dpt_tools.py",
+        "dpt_tools/test_frontier_tools.py"
+      ],
+      "ceiling": "Explicit finite model / supplied samples; no continuous-domain or exact-algebra promotion.",
+      "reopen": "A rival history separated by a future word or stage event, or rational intermediate-map failure."
+    },
+    "mixed-interaction": {
+      "map": "Section 10 S09 / Section 12",
+      "derivation": "Four-corner contrast/(ab) is the rectangle-average mixed derivative. Center error<= (Ma|a|+Mb|b|)/2 + sum(eta)/|ab|. One query has a cubic null family.",
+      "code": [
+        "dpt_tools/mixed_interaction_audit.py"
+      ],
+      "tests": [
+        "dpt_tools/test_mixed_interaction_audit.py"
+      ],
+      "ceiling": "Conditional scalar interval, given matched anchors, valid rectangle and external error/variation bounds.",
+      "reopen": "Matched archived anchors and independently justified error envelopes, or a prospective query separating the cubic rival."
+    },
+    "stability": {
+      "map": "T4-T4b / F330/F094/F098/F332/F324/F374",
+      "derivation": "Dimension, error, gain and class scope are separate. Finite-bank Lipschitz gain screens for collisions but is not a whole-class extension proof.",
+      "code": [
+        "dpt_tools/goal_ambiguity_audit.py",
+        "dpt_tools/measurement_factor_audit.py"
+      ],
+      "tests": [
+        "dpt_tools/test_frontier_tools.py"
+      ],
+      "ceiling": "Proof-pattern/conditional transfer and finite-bank diagnostics.",
+      "reopen": "A whole-class factor, finite-radius gain envelope, or stage-transition counterexample becomes available."
+    },
+    "acquisition": {
+      "map": "F229 / T5",
+      "derivation": "Deterministic post-processing cannot increase information relative to the complete original observation; lossy summaries may still be improved from stored raw traces.",
+      "code": [],
+      "tests": [],
+      "ceiling": "Data-processing argument; probabilistic experiment-dominance statements require an explicit noise model.",
+      "reopen": "Candidate readout splits a goal-visible fiber left by the declared current observation."
+    },
+    "information": {
+      "map": "F140/F129/F119/F122 / T5",
+      "derivation": "Independent goal-packing code lower bound; Gaussian memory, automata and binary/deletion results retain their own model assumptions.",
+      "code": [],
+      "tests": [],
+      "ceiling": "Elementary packing with fixed goals/class; source-specific sharp bounds remain conditional.",
+      "reopen": "Declared history/command class and a verified matching memory or channel model."
+    },
+    "identifiability": {
+      "map": "F365/F372/F363 / T1",
+      "derivation": "Specify model class, goal and invisible symmetries; audit physical-to-auxiliary injectivity. Conservation is separate from uniqueness.",
+      "code": [],
+      "tests": [],
+      "ceiling": "Method transfer; source PDE uniqueness/nonuniqueness does not establish DPT uniqueness.",
+      "reopen": "Changed DPT model class, symmetry, regularity or auxiliary reduction."
+    },
+    "certificate": {
+      "map": "F266 / T7",
+      "derivation": "Separate center/tangent/Gram/remainder/readout/provenance and leave unresolved computational cells unresolved.",
+      "code": [],
+      "tests": [],
+      "ceiling": "Certificate architecture only; selected MUB statement is weaker than the headline.",
+      "reopen": "A load-bearing DPT numerical claim needs an independently checkable margin."
+    },
+    "operator-envelope": {
+      "map": "F325",
+      "derivation": "Compare numerical-range envelope with classical energy/logarithmic-norm bound on the same fixed operator and readout.",
+      "code": [],
+      "tests": [],
+      "ceiling": "Watch until a native fixed operator and polynomial/rational readout are declared.",
+      "reopen": "Frozen nonnormal propagator and readout for which the source theorem yields a tighter executable bound."
+    }
+  },
+  "assets": [
+    {
+      "kind": "pdf",
+      "source_path": "preprints/One-Rational-Matrix-Hitting-Point-for-Noncommutative-Formulas-September-24-2026/One-Rational-Matrix-Hitting-Point-for-Noncommutative-Formulas-September-24-2026.pdf",
+      "snapshot_path": "literature/F116-A_noncommutative_hitting_point.pdf",
+      "sha256": "984d0d4287bc29fc4772a2254aabafb9ee8886c56eeafeef0a746c7fc06869ed"
+    },
+    {
+      "kind": "pdf",
+      "source_path": "preprints/Polynomial-Hitting-Lists-for-Noncommutative-Rational-Formulas-September-24-2026/Polynomial-Hitting-Lists-for-Noncommutative-Rational-Formulas-September-24-2026.pdf",
+      "snapshot_path": "literature/F116-B_rational_hitting_lists.pdf",
+      "sha256": "8f6fe5057bd59278bfb88ccf38342c09602e547f35a757b8eadc30ece76cec0e"
+    },
+    {
+      "kind": "pdf",
+      "source_path": "preprints/The-exact-reconstruction-threshold-for-the-three-state-symmetric-channel-September-25-2026/paper.pdf",
+      "snapshot_path": "literature/F229_three_state_reconstruction.pdf",
+      "sha256": "e87d0854f29320d5b8ddd3015f3f89964e32231eec54a609aa1a9567d582f71a"
+    },
+    {
+      "kind": "pdf",
+      "source_path": "preprints/The-maximum-number-of-mutually-unbiased-bases-in-dimension-six-September-24-2026/The-maximum-number-of-mutually-unbiased-bases-in-dimension-six-September-24-2026.pdf",
+      "snapshot_path": "literature/F266_dimension_six_MUB_certificate.pdf",
+      "sha256": "b4cc74c840c902494d589b51c8e9706490f37cf2735e69a0486122131c6b7446"
+    },
+    {
+      "kind": "pdf",
+      "source_path": "preprints/Determination-of-a-metric-and-a-unitary-connection-from-one-boundary-patch-October-5-2026/paper.pdf",
+      "snapshot_path": "literature/F365-A_metric_connection_partial_boundary.pdf",
+      "sha256": "8e1bdd3a9067234842406dba45efc9e8efae5be0cd72a6c09f6dceee8793badb"
+    },
+    {
+      "kind": "pdf",
+      "source_path": "preprints/Smooth-Anisotropic-Uniqueness-in-the-Calderon-Problem-from-One-Boundary-Patch-September-24-2026/paper.pdf",
+      "snapshot_path": "literature/F365-B_smooth_anisotropic_Calderon.pdf",
+      "sha256": "1ec46ed64206d12d8fdca42ae7454db52571c0ba1eb458aaf234a6ddea061d39"
+    },
+    {
+      "kind": "pdf",
+      "source_path": "preprints/Nonuniqueness-for-Bounded-Measurable-Scalar-Conductivities-in-Three-Dimensions-September-23-2026/paper.pdf",
+      "snapshot_path": "literature/F365-C_rough_scalar_conductivity_nonuniqueness.pdf",
+      "sha256": "35017573c88b681f3f029ffb443091aa6fd55d31f6bc7a1b3566e5a6675aa7bb"
+    },
+    {
+      "kind": "pdf",
+      "source_path": "preprints/Global-Uniqueness-for-the-Smooth-Isotropic-Elasticity-Inverse-Problem-September-24-2026/article.pdf",
+      "snapshot_path": "literature/F372_smooth_isotropic_elasticity_uniqueness.pdf",
+      "sha256": "5cadfeb6eb45bea20b6ceb4879266d49938154c38dbf34a6531b47b4f3cfbff9"
+    },
+    {
+      "kind": "pdf",
+      "source_path": "preprints/Sharp-One-Third-Stability-of-Brenier-Maps-September-25-2026/article.pdf",
+      "snapshot_path": "literature/F374_Brenier_one_third_stability.pdf",
+      "sha256": "e9821deea8e836aaae6ed84cfb489e3695e1d6ce36add7e14c54100d2209f184"
+    },
+    {
+      "kind": "pdf",
+      "source_path": "preprints/Bi-Lipschitz-Coordinates-at-Regular-Points-of-Noncollapsed-RCD-Spaces-September-25-2026/paper.pdf",
+      "snapshot_path": "literature/F357_regular_RCD_bi_Lipschitz_coordinates.pdf",
+      "sha256": "5500abd2391d238779793572caf1df5270a1ac488f6d88cc897d5cf51ac33093"
+    },
+    {
+      "kind": "pdf",
+      "source_path": "preprints/Failure-of-Bounded-Approximation-in-a-Lipschitz-Free-Space-over-a-Uniformly-Discrete-Metric-Space-September-26-2026/main.pdf",
+      "snapshot_path": "literature/F330_discrete_Lipschitz_free_bounded_approximation.pdf",
+      "sha256": "aa4ce066ba72c12f5984b7f401355a7030c1cecc9d9148278113a29e89914083"
+    },
+    {
+      "kind": "pdf",
+      "source_path": "preprints/Subpolynomial-dimension-reduction-in-Lp-September-23-2026/paper.pdf",
+      "snapshot_path": "literature/F094_Lp_subpolynomial_dimension_reduction.pdf",
+      "sha256": "001a29a154753ee273e236ccb13788a8dbba09f9ac4fd59a7707a42ef7d6dc03"
+    },
+    {
+      "kind": "pdf",
+      "source_path": "preprints/A-doubling-Hilbert-subset-with-no-finite-dimensional-bi-Lipschitz-embedding-September-25-2026/main.pdf",
+      "snapshot_path": "literature/F098_doubling_Hilbert_embedding_obstruction.pdf",
+      "sha256": "9c9b7e794d3a66305eda83409e40ca56eed2c09eb687c6abd5ec367f6e980b15"
+    },
+    {
+      "kind": "pdf",
+      "source_path": "preprints/Universal-strong-Kadison-Kastler-stability-September-23-2026/paper.pdf",
+      "snapshot_path": "literature/F289-A_strong_Kadison_Kastler_stability.pdf",
+      "sha256": "3e801d4ed2d8c928e93581e9c4e53fd5d6c4a5ba0b1165ec61d83ae4b7f79691"
+    },
+    {
+      "kind": "pdf",
+      "source_path": "preprints/Near-Inclusions-of-von-Neumann-Algebras-Without-Small-Spatial-Embeddings-October-5-2026/near-inclusions.pdf",
+      "snapshot_path": "literature/F289-B_one_sided_near_inclusion_counterexample.pdf",
+      "sha256": "0e3e4d1bbe2ef13bd40ab9972a1361c3a8da9bd65eaf4f485db18618141bc4a9"
+    },
+    {
+      "kind": "pdf",
+      "source_path": "preprints/Strong-Ulam-Stability-Characterizes-Amenability-October-5-2026/strong-ulam-stability.pdf",
+      "snapshot_path": "literature/F251_strong_Ulam_stability_amenability.pdf",
+      "sha256": "b28d280b0c673c6904f2459168a8a5dba32ff7363158f7dc101abb1ed3cb3911"
+    },
+    {
+      "kind": "pdf",
+      "source_path": "preprints/The-complete-Crouzeix-theorem-September-23-2026/paper.pdf",
+      "snapshot_path": "literature/F325-A_complete_Crouzeix_structural.pdf",
+      "sha256": "b5e37fffcae2be84577cdc73f8d0ae459ecc85da994dcf605c38f69539cc962b"
+    },
+    {
+      "kind": "pdf",
+      "source_path": "preprints/Nonuniqueness-with-local-conservation-for-the-hard-sphere-Boltzmann-equation-October-5-2026/paper.pdf",
+      "snapshot_path": "literature/F363_local_conservation_Boltzmann_nonuniqueness.pdf",
+      "sha256": "640850bc08703544037791cecd9d71f11d558b8333d7f990abbe3a604d805489"
+    },
+    {
+      "kind": "pdf",
+      "source_path": "preprints/An-exponential-two-way-deterministic-state-lower-bound-for-one-way-liveness-September-25-2026/main.pdf",
+      "snapshot_path": "literature/F129_one_way_liveness_state_lower_bound.pdf",
+      "sha256": "612819217a2929102a0e55c00cc4fb606b733d1f90dda513d42bf47783e0a92e"
+    },
+    {
+      "kind": "pdf",
+      "source_path": "preprints/Metric-Markov-Cotype-Two-of-l1-October-5-2026/l1-markov-cotype.pdf",
+      "snapshot_path": "literature/F332_l1_Markov_cotype_extension.pdf",
+      "sha256": "d1977f73e5a70137791d0739b58b049fa30e3ad9caa4dfeb8353142db37ab60f"
+    },
+    {
+      "kind": "pdf",
+      "source_path": "preprints/Lipschitz-Equivalent-Separable-Banach-Spaces-Need-Not-Be-Linearly-Isomorphic-September-24-2026/paper.pdf",
+      "snapshot_path": "literature/F324_metric_equivalent_nonisomorphic_Banach.pdf",
+      "sha256": "cc670229303a1ed9044a6bb04c397dd5b09a5c4046f08aa637ec8b112d6fa879"
+    },
+    {
+      "kind": "pdf",
+      "source_path": "preprints/Counterexamples-to-the-duality-conjecture-for-metric-entropy-September-24-2026/main.pdf",
+      "snapshot_path": "literature/F329_metric_entropy_duality_counterexample.pdf",
+      "sha256": "6d6f9d0518a6e50da9bb3c026ec384b22edd12a2f112eec67832c76b62c9c8f7"
+    },
+    {
+      "kind": "pdf",
+      "source_path": "preprints/Finite-Instructions-and-Solenoidal-Shear-Flows-September-27-2026/manuscript.pdf",
+      "snapshot_path": "literature/F376-A_solenoidal_shear_instructions.pdf",
+      "sha256": "0cdc2abd5b1a3d152fe55f7793ccc3f49ec6e7a79d0f5b4893e10c1b2c061e8d"
+    },
+    {
+      "kind": "pdf",
+      "source_path": "preprints/Incompressible-Box-Transport-and-Finite-Computation-October-6-2026/manuscript.pdf",
+      "snapshot_path": "literature/F376-B_incompressible_box_computation.pdf",
+      "sha256": "2505dc09d3f2c24b91b8a1bd4ae58876095f1d1407ead933464b79731ae5d312"
+    },
+    {
+      "kind": "pdf",
+      "source_path": "preprints/A-superquadratic-separation-between-sensitivity-and-block-sensitivity-September-25-2026/paper.pdf",
+      "snapshot_path": "literature/F132_sensitivity_block_sensitivity_separation.pdf",
+      "sha256": "a589970798bc590e5a27cb35cfa3092a355a4048cfa383bc369177289a00a1f8"
+    },
+    {
+      "kind": "pdf",
+      "source_path": "preprints/Uniform-quasipolynomial-time-trace-reconstruction-October-5-2026/uniform-trace-reconstruction.pdf",
+      "snapshot_path": "literature/F122-A_uniform_trace_reconstruction.pdf",
+      "sha256": "cca17cd8900b5eda0252af1126a8423f96a771065d0ccf35b5da500a238915d3"
+    },
+    {
+      "kind": "pdf",
+      "source_path": "preprints/quantitative-lower-bounds-for-trace-reconstruction-September-24-2026/paper.pdf",
+      "snapshot_path": "literature/F122-B_trace_reconstruction_lower_bound.pdf",
+      "sha256": "6b28f84fe939dfe5b740403156413f1d807d1ddad70c38b0f50f12e486dc7596"
+    },
+    {
+      "kind": "pdf",
+      "source_path": "preprints/Tangent-flow-uniqueness-2026-09-24/paper.pdf",
+      "snapshot_path": "literature/F355_tangent_flow_uniqueness.pdf",
+      "sha256": "19b2f77a4cbfb0d5180a6456312c545da5be942f849ca7f7fad31b1af2566a8a"
+    },
+    {
+      "kind": "pdf",
+      "source_path": "preprints/Memory-and-precision-in-noiseless-Gaussian-regression-September-27-2026/paper.pdf",
+      "snapshot_path": "literature/F140-A_Gaussian_regression_memory_precision.pdf",
+      "sha256": "a46ccc95821da00954309e8fe793099ff82f03eaa4b6c060d5eac5406571decc"
+    },
+    {
+      "kind": "pdf",
+      "source_path": "preprints/Posterior-replicas-and-conditional-information-in-Gaussian-regression-September-27-2026/paper.pdf",
+      "snapshot_path": "literature/F140-B_posterior_replicas_information.pdf",
+      "sha256": "135be898557ce66eca6ac31cf62bc40967ab32fc0a30b41ffb9c1c20b063e6ea"
+    },
+    {
+      "kind": "pdf",
+      "source_path": "preprints/Localization-costs-and-information-growth-for-exact-Gaussian-observations-September-27-2026/paper.pdf",
+      "snapshot_path": "literature/F140-C_exact_Gaussian_localization.pdf",
+      "sha256": "4f43e1443f9fd51374f9b748a522508521266692c5965c19cf6b4c33b6d527a5"
+    },
+    {
+      "kind": "pdf",
+      "source_path": "preprints/Sharp-binary-information-contraction-on-the-discrete-cube-September-24-2026/main.pdf",
+      "snapshot_path": "literature/F119_binary_information_contraction.pdf",
+      "sha256": "01a59d40aaecfb1d6f461f2d3f6f5b3b6054062ba6fe7a8e6d4ddef760488ecd"
+    },
+    {
+      "kind": "pdf",
+      "source_path": "preprints/A-direct-proof-of-the-complete-Crouzeix-inequality-September-26-2026/paper.pdf",
+      "snapshot_path": "literature/F325-B_complete_Crouzeix_direct.pdf",
+      "sha256": "d9aa4ef2dccb1f044fdf78afd7a4c93f64e71bd60e53d0f0460329596f199bb6"
+    },
+    {
+      "kind": "lean-selected-statement",
+      "source_path": "lean/ComparatorChallenges/SubpolynomialLp.lean",
+      "snapshot_path": "literature/lean/F094_SubpolynomialLp.lean",
+      "sha256": "651ac125ea27b18d0e3d23077a6cc3a3824e3ecadecf59fe2e29e20f2280d397"
+    },
+    {
+      "kind": "lean-scope-links-adjusted",
+      "source_path": "lean/docs/094.md",
+      "snapshot_path": "literature/lean/F094_scope.md",
+      "source_sha256": "b775e2436e3f78fab16d8dc27e6fd55e537ce140b16e40157f86c746eabd0156",
+      "sha256": "59c9335fbc8860fd79dc08d8d082e05690db900b8bf69290cc383c4d29a18cc1"
+    },
+    {
+      "kind": "lean-selected-statement",
+      "source_path": "lean/ComparatorChallenges/DoublingHilbert.lean",
+      "snapshot_path": "literature/lean/F098_DoublingHilbert.lean",
+      "sha256": "f7f9b905f01b3333bec0f1164075949eba47b536af2b60daa29032a6796b2d8a"
+    },
+    {
+      "kind": "lean-selected-statement",
+      "source_path": "lean/ComparatorChallenges/CompactBanach.lean",
+      "snapshot_path": "literature/lean/F098_CompactBanach.lean",
+      "sha256": "358a151d7684a0681e83111ebdf2c3a4f5f77eb253509a018422915c1711cb34"
+    },
+    {
+      "kind": "lean-scope-links-adjusted",
+      "source_path": "lean/docs/098.md",
+      "snapshot_path": "literature/lean/F098_scope.md",
+      "source_sha256": "d0961af63a6a2f393ccf0a2d818879a71613ac2b8998eecb64d306bc4cabb0e8",
+      "sha256": "d135e7513f0a1f7e3df39dc2d88be4d927aff49da9f59e41097f0caf1a0e2d6a"
+    },
+    {
+      "kind": "lean-selected-statement",
+      "source_path": "lean/ComparatorChallenges/FormulaHitting.lean",
+      "snapshot_path": "literature/lean/F116_FormulaHitting.lean",
+      "sha256": "23f279f5ed50b1a8a86df490c0157866e120a279b552489f1ae180e7dd3f01bd"
+    },
+    {
+      "kind": "lean-selected-statement",
+      "source_path": "lean/ComparatorChallenges/RationalHitting.lean",
+      "snapshot_path": "literature/lean/F116_RationalHitting.lean",
+      "sha256": "c0fc0d9740d4ef195918447f4da9605e75760845cae1163c534d6299c6e4877f"
+    },
+    {
+      "kind": "lean-scope-links-adjusted",
+      "source_path": "lean/docs/116.md",
+      "snapshot_path": "literature/lean/F116_scope.md",
+      "source_sha256": "c3b9d25576399946bc0bdb9f63cb8cb1a7f30161edb2319f120911fded2c8a63",
+      "sha256": "5dae58c313a924c8e2355ecfd485f8b66a3295fd29d7cc4449eaea0e128ae4f2"
+    },
+    {
+      "kind": "lean-selected-statement",
+      "source_path": "lean/ComparatorChallenges/CourtadeKumar.lean",
+      "snapshot_path": "literature/lean/F119_CourtadeKumar.lean",
+      "sha256": "f9f9d6d20d83405ed7822cb64b57f934ccd6fd3686d6eec09146465f29878eb1"
+    },
+    {
+      "kind": "lean-selected-statement",
+      "source_path": "lean/ComparatorChallenges/SoftChannel204.lean",
+      "snapshot_path": "literature/lean/F119_SoftChannel204.lean",
+      "sha256": "31e3e3fc69bd044ec8543cacd6035887d5bf6670c94b31462bb8094f6acfd226"
+    },
+    {
+      "kind": "lean-scope-links-adjusted",
+      "source_path": "lean/docs/119.md",
+      "snapshot_path": "literature/lean/F119_scope.md",
+      "source_sha256": "402cb8d3a1043a4f7b4fe44983b258ca3d8e05a85642c55f92aacd403054ab9a",
+      "sha256": "3f5e414208673ed01ab87c9bb95171637bed7eaa3860cfbb1c6cb1138e10ef4c"
+    },
+    {
+      "kind": "lean-selected-statement",
+      "source_path": "lean/ComparatorChallenges/TraceReconstruction.lean",
+      "snapshot_path": "literature/lean/F122_TraceReconstruction.lean",
+      "sha256": "68df708f0b20b524cbc8fd02164731245982749eba0b2e8e0e1a520c85b0e70d"
+    },
+    {
+      "kind": "lean-scope-links-adjusted",
+      "source_path": "lean/docs/122.md",
+      "snapshot_path": "literature/lean/F122_scope.md",
+      "source_sha256": "4bd3067e31390bc08d91e69ce143afd1460fed929fa8ce70d450add0a7b50ff3",
+      "sha256": "9d0fdf467b731090a12a9af2c3049ed7deb171f8420cbf26eb6fba11f4f2cdb5"
+    },
+    {
+      "kind": "lean-selected-statement",
+      "source_path": "lean/ComparatorChallenges/TwoWayComplementation.lean",
+      "snapshot_path": "literature/lean/F129_TwoWayComplementation.lean",
+      "sha256": "4e47aa239705ac77757073930d4d88e4128e30fba8341284a42c8958a927a6bb"
+    },
+    {
+      "kind": "lean-selected-statement",
+      "source_path": "lean/ComparatorChallenges/TwoWayDeterminization.lean",
+      "snapshot_path": "literature/lean/F129_TwoWayDeterminization.lean",
+      "sha256": "640df9524171535dca77e5ef7129b174886ed8a7bfe68de8d831f65931fc9de8"
+    },
+    {
+      "kind": "lean-selected-statement",
+      "source_path": "lean/ComparatorChallenges/OneWayLiveness.lean",
+      "snapshot_path": "literature/lean/F129_OneWayLiveness.lean",
+      "sha256": "875eb3b5bd7f84214e571fd1bb1257260c81cd583fb28517b401c987faa44c3b"
+    },
+    {
+      "kind": "lean-scope-links-adjusted",
+      "source_path": "lean/docs/129.md",
+      "snapshot_path": "literature/lean/F129_scope.md",
+      "source_sha256": "b9bde7a3b1ef6192426292ad23087eb424c81c1f2e825743c3661fbfac89f336",
+      "sha256": "bfe81ac41f6b2e3ac95b0b310b002c41d9c7ebc5d12cc0d29be8f81e0b6cd768"
+    },
+    {
+      "kind": "lean-selected-statement",
+      "source_path": "lean/ComparatorChallenges/SensitivitySeparation.lean",
+      "snapshot_path": "literature/lean/F132_SensitivitySeparation.lean",
+      "sha256": "76405c3a09039be254192bdb453af6121987ffd3a3236a7303fc4979d9361eae"
+    },
+    {
+      "kind": "lean-scope-links-adjusted",
+      "source_path": "lean/docs/132.md",
+      "snapshot_path": "literature/lean/F132_scope.md",
+      "source_sha256": "2fd45b173892a873ff619558717e4130f07c28ba29bc5c643383d5f3d5831157",
+      "sha256": "c6d163139b42b4454e42e80e5463ac59c1352eb98d9b31767b95b54bba40cc30"
+    },
+    {
+      "kind": "lean-selected-statement",
+      "source_path": "lean/ComparatorChallenges/MemoryPrecision.lean",
+      "snapshot_path": "literature/lean/F140_MemoryPrecision.lean",
+      "sha256": "40651237473d67fdf4d48ac04f4a3294768cf75c867ee34334a96f9dfc293271"
+    },
+    {
+      "kind": "lean-selected-statement",
+      "source_path": "lean/ComparatorChallenges/NoiselessRegression.lean",
+      "snapshot_path": "literature/lean/F140_NoiselessRegression.lean",
+      "sha256": "ff97e11a2813481158c64b0d6bddad9fc9c2a39a0260a408842b4da2c07b2406"
+    },
+    {
+      "kind": "lean-selected-statement",
+      "source_path": "lean/ComparatorChallenges/PosteriorReplicas.lean",
+      "snapshot_path": "literature/lean/F140_PosteriorReplicas.lean",
+      "sha256": "4738f722c6294eae589ecd91c1132f3862154c97bcaea7090bed792e98375dcc"
+    },
+    {
+      "kind": "lean-selected-statement",
+      "source_path": "lean/ComparatorChallenges/GaussianFiniteEntropy.lean",
+      "snapshot_path": "literature/lean/F140_GaussianFiniteEntropy.lean",
+      "sha256": "37eff76b72a2653affad98f7855e40a1bb1e518df2bf9b9ccdfd780e7b6e54b5"
+    },
+    {
+      "kind": "lean-selected-statement",
+      "source_path": "lean/ComparatorChallenges/GaussianInformation.lean",
+      "snapshot_path": "literature/lean/F140_GaussianInformation.lean",
+      "sha256": "6d80b75a8ee9c38df55a93bd9802075d3ec2280bee6a6b706683db733496a843"
+    },
+    {
+      "kind": "lean-selected-statement",
+      "source_path": "lean/ComparatorChallenges/ProjectionMoments.lean",
+      "snapshot_path": "literature/lean/F140_ProjectionMoments.lean",
+      "sha256": "efa52293731b868a0fcec21797c68ed12578c2047492989781a6d43db6dd1fec"
+    },
+    {
+      "kind": "lean-selected-statement",
+      "source_path": "lean/ComparatorChallenges/GaussianReplacement.lean",
+      "snapshot_path": "literature/lean/F140_GaussianReplacement.lean",
+      "sha256": "18f2b4bd0dd5218ebd587955fdefe71848ba04f2338c8ea6312353e84b0c1b43"
+    },
+    {
+      "kind": "lean-selected-statement",
+      "source_path": "lean/ComparatorChallenges/SubsphereCurrent.lean",
+      "snapshot_path": "literature/lean/F140_SubsphereCurrent.lean",
+      "sha256": "794e9edce13c7286e2b7a837fb17375d5ffa6a7cf81acd0d250351e60a55a073"
+    },
+    {
+      "kind": "lean-scope-links-adjusted",
+      "source_path": "lean/docs/140.md",
+      "snapshot_path": "literature/lean/F140_scope.md",
+      "source_sha256": "71f6b45431c698c92960574de306b727271ea53b7b9e6b6a099d22f5a2336dd3",
+      "sha256": "5c7a278fda68240484355118be00b2ab58915907429bddb644fcf8596bff8d40"
+    },
+    {
+      "kind": "lean-selected-statement",
+      "source_path": "lean/ComparatorChallenges/ThreeStateSupercritical.lean",
+      "snapshot_path": "literature/lean/F229_ThreeStateSupercritical.lean",
+      "sha256": "ba58eb22214f0b654fd1d5b4ca26b69b395c61409084e63c486f593c7e5330f8"
+    },
+    {
+      "kind": "lean-selected-statement",
+      "source_path": "lean/ComparatorChallenges/ThreeStateTreeClauses.lean",
+      "snapshot_path": "literature/lean/F229_ThreeStateTreeClauses.lean",
+      "sha256": "70eabccad9babe51e425cbdceef6be93c00b12771ea6eb6102296c15a64353f5"
+    },
+    {
+      "kind": "lean-scope-links-adjusted",
+      "source_path": "lean/docs/229.md",
+      "snapshot_path": "literature/lean/F229_scope.md",
+      "source_sha256": "58030cb8b8a8b994f80e24a9d3f34788081ef8a1bcc90d7bb777ade0ba25d5bb",
+      "sha256": "7506993b5e284198b0de263c3f479cf9cb26bdb3ac6928bb1da1c4badfa8c1b4"
+    },
+    {
+      "kind": "lean-selected-statement",
+      "source_path": "lean/ComparatorChallenges/DixmierAllDiscrete.lean",
+      "snapshot_path": "literature/lean/F251_DixmierAllDiscrete.lean",
+      "sha256": "b87f008ef0a48e93cd3946df5729929fff873aa11d5522b1eef05653cf1e773e"
+    },
+    {
+      "kind": "lean-selected-statement",
+      "source_path": "lean/ComparatorChallenges/Dixmier.lean",
+      "snapshot_path": "literature/lean/F251_Dixmier.lean",
+      "sha256": "dfaa262c3369743e888f58b47ac7f31842db16e5cbd9cc9be71181926745ff75"
+    },
+    {
+      "kind": "lean-scope-links-adjusted",
+      "source_path": "lean/docs/251.md",
+      "snapshot_path": "literature/lean/F251_scope.md",
+      "source_sha256": "4cbcf85a661e4983681d35c1282528eed810926c8011345d999e9eec415b0f8c",
+      "sha256": "2877137ef381cfea19367a60926572afc7033eb6cbcf54b2a636d4109eb1c4ce"
+    },
+    {
+      "kind": "lean-selected-statement",
+      "source_path": "lean/ComparatorChallenges/MUBSix.lean",
+      "snapshot_path": "literature/lean/F266_MUBSix.lean",
+      "sha256": "7a634ee492b54abe357901a69272c42aa8dfc85b7a3401eef723468bb0c6c355"
+    },
+    {
+      "kind": "lean-selected-statement",
+      "source_path": "lean/ComparatorChallenges/HadamardCubeFiber.lean",
+      "snapshot_path": "literature/lean/F266_HadamardCubeFiber.lean",
+      "sha256": "9f412781be8b38c88a6efb3a4528d4c990071a233cd931612d4710213d6366a1"
+    },
+    {
+      "kind": "lean-scope-links-adjusted",
+      "source_path": "lean/docs/266.md",
+      "snapshot_path": "literature/lean/F266_scope.md",
+      "source_sha256": "3141714e25026b26a4028e27ee001e70295310bad4290b5a8f7c9fd546e8a174",
+      "sha256": "b30825dc71f4a61d45b1fef6b6202564732b533b4257db5aa983d4b263da4343"
+    },
+    {
+      "kind": "lean-selected-statement",
+      "source_path": "lean/ComparatorChallenges/StrongKadisonKastler.lean",
+      "snapshot_path": "literature/lean/F289_StrongKadisonKastler.lean",
+      "sha256": "a3e28c6071cd68977a43738c8aed6f22f78b1ba14b3b7f6c76e1a570861b3f93"
+    },
+    {
+      "kind": "lean-scope-links-adjusted",
+      "source_path": "lean/docs/289.md",
+      "snapshot_path": "literature/lean/F289_scope.md",
+      "source_sha256": "f8fb8f23d1881646b11bc200f15333a07fd1ad0f142ea032328a2fe336a03347",
+      "sha256": "3f097012492a1dde49fe0bcc916a70e382caa53a63fe7a2b6fa4374663d3b3b9"
+    },
+    {
+      "kind": "lean-selected-statement",
+      "source_path": "lean/ComparatorChallenges/LipschitzEquivalence.lean",
+      "snapshot_path": "literature/lean/F324_LipschitzEquivalence.lean",
+      "sha256": "6cd6d20439f9433567e6b11781ec06fb4f5ef5c16b84808062b09af146232625"
+    },
+    {
+      "kind": "lean-selected-statement",
+      "source_path": "lean/ComparatorChallenges/C0Absorption.lean",
+      "snapshot_path": "literature/lean/F324_C0Absorption.lean",
+      "sha256": "a5d7375b335f7dd950c879f1d99d60cda553d2a4d7e68b0170a35c5657becdbe"
+    },
+    {
+      "kind": "lean-scope-links-adjusted",
+      "source_path": "lean/docs/324.md",
+      "snapshot_path": "literature/lean/F324_scope.md",
+      "source_sha256": "7efd66a6a6964d0f0a7367256faaabb654abce2e80635ea8198b5228fc7c43b8",
+      "sha256": "e03bef52a4995d24559ae43f29ff7f0ac1e206399da8911bc92b5ff2a5aba3ec"
+    },
+    {
+      "kind": "lean-selected-statement",
+      "source_path": "lean/ComparatorChallenges/DirectCrouzeix.lean",
+      "snapshot_path": "literature/lean/F325_DirectCrouzeix.lean",
+      "sha256": "6aff79e03dee428cf5a677dba39da0fe14fe3d9a989a7e6d4bc0f3bf2a148d22"
+    },
+    {
+      "kind": "lean-selected-statement",
+      "source_path": "lean/ComparatorChallenges/CompleteCrouzeix.lean",
+      "snapshot_path": "literature/lean/F325_CompleteCrouzeix.lean",
+      "sha256": "6b63c6180f5507b341b323af4668050a32226526f56359563286efc509e8afbc"
+    },
+    {
+      "kind": "lean-selected-statement",
+      "source_path": "lean/ComparatorChallenges/StructuralCrouzeix.lean",
+      "snapshot_path": "literature/lean/F325_StructuralCrouzeix.lean",
+      "sha256": "f7c09beafdb635221e63e9846043df4347994d7df7f8d7858ead113cf049f205"
+    },
+    {
+      "kind": "lean-selected-statement",
+      "source_path": "lean/ComparatorChallenges/CrouzeixHilbert.lean",
+      "snapshot_path": "literature/lean/F325_CrouzeixHilbert.lean",
+      "sha256": "56701325ea99919665ab9055db16de0c74486ec5b6da5cfb7b533c248426509a"
+    },
+    {
+      "kind": "lean-selected-statement",
+      "source_path": "lean/ComparatorChallenges/HilbertCrouzeix.lean",
+      "snapshot_path": "literature/lean/F325_HilbertCrouzeix.lean",
+      "sha256": "23841ffc513082acb9bb26c50733c4efa852c41f94ec018d8271c0a74feae099"
+    },
+    {
+      "kind": "lean-scope-links-adjusted",
+      "source_path": "lean/docs/325.md",
+      "snapshot_path": "literature/lean/F325_scope.md",
+      "source_sha256": "e44548f4f54b1e408506529aac102b3a2bfcf930ddb5145afb4b193a97dee54b",
+      "sha256": "d45066a66958b39901ee808c1a04df938530933108e822a8aa06254f48ff1689"
+    },
+    {
+      "kind": "lean-selected-statement",
+      "source_path": "lean/ComparatorChallenges/MetricEntropyDuality.lean",
+      "snapshot_path": "literature/lean/F329_MetricEntropyDuality.lean",
+      "sha256": "56e4e4aaa1c1cb998e03aca8f659471996a0428e35736316dfa4cb31f9457cc8"
+    },
+    {
+      "kind": "lean-scope-links-adjusted",
+      "source_path": "lean/docs/329.md",
+      "snapshot_path": "literature/lean/F329_scope.md",
+      "source_sha256": "1c44d84ab8638875d9c80d292e2b52ed5f9a6fe014f70069b95cf867b01cf6e5",
+      "sha256": "4b5f91098db176a6685c6fcb4f81831ba8b731a62e41bf88d34258b550331e02"
+    },
+    {
+      "kind": "lean-selected-statement",
+      "source_path": "lean/ComparatorChallenges/RealL1Renorming.lean",
+      "snapshot_path": "literature/lean/F330_RealL1Renorming.lean",
+      "sha256": "63fc558d5283a7cf98f7605854227904d40612bc80afdbe7800d7064f5549c13"
+    },
+    {
+      "kind": "lean-selected-statement",
+      "source_path": "lean/ComparatorChallenges/DiscreteLipschitzFree.lean",
+      "snapshot_path": "literature/lean/F330_DiscreteLipschitzFree.lean",
+      "sha256": "af1c691c7cff4a059a7fee5b6993892c0331de0ba4f0c5ab3915b7beee435e70"
+    },
+    {
+      "kind": "lean-scope-links-adjusted",
+      "source_path": "lean/docs/330.md",
+      "snapshot_path": "literature/lean/F330_scope.md",
+      "source_sha256": "fad8486a7daeef55a8280172ea655b34a705cd8985a7491445f2015b31449b7f",
+      "sha256": "5b5d023b513335e02339edcb077d68439be982d3aa403beb13c9e8015c2c1dbd"
+    },
+    {
+      "kind": "lean-selected-statement",
+      "source_path": "lean/ComparatorChallenges/BoltzmannNonuniqueness.lean",
+      "snapshot_path": "literature/lean/F363_BoltzmannNonuniqueness.lean",
+      "sha256": "cbf1d0af983b6ca2971c7ec646740db91cd265e1f3f24a7a5ce04c245bab9791"
+    },
+    {
+      "kind": "lean-scope-links-adjusted",
+      "source_path": "lean/docs/363.md",
+      "snapshot_path": "literature/lean/F363_scope.md",
+      "source_sha256": "2e3c36a9e6f7dca7922734f496559271cef40ffc36e63afb95da8a55ffe35304",
+      "sha256": "e7ca4865d324f07a835ae1df72accf1767a02d55559d52905b8506eda1e99b12"
+    },
+    {
+      "kind": "lean-selected-statement",
+      "source_path": "lean/ComparatorChallenges/Conductivity.lean",
+      "snapshot_path": "literature/lean/F365_Conductivity.lean",
+      "sha256": "646bf2f842e2a169865e984174b96b855e6a368deff70ec7e916cfafa4cf6557"
+    },
+    {
+      "kind": "lean-scope-links-adjusted",
+      "source_path": "lean/docs/365.md",
+      "snapshot_path": "literature/lean/F365_scope.md",
+      "source_sha256": "6f0cf7314968e12c2ad323d6f4a91fb5ae7a1f545a6c78043527d130f546c4e2",
+      "sha256": "123e6a221c0515aad31c8dbd181c172eed53db142db592a10f4b3f69fcc0a8b3"
+    },
+    {
+      "kind": "lean-selected-statement",
+      "source_path": "lean/ComparatorChallenges/ElasticityUniqueness.lean",
+      "snapshot_path": "literature/lean/F372_ElasticityUniqueness.lean",
+      "sha256": "c4c928a811cce5bd5bc46642e8dbf7e6ffd698856f1bf6ff12a511dddfaccb20"
+    },
+    {
+      "kind": "lean-scope-links-adjusted",
+      "source_path": "lean/docs/372.md",
+      "snapshot_path": "literature/lean/F372_scope.md",
+      "source_sha256": "5c6a8e21366181a580d561cfdc50d32306ac2f428ea487084db21bc5d603e3d6",
+      "sha256": "47a7392cfcdbd31d914e43553ac915004fbb6bb6ee17854fca1b49f5a7c10945"
+    },
+    {
+      "kind": "lean-selected-statement",
+      "source_path": "lean/ComparatorChallenges/Brenier.lean",
+      "snapshot_path": "literature/lean/F374_Brenier.lean",
+      "sha256": "f8ab00911bc6b6716cc47acdde3e40044d99b5c826abc9aa31d00536c2c9b7bb"
+    },
+    {
+      "kind": "lean-scope-links-adjusted",
+      "source_path": "lean/docs/374.md",
+      "snapshot_path": "literature/lean/F374_scope.md",
+      "source_sha256": "db319fc02b2a12ef2e60b7322c24b50f1ff41c16366da563da9dc9b3f11d0fa5",
+      "sha256": "ed2e0f39070528ce8835fe7a386a0c28a2bc7d90ad89888e25530e668e4ae5d0"
+    },
+    {
+      "kind": "lean-selected-statement",
+      "source_path": "lean/ComparatorChallenges/SolenoidalSheetPrograms.lean",
+      "snapshot_path": "literature/lean/F376_SolenoidalSheetPrograms.lean",
+      "sha256": "25fcf5559472bfc5c5696a14098489382dc82c5915a0c8e7ca1221a8ce2b6593"
+    },
+    {
+      "kind": "lean-selected-statement",
+      "source_path": "lean/ComparatorChallenges/NavierStokesAlternating.lean",
+      "snapshot_path": "literature/lean/F376_NavierStokesAlternating.lean",
+      "sha256": "0166c40c57bd9eb6ede9e25bda09650b859c81c0d801de9faa3875f195e003fc"
+    },
+    {
+      "kind": "lean-selected-statement",
+      "source_path": "lean/ComparatorChallenges/NavierStokesVelocity.lean",
+      "snapshot_path": "literature/lean/F376_NavierStokesVelocity.lean",
+      "sha256": "3aa18943939cf881ca3377b9637f25341d0aa324314ef6b9556f16beb7db76f9"
+    },
+    {
+      "kind": "lean-selected-statement",
+      "source_path": "lean/ComparatorChallenges/BalancedBoxRouting.lean",
+      "snapshot_path": "literature/lean/F376_BalancedBoxRouting.lean",
+      "sha256": "bf97f11a221c4a180736eb61b2fc8863e5da402f5c80d08df0f0e92b275aea1e"
+    },
+    {
+      "kind": "lean-selected-statement",
+      "source_path": "lean/ComparatorChallenges/BalancedThreeStack.lean",
+      "snapshot_path": "literature/lean/F376_BalancedThreeStack.lean",
+      "sha256": "892e82dc6e05c31fa1e916066ccd6561c415409eacb19d44c3328118700b53d9"
+    },
+    {
+      "kind": "lean-selected-statement",
+      "source_path": "lean/ComparatorChallenges/ForcedNavierStokesComputation.lean",
+      "snapshot_path": "literature/lean/F376_ForcedNavierStokesComputation.lean",
+      "sha256": "dd177cc30a8ed9a0012d32b8ab6900681c7ec6089dc121e592883162a08f2d76"
+    },
+    {
+      "kind": "lean-scope-links-adjusted",
+      "source_path": "lean/docs/376.md",
+      "snapshot_path": "literature/lean/F376_scope.md",
+      "source_sha256": "364be27f3ccd8f7b09e2ae9ab18ffcb5c5ad26665d44711abea51d2cd7b51bcc",
+      "sha256": "593751af0614bbcddf5bdf9a17531b18c3213453f1cb903b5b2493ab99827992"
+    },
+    {
+      "kind": "license",
+      "source_path": "LICENSE",
+      "snapshot_path": "literature/LICENSE",
+      "sha256": "c71d239df91726fc519c6eb72d318ec65820627232b2f796219e87dcf35d0ab4"
+    }
+  ],
+  "watch_paths": [
+    "lean/ComparatorChallenges/BalancedBoxRouting.json",
+    "lean/ComparatorChallenges/BalancedBoxRouting.lean",
+    "lean/ComparatorChallenges/BalancedThreeStack.json",
+    "lean/ComparatorChallenges/BalancedThreeStack.lean",
+    "lean/ComparatorChallenges/BoltzmannNonuniqueness.json",
+    "lean/ComparatorChallenges/BoltzmannNonuniqueness.lean",
+    "lean/ComparatorChallenges/Brenier.json",
+    "lean/ComparatorChallenges/Brenier.lean",
+    "lean/ComparatorChallenges/C0Absorption.json",
+    "lean/ComparatorChallenges/C0Absorption.lean",
+    "lean/ComparatorChallenges/CompactBanach.json",
+    "lean/ComparatorChallenges/CompactBanach.lean",
+    "lean/ComparatorChallenges/CompleteCrouzeix.json",
+    "lean/ComparatorChallenges/CompleteCrouzeix.lean",
+    "lean/ComparatorChallenges/Conductivity.json",
+    "lean/ComparatorChallenges/Conductivity.lean",
+    "lean/ComparatorChallenges/CourtadeKumar.json",
+    "lean/ComparatorChallenges/CourtadeKumar.lean",
+    "lean/ComparatorChallenges/CrouzeixHilbert.json",
+    "lean/ComparatorChallenges/CrouzeixHilbert.lean",
+    "lean/ComparatorChallenges/DirectCrouzeix.json",
+    "lean/ComparatorChallenges/DirectCrouzeix.lean",
+    "lean/ComparatorChallenges/DiscreteLipschitzFree.json",
+    "lean/ComparatorChallenges/DiscreteLipschitzFree.lean",
+    "lean/ComparatorChallenges/Dixmier.json",
+    "lean/ComparatorChallenges/Dixmier.lean",
+    "lean/ComparatorChallenges/DixmierAllDiscrete.json",
+    "lean/ComparatorChallenges/DixmierAllDiscrete.lean",
+    "lean/ComparatorChallenges/DoublingHilbert.json",
+    "lean/ComparatorChallenges/DoublingHilbert.lean",
+    "lean/ComparatorChallenges/ElasticityUniqueness.json",
+    "lean/ComparatorChallenges/ElasticityUniqueness.lean",
+    "lean/ComparatorChallenges/ForcedNavierStokesComputation.json",
+    "lean/ComparatorChallenges/ForcedNavierStokesComputation.lean",
+    "lean/ComparatorChallenges/FormulaHitting.json",
+    "lean/ComparatorChallenges/FormulaHitting.lean",
+    "lean/ComparatorChallenges/GaussianFiniteEntropy.json",
+    "lean/ComparatorChallenges/GaussianFiniteEntropy.lean",
+    "lean/ComparatorChallenges/GaussianInformation.json",
+    "lean/ComparatorChallenges/GaussianInformation.lean",
+    "lean/ComparatorChallenges/GaussianReplacement.json",
+    "lean/ComparatorChallenges/GaussianReplacement.lean",
+    "lean/ComparatorChallenges/HadamardCubeFiber.json",
+    "lean/ComparatorChallenges/HadamardCubeFiber.lean",
+    "lean/ComparatorChallenges/HilbertCrouzeix.json",
+    "lean/ComparatorChallenges/HilbertCrouzeix.lean",
+    "lean/ComparatorChallenges/LipschitzEquivalence.json",
+    "lean/ComparatorChallenges/LipschitzEquivalence.lean",
+    "lean/ComparatorChallenges/MUBSix.json",
+    "lean/ComparatorChallenges/MUBSix.lean",
+    "lean/ComparatorChallenges/MemoryPrecision.json",
+    "lean/ComparatorChallenges/MemoryPrecision.lean",
+    "lean/ComparatorChallenges/MetricEntropyDuality.json",
+    "lean/ComparatorChallenges/MetricEntropyDuality.lean",
+    "lean/ComparatorChallenges/NavierStokesAlternating.json",
+    "lean/ComparatorChallenges/NavierStokesAlternating.lean",
+    "lean/ComparatorChallenges/NavierStokesVelocity.json",
+    "lean/ComparatorChallenges/NavierStokesVelocity.lean",
+    "lean/ComparatorChallenges/NoiselessRegression.json",
+    "lean/ComparatorChallenges/NoiselessRegression.lean",
+    "lean/ComparatorChallenges/OneWayLiveness.json",
+    "lean/ComparatorChallenges/OneWayLiveness.lean",
+    "lean/ComparatorChallenges/PosteriorReplicas.json",
+    "lean/ComparatorChallenges/PosteriorReplicas.lean",
+    "lean/ComparatorChallenges/ProjectionMoments.json",
+    "lean/ComparatorChallenges/ProjectionMoments.lean",
+    "lean/ComparatorChallenges/RationalHitting.json",
+    "lean/ComparatorChallenges/RationalHitting.lean",
+    "lean/ComparatorChallenges/RealL1Renorming.json",
+    "lean/ComparatorChallenges/RealL1Renorming.lean",
+    "lean/ComparatorChallenges/SensitivitySeparation.json",
+    "lean/ComparatorChallenges/SensitivitySeparation.lean",
+    "lean/ComparatorChallenges/SoftChannel204.json",
+    "lean/ComparatorChallenges/SoftChannel204.lean",
+    "lean/ComparatorChallenges/SolenoidalSheetPrograms.json",
+    "lean/ComparatorChallenges/SolenoidalSheetPrograms.lean",
+    "lean/ComparatorChallenges/StrongKadisonKastler.json",
+    "lean/ComparatorChallenges/StrongKadisonKastler.lean",
+    "lean/ComparatorChallenges/StructuralCrouzeix.json",
+    "lean/ComparatorChallenges/StructuralCrouzeix.lean",
+    "lean/ComparatorChallenges/SubpolynomialLp.json",
+    "lean/ComparatorChallenges/SubpolynomialLp.lean",
+    "lean/ComparatorChallenges/SubsphereCurrent.json",
+    "lean/ComparatorChallenges/SubsphereCurrent.lean",
+    "lean/ComparatorChallenges/ThreeStateSupercritical.json",
+    "lean/ComparatorChallenges/ThreeStateSupercritical.lean",
+    "lean/ComparatorChallenges/ThreeStateTreeClauses.json",
+    "lean/ComparatorChallenges/ThreeStateTreeClauses.lean",
+    "lean/ComparatorChallenges/TraceReconstruction.json",
+    "lean/ComparatorChallenges/TraceReconstruction.lean",
+    "lean/ComparatorChallenges/TwoWayComplementation.json",
+    "lean/ComparatorChallenges/TwoWayComplementation.lean",
+    "lean/ComparatorChallenges/TwoWayDeterminization.json",
+    "lean/ComparatorChallenges/TwoWayDeterminization.lean",
+    "lean/docs/094.md",
+    "lean/docs/098.md",
+    "lean/docs/116.md",
+    "lean/docs/119.md",
+    "lean/docs/122.md",
+    "lean/docs/129.md",
+    "lean/docs/132.md",
+    "lean/docs/140.md",
+    "lean/docs/229.md",
+    "lean/docs/251.md",
+    "lean/docs/266.md",
+    "lean/docs/289.md",
+    "lean/docs/324.md",
+    "lean/docs/325.md",
+    "lean/docs/329.md",
+    "lean/docs/330.md",
+    "lean/docs/332.md",
+    "lean/docs/355.md",
+    "lean/docs/357.md",
+    "lean/docs/363.md",
+    "lean/docs/365.md",
+    "lean/docs/372.md",
+    "lean/docs/374.md",
+    "lean/docs/376.md",
+    "lean/lake-manifest.json",
+    "lean/lakefile.lean",
+    "lean/lean-toolchain",
+    "preprints/A-direct-proof-of-the-complete-Crouzeix-inequality-September-26-2026/",
+    "preprints/A-doubling-Hilbert-subset-with-no-finite-dimensional-bi-Lipschitz-embedding-September-25-2026/",
+    "preprints/A-superquadratic-separation-between-sensitivity-and-block-sensitivity-September-25-2026/",
+    "preprints/An-exponential-two-way-deterministic-state-lower-bound-for-one-way-liveness-September-25-2026/",
+    "preprints/Bi-Lipschitz-Coordinates-at-Regular-Points-of-Noncollapsed-RCD-Spaces-September-25-2026/",
+    "preprints/Counterexamples-to-the-duality-conjecture-for-metric-entropy-September-24-2026/",
+    "preprints/Determination-of-a-metric-and-a-unitary-connection-from-one-boundary-patch-October-5-2026/",
+    "preprints/Failure-of-Bounded-Approximation-in-a-Lipschitz-Free-Space-over-a-Uniformly-Discrete-Metric-Space-September-26-2026/",
+    "preprints/Finite-Instructions-and-Solenoidal-Shear-Flows-September-27-2026/",
+    "preprints/Global-Uniqueness-for-the-Smooth-Isotropic-Elasticity-Inverse-Problem-September-24-2026/",
+    "preprints/Incompressible-Box-Transport-and-Finite-Computation-October-6-2026/",
+    "preprints/Lipschitz-Equivalent-Separable-Banach-Spaces-Need-Not-Be-Linearly-Isomorphic-September-24-2026/",
+    "preprints/Localization-costs-and-information-growth-for-exact-Gaussian-observations-September-27-2026/",
+    "preprints/Memory-and-precision-in-noiseless-Gaussian-regression-September-27-2026/",
+    "preprints/Metric-Markov-Cotype-Two-of-l1-October-5-2026/",
+    "preprints/Near-Inclusions-of-von-Neumann-Algebras-Without-Small-Spatial-Embeddings-October-5-2026/",
+    "preprints/Nonuniqueness-for-Bounded-Measurable-Scalar-Conductivities-in-Three-Dimensions-September-23-2026/",
+    "preprints/Nonuniqueness-with-local-conservation-for-the-hard-sphere-Boltzmann-equation-October-5-2026/",
+    "preprints/One-Rational-Matrix-Hitting-Point-for-Noncommutative-Formulas-September-24-2026/",
+    "preprints/Polynomial-Hitting-Lists-for-Noncommutative-Rational-Formulas-September-24-2026/",
+    "preprints/Posterior-replicas-and-conditional-information-in-Gaussian-regression-September-27-2026/",
+    "preprints/Sharp-One-Third-Stability-of-Brenier-Maps-September-25-2026/",
+    "preprints/Sharp-binary-information-contraction-on-the-discrete-cube-September-24-2026/",
+    "preprints/Smooth-Anisotropic-Uniqueness-in-the-Calderon-Problem-from-One-Boundary-Patch-September-24-2026/",
+    "preprints/Strong-Ulam-Stability-Characterizes-Amenability-October-5-2026/",
+    "preprints/Subpolynomial-dimension-reduction-in-Lp-September-23-2026/",
+    "preprints/Tangent-flow-uniqueness-2026-09-24/",
+    "preprints/The-complete-Crouzeix-theorem-September-23-2026/",
+    "preprints/The-exact-reconstruction-threshold-for-the-three-state-symmetric-channel-September-25-2026/",
+    "preprints/The-maximum-number-of-mutually-unbiased-bases-in-dimension-six-September-24-2026/",
+    "preprints/Uniform-quasipolynomial-time-trace-reconstruction-October-5-2026/",
+    "preprints/Universal-strong-Kadison-Kastler-stability-September-23-2026/",
+    "preprints/quantitative-lower-bounds-for-trace-reconstruction-September-24-2026/",
+    "lean/OAI/Algebra/FormulaHitting/Hitting.lean",
+    "lean/OAI/Analysis/BoxTransport/Routing.lean",
+    "lean/OAI/Analysis/Brenier/Stability.lean",
+    "lean/OAI/Analysis/C0Absorption/Main.lean",
+    "lean/OAI/Analysis/Conductivity/Main.lean",
+    "lean/OAI/Analysis/Crouzeix/Main.lean",
+    "lean/OAI/Analysis/DirectCrouzeix/Main.lean",
+    "lean/OAI/Analysis/HilbertCrouzeix/Main.lean",
+    "lean/OAI/Analysis/KadisonKastler/StrongStability.lean",
+    "lean/OAI/Analysis/LipschitzEquivalence/Main.lean",
+    "lean/OAI/Analysis/LipschitzFree/Main.lean",
+    "lean/OAI/Analysis/LipschitzFree/Renorming.lean",
+    "lean/OAI/Analysis/LpDimension/Main.lean",
+    "lean/OAI/Analysis/MetricEntropy/Main.lean",
+    "lean/OAI/Analysis/MutuallyUnbiased/Main.lean",
+    "lean/OAI/Analysis/NumericalRange/Main.lean",
+    "lean/OAI/Analysis/StructuralCrouzeix/Endpoint.lean",
+    "lean/OAI/Analysis/Unitarizability/AllDiscrete.lean",
+    "lean/OAI/Analysis/Unitarizability/UniverseTransport.lean",
+    "lean/OAI/Combinatorics/Automata/Main.lean",
+    "lean/OAI/Combinatorics/Sensitivity/Separation.lean",
+    "lean/OAI/Combinatorics/TwoWayAutomata/ExplicitFamily.lean",
+    "lean/OAI/Combinatorics/TwoWayAutomata/Main.lean",
+    "lean/OAI/Computability/RationalHitting/Main.lean",
+    "lean/OAI/Geometry/DoublingHilbert/CompactBanach.lean",
+    "lean/OAI/Geometry/DoublingHilbert/Main.lean",
+    "lean/OAI/InformationTheory/BooleanNoise/Main.lean",
+    "lean/OAI/InformationTheory/SoftChannel/Main.lean",
+    "lean/OAI/LinearAlgebra/Hadamard/Main.lean",
+    "lean/OAI/MathematicalPhysics/AlternatingFlow/Development.lean",
+    "lean/OAI/MathematicalPhysics/Boltzmann/Main.lean",
+    "lean/OAI/MathematicalPhysics/Elasticity/Uniqueness.lean",
+    "lean/OAI/MathematicalPhysics/NavierStokes/BalancedTransport/MainResult.lean",
+    "lean/OAI/MathematicalPhysics/NavierStokes/VelocityDetection/Main.lean",
+    "lean/OAI/MathematicalPhysics/SheetFlows/SheetProgram.lean",
+    "lean/OAI/Probability/GaussianInformation/Main.lean",
+    "lean/OAI/Probability/GaussianRegression/Main.lean",
+    "lean/OAI/Probability/GaussianReplacement/FiberEquality.lean",
+    "lean/OAI/Probability/Localization/Main.lean",
+    "lean/OAI/Probability/MemoryPrecision/Main.lean",
+    "lean/OAI/Probability/PosteriorReplicas/Main.lean",
+    "lean/OAI/Probability/ProjectionMoments/Main.lean",
+    "lean/OAI/Probability/Subsphere/Main.lean",
+    "lean/OAI/Probability/ThreeState/Main.lean",
+    "lean/OAI/Probability/ThreeStateClauses/Main.lean",
+    "lean/OAI/Probability/TraceReconstruction.lean"
+  ],
+  "watch_scope": "Relevant paper directories (PDF/README/TeX/bibliography), selected scope docs including currently absent docs, comparator declarations/configs, solution entry modules and toolchain. Full Lean imports are pinned by source commit; this reading bundle does not independently verify the full proof library. CONTENTS.md/history.md are a separate discovery pass for moved/new/withdrawn sources.",
+  "lean_dependency_policy": "Keep full Lean proofs/imports in canonical lean/. Read copied scope and comparator statements first; any proof-level reuse requires following the solution module and its imports at source_commit and running the canonical comparator setup. Imported-library edits alone do not reopen independently proved DPT lemmas."
+}

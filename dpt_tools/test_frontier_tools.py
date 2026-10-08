@@ -112,6 +112,30 @@ class CommandWordAuditTests(unittest.TestCase):
 import measurement_factor_audit as mfa
 
 class MeasurementFactorTests(unittest.TestCase):
+    def test_absolute_rank_cutoff_charges_discarded_direction(self):
+        # O=0, P=eps*y, G=y. eps<atol is discarded; E must retain y.
+        rep = mfa.audit([[0.0, 0.0]], [[0.0, 1.0]], [[0.0, 1e-14]],
+                        radius=0.2, c_obs=0, c_goal=0, c_measurement=0,
+                        atol=1e-12)
+        self.assertFalse(rep["factorization_exact_at_tangent"])
+        self.assertAlmostEqual(rep["measurement_gain_2norm"], 0.0)
+        self.assertAlmostEqual(rep["conditional_prediction_bound"], 0.2)
+
+    def test_retained_weak_measurement_charges_noise_gain(self):
+        # For eps=1e-6, G=P/eps; sigma_P=1e-4 gives error<=100.
+        rep = mfa.audit([[1.0, 0.0]], [[0.0, 1.0]], [[0.0, 1e-6]],
+                        radius=0.2, c_obs=0, c_goal=0, c_measurement=0,
+                        measurement_noise_radius=1e-4)
+        self.assertAlmostEqual(rep["measurement_gain_2norm"], 1e6)
+        self.assertAlmostEqual(rep["conditional_prediction_bound"], 100.0)
+
+    def test_relative_rank_cutoff_changes_weak_direction_to_residual(self):
+        rep = mfa.audit([[1.0, 0.0]], [[0.0, 1.0]], [[0.0, 1e-6]],
+                        radius=0.2, c_obs=0, c_goal=0, c_measurement=0,
+                        rtol=1e-5)
+        self.assertAlmostEqual(rep["linear_residual_2norm"], 1.0)
+        self.assertAlmostEqual(rep["conditional_prediction_bound"], 0.2)
+
     def test_all_direction_factor_requires_existing_observation_term(self):
         do = np.array([[1.0, 0.0]])
         dp = np.array([[0.0, 1.0]])

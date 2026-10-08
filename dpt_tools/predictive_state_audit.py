@@ -151,7 +151,7 @@ def _linear_measurement_audit(
     if mk.size == 0:
         factor = np.zeros((dg.shape[0], dp.shape[0]))
     else:
-        factor = gk @ np.linalg.pinv(mk, rcond=rtol)
+        factor = gk @ mfa._truncated_pinv(mk, rtol, atol)
     factor_residual = gk - factor @ mk
     factor_residual_rel = _relative_frobenius(factor_residual, gk)
     gain = float(np.linalg.norm(factor, ord=2)) if factor.size else 0.0

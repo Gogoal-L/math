@@ -1,0 +1,19 @@
+> OpenAI source snapshot at `fd4aeeb2ee4fc729c18d98444fed42fd0529eeeb`. Local change: attribution and link targets only. Selected scope wording is unchanged. [Original scope](https://github.com/openai/math/blob/fd4aeeb2ee4fc729c18d98444fed42fd0529eeeb/lean/docs/363.md).
+
+# Nonuniqueness with local conservation for the hard-sphere Boltzmann equation
+
+The following describes the scope of the Lean formalization related to the following accompanying paper(s):
+
+- [Nonuniqueness for the periodic hard-sphere Boltzmann equation](https://github.com/openai/math/blob/fd4aeeb2ee4fc729c18d98444fed42fd0529eeeb/preprints/Nonuniqueness-for-the-periodic-hard-sphere-Boltzmann-equation-September-23-2026/paper.pdf)
+
+## Scope
+
+The formalization proves nonuniqueness for the periodic hard-sphere Boltzmann equation by constructing two distinct global renormalized solutions on $\mathbb T^3\times\mathbb R^3$ with the same nonnegative initial density. The data have bounded velocity support and finite mass, energy, and absolute entropy. Both solutions conserve local mass and total momentum and satisfy the global energy and entropy-dissipation inequalities.
+
+On a common initial interval they are strongly continuous in $L^1$, with integrable collision gains and losses. These are the conditions of the selected periodic result; later local-conservation refinements are outside it.
+
+## Comparator links
+
+| Result | Comparator statement |
+| --- | --- |
+| Two periodic hard-sphere Boltzmann solutions with the same data | [BoltzmannNonuniqueness.lean](F363_BoltzmannNonuniqueness.lean) |

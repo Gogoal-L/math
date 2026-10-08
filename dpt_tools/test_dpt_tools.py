@@ -7,6 +7,16 @@ import predictive_state_audit as psa
 
 
 class PredictiveStateAuditTests(unittest.TestCase):
+    def test_discarded_measurement_direction_cannot_enter_goal_factor(self):
+        rep = psa._linear_measurement_audit(
+            np.zeros((1, 2)), np.array([[0.0, 1.0]]),
+            np.array([[0.0, 1e-14]]), 1e-9, 1e-12, 1e-8)
+        m = rep["measurement"]
+        self.assertEqual(m["rank_on_hidden"], 0)
+        self.assertFalse(m["tangent_goal_sufficient"])
+        self.assertAlmostEqual(m["minimum_norm_goal_from_measurement_gain_2norm"], 0)
+        self.assertAlmostEqual(m["factorization_residual_rel"], 1)
+
     def test_one_measurement_repairs_one_goal_visible_direction(self):
         do = np.array([[1.0, 0.0, 0.0]])
         dg = np.array([[0.0, 1.0, 0.0]])

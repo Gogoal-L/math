@@ -1,7 +1,8 @@
 """All-direction linear factor and CONDITIONAL Taylor-error bound.
 
 If all maps are differentiable at a common h*, let DO,DP,DG be Jacobians.
-The least-Frobenius-norm factor [B A] = DG @ pinv([DO; DP]) gives
+The minimum-norm factor on retained singular directions,
+[B A] = DG @ truncated_pinv([DO; DP]), gives
 E = DG - B DO - A DP. Under ||delta_h||_2 <= r and SUPPLIED bounds
 ||R_O|| <= C_O r^2, ||R_P|| <= C_P r^2, ||R_G|| <= C_G r^2,
 we obtain ||Delta G - B Delta O - A Delta P|| <=
@@ -12,6 +13,14 @@ The caller is responsible for verifying remainder bounds and units.
 """
 from __future__ import annotations
 import numpy as np
+
+
+def _truncated_pinv(matrix, rtol, atol):
+    """Use the same strict cutoff as the numerical rank audits."""
+    u, s, vh = np.linalg.svd(matrix, full_matrices=False)
+    cutoff = max(atol, rtol * float(s[0])) if s.size else atol
+    keep = s > cutoff
+    return (vh[keep].T / s[keep]) @ u[:, keep].T
 
 
 def audit(do, dg, dp, *, radius: float, c_obs=None, c_goal=None,
@@ -33,7 +42,7 @@ def audit(do, dg, dp, *, radius: float, c_obs=None, c_goal=None,
         if value is not None and (not np.isfinite(float(value)) or float(value) < 0):
             raise ValueError(f"{name} must be finite and nonnegative when provided")
     augmented = np.vstack((do, dp))
-    factors = dg @ np.linalg.pinv(augmented, rcond=rtol)
+    factors = dg @ _truncated_pinv(augmented, rtol, atol)
     b = factors[:, :do.shape[0]]
     a = factors[:, do.shape[0]:]
     e = dg - b @ do - a @ dp

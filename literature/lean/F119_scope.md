@@ -1,0 +1,20 @@
+> OpenAI source snapshot at `fd4aeeb2ee4fc729c18d98444fed42fd0529eeeb`. Local change: attribution and link targets only. Selected scope wording is unchanged. [Original scope](https://github.com/openai/math/blob/fd4aeeb2ee4fc729c18d98444fed42fd0529eeeb/lean/docs/119.md).
+
+# The Courtade–Kumar and Hellinger conjectures
+
+The following describes the scope of the Lean formalization related to the following accompanying paper(s):
+
+- [Sharp binary-information contraction on the discrete cube](../F119_binary_information_contraction.pdf)
+
+## Scope
+
+The formalization proves sharp contraction of the information carried by a binary channel under independent symmetric noise on a uniform discrete cube. At each fixed initial information level, a noisy coordinate channel attains the maximum retained information. It also proves the refined Boolean bound that accounts for output bias, with strict improvement for nonconstant biased outputs at nonzero noise correlation, and the selected mean-dependent entropy-production inequality.
+
+For Boolean functions this includes the Courtade–Kumar inequality $I(f(X);Y)\le1-h_2(\varepsilon)$ in bits at crossover probability $0\le\varepsilon\le1/2$, where $h_2$ is binary entropy. A coordinate and its complement attain equality.
+
+## Comparator links
+
+| Result | Comparator statement |
+| --- | --- |
+| Courtade–Kumar inequality and attainment | [CourtadeKumar.lean](F119_CourtadeKumar.lean) |
+| Sharp binary-channel contraction and entropy production | [SoftChannel204.lean](F119_SoftChannel204.lean) |
