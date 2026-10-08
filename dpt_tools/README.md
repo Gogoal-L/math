@@ -3,7 +3,7 @@
 These scripts turn tangent information, bounded-noise goal ambiguity, finite command congruence and original-expression definedness checks into reproducible numerical artifacts. They are deliberately conservative: a PASS never upgrades a numerical linearization into a native theorem. They require Python 3.10+ and NumPy (`pip install -r requirements.txt`).
 
 The controller's entry remains [DPT_MATH_RESEARCH_MAP.md](../DPT_MATH_RESEARCH_MAP.md).
-The [literature bundle](../literature/README.md) provides stable PDF names and
+The [core literature bundle](../literature/README.md) provides stable PDF names and
 statement-level Lean correspondence. No S09 archive adapter is required to read
 or run these tools. Before native replay, record history/command identity,
 units and time convention, reference/query, information budget and provenance

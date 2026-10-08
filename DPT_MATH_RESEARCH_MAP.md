@@ -7,7 +7,12 @@
 
 ### 使用方式：主控仍然只需要这份 MAP
 
-本轮采用轻量研究桥：本文件保留问题、推导、优先级与决策入口；[`literature/`](literature/README.md) 保存按 family/subpaper 命名的 PDF，以及对应的 Lean scope / selected-statement 阅读快照。来源路径、commit、文件校验值、DPT 独立推导、现有代码/测试和 reopen condition 集中在一份 [`registry.json`](literature/registry.json)，供追溯与手动增量检查；主控平时不用逐项阅读它。原 `preprints/` 与 `lean/` 文件继续作为完整源码与证明入口，原 PDF 链接全部保留在 literature 对照表。
+本文件仍是主控唯一入口，保留问题、推导、优先级与决策材料。当前材料分为两个目录：
+
+- [`literature/`](literature/README.md)：**7 份当前重要、尚需落实 DPT transfer 或确认主控吸收的核心 PDF**，附最相关的 Lean scope / selected statement。每次按问题读取 2–4 份即可。
+- [`literature_archive/`](literature_archive/README.md)：**26 份备用 PDF**及其 Lean 材料，涵盖 companion、条件式路线与长期边界，按 reopen condition 调用。原有分析与全部来源链接继续保留。
+
+一份 [`registry.json`](literature/registry.json) 追溯两个目录的 source commit、文件校验值、reading tier、DPT 推导、代码/测试、pending task 与 reopen condition。目录划分是研究阅读优先级，不改变 scientific authority。“已有分析”不等于“已在 native DPT 中验证”；当前未收到主控吸收确认，不把任何论文擅自标成主控已懂或从未读过。原 `preprints/` 与 `lean/` 继续保存完整源码与证明。
 
 **希望从先进数学获得的实际增量**：发现更好的预测对象、证明更少测量已经足够、构造现有模型无法排除的反例，或得到有明确误差范围的预测。数学结果若能改变这些对象，可以支持项目转向；先交付一个能与普通模型比较的 DPT 独立推导和最小验证，再由研究者判断转向价值。
 
@@ -18,6 +23,20 @@
 | 一条 fusion 到底识别了什么？ | 四角混合差分 + cubic rival + bias/noise envelope | 区分 finite mixed response、严格二次系数和条件式中心系数区间，决定 optional S10 是否值得 |
 
 这些是当前可执行的研究问题。F355/F365-B/F357 提供 proof-pattern 启发，K/N 与误差界由 DPT 独立证明；F329/F332 的边界帮助选择正确的目标与假设。要进一步支持转向，最有价值的产物是一个新 predictive object，或一个较原对象更强且能被独立 history/command 反驳的预测，而非继续增加 theorem 名称。
+
+### 当前核心队列：先落实这些问题
+
+| PDF | 已有基础 | 尚待落实 / 决策用途 |
+|---|---|---|
+| [F116-A](literature/F116-A_noncommutative_hitting_point.pdf) | Pro17D 已采用 finite-lift / detection 方法 | 当前 command class 是否满足所用条件，哪些检测可以独立保证？ |
+| [F116-B](literature/F116-B_rational_hitting_lists.pdf) | MAP 与 sampled-domain 工具已记录 inverse-path 原则 | 补齐实际 command 的 definedness；再判断 fixed hitting bank 是否适用 |
+| [F266](literature/F266_dimension_six_MUB_certificate.pdf) | Pro17D 已使用 certificate architecture | 对当前承重结果落实 center/tangent/remainder/readout/provenance 与 unresolved 身份 |
+| [F329](literature/F329_metric_entropy_duality_counterexample.pdf) | 独立 finite-bank minimax 与 synthetic 工具已有 | 在 matched archive 上定位 goal-visible collision；确定 archived feature 的增量 |
+| [F365-B](literature/F365-B_smooth_anisotropic_Calderon.pdf) | finite-probe / superlinear lift 的 proof-pattern 分析已有 | 先判断简单 inverse/constant-rank theorem 是否足够，再选需要迁移的步骤 |
+| [F357](literature/F357_regular_RCD_bi_Lipschitz_coordinates.pdf) | multiscale directional/remainder 分析已有 | 将 tangent 结果接到声明邻域内的 gain 与 remainder，检验 finite-radius sufficiency |
+| [F140-A](literature/F140-A_Gaussian_regression_memory_precision.pdf) | elementary packing 与 memory/information 启发已有 | 明确信息预算和 class，先证明适用的独立下界；sharp Gaussian bound 保留原假设 |
+
+本队列是当前优先落实的研究选择，可由主控按证据调整；不要求七篇都成为承重来源。F355、F376 等已有方法分析继续保留在下文与归档区，只有相关 native 问题需要其具体 proof pattern 时再调入核心区。
 
 **本轮验证范围（2026-10-08）**：论文首页身份、上游 `fd4aeeb2ee4fc729c18d98444fed42fd0529eeeb` 的文件字节、Lean selected scope 与 37 个 synthetic Python tests。没有提供 native S09 archive；下一次真实 replay 仍需主控从 archive 明确 history/command identity、单位/时标、reference/query、信息预算与 provenance。当前不增加 adapter，不代替主控冻结证据或晋升 claim。
 
@@ -63,6 +82,8 @@ OpenAI Math 与相关既有数学方法目前提供了若干互补动作；表�
 ---
 
 ## 1. 文献身份：Pro17D 当时用了什么，后来又发现了什么
+
+下表身份记录历史使用与已有分析，不等于当前必读队列；当前阅读顺序以开头的核心队列为准。
 
 状态含义：
 
@@ -183,7 +204,7 @@ F116-B 的 test list 只依赖变量数和 size bound，不依赖 formula coeffi
 
 ### 深读锚点
 
-- [F229 PDF](literature/F229_three_state_reconstruction.pdf)
+- [F229 PDF](literature_archive/F229_three_state_reconstruction.pdf)
 - [foundations](preprints/The-exact-reconstruction-threshold-for-the-three-state-symmetric-channel-September-25-2026/build/sections/02-foundations.tex)
 - [finite experiment / grid](preprints/The-exact-reconstruction-threshold-for-the-three-state-symmetric-channel-September-25-2026/build/sections/06-grid.tex)
 - [certificates](preprints/The-exact-reconstruction-threshold-for-the-three-state-symmetric-channel-September-25-2026/build/sections/appendix-certificates.tex)
@@ -286,7 +307,7 @@ F266 的 headline MUB claim 很强，而 selected formalization 明确没有证�
 
 ### 深读锚点
 
-- [F365-A PDF](literature/F365-A_metric_connection_partial_boundary.pdf)
+- [F365-A PDF](literature_archive/F365-A_metric_connection_partial_boundary.pdf)
 - [introduction](preprints/Determination-of-a-metric-and-a-unitary-connection-from-one-boundary-patch-October-5-2026/build/sections/01-introduction.tex)
 - [boundary/source evaluations](preprints/Determination-of-a-metric-and-a-unitary-connection-from-one-boundary-patch-October-5-2026/build/sections/02-boundary.tex)
 - [matrix moments](preprints/Determination-of-a-metric-and-a-unitary-connection-from-one-boundary-patch-October-5-2026/build/sections/06-matrix.tex)
@@ -364,7 +385,7 @@ F365-B 给的是一个很好的 proof template：
 
 ### 深读锚点
 
-- [F365-C PDF](literature/F365-C_rough_scalar_conductivity_nonuniqueness.pdf)
+- [F365-C PDF](literature_archive/F365-C_rough_scalar_conductivity_nonuniqueness.pdf)
 - [scalarization](preprints/Nonuniqueness-for-Bounded-Measurable-Scalar-Conductivities-in-Three-Dimensions-September-23-2026/build/sections/scalarization.tex)
 - [nonuniqueness construction](preprints/Nonuniqueness-for-Bounded-Measurable-Scalar-Conductivities-in-Three-Dimensions-September-23-2026/build/sections/nonuniqueness.tex)
 
@@ -399,7 +420,7 @@ F365-C 的 scalarization 只精确保留有限个指定 Cauchy pairs，而不是
 
 ### 深读锚点
 
-- [F372 PDF](literature/F372_smooth_isotropic_elasticity_uniqueness.pdf)
+- [F372 PDF](literature_archive/F372_smooth_isotropic_elasticity_uniqueness.pdf)
 - [introduction](preprints/Global-Uniqueness-for-the-Smooth-Isotropic-Elasticity-Inverse-Problem-September-24-2026/build/sections/introduction.tex)
 - [physical transfer](preprints/Global-Uniqueness-for-the-Smooth-Isotropic-Elasticity-Inverse-Problem-September-24-2026/build/sections/boundary-reduction.tex)
 - [transport matching](preprints/Global-Uniqueness-for-the-Smooth-Isotropic-Elasticity-Inverse-Problem-September-24-2026/build/sections/transport-matching.tex)
@@ -447,7 +468,7 @@ full operator uniqueness ≠ finite sufficiency ≠ stable reconstruction。
 
 ### 深读锚点
 
-- [F374 PDF](literature/F374_Brenier_one_third_stability.pdf)
+- [F374 PDF](literature_archive/F374_Brenier_one_third_stability.pdf)
 - [introduction](preprints/Sharp-One-Third-Stability-of-Brenier-Maps-September-25-2026/build/source/sections/introduction.tex)
 - [finite stability](preprints/Sharp-One-Third-Stability-of-Brenier-Maps-September-25-2026/build/source/sections/finite_stability.tex)
 - [sharpness](preprints/Sharp-One-Third-Stability-of-Brenier-Maps-September-25-2026/build/source/sections/sharpness.tex)
@@ -569,9 +590,9 @@ F357 在 dyadic scales `r_i` 上同时追踪局部 Gram normalization 与 direct
 
 ### F330 + F094/F098：低维不够，还要区分 error、gain 和作用域
 
-- [F330 PDF](literature/F330_discrete_Lipschitz_free_bounded_approximation.pdf)
-- [F094 PDF](literature/F094_Lp_subpolynomial_dimension_reduction.pdf)
-- [F098 PDF](literature/F098_doubling_Hilbert_embedding_obstruction.pdf)
+- [F330 PDF](literature_archive/F330_discrete_Lipschitz_free_bounded_approximation.pdf)
+- [F094 PDF](literature_archive/F094_Lp_subpolynomial_dimension_reduction.pdf)
+- [F098 PDF](literature_archive/F098_doubling_Hilbert_embedding_obstruction.pdf)
 
 F330 区分 approximation property 与 bounded approximation property：每个 finite/compact test 上都能找到 finite-rank approximant，不代表这些 approximants 可以共享一个 finite operator-norm bound。对 DPT 的翻译是：
 
@@ -587,9 +608,9 @@ F094 又说明 exact 与 approximate complexity 可以数量级完全不同；F0
 
 ### F289 + F251：trajectory fit 与 structural equivalence 分开
 
-- [F289 strong stability](literature/F289-A_strong_Kadison_Kastler_stability.pdf)
-- [F289 one-sided boundary](literature/F289-B_one_sided_near_inclusion_counterexample.pdf)
-- [F251 Strong Ulam companion](literature/F251_strong_Ulam_stability_amenability.pdf)
+- [F289 strong stability](literature_archive/F289-A_strong_Kadison_Kastler_stability.pdf)
+- [F289 one-sided boundary](literature_archive/F289-B_one_sided_near_inclusion_counterexample.pdf)
+- [F251 Strong Ulam companion](literature_archive/F251_strong_Ulam_stability_amenability.pdf)
 
 F289 的正向 strong Kadison-Kastler theorem 与 October one-sided counterexample 合起来给 DPT 一个直接 guard：
 
@@ -601,7 +622,7 @@ F251 的 Strong Ulam companion 从 algebra 侧给同样警告：small compositio
 
 ### F325：fixed nonnormal propagator 出现时立即打开
 
-- [F325 PDF](literature/F325-A_complete_Crouzeix_structural.pdf)
+- [F325 PDF](literature_archive/F325-A_complete_Crouzeix_structural.pdf)
 
 若后续 frozen stage 真能写成一个 fixed nonnormal operator `A` 的 polynomial / rational readout，F325 的 complete Crouzeix control 可以把 matrix functional 的 operator norm 压到 numerical range 上的二维 envelope：
 
@@ -611,8 +632,8 @@ F251 的 Strong Ulam companion 从 algebra 侧给同样警告：small compositio
 
 ### F363 + F129：两个长期 claim guard
 
-- [F363 PDF](literature/F363_local_conservation_Boltzmann_nonuniqueness.pdf)
-- [F129 PDF](literature/F129_one_way_liveness_state_lower_bound.pdf)
+- [F363 PDF](literature_archive/F363_local_conservation_Boltzmann_nonuniqueness.pdf)
+- [F129 PDF](literature_archive/F129_one_way_liveness_state_lower_bound.pdf)
 
 F363 的意义是把 **conservation certificate** 与 **uniqueness certificate** 分开。DPT 的 charge balance、energy balance、KCL/KVL 检查属于物理一致性证据，不替代 identifiability。
 
@@ -624,7 +645,7 @@ F136 与 F139 留在 WATCH：前者是 PPAD local-check robustness，后者在�
 
 ### F332：已存在的稳定预测因子如何延拓为部署映射
 
-**证据 locator**：[PDF](literature/F332_l1_Markov_cotype_extension.pdf)；[完整主证明及第 6 节 extension corollary](preprints/Metric-Markov-Cotype-Two-of-l1-October-5-2026/build/main.tex)；[Mendel–Naor 2013 先验](https://arxiv.org/abs/1301.3963)。目前未发现 lean/docs/332.md。本项目核对了主证明的 cut representation、cubic remainder、martingale telescoping 以及 corollary 的前提；**没有独立证明整篇预印本的全部细节**。
+**证据 locator**：[PDF](literature_archive/F332_l1_Markov_cotype_extension.pdf)；[完整主证明及第 6 节 extension corollary](preprints/Metric-Markov-Cotype-Two-of-l1-October-5-2026/build/main.tex)；[Mendel–Naor 2013 先验](https://arxiv.org/abs/1301.3963)。目前未发现 lean/docs/332.md。本项目核对了主证明的 cut representation、cubic remainder、martingale telescoping 以及 corollary 的前提；**没有独立证明整篇预印本的全部细节**。
 
 这篇论文的有用性必须从证明链理解。有限 \(\ell_1\) 点集可编码为 weighted binary cuts，使 \(\|x_i-x_j\|_1=\|z_i-z_j\|_H^2\)。作者取 cubic \(\phi(t)=3t^2-2t^3\)；其导数在 binary vertices 处消失，因此两点的平方 \(\ell_1\) 距离增量被 Hilbert 四次方势的 Bregman remainder 控制。条件于 martingale 旧状态时，Bregman 的一次项均值为零，累计损失 telescopes。论文给出 \(N_2(\ell_1)\le12\sqrt{21}\)，然后使用 Hilbert source 的 Markov type 2、\(\ell_1=c_0^*\) 和 Mendel–Naor extension theorem，得到 universal \(K\) 使任意已有的 Lipschitz \(f:S\subset H\to\ell_1\) 可以延拓到整个 Hilbert space，\(\operatorname{Lip}F\le K\operatorname{Lip}f\)。**\(K\) 并未被证明等于 \(12\sqrt{21}\)**。
 
@@ -638,7 +659,7 @@ L=\sup_{Y(h)\ne Y(h')}\frac{\|G(h)-G(h')\|_1}{\|Y(h)-Y(h')\|_2}<\infty,
 
 ### F324：低失真 metric state 与 linear/physical state 的层级差别
 
-**证据 locator**：[PDF](literature/F324_metric_equivalent_nonisomorphic_Banach.pdf)；[Hilbert slots 及图示](preprints/Lipschitz-Equivalent-Separable-Banach-Spaces-Need-Not-Be-Linearly-Isomorphic-September-24-2026/build/sections/05-hilbert.tex)；[localized linearization](preprints/Lipschitz-Equivalent-Separable-Banach-Spaces-Need-Not-Be-Linearly-Isomorphic-September-24-2026/build/sections/04-localization.tex)；[最终证明](preprints/Lipschitz-Equivalent-Separable-Banach-Spaces-Need-Not-Be-Linearly-Isomorphic-September-24-2026/build/sections/06-assembly.tex)；[Lean selected scope](literature/lean/F324_scope.md)。
+**证据 locator**：[PDF](literature_archive/F324_metric_equivalent_nonisomorphic_Banach.pdf)；[Hilbert slots 及图示](preprints/Lipschitz-Equivalent-Separable-Banach-Spaces-Need-Not-Be-Linearly-Isomorphic-September-24-2026/build/sections/05-hilbert.tex)；[localized linearization](preprints/Lipschitz-Equivalent-Separable-Banach-Spaces-Need-Not-Be-Linearly-Isomorphic-September-24-2026/build/sections/04-localization.tex)；[最终证明](preprints/Lipschitz-Equivalent-Separable-Banach-Spaces-Need-Not-Be-Linearly-Isomorphic-September-24-2026/build/sections/06-assembly.tex)；[Lean selected scope](literature_archive/lean/F324_scope.md)。
 
 预印本的准确结果是：可分**无限维**实 Banach 空间 \(X,Y\) 具有双 Lipschitz bijection，满足
 \[
@@ -680,7 +701,7 @@ E_*(Y,\sigma)=\inf_{\hat g}\sup_{h\in\mathcal H,\|e\|_2\le\sigma}
 
 ### F376：从完整命令定义域到可更新的 predictive-state quotient
 
-**证据 locator**：[shear-flow companion PDF](literature/F376-A_solenoidal_shear_instructions.pdf)；[七阶段 shear、recording 和 observer proof](preprints/Finite-Instructions-and-Solenoidal-Shear-Flows-September-27-2026/build/main.tex)；[October 6 box revision PDF](literature/F376-B_incompressible_box_computation.pdf)；[guarded-history proof](preprints/Incompressible-Box-Transport-and-Finite-Computation-October-6-2026/build/guarded-history.tex)；[torus scaling / physical-viscosity proof](preprints/Incompressible-Box-Transport-and-Finite-Computation-October-6-2026/build/torus-routing.tex)；[Lean 376 的 selected scope](literature/lean/F376_scope.md)。
+**证据 locator**：[shear-flow companion PDF](literature_archive/F376-A_solenoidal_shear_instructions.pdf)；[七阶段 shear、recording 和 observer proof](preprints/Finite-Instructions-and-Solenoidal-Shear-Flows-September-27-2026/build/main.tex)；[October 6 box revision PDF](literature_archive/F376-B_incompressible_box_computation.pdf)；[guarded-history proof](preprints/Incompressible-Box-Transport-and-Finite-Computation-October-6-2026/build/guarded-history.tex)；[torus scaling / physical-viscosity proof](preprints/Incompressible-Box-Transport-and-Finite-Computation-October-6-2026/build/torus-routing.tex)；[Lean 376 的 selected scope](literature_archive/lean/F376_scope.md)。
 
 必须先说明原论文为何引入 reversibility：作者需要把有限 symbolic instructions 嵌入**光滑不可压缩流的可逆 time map**，故以历史 record 保存被覆盖的旧信息。recorder lemma 要求 destination control 固定 incoming displacement，且 destination + written symbol 能唯一找回 predecessor；证明先检查**完整允许的 transition domain**，再看 special initialized run 的 checkpoint invariants。七阶段 lift/shears/translation/drop 作用于整个 closed source rectangle，而非某条被观察到的典型轨迹；observer 不是只核每个周期的 endpoint，还核所有 intermediate times 是否误入 forbidden strip。October 6 companion 进一步在不同 torus/box/force classes 下精确追踪尺度与投影，physical viscosity 不能在坐标伸缩中悄悄替换。
 
@@ -704,7 +725,7 @@ h\equiv h'
 
 ### F132：从 single-coordinate sensitivity 走向 joint / block-intervention certificate
 
-**亲读锚点**：[原始论文](literature/F132_sensitivity_block_sensitivity_separation.pdf)；[00 定义与策略](preprints/A-superquadratic-separation-between-sensitivity-and-block-sensitivity-September-25-2026/build/sections/00-introduction.tex)；[01 tournament gate 与 target-row 示意](preprints/A-superquadratic-separation-between-sensitivity-and-block-sensitivity-September-25-2026/build/sections/01-construction.tex)；[02 四组耦合递推](preprints/A-superquadratic-separation-between-sensitivity-and-block-sensitivity-September-25-2026/build/sections/02-recurrences.tex)；[03 量化分离与 composition](preprints/A-superquadratic-separation-between-sensitivity-and-block-sensitivity-September-25-2026/build/sections/03-separation.tex)；[Lean selected scope](literature/lean/F132_scope.md)。
+**亲读锚点**：[原始论文](literature_archive/F132_sensitivity_block_sensitivity_separation.pdf)；[00 定义与策略](preprints/A-superquadratic-separation-between-sensitivity-and-block-sensitivity-September-25-2026/build/sections/00-introduction.tex)；[01 tournament gate 与 target-row 示意](preprints/A-superquadratic-separation-between-sensitivity-and-block-sensitivity-September-25-2026/build/sections/01-construction.tex)；[02 四组耦合递推](preprints/A-superquadratic-separation-between-sensitivity-and-block-sensitivity-September-25-2026/build/sections/02-recurrences.tex)；[03 量化分离与 composition](preprints/A-superquadratic-separation-between-sensitivity-and-block-sensitivity-September-25-2026/build/sections/03-separation.tex)；[Lean selected scope](literature_archive/lean/F132_scope.md)。
 
 论文对象严格是 total Boolean functions 的**全局** sensitivity \(s(f)=\max_x s(f,x)\) 和 disjoint block sensitivity \(\mathrm{bs}(f)=\max_x\mathrm{bs}(f,x)\)。其 construction 在 \(d\) 层的嵌套 predicates 上分别控制从零变一、从一变零的 single-bit sensitivity \(S_{\ell,0},S_{\ell,1}\)，还增加同一 bit 同时改变**两个不同 child predicates** 的 joint profiles \(J_{\ell,0},J_{\ell,1}\)。这是最该学的技术点：只递推单变量 sensitivity，无法闭合 recursive gate 的界；必须把 pair-change events 作为独立数学对象。论文用 tournament edge labels 限制一次 bit flip 能修复多少候选 clause；下界则构造大量 disjoint blocks 同时使目标行满足。得到 \(s(f)\le2(d+2)M^{d+1}\) 与 \(\mathrm{bs}(f,0)\ge M^2(2M^2+1)^d\)，从而 \(\mathrm{bs}/s^2\ge2^d/[4(d+2)^2]\)，最后经 disjoint composition 得固定指数 \(\alpha>2\)。
 
@@ -714,7 +735,7 @@ h\equiv h'
 
 ### F122：trace alignment / erasure model 先于全波形 reconstruction 的复杂度
 
-**亲读锚点**：[uniform reconstruction PDF](literature/F122-A_uniform_trace_reconstruction.pdf)、[main theorem 与假设](preprints/Uniform-quasipolynomial-time-trace-reconstruction-October-5-2026/build/manuscript/main.tex)、[positive moment arrays 与错误前缀 separation](preprints/Uniform-quasipolynomial-time-trace-reconstruction-October-5-2026/build/manuscript/setup.tex)、[analytical signal / exact generating identity](preprints/Uniform-quasipolynomial-time-trace-reconstruction-October-5-2026/build/manuscript/separation.tex)、[lower-bound companion](literature/F122-B_trace_reconstruction_lower_bound.pdf)、[Lean selected scope](literature/lean/F122_scope.md)。
+**亲读锚点**：[uniform reconstruction PDF](literature_archive/F122-A_uniform_trace_reconstruction.pdf)、[main theorem 与假设](preprints/Uniform-quasipolynomial-time-trace-reconstruction-October-5-2026/build/manuscript/main.tex)、[positive moment arrays 与错误前缀 separation](preprints/Uniform-quasipolynomial-time-trace-reconstruction-October-5-2026/build/manuscript/setup.tex)、[analytical signal / exact generating identity](preprints/Uniform-quasipolynomial-time-trace-reconstruction-October-5-2026/build/manuscript/separation.tex)、[lower-bound companion](literature_archive/F122-B_trace_reconstruction_lower_bound.pdf)、[Lean selected scope](literature_archive/lean/F122_scope.md)。
 
 这里的 input 是任意未知 length-\(n\) binary string，每个位独立以已知 retention probability \(p\) 保留；收到的 trace **没有原始 position labels**。uniform decoder 不是靠简单的 pairwise separation 直接恢复：先构造每个候选 prefix 的正半定 moment relaxation，把“任何错误前缀”变成可观测 trace statistics 上的 separation，再用高阶位置/间距 moments 与多尺度解析 continuation 限制最坏样本数。固定 \(p\) 的 upper bound 为 quasipolynomial；另一个 companion 给 exact worst-case full-string reconstruction 的 superpolynomial lower bound。**本次核对的 lean/docs/122.md 主要 formalize 下界，不能借它证明 October 5 uniform decoder 的每一行细节。**
 
@@ -726,7 +747,7 @@ h\equiv h'
 
 ### F119：sharpen information loss, but only under its genuine binary-channel model
 
-**来源**：[main theorem / soft-channel proof](preprints/Sharp-binary-information-contraction-on-the-discrete-cube-September-24-2026/build/main.tex)、[Lean scope](literature/lean/F119_scope.md)。
+**来源**：[main theorem / soft-channel proof](preprints/Sharp-binary-information-contraction-on-the-discrete-cube-September-24-2026/build/main.tex)、[Lean scope](literature_archive/lean/F119_scope.md)。
 
 F119 使用**独立均匀输入 bits**、独立同分布 binary-symmetric noise、预先指定且可随机化的 one-bit summary。主定理先固定 summary 原始 mutual information，再证明独立噪声后的保留信息不能超过一个合适幅度的单坐标软通道；Boolean 推论给经典形式 \(I(f(X);Y)\le1-h_2(\varepsilon)\) bits，输出 bias 时有更强上界。条件中 uniform cube、binary output、symmetric channel 缺一不可。
 
@@ -734,7 +755,7 @@ DPT switching latent 通常连续、有物理相关性，simulator discrepancy �
 
 ### F325：fixed nonnormal stage 的 numerical-range upper envelope，及其更简单的强竞争者
 
-**亲读锚点**：[direct proof](preprints/A-direct-proof-of-the-complete-Crouzeix-inequality-September-26-2026/build/main.tex)、[structural companion](preprints/The-complete-Crouzeix-theorem-September-23-2026/build/main.tex)、[Lean selected scope](literature/lean/F325_scope.md)。
+**亲读锚点**：[direct proof](preprints/A-direct-proof-of-the-complete-Crouzeix-inequality-September-26-2026/build/main.tex)、[structural companion](preprints/The-complete-Crouzeix-theorem-September-23-2026/build/main.tex)、[Lean selected scope](literature_archive/lean/F325_scope.md)。
 
 若已真正冻结**同一个**复数矩阵 \(A\)（固定 linearized stage/generator），令 \(P(z)=\sum_{k=0}^d B_k z^k\) 为 matrix-coefficient polynomial，F325 给出
 \[

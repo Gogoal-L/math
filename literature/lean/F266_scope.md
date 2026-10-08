@@ -22,4 +22,4 @@ This is a supporting Fourier cancellation statement. The paper's full character-
 | Result | Comparator statement |
 | --- | --- |
 | Order-six Hadamard Fourier vanishing and a five-basis upper bound | [MUBSix.lean](F266_MUBSix.lean) |
-| Cube-fiber cancellation for order-six Hadamard row ratios | [HadamardCubeFiber.lean](F266_HadamardCubeFiber.lean) |
+| Cube-fiber cancellation for order-six Hadamard row ratios | [HadamardCubeFiber.lean](../../literature_archive/lean/F266_HadamardCubeFiber.lean) |

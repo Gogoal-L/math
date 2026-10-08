@@ -5,8 +5,8 @@
 The following describes the scope of the Lean formalization related to the following accompanying paper(s):
 
 - [Memory and precision in noiseless Gaussian regression](../F140-A_Gaussian_regression_memory_precision.pdf)
-- [Posterior replicas and conditional information in Gaussian regression](../F140-B_posterior_replicas_information.pdf)
-- [Localization costs and information growth for exact Gaussian observations](../F140-C_exact_Gaussian_localization.pdf)
+- [Posterior replicas and conditional information in Gaussian regression](../../literature_archive/F140-B_posterior_replicas_information.pdf)
+- [Localization costs and information growth for exact Gaussian observations](../../literature_archive/F140-C_exact_Gaussian_localization.pdf)
 - [Projection moments, positive cap domination, and Riesz estimates on the sphere](https://github.com/openai/math/blob/fd4aeeb2ee4fc729c18d98444fed42fd0529eeeb/preprints/Projection-moments-positive-cap-domination-and-Riesz-estimates-on-the-sphere-September-27-2026/paper.pdf)
 - [Replacing Gaussian observations in memory-constrained inference](https://github.com/openai/math/blob/fd4aeeb2ee4fc729c18d98444fed42fd0529eeeb/preprints/Replacing-Gaussian-observations-in-memory-constrained-inference-September-27-2026/paper.pdf)
 - [Subsphere methods for memory–sample lower bounds in noiseless Gaussian regression](https://github.com/openai/math/blob/fd4aeeb2ee4fc729c18d98444fed42fd0529eeeb/preprints/Subsphere-methods-for-memory-sample-lower-bounds-in-noiseless-Gaussian-regression-September-27-2026/paper.pdf)
@@ -42,10 +42,10 @@ The formalization also covers radius-weighted block and terminal estimates, affi
 | Result | Comparator statement |
 | --- | --- |
 | Projection estimates and memory–precision bounds | [MemoryPrecision.lean](F140_MemoryPrecision.lean) |
-| Subquadratic and fixed-quadratic memory–precision lower bounds | [NoiselessRegression.lean](F140_NoiselessRegression.lean) |
-| Posterior-replica comparisons and sample lower bound | [PosteriorReplicas.lean](F140_PosteriorReplicas.lean) |
-| Finite-entropy localization and regularization bounds | [GaussianFiniteEntropy.lean](F140_GaussianFiniteEntropy.lean) |
-| Information growth under repeated exact Gaussian observations | [GaussianInformation.lean](F140_GaussianInformation.lean) |
-| Projection, cap, and Riesz estimates with regression bounds | [ProjectionMoments.lean](F140_ProjectionMoments.lean) |
-| Gaussian replacement and information bounds | [GaussianReplacement.lean](F140_GaussianReplacement.lean) |
-| Subsphere estimates and memory–sample lower bounds | [SubsphereCurrent.lean](F140_SubsphereCurrent.lean) |
+| Subquadratic and fixed-quadratic memory–precision lower bounds | [NoiselessRegression.lean](../../literature_archive/lean/F140_NoiselessRegression.lean) |
+| Posterior-replica comparisons and sample lower bound | [PosteriorReplicas.lean](../../literature_archive/lean/F140_PosteriorReplicas.lean) |
+| Finite-entropy localization and regularization bounds | [GaussianFiniteEntropy.lean](../../literature_archive/lean/F140_GaussianFiniteEntropy.lean) |
+| Information growth under repeated exact Gaussian observations | [GaussianInformation.lean](../../literature_archive/lean/F140_GaussianInformation.lean) |
+| Projection, cap, and Riesz estimates with regression bounds | [ProjectionMoments.lean](../../literature_archive/lean/F140_ProjectionMoments.lean) |
+| Gaussian replacement and information bounds | [GaussianReplacement.lean](../../literature_archive/lean/F140_GaussianReplacement.lean) |
+| Subsphere estimates and memory–sample lower bounds | [SubsphereCurrent.lean](../../literature_archive/lean/F140_SubsphereCurrent.lean) |
