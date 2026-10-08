@@ -33,11 +33,20 @@ def _model(raw):
         for cmd, dst in transitions.items():
             if dst is not None and dst not in states:
                 raise ValueError(f"unknown transition target {dst!r} at {name}/{cmd}")
+        outputs = entry.get("transition_outputs", {})
+        if not isinstance(outputs, dict) or any(c not in cmds or _step(states, name, c) is None for c in outputs):
+            raise ValueError(f"transition_outputs must refer only to defined commands at {name}")
+        for output in outputs.values():
+            _key(output)  # JSON-serializable, comparable output
     return states, cmds
 
 
 def _step(states: dict, state: str, command: str):
     return states[state].get("transitions", {}).get(command)
+
+
+def _event(states: dict, state: str, command: str):
+    return states[state].get("transition_outputs", {}).get(command)
 
 
 def _witness(states: dict, commands: list, a: str, b: str) -> dict:
@@ -53,6 +62,8 @@ def _witness(states: dict, commands: list, a: str, b: str) -> dict:
                 return {"word": word + [c], "kind": "definedness", "endpoint_states": [dx, dy]}
             if dx is None:
                 continue
+            if _key(_event(states, x, c)) != _key(_event(states, y, c)):
+                return {"word": word + [c], "kind": "transition_output", "endpoint_states": [dx, dy]}
             if (dx, dy) not in seen:
                 seen.add((dx, dy))
                 todo.append((dx, dy, word + [c]))
@@ -75,7 +86,8 @@ def audit(raw: dict, *, max_witnesses: int = 100) -> dict:
         signatures = {}
         for name in names:
             successors = tuple(("U" if _step(states, name, c) is None
-                                else classes[_step(states, name, c)]) for c in commands)
+                                else (_key(_event(states, name, c)), classes[_step(states, name, c)]))
+                               for c in commands)
             signatures[name] = (classes[name], successors)
         known = {}
         next_classes = {}
@@ -121,7 +133,8 @@ def audit(raw: dict, *, max_witnesses: int = 100) -> dict:
         "witness_truncated": total > len(witnesses),
         "claim_ceiling": (
             "Exact future-word goal/definedness quotient on this explicitly enumerated "
-            "finite partial deterministic transition system only. No native or continuous-class conclusion."
+            "finite partial deterministic transition system, including supplied transition outputs, "
+            "only. Missing intermediate events cannot be inferred. No native or continuous-class conclusion."
         ),
     }
 
