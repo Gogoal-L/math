@@ -13,7 +13,7 @@
 
 > 给定 future command family 和指定 goal，switching history 中最少需要保留什么信息，当前 observation 丢了哪些 goal-relevant directions，下一次 acquisition 应该购买哪一项尚未确定的信息？
 
-OpenAI Math 对这个问题目前提供了七个互补动作：
+OpenAI Math 与相关既有数学方法目前提供了若干互补动作；表中须区分**原论文已证明的定理**与**DPT 独立推导**：
 
 | 动作 | 主要来源 | 对 DPT 的直接作用 |
 |---|---|---|
@@ -27,6 +27,8 @@ OpenAI Math 对这个问题目前提供了七个互补动作：
 | 已有观测下的 deterministic worst-case goal ambiguity | 独立 finite-bank minimax；F329 作为反面启发 | 直接检验噪声 fiber 中的 goal gap，区分 archived feature 与新仿真 | 
 | 稳定 goal factor 的延拓 | F332 | 在全类 observation image 已有 Lipschitz factor 时，研究如何延拓到 ambient observation space | 
 | 可组合 predictive state | F376 + F116 + F129 + 经典 future-context equivalence | 检验未来命令词的 definedness、goal 与 stage telemetry，不只看 primitive endpoint |
+| 有界 mixed-interaction certificate | F132 的 joint-profile 思想；独立的有限差分余项与误差设计 | 给 S09 一次 fusion 的真实识别范围、bias/noise envelope、幅度选择与 cubic ordinary counterexample |
+| 固定 nonnormal propagator 的 operator envelope | F325 与经典 logarithmic norm | 一次比较 matrix-valued polynomial readout 的 numerical-range 界与更简单的 energy/lognorm 界 |
 
 另外两条是长期边界：
 
@@ -79,6 +81,10 @@ OpenAI Math 对这个问题目前提供了七个互补动作：
 | F324 Lipschitz-equivalent nonisomorphic Banach spaces | 后续深读 | WATCH / 表示边界 | metric equivalence 不推出无限维 linear isomorphism；与有限维 DPT rank 判据区分 |
 | F329 Metric-entropy duality counterexample | 后续深读 | POST-主动（边界启发） | 用 direct noise-fiber / packing audit，避免无假设的 polar entropy shortcut |
 | F376 Universal computation in forced Navier–Stokes | 后续深读 | POST-主动（方法） | original-domain command semantics、history record、within-command guard；不引申流体物理 headline |
+| F132 Block sensitivity exceeds squared ordinary sensitivity | 本轮深读 | POST-主动（方法） | 明确单扰动、联合谓词/组合干预两种证据，给 S09 robust interaction certificate 的建模动机 |
+| F122 Worst-case deletion trace reconstruction | 本轮深读 | WATCH / 条件主动 | 明确时标与删除信道；只有原始采集确有未知时标删除才开复杂度分支 |
+| F119 Sharp binary information contraction | 本轮深读 | WATCH | 仅在独立均匀 bit / symmetric noise 类被验证时可启用 sharp information bound |
+| F325 Complete Crouzeix（第二轮证明检查） | 本轮深读 | WATCH / 固定矩阵触发 | 对 pure exponential 先比较经典 logarithmic-norm 界，matrix-coefficient polynomial/rational 再考虑 F325 |
 
 Pro17D 自己在第 7 节明确把 F116-A 与 F266 作为重点亲读和实际采用的 OpenAI Math 来源；其余当时保持 navigation/background 身份。这里不会把后续发现倒写成 Pro17D 当时已经使用。
 
@@ -99,6 +105,10 @@ Pro17D 自己在第 7 节明确把 F116-A 与 F266 作为重点亲读和实际�
 - F357：当前仓库未见 `lean/docs/357.md`，所以这里只把它当 proof architecture 使用。
 - F363：selected formalization 覆盖较早 periodic nonuniqueness 结果；October 的 exact local-conservation refinement 是更强版本，不能借旧 scope 替它背书。
 - F129：selected formalization 覆盖 one-way liveness 的 exponential deterministic state lower bound。
+- F132：lean/docs/132.md selected statement 覆盖其 superquadratic sensitivity separation；该 theorem 的 Boolean 模型和 DPT 的连续参数交互不同。
+- F122：lean/docs/122.md selected statement 覆盖 worst-case deletion trace **lower bound**；不是其 October uniform decoder 的同一套证明。
+- F119：lean/docs/119.md selected statement 覆盖 uniform-cube noisy binary summary 的 sharp contraction。
+- F325：lean/docs/325.md 覆盖 complete Crouzeix 的 polynomial/holomorphic/rational 指定端点；当前 DPT 没有已冻结 native generator A。
 - F324 的 lean/docs/324.md 涵盖 separable Banach 反例；F329 的 lean/docs/329.md 涵盖 dimension-free entropy-duality 反例。其 Lean scope 仅覆盖该 family 的指定 statements，不替 DPT 迁移证明背书。
 - F332：本轮未发现 lean/docs/332.md；按未经本项目独立证明核验的预印本使用。
 - F376：lean/docs/376.md 分别覆盖若干 sheet、box、particle/velocity detector statements；October 6 修订与各种 pressure/clock companions 不可整体继承旧 scope。
@@ -592,7 +602,7 @@ F363 的意义是把 **conservation certificate** 与 **uniqueness certificate**
 
 F129 则提供另一种 state lower-bound 语言：如果两个 histories 不同，总能找到一个 future context 把它们区分，那么任何正确 predictor 都不能把这两类 history 合并。若未来 DPT command family 被诚实离散成 finite semigroup / monoid，这条 context-separation 路线可能比 packing bound 更直接地给 deterministic state-complexity lower bound。
 
-F119、F136、F139 继续保留在 WATCH：分别对应 noisy one-bit information retention、adversarial local-check robustness、adaptive-query lower bounds。当前都不应占 S09/S10 主预算。
+F136 与 F139 留在 WATCH：前者是 PPAD local-check robustness，后者在明确 well-conditioned logconcave potential 下给 sampling oracle complexity，都不构成 DPT mixed-query 直接下界。F119 在下面新增的原文小节单独审查；仍不占 S09/S10 预算。
 
 
 
@@ -727,6 +737,57 @@ proof architecture 值得学的是 **positive double-layer resolvent + Faber coe
 
 
 
+
+### S09 的新数学中心：一条 mixed query 的 information ceiling 与有界系数估计
+
+这一节是**本项目独立的、明示 regularity/noise 假设的初等推导**；F132 提供单干预与组合干预分开的证明动机，F116-B 提供固定 query bank 与 original-domain definedness 的 proof style。它不是 OpenAI 已发表的 DPT theorem，更不能从 F116-B 的非交换有理**矩阵代入** hitting list 直接推出一组物理可执行的 scalar Rg/Lg queries。
+
+**A. 模型阶数决定最低查询数。** 令已经完成的同 reference primitive axes 沿 \(\alpha=0,\beta=0\) 全部冻结，定义 waveform-valued mixed residual
+\[
+R(\alpha,\beta,t)=F(\alpha,\beta,t)-F(\alpha,0,t)-F(0,\beta,t)+F(0,0,t).
+\]
+在严格 quadratic class 中，\(R=\alpha\beta C_{11}(t)\)，所以任何一条 \(\alpha\beta\ne0\) 的匹配 fusion waveform 都能确定 \(C_{11}(t)\)（噪声精度另算）。但在 cubic mixed family 中
+\[
+R=\alpha\beta[C_{11}(t)+\alpha C_{21}(t)+\beta C_{12}(t)].
+\]
+每个固定 query \((a_i,b_i)\) 只提供一个 waveform-functional 线性组合。若这些三个 \(C_{jk}(t)\) 是**未知且可任意变化的函数**，即便每条 waveform 有无限多时间采样点，鉴别它们也需要 query coefficient matrix \([1,a_i,b_i]\) 的 rank 3。S09 加 optional S10 最多两个 mixed points，矩阵 rank 至多 2；除非冻结更小的 function class / shared known time templates 或额外独立 readout constraints，否则无法完整恢复三个未知函数。一个反例是 \(R=\alpha\beta(\alpha-a_*)v(t)\)：两条 primitive axes 与 frozen S09 \((a_*,b_*)\) 处的全波形均为零，中心混合系数却为 \(-a_*v(t)\)。
+
+**B. 真实可用的非线性误差定理。** 对任一提前声明的 scalar goal/readout \(g(\alpha,\beta)\)，定义四角差
+\[
+D_{a,b}g=g(a,b)-g(a,0)-g(0,b)+g(0,0),\quad a b\ne0.
+\]
+在贯穿 0 到 \(a,b\) 的完整矩形上 \(g\in C^2\)，且
+\[
+|\partial_{\alpha\beta}g(u,v)-\partial_{\alpha\beta}g(0,0)|
+\le M_\alpha|u|+M_\beta|v|,
+\]
+并且四角 readout 各自满足 absolute error \(\eta_{ab},\eta_{a0},\eta_{0b},\eta_{00}\)，则
+\[
+\boxed{\left|\frac{\widehat D_{a,b}g}{ab}-\partial_{\alpha\beta}g(0,0)\right|
+\le \frac{M_\alpha|a|+M_\beta|b|}{2}
++\frac{\eta_{ab}+\eta_{a0}+\eta_{0b}+\eta_{00}}{|ab|}.}
+\]
+**证明**：对混合导数用二维微积分基本定理表达 \(D_{a,b}\) 的 signed double integral；取矩形平均，分别积分 \(|u|\) 与 \(|v|\) 给出半幅度系数；四角 readout 的各项 absolute error 由三角不等式相加。无需把独立样本假设强加到 noise；这些只是每个 absolute error 的 deterministic envelope。若未有可辩护的 \(M_\alpha,M_\beta,\eta_j\)，这仍只能作参数敏感性计算，不得写成 certificate。
+
+**C. 为什么极小干预不一定最优。** 记 \(P=\sum_j\eta_j\)、\(r=M_\alpha/2\)、\(s=M_\beta/2\)。在 \(r,s,P>0\) 且无物理 amplitude/domain 约束时，minimize \(U(a,b)=r|a|+s|b|+P/|ab|\) 有正幅度极小值
+\[
+|a|_*=(P s/r^2)^{1/3},\quad |b|_*=(P r/s^2)^{1/3},
+\quad U_* =3(P r s)^{1/3}.
+\]
+由对 \(a,b>0\) 的一阶导数条件 \(ra=sb=P/(ab)\) 得出；当 \(M_\alpha=M_\beta=M\) 且每角 error \(\eta_j=\eta\)，有 \(|a|_*=|b|_*=(8\eta/M)^{1/3}\)。真正选点必须在 **precommitted physical validity box、已有 matched primitive runs、采样分辨率与事件定义** 下搜索，不能直接使用无约束最优值。
+
+**D. 科学决策与 falsifiers。**
+- 首先判断 S09 是测试一个**冻结的 rival goal**，估一个 local \(C_{11}\)，还是想恢复任意 nonlinear command map；三者不应共用一种 PASS。
+- 若有经过 freeze 的 cubic variation envelopes 与 readout error，报告一个 mixed coefficient 的 conditional interval；仅当 interval 排除零时，对此项给 bounded sign evidence。
+- 若没有这些 envelopes，仍可以如实输出 measured mixed finite response \(D_{a,b}g\) 和其误差，而不把它叫中心导数。
+- S10 应优先争取能够推翻 remaining rival 的**第二个模型特定预测**；在无其他结构下，两点仍不足以重构 generic cubic mixed class。
+- 此处 noise 与 model discrepancy 不可混用。LTspice deterministic numerical tolerance 不给 physics discrepancy 的 automatic \(\eta\)；不同参数/不同 switching stage 引入 domain-switching 时，上述 \(C^2\) 假设可能不成立。
+- **实现**：[mixed_interaction_audit.py](dpt_tools/mixed_interaction_audit.py)，输入四角 scalar readout、三阶控制系数与各角 absolute error；它做上述条件式 interval 和 predeclared amplitude-grid 查询设计，不从一次结果反向拟合这些系数。相关 synthetic tests：[test_mixed_interaction_audit.py](dpt_tools/test_mixed_interaction_audit.py)。
+
+**Prior-work 桥接**：factorial interaction / confounding 本来就是成熟 DOE 主题（[NIST DOE handbook](https://www.itl.nist.gov/div898/handbook/pri/section3/pri3333.htm)、[Godolphin 2021](https://doi.org/10.1111/rssb.12397)）；面向 nonlinear goal 的 experimental design 也有 [Neuberger et al. (2024)](https://arxiv.org/abs/2411.07532) 与 [Zhong et al. (2026)](https://doi.org/10.1137/24M1649344)。因此 novelty 不在于 factorial interaction 或 goal-directed design 本身。DPT 可争取的具体增量是：**在只有 S09＋optional S10、物理 switching stage 和已存 waveform 的约束下，把目标歧义、可辨识系数类、噪声/曲率幅度最优性和独立前瞻性验证整合成一个有界、可证伪的预测结论。**
+
+
+
 ---
 
 ## 11. 现在可以形成的 DPT 数学链
@@ -824,9 +885,10 @@ primitive axes 无法确定 C_AB。
 1. **先做 F229 dominance check**：候选 S10 是否真的新增 physical information，还是 S09/已有 waveform 的 post-processing？
 2. **看 remaining K/N**：还有哪个 goal-visible direction 没被当前 observations 切开？
 3. **看 command-word residual**：simultaneous mixed 已解决后，AB vs BA 是否成为最小新方向？
-4. **看 within-command event**：相同 endpoint 的 VDS peak、stage-boundary crossing 是否已被同一 waveform 区分？
-5. **看 adaptation 身份**：如果 S10 是看到 S09 后才挑的，明确记录为 adaptive follow-up，不再包装成同等级 prospective test。
-6. 若没有一个 query 能明显改变 theorem / representation / rival set，S10 不必使用。
+4. **先做 mixed-class/uncertainty gate**：现有一条 fusion 究竟是严格 quadratic 的系数测试、带 remainder 的区间，还是普通 finite mixed response？剩余 cubic interaction 自由度可否通过 S10 消掉？
+5. **看 within-command event**：相同 endpoint 的 VDS peak、stage-boundary crossing 是否已被同一 waveform 区分？
+6. **看 adaptation 身份**：如果 S10 是看到 S09 后才挑的，明确记录为 adaptive follow-up，不再包装成同等级 prospective test。
+7. 若没有一个 query 能明显改变 theorem / representation / rival set，S10 不必使用。
 
 ---
 
@@ -948,7 +1010,7 @@ primitive axes 无法确定 C_AB。
 **第三：F140 + F229 + F330 + F094/F098**  
 把“多少信息是必要的”“哪个 measurement 真新增信息”“低维 predictor 是否稳定可部署”放进同一个 dimension-error-gain-scope 框架。
 
-F332 的 extension 和 F324 的 nonlinear-linear boundary 只在稳定目标状态/解释主张承重时启用；F329 的 primal noise ambiguity + F376 的 future word discriminator 则优先在 **zero-fresh archive** 上执行。F266 继续作为所有承重 numerical work 的固定证据层并行执行。F325 在 fixed nonnormal propagator 出现时即时启用，不单独开理论线。
+**本轮优先**：在 S09 query 被 freeze 前，先用新 mixed-interaction envelope 判断一条 fusion 能兑现的 theorem scope（严格二次、带三阶余项的区间、或仅 finite mixed response），并检查物理可行的 amplitude/noise trade-off；这项检查优先于再增加理论名称。F132 提醒不能从 primitive sensitivity 推出组合干预无效，F122 只在真实 trace deletion/alignment 模型出现时触发。F332 的 extension 和 F324 的 nonlinear-linear boundary 只在稳定目标状态/解释主张承重时启用；F329 的 primal noise ambiguity + F376 的 future word discriminator 则优先在 **zero-fresh archive** 上执行。F266 继续作为所有承重 numerical work 的固定证据层并行执行。F325 在 fixed nonnormal propagator 出现时即时启用，不单独开理论线。
 
 
 ---
@@ -976,6 +1038,8 @@ F332 的 extension 和 F324 的 nonlinear-linear boundary 只在稳定目标状�
 它故意把 claim ceiling 写进输出：rank PASS 仍只是 tangent statement；remainder coefficient 的真实性必须由 derivation / interval / native evidence 单独保证。
 
 ### additional bounded goal / command / factor audits
+
+- [mixed_interaction_audit.py](dpt_tools/mixed_interaction_audit.py)：对匹配四角的一个 scalar goal 计算 mixed finite difference、中心混合导数的**条件式误差区间**及预先限制的 query amplitude grid；其 zero exclusion 只在给定 C² variation/noise/domain 假设被另行证实后有 scientific force。
 
 - [goal_ambiguity_audit.py](dpt_tools/goal_ambiguity_audit.py)：在有限 bank 上计算 scalar minimax ambiguity、最危险 indistinguishable pair、已有 feature 与新增 scalar candidate 的对比，以及 empirical scalar Lipschitz gain。输入必须先统一 observation 单位与 noise radius。
 - [command_word_audit.py](dpt_tools/command_word_audit.py)：在有限 partial deterministic 模型上生成最粗 future-word congruence，并给 primitive alias 的最短 word / stage output witness；stage information 只取自显式输入。
