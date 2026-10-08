@@ -158,3 +158,39 @@ inverse AST nodes and classifies sampled occurrence coverage as
 ```bash
 python -m unittest -v test_dpt_tools.py test_frontier_tools.py
 ```
+
+## `mixed_interaction_audit.py` (S09 scalar four-corner mixed query)
+
+Given an already-fixed scalar readout (for example a frozen overshoot or Eoff functional),
+estimate the **central** mixed derivative using a matched 2x2 response table.
+The program reports the raw mixed contrast, the conditional central coefficient interval,
+and an amplitude-grid choice minimizing a worst-case bound. It does not fit the
+unknown remainder/noise coefficients or claim they have been validated.
+
+Minimal JSON input:
+
+```json
+{
+  "alpha": 0.3,
+  "beta": 0.2,
+  "samples": {"f00": 0, "fa0": 0.1, "f0b": 0.2, "fab": 0.6},
+  "mixed_derivative_variation": {"alpha": 0.4, "beta": 0.6},
+  "absolute_readout_error": {"f00": 0.001, "fa0": 0.001, "f0b": 0.001, "fab": 0.001},
+  "candidate_amplitudes": {"alpha": [0.1, 0.2, 0.3], "beta": [0.1, 0.2, 0.3]}
+}
+```
+
+```bash
+python mixed_interaction_audit.py s09_query.json --output s09_mixed_report.json
+python -m unittest -v test_mixed_interaction_audit.py
+```
+
+The bound assumes that all four anchors share reference conditions and the
+same normalized alpha/beta coordinates, the mixed derivative is C2 on each
+entire query rectangle, and its variation is bounded by
+`M_alpha*|u| + M_beta*|v|`. Every readout error is an externally
+justified absolute bound (numerical/model/measurement uncertainty as applicable).
+Unconstrained analytic amplitude optima can be outside the physical domain;
+candidate amplitudes are accepted only when the corresponding archived axis
+anchors and derivative/noise envelopes are valid. Multiple waveform time samples
+at one query do not identify independently varying cubic-interaction waveforms.
