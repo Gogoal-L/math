@@ -675,6 +675,58 @@ h\equiv h'
 
 
 
+
+### F132：从 single-coordinate sensitivity 走向 joint / block-intervention certificate
+
+**亲读锚点**：[原始论文](preprints/A-superquadratic-separation-between-sensitivity-and-block-sensitivity-September-25-2026/paper.pdf)；[00 定义与策略](preprints/A-superquadratic-separation-between-sensitivity-and-block-sensitivity-September-25-2026/build/sections/00-introduction.tex)；[01 tournament gate 与 target-row 示意](preprints/A-superquadratic-separation-between-sensitivity-and-block-sensitivity-September-25-2026/build/sections/01-construction.tex)；[02 四组耦合递推](preprints/A-superquadratic-separation-between-sensitivity-and-block-sensitivity-September-25-2026/build/sections/02-recurrences.tex)；[03 量化分离与 composition](preprints/A-superquadratic-separation-between-sensitivity-and-block-sensitivity-September-25-2026/build/sections/03-separation.tex)；[Lean selected scope](lean/docs/132.md)。
+
+论文对象严格是 total Boolean functions 的**全局** sensitivity \(s(f)=\max_x s(f,x)\) 和 disjoint block sensitivity \(\mathrm{bs}(f)=\max_x\mathrm{bs}(f,x)\)。其 construction 在 \(d\) 层的嵌套 predicates 上分别控制从零变一、从一变零的 single-bit sensitivity \(S_{\ell,0},S_{\ell,1}\)，还增加同一 bit 同时改变**两个不同 child predicates** 的 joint profiles \(J_{\ell,0},J_{\ell,1}\)。这是最该学的技术点：只递推单变量 sensitivity，无法闭合 recursive gate 的界；必须把 pair-change events 作为独立数学对象。论文用 tournament edge labels 限制一次 bit flip 能修复多少候选 clause；下界则构造大量 disjoint blocks 同时使目标行满足。得到 \(s(f)\le2(d+2)M^{d+1}\) 与 \(\mathrm{bs}(f,0)\ge M^2(2M^2+1)^d\)，从而 \(\mathrm{bs}/s^2\ge2^d/[4(d+2)^2]\)，最后经 disjoint composition 得固定指数 \(\alpha>2\)。
+
+**转成 DPT 的正向动作**：同时审计（a）primitive/单参数扰动；（b）两项或多项干预共同出现时的 signed mixed contrast；（c）多个 readouts/stage predicates 是否在同一 waveform 上共同变化。尤其对 threshold 目标，例如 \(1\{\max_t V_{DS}(t)>V_{\rm lim}\}\)，局部连续灵敏度很小也可能存在边界跨越。**但 F132 的超二次指数依赖特定高维 Boolean tournament 递归，绝不构成 SiC 连续参数模型中的 sensor 数或 query 数下界**。真正适合低预算的替代是我们下面的 bounded mixed-contrast lemma，而不是迁移其指数。
+
+最小 ordinary counterexample：\(F(\alpha,\beta)=\alpha\beta\) 在两条坐标轴上恒零，组合干预才出现响应；再考虑 \(F_2(\alpha,\beta)=\alpha\beta(\alpha-a_*)v(t)\)，即使 primitive 和既定一次 fusion \((a_*,b_*)\) 的**完整时间波形**都相同，别的 mixed command 仍能区分。由此一条 mixed query 的“极强反证”只在明确冻结的 quadratic/rational/regularity 类中成立。
+
+### F122：trace alignment / erasure model 先于全波形 reconstruction 的复杂度
+
+**亲读锚点**：[uniform reconstruction PDF](preprints/Uniform-quasipolynomial-time-trace-reconstruction-October-5-2026/uniform-trace-reconstruction.pdf)、[main theorem 与假设](preprints/Uniform-quasipolynomial-time-trace-reconstruction-October-5-2026/build/manuscript/main.tex)、[positive moment arrays 与错误前缀 separation](preprints/Uniform-quasipolynomial-time-trace-reconstruction-October-5-2026/build/manuscript/setup.tex)、[analytical signal / exact generating identity](preprints/Uniform-quasipolynomial-time-trace-reconstruction-October-5-2026/build/manuscript/separation.tex)、[lower-bound companion](preprints/quantitative-lower-bounds-for-trace-reconstruction-September-24-2026/paper.pdf)、[Lean selected scope](lean/docs/122.md)。
+
+这里的 input 是任意未知 length-\(n\) binary string，每个位独立以已知 retention probability \(p\) 保留；收到的 trace **没有原始 position labels**。uniform decoder 不是靠简单的 pairwise separation 直接恢复：先构造每个候选 prefix 的正半定 moment relaxation，把“任何错误前缀”变成可观测 trace statistics 上的 separation，再用高阶位置/间距 moments 与多尺度解析 continuation 限制最坏样本数。固定 \(p\) 的 upper bound 为 quasipolynomial；另一个 companion 给 exact worst-case full-string reconstruction 的 superpolynomial lower bound。**本次核对的 lean/docs/122.md 主要 formalize 下界，不能借它证明 October 5 uniform decoder 的每一行细节。**
+
+**DPT 适用判断**：普通 LTspice 自适应时间步/插值属于带 timestamps 的数值重采样，和 unknown-location independent deletion channel 不同；不能从 F122 直接搬出 quasipolynomial sample cost。真正的可迁移动作是先区分已观察 waveform 的原始 time axis、clock jitter、事件区间、丢点/删点 mechanism，再问是否需要完整 trace recovery。若唯一目标是 \(V_{DS,\max}\) 或某个 timing threshold，可以先证直接的 goal-bound：在一个已完全覆盖、最大网格间隔 \(\Delta\) 的 C² 时间区间里，且 \(\|V''\|_\infty\le M_t\)，线性插值误差给
+\[
+0\le \max_t V(t)-\max_i V(t_i)\le M_t\Delta^2/8.
+\]
+这是 elementary interpolation theorem，**不是 F122 的定理**；若 event/discontinuity、stage crossing 或 curvature envelope 未被覆盖，这个证书立即失效。保留为“采样模型核验”触发项，zero-fresh 优先，不为 F122 单独占 S09/S10。
+
+### F119：sharpen information loss, but only under its genuine binary-channel model
+
+**来源**：[main theorem / soft-channel proof](preprints/Sharp-binary-information-contraction-on-the-discrete-cube-September-24-2026/build/main.tex)、[Lean scope](lean/docs/119.md)。
+
+F119 使用**独立均匀输入 bits**、独立同分布 binary-symmetric noise、预先指定且可随机化的 one-bit summary。主定理先固定 summary 原始 mutual information，再证明独立噪声后的保留信息不能超过一个合适幅度的单坐标软通道；Boolean 推论给经典形式 \(I(f(X);Y)\le1-h_2(\varepsilon)\) bits，输出 bias 时有更强上界。条件中 uniform cube、binary output、symmetric channel 缺一不可。
+
+DPT switching latent 通常连续、有物理相关性，simulator discrepancy 未被标定为 independent BSC。这里可用的是 **channel-specific data-processing / information-retention gate**：若把 stage event 离散成 bits 并另外确证其 noise channel，才讨论此类 sharp rate。暂列 WATCH；不把 \(1-h_2(\varepsilon)\) 作为未标定 DPT 的信息预算。
+
+### F325：fixed nonnormal stage 的 numerical-range upper envelope，及其更简单的强竞争者
+
+**亲读锚点**：[direct proof](preprints/A-direct-proof-of-the-complete-Crouzeix-inequality-September-26-2026/build/main.tex)、[structural companion](preprints/The-complete-Crouzeix-theorem-September-23-2026/build/main.tex)、[Lean selected scope](lean/docs/325.md)。
+
+若已真正冻结**同一个**复数矩阵 \(A\)（固定 linearized stage/generator），令 \(P(z)=\sum_{k=0}^d B_k z^k\) 为 matrix-coefficient polynomial，F325 给出
+\[
+\|P[A]\|_2=\left\|\sum_{k=0}^{d}A^k\otimes B_k\right\|_2
+\le 2\max_{z\in W(A)}\|P(z)\|_2,\quad
+W(A)=\{u^*Au:\|u\|_2=1\}.
+\]
+proof architecture 值得学的是 **positive double-layer resolvent + Faber coefficients + singular-vector compression**。论文先在包住数值域的 analytic convex domain 构造正核，比较 Fourier/系数范数；再分别对 \(FG\) 与 \(GF\) 保持 coefficient order，利用 resolvent Hermitian 部分正性产生 sharp 2；最后缩小 analytic domains，包含数值域退化为线段/点的情况。不能据此推出 arbitrary noncommutative products \(P(A,B)\) 的相同界。
+
+**一个更具体、可计算的 DPT 警告**：\(A=\begin{psmallmatrix}-1&4\\0&-1\end{psmallmatrix}\)、\(t=0.25\) 时 eigenvalue-only 给 \(e^{-t}\approx0.7788\)，而 \(\|e^{At}\|_2\approx1.2601\)，说明稳定 eigenvalues 仍可伴随 transient growth。其数值域为以 \(-1\) 为圆心、半径 2 的 disk；Crouzeix analytic-function consequence 给 \(2e^{t}\approx2.5681\) 的 conservative envelope。但对**纯 \(e^{At}\) 的欧氏 2-norm**，经典 logarithmic norm
+\[
+\|e^{At}\|_2\le e^{t\lambda_{\max}((A+A^*)/2)}
+=e^{t}\approx1.2840
+\]
+**更紧且更简单**。因此 F325 只在 stage 的 polynomial/rational **matrix-valued** readout、filter/surrogate 形成 load-bearing object，并且简单 matrix-measure/energy inequality 不够时，才值得升级。对 time-varying、switching、多矩阵有序乘积，须另做 domain 和 product proof。此处 numerical-range 例子是代数 illustration，不是已识别的 native SiC stage。
+
+
+
 ---
 
 ## 11. 现在可以形成的 DPT 数学链
