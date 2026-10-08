@@ -44,6 +44,21 @@ def _score(goals: np.ndarray, indistinguishable: np.ndarray) -> dict:
     }
 
 
+def _empirical_gain(observations: np.ndarray, goals: np.ndarray):
+    """Exact pairwise scalar-goal gain on this bank, not whole-class stability."""
+    gain = 0.0
+    for i in range(len(goals)):
+        for j in range(i + 1, len(goals)):
+            gap = abs(float(goals[i] - goals[j]))
+            distance = float(np.linalg.norm(observations[i] - observations[j]))
+            if distance == 0.0:
+                if gap > 0.0:
+                    return "INF_GOAL_COLLISION"
+            else:
+                gain = max(gain, gap / distance)
+    return gain
+
+
 def audit(observations, goals, observation_noise_radius: float, *,
           candidates=None, candidate_noise_radius: float = 0.0,
           candidate_names=None) -> dict:
@@ -61,6 +76,7 @@ def audit(observations, goals, observation_noise_radius: float, *,
         "schema_version": 1,
         "number_of_histories": int(obs.shape[0]),
         "observation_noise_radius": sig_o,
+        "empirical_scalar_goal_lipschitz_gain": _empirical_gain(obs, goal),
         "baseline": baseline,
         "claim_ceiling": (
             "Exact deterministic minimax scalar-goal error on the supplied finite bank, "
