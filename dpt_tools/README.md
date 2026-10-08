@@ -1,6 +1,6 @@
 # DPT mechanical audit tools
 
-These scripts turn two recurrent DPT research checks into reproducible numerical artifacts. They are deliberately conservative: a PASS never upgrades a numerical linearization into a native theorem. They require Python 3.10+ and NumPy (`pip install -r requirements.txt`).
+These scripts turn tangent information, bounded-noise goal ambiguity, finite command congruence and original-expression definedness checks into reproducible numerical artifacts. They are deliberately conservative: a PASS never upgrades a numerical linearization into a native theorem. They require Python 3.10+ and NumPy (`pip install -r requirements.txt`).
 
 ## `predictive_state_audit.py`
 
@@ -12,7 +12,8 @@ Input is an `.npz` file with:
 - optional `DP_candidates`: one scalar candidate measurement per row;
 - optional `candidate_labels`: labels aligned with `DP_candidates`;
 - optional `DO_scales`, `DG_scales`, `DP_scales`: scale-indexed Jacobians;
-- optional `radii`, `remainder_goal_coeff`, `remainder_measurement_coeff` for a supplied quadratic remainder certificate.
+- optional `radii`, `remainder_observation_coeff`, `remainder_goal_coeff`, `remainder_measurement_coeff` for the full-direction conditional Taylor bound;
+- optional `observation_noise_radii`, `measurement_noise_radii` for independent measurement-error envelopes.
 
 Run:
 
@@ -29,15 +30,30 @@ The center report computes:
 - the minimum-norm linear factor from measurement perturbations to goal perturbations and its 2-norm gain;
 - exact-small-subset and greedy candidate selection when `DP_candidates` is supplied.
 
-The multiscale block repeats the same audit at each supplied scale. If certified bounds
+The multiscale block repeats the tangent audit at each supplied scale. The previous formula
+`||Delta G - A Delta P|| <= (C_G + ||A|| C_P) r^2` was **not valid
+for arbitrary state perturbations**: it omitted existing observations.
+For example, O(x,y)=x, P(x,y)=y and G(x,y)=x+y are all linear, yet A=1
+on ker(DO) cannot predict a change in x from Delta P alone.
 
-`||R_G|| <= C_G r^2` and `||R_P|| <= C_P r^2`
+The updated conditional block factors `DG = B DO + A DP + E`. For
+`||delta h||_2 <= r`, separately valid (and independently justified)
+Taylor remainders `||R_O||<=C_O r^2`, `||R_P||<=C_P r^2`,
+`||R_G||<=C_G r^2`, and noise radii `sigma_O, sigma_P`, it gives:
 
-are supplied, the script reports the mechanical consequence
+```text
+||Delta G - B Delta O - A Delta P||
+  <= ||E|| r + (C_G + ||B|| C_O + ||A|| C_P) r^2
+     + ||B|| sigma_O + ||A|| sigma_P
+```
 
-`||Delta G - A Delta P|| <= (C_G + ||A|| C_P) r^2`.
+The noise term applies when Delta O / Delta P are replaced by noisy
+measurements; without supplied noise arrays the program assumes zero.
+Missing observation, goal or measurement remainder means **no quadratic
+bound is emitted**. The output is a conditional algebraic estimate, not
+a verified native-model certificate. Rank thresholds, channel units and
+the validity domain remain independent audit requirements.
 
-The script does not establish the supplied remainder bounds, rank persistence on a continuous neighborhood, native-model validity, or global identifiability.
 
 ## `command_domain_audit.py`
 
@@ -78,10 +94,67 @@ Run:
 python command_domain_audit.py expression.json samples.json --output domain_report.json
 ```
 
-A sampled PASS means only that every recorded inverse occurrence is numerically defined at those samples. A continuous command-domain certificate still requires an analytic, interval, or optimization lower bound on each inverse singular margin.
+The auditor now creates a static inventory of every original inverse node by unique AST path (even if evaluation stops at an earlier undefined inverse). It reports `inverse_coverage_by_sample`, `inverse_summary_by_path`, and `all_original_inverse_occurrences_evaluated`. Reused display labels remain allowed but the path is the unique occurrence ID.
+
+A sampled PASS means only that all original inverse occurrences have been evaluated and are numerically defined at those samples. A continuous command-domain certificate still requires an analytic, interval, or optimization lower bound on each inverse singular margin.
+
+
+## `goal_ambiguity_audit.py` (independent finite-bank scalar minimax)
+
+Input NPZ arrays `observations` (N,m), `goals` (N,) and optional
+`candidates` (N,p), `candidate_names`. Run:
+
+```bash
+python goal_ambiguity_audit.py finite_history_bank.npz --observation-noise-radius 0.1 --candidate-noise-radius 0.05
+```
+
+The supplied deterministic Euclidean noise balls have radii `sigma_O`
+and `sigma_P` in **already-whitened and compatible units**. An observation
+pair is indistinguishable when its centers are within `2*sigma_O` and,
+if one candidate is added, that scalar feature's gap is within
+`2*sigma_P`. On the enumerated finite bank the exact minimax scalar-goal
+error equals one-half the largest goal gap among indistinguishable pairs.
+For a larger operational history class, this is only a lower bound.
+The tool also reports the exact empirical pairwise Lipschitz gain on the
+finite bank, with `INF_GOAL_COLLISION` for identical observations and
+different scalar goals. It is **not** a whole-class stability guarantee.
+Readout-from-archive and genuinely fresh physical acquisitions must be
+identified separately in the scientific record.
+
+## `command_word_audit.py` (finite partial command model)
+
+Input JSON structure:
+
+```json
+{
+  "commands": ["A", "B"],
+  "states": {
+    "h0": {"observation": "same", "goal": 0, "transitions": {"A": "h1"},
+           "transition_outputs": {"A": {"vds_peak_exceeded": false}}},
+    "h1": {"observation": "other", "goal": 1, "transitions": {"B": "h1"}}
+  }
+}
+```
+
+Run `python command_word_audit.py finite_commands.json`. The program
+refines state partitions by current goal, command definedness, optional
+within-command output and all future command words. It returns a finite
+goal-predictive right congruence and shortest word witnesses distinguishing
+currently observation-aliased states. A missing output is **not reconstructed**
+from a waveform, and a finite symbolic command model is not a claim about
+native LTspice switching. For a whole-pulse peak, compute it explicitly from
+trace data before adding it to `transition_outputs`.
+
+## `measurement_factor_audit.py` and `expression_domain_inventory.py`
+
+The former is a callable array-level helper producing full `B,A,E`
+factorization and conditional Taylor bound. The latter enumerates all
+inverse AST nodes and classifies sampled occurrence coverage as
+`DEFINED`, `SINGULAR`, `NUMERICALLY_ILL_CONDITIONED`, or
+`NOT_REACHED_DEPENDENCY`. Both have separate synthetic regression tests.
 
 ## Tests
 
 ```bash
-python -m unittest -v test_dpt_tools.py
+python -m unittest -v test_dpt_tools.py test_frontier_tools.py
 ```
