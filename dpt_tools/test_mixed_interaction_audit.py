@@ -28,6 +28,19 @@ class MixedInteractionTests(unittest.TestCase):
         self.assertLessEqual(abs(out["central_mixed_derivative_estimate"] - 5), out["truncation_bound"] + 1e-14)
         self.assertAlmostEqual(out["truncation_bound"], 2 * a + 3 * b)
 
+    def test_cubic_interaction_invisible_at_frozen_single_query(self):
+        # F2(alpha,beta)=alpha*beta*(alpha-a_star) is zero at both
+        # primitive axes and the one mixed point (a_star,b).
+        # Yet F2_ab(0,0)=-a_star, not zero.
+        a, b = 0.3, 0.2
+        r = self.config(a, b, ma=2.0, mb=0)
+        r["samples"]["fab"] = 0.0
+        out = m.audit(r)["observation"]
+        self.assertAlmostEqual(out["central_mixed_derivative_estimate"], 0.0)
+        self.assertAlmostEqual(out["total_bound"], a)
+        self.assertLessEqual(out["conditional_coefficient_interval"][0], -a)
+        self.assertFalse(out["zero_excluded"])
+
     def test_noise_interval_can_be_inconclusive(self):
         r = self.config(a=0.1, b=0.1, eta=0.03)
         o = m.audit(r)["observation"]
