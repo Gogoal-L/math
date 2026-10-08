@@ -36,6 +36,8 @@ OpenAI Math 对这个问题目前提供了七个互补动作：
 - F325：一旦 frozen stage 变成 fixed nonnormal propagator，numerical range 可以给 polynomial/rational readout 一个 operator-norm envelope。
 - F363：physics/conservation consistency 与 uniqueness 是两类证书；守恒本身不能替代 identifiability。
 
+新的综合优先顺序是：先在已存 raw waveform 上定位 noise-fiber goal ambiguity（F329 的反例精神 + 独立 minimax），用 empirical gain 判断是否需要新 feature（F332 的条件式延拓），再检查 rival history 是否被未来 command-word/stage event 区分（F376 + F116）；F324 只给 metric 与 linear physical state 的解释边界。
+
 如果主控只记一条执行规则：
 
 > **每次准备增加一个 theorem、sensor 或 simulation 前，先问它究竟减少了哪个 goal-visible ambiguity；如果没有明确减少，就不占 fresh budget。**
@@ -309,7 +311,7 @@ I(h): c ↦ G_c(h)
 
 ### DPT 对应的问题
 
-F355 的 goal-visible nullity 只给 tangent-level 最小 measurement。真正写论文时，reviewer 会继续问：
+K/N 的独立 goal-visible nullity lemma 只给带稳定性前提的 tangent-level 最小 measurement。真正写论文时，reviewer 会继续问：
 
 > rank 满了以后，为什么 finite perturbation 下仍然唯一/稳定？
 
@@ -693,6 +695,10 @@ h1 ~_G h2 iff 对所有 c，G_c(h1)=G_c(h2)。
 
 ker(DP restricted to K) subseteq N。
 
+### T2b. Bounded-noise scalar goal ambiguity
+
+先声明 admissible histories、units/whitening、noise radius 和目标。直接在原始/派生 observation 的有限 history bank 找 `||Y(h)-Y(h')||<=2σ` 却具有大 goal gap 的 pair，输出确定性 minimax error 下界；它可决定应买哪个 feature/sensor，比只比较 raw sensitivity 更贴合目标。该 finite-bank 值不能当 operational continuous-class upper bound；完整类验证还需明确 domain 和统一误差边界。详见 F329 节和 goal_ambiguity_audit.py。
+
 ### T3. Multiscale finite-radius predictive chart
 
 把 T2 从一个 center 扩到 frozen neighborhood / scales：
@@ -715,9 +721,17 @@ ker(DP restricted to K) subseteq N。
 
 把 finite-bank fitting 与 continuous operational-class representation 分开。F330 负责提醒“存在 approximant”与“存在 uniformly bounded approximant”不同；F094/F098 负责提醒 exact/approximate 与 finite/global complexity 也不同。
 
+### T4b. Lipschitz extension is conditional
+
+若全 class 上存在 G=Phi(Y) 且具有一致 finite Lipschitz gain，F332 的 Hilbert-to-ell1 extension theorem 才可能提供 ambient observation extension；finite-bank gain 仅是筛查。F324 进一步阻止从 metric accuracy 推 linear/physical latent identity。不得用“extension 存在”反向推出 identifiability。
+
 ### T5. Information lower bound + acquisition order
 
 用独立 goal-packing lemma 给 state complexity 下界（F140 是严格条件下的 memory/sample 方法启发）；用 F229 的 dominance test 判断新 sensor/readout 是否真正增加信息。只有在 history/command class 真正冻结后才做复杂 information theorem。
+
+### T5b. Future-word state congruence
+
+对 finite partial deterministic command model，用所有 admissible future words 的 goal、definedness 与显式 stage outputs 来定义等价类。该最粗 equivalence 为 right congruence，能形成可更新的 reduced state；两条 primitive endpoint 相同的历史仍可能被 AB/BA 或 within-stage event 区分。command_word_audit.py 只在提交的有限模型上验证，不等于 native waveform guarantee。
 
 ### T6. Command algebra + domain + correction boundary
 
@@ -882,7 +896,7 @@ primitive axes 无法确定 C_AB。
 **第三：F140 + F229 + F330 + F094/F098**  
 把“多少信息是必要的”“哪个 measurement 真新增信息”“低维 predictor 是否稳定可部署”放进同一个 dimension-error-gain-scope 框架。
 
-F266 继续作为所有承重 numerical work 的固定证据层并行执行。F325 在 fixed nonnormal propagator 出现时即时启用，不单独开理论线。
+F332 的 extension 和 F324 的 nonlinear-linear boundary 只在稳定目标状态/解释主张承重时启用；F329 的 primal noise ambiguity + F376 的 future word discriminator 则优先在 **zero-fresh archive** 上执行。F266 继续作为所有承重 numerical work 的固定证据层并行执行。F325 在 fixed nonnormal propagator 出现时即时启用，不单独开理论线。
 
 
 ---
@@ -909,6 +923,15 @@ F266 继续作为所有承重 numerical work 的固定证据层并行执行。F3
 
 它故意把 claim ceiling 写进输出：rank PASS 仍只是 tangent statement；remainder coefficient 的真实性必须由 derivation / interval / native evidence 单独保证。
 
+### additional bounded goal / command / factor audits
+
+- [goal_ambiguity_audit.py](dpt_tools/goal_ambiguity_audit.py)：在有限 bank 上计算 scalar minimax ambiguity、最危险 indistinguishable pair、已有 feature 与新增 scalar candidate 的对比，以及 empirical scalar Lipschitz gain。输入必须先统一 observation 单位与 noise radius。
+- [command_word_audit.py](dpt_tools/command_word_audit.py)：在有限 partial deterministic 模型上生成最粗 future-word congruence，并给 primitive alias 的最短 word / stage output witness；stage information 只取自显式输入。
+- [measurement_factor_audit.py](dpt_tools/measurement_factor_audit.py)：报告 DG=B DO+A DP+E 和条件式 all-direction bound；缺少任何 O/P/G remainder 时不输出 quadratic bound。
+- [expression_domain_inventory.py](dpt_tools/expression_domain_inventory.py)：为 original AST 标识每个 inverse occurrence 的独立 path；必须区分 undefined、numerically ill-conditioned 和由于前一个错误未曾检查的 occurrence。
+
+这些是 **synthetic / finite-bank auditable statements**。尚未提供 DPT-R1 native S09/S10 replay 输入，不产生 LTspice prospective claim；参见 [详细使用说明](dpt_tools/README.md)。
+
 ### rational / matrix command-domain audit
 
 - [`command_domain_audit.py`](dpt_tools/command_domain_audit.py)
@@ -920,6 +943,8 @@ F266 继续作为所有承重 numerical work 的固定证据层并行执行。F3
 sampled PASS 仍不等于 continuous-domain closure。若要把它升级成 theorem，需要对每个 inverse occurrence 给 analytic / interval / optimization lower bound。
 
 ### tests 与下一步 Lean target
+
+- [test_frontier_tools.py](dpt_tools/test_frontier_tools.py) 新增 bounded-noise minimax、archived-feature reuse、two-command witness、within-command event、observation-curvature correction、inverse occurrence inventory 的 synthetic regression tests。
 
 - [`test_dpt_tools.py`](dpt_tools/test_dpt_tools.py) 提供 synthetic regression cases，包括“一维 repair 成功”“mixed measurement 看似有投影但仍不足”“两个 mixed rows 才能共同 repair”以及“中间 inverse undefined 即失败”。
 - 下一步最值得 formalize 的 Lean statement 不是整套 DPT physics，而是一个小而承重的 finite-dimensional lemma：若 `ker(M|K) subseteq ker(G|K)`，则 `G|K` factor through `M|K`，从而 `rank(G|K) <= rank(M|K) <= number of scalar measurements`。等 native state/goal maps 冻结后再把这个 lemma 接到项目对象，避免过早 formalize 一个仍在移动的 abstraction。
