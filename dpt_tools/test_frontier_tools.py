@@ -27,6 +27,12 @@ class GoalAmbiguityAuditTests(unittest.TestCase):
         self.assertAlmostEqual(result["candidates"][0]["minimax_scalar_error"], 0.0)
         self.assertEqual(result["candidates"][0]["name"], "archived_feature")
 
+    def test_empirical_goal_gain_flags_alias_and_exact_lipschitz_bank(self):
+        merged = gaa.audit(np.zeros((2, 1)), np.array([1.0, 3.0]), 0.0)
+        self.assertEqual(merged["empirical_scalar_goal_lipschitz_gain"], "INF_GOAL_COLLISION")
+        separated = gaa.audit(np.array([[0.0], [2.0]]), np.array([1.0, 3.0]), 0.0)
+        self.assertAlmostEqual(separated["empirical_scalar_goal_lipschitz_gain"], 1.0)
+
     def test_noisy_candidate_can_fail_to_discriminate(self):
         obs = np.zeros((2, 1))
         goal = np.array([0.0, 4.0])
@@ -82,6 +88,20 @@ class CommandWordAuditTests(unittest.TestCase):
         report = cwa.audit(model)
         self.assertEqual(report["minimal_classes"], 1)
         self.assertEqual(report["observation_alias_witnesses"], [])
+
+    def test_within_command_event_separates_equal_endpoint_paths(self):
+        model = {"commands": ["A"], "states": {
+            "x": {"observation": "same", "goal": 0, "transitions": {"A": "z"},
+                  "transition_outputs": {"A": {"vds_peak_exceeded": False}}},
+            "y": {"observation": "same", "goal": 0, "transitions": {"A": "z"},
+                  "transition_outputs": {"A": {"vds_peak_exceeded": True}}},
+            "z": {"observation": "z", "goal": 0, "transitions": {}},
+        }}
+        result = cwa.audit(model)
+        witness = [w for w in result["observation_alias_witnesses"]
+                   if set(w["states"]) == {"x", "y"}]
+        self.assertEqual(witness[0]["word"], ["A"])
+        self.assertEqual(witness[0]["kind"], "transition_output")
 
     def test_bad_transition_target_rejected(self):
         bad = {"commands": ["A"], "states": {"x": {"goal": 0, "transitions": {"A": "missing"}}}}
