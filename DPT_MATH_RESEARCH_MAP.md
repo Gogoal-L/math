@@ -1,6 +1,6 @@
 # DPT-R1 × OpenAI Math：研究利用与下一证据图谱
 
-最后更新：**2026-10-09**。本次同步 DPT-R1 本地主控已接受结果；原论文与 Lean scope 的上游身份仍沿用此前 `fd4aeeb2` 核查，本次没有重新验证整个数学论文集。
+最后更新：**2026-10-10**（本轮新增独立数学研究与可执行工具）。本地主控**已同步并接受的 native 科学结果截至 2026-10-09**；原论文与 Lean scope 上游身份采用 `fd4aeeb2`，本轮只对具名来源新增定向原文核查，没有重新验证整个数学论文集。
 
 这份 map 连接 **paper → mathematical object → DPT construction → accepted consequence → next evidence**。它保留原文定位和必要推导，帮助选择下一项研究；本地科学量值与冻结身份由 DPT-R1 原报告拥有，不在这里复制运行账本。
 
