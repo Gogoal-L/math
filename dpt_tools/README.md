@@ -274,3 +274,52 @@ have been incorporated into one smooth square system. Nonsmooth event/peak
 targets require separate analysis; an exact full-law root is not hardware truth.
 
 See the [full derivations and scientific claim boundary](../dpt_research/20261010_goal_information_solver_fidelity.md).
+
+## `goal_defect_transport.py` (finite ordered-stage goal error)
+
+Companion to `goal_word_quotient.py` and `implicit_goal_certificate.py`. For
+a **supplied, fixed, common-chart linear stage sequence**, calculate the exact
+finite-horizon worst-case scalar goal deviation when the initial state is
+unobservable under an *exact* preparation observation and independent
+Euclidean-bounded defects can enter at each stage:
+
+\[
+\delta x_{j+1}=A_j\delta x_j+\xi_j,\quad
+O\delta x_0=0,\quad \|\delta x_0\|_2\le\rho,\quad \|\xi_j\|_2\le\epsilon_j.
+\]
+
+The backward goal row for each endpoint supplies an **information radius**
+(initial observation nullspace), a **defect radius** (sum of stage disturbance
+sensitivities) and their total. Unlike multiplying whole-state operator norms,
+this is sharp for the independent product-of-balls linear model and respects
+the literal A/B command order. The output contains a directly replayable
+maximizing witness plus numeric rank/spectral diagnostics.
+
+**NPZ input fields:**
+- `updates`: finite float `(H,n,n)` array of sequential stage maps,
+  already expressed in the *same* physically meaningful/scaled state coordinates;
+- `observation`: finite float `(m,n)`; an empty `(0,n)` matrix is allowed;
+- `goal`: one row `(n,)` repeated at all stage endpoints, or `(H+1,n)`
+  distinct scalar readout gradients;
+- `initial_radius`: nonnegative scalar; the Euclidean root-state radius
+  **inside ker(observation)**, not a measurement-noise estimate;
+- `defect_radii`: nonnegative finite `(H,)`; independently justified
+  *stage-state error* upper radii after each commanded update.
+
+```bash
+python goal_defect_transport.py ordered_stage_bound.npz --output ordered_goal_report.json
+python -m unittest -v test_goal_defect_transport.py
+```
+
+When the inputs are local Jacobians or point residuals from nonlinear LTspice
+rather than fully certified linear error envelopes, report only a
+**SENSITIVITY diagnostic**, not a guaranteed native waveform/error bound.
+Nonlinear branch/guard errors, the qualified Eth lift, correlated disturbances,
+a tied/nonsmooth peak, noisy observation equality and unqualified units
+each require further modeling. A stable per-stage eigenvalue does **not**
+exclude transient goal error amplification. The maximizing witness is for the
+mathematical uncertainty balls and may be physically unreachable.
+
+**Source and proof audit:** [2026-10-10 ordered goal-defect frontier](../dpt_research/20261010_ordered_goal_defect_transport.md)
+(deep reads of OpenAI Math F325/F251/F289/F129/F363/F151, exact linear
+support-function proof, counterexamples, transfer ceiling and DPT replay gate).
