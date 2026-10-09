@@ -112,6 +112,23 @@ For each declared `(preparation family, command family, goal, tolerance)`, use t
 
 This defines a **joint information–computation adequacy map**, not a new established experimental result. A meaningful paper-level advance would show one native domain where both costs can be reduced simultaneously, and another frozen command/goal where an independently predicted boundary is crossed.
 
+### Exact information lower bound before any solver choice
+
+For a declared history/model class `H`, scalar future goal `G`, observation map `O` and deterministic norm-bounded noise `||e||<=sigma`, set
+
+```text
+H_y := {h in H : ||O(h)-y|| <= sigma}
+Omega := sup over feasible y of [sup_{h in H_y} G(h) - inf_{h in H_y} G(h)].
+```
+
+If the scalar goal is bounded on each nonempty fiber, the deterministic *best possible* worst-case scalar prediction error from the noisy observation is **exactly `Omega/2`**. Proof: for any feasible `y`, the predictor cannot distinguish the extreme histories in `H_y`, hence suffers at least half their goal gap; the midpoint of the fiber goal interval attains that bound, even when extrema are not attained (use inf/sup). This is the scalar Chebyshev-center / radius-of-information argument from classical optimal recovery, not an OpenAI-specific theorem. If `Omega > 2 delta`, then **no solver precision, Newton iteration, or model refit can guarantee worst-case tolerance `delta` from those observations**. A close full-law root does not remove information ambiguity.
+
+Conversely, even if `Omega/2 <= delta`, a computationally implemented predictor still needs a separate approximation/solver budget. For a method that actually approximates the ideal fiber midpoint with uniform scalar error `epsilon_comp`, its end-to-end model-class error is bounded by `Omega/2 + epsilon_comp`. The `implicit_goal_certificate.py` provides a per-history full-law goal correction for a smooth implicit solve; **it is not automatically a uniform certificate for the fiber midpoint**. Distinguish these two numerical objects before combining bounds.
+
+This gives an explicit **necessary information gate** preceding a separate **sufficient solver gate**. It improves the scientific decision: a goal-fiber collision calls for a new legitimate observation/repair, while a small information radius but large implicit solver residual calls for a better numerical method. The existing `goal_ambiguity_audit.py` computes the exact scalar finite-bank version and remains the right zero-fresh first tool.
+
+Closest prior: [optimal recovery with inaccurate observations](https://doi.org/10.1016/j.jco.2024.101841) and [Chebyshev-center optimal learning](https://doi.org/10.1016/j.sysconle.2023.105648). For DPT, `H` must be a valid reachable preparation family, not an arbitrary box of internal parameters.
+
 ## IV. Primary-source provenance and prior art
 
 - **OpenAI Math F149:** [uniform permanence: introduction](../preprints/Uniform-Permanence-in-Weakly-Reversible-Mass-Action-Systems-October-5-2026/build/sections/introduction.tex) and [trapping construction](../preprints/Uniform-Permanence-in-Weakly-Reversible-Mass-Action-Systems-October-5-2026/build/sections/trapping.tex). Its convex invariant sets are for weakly reversible mass-action ODEs, not SiC; the transferable *proof tactic* is a domain invariant region. `lean/docs/149.md` formalizes an earlier boundedness/persistence scope, not automatically the October classwise permanence refinement.
