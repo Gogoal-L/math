@@ -50,49 +50,38 @@
 
 ---
 
-## 1. 文献身份：Pro17D 当时用了什么，后来又发现了什么
+## 1. 逐篇预期与实际利用：截至 2026-10-09
 
-下表保留截至 2026-10-08 的历史使用与候选分析；当前成果与下一证据以上方 2026-10-09 接受表为准。
+本表把原 map 的期待与本地实际成果对照。**兑现**指该预期已形成指定范围的结果；**部分兑现**指结构有用但较强目标仍缺证据；**边界作用**也可改变判断，但不算新增 predictor。数学来源、DPT 独立构造与 native outcome 分别记账，不将后续结果追溯归功于原论文。
 
-状态含义：
-
-- **P17-承重**：已经实际改变 Pro17D 的构造或证据结构。
-- **P17-背景**：当时上传/可见，但 Pro17D 没有把它作为承重推导。
-- **POST-主动**：本轮重新深读后，已经形成可执行的 DPT 新路线。
-- **WATCH**：保留为边界或未来升级，不应占当前 S09/S10 预算。
-
-| 文献 | Pro17D 身份 | 截至 2026-10-08 的分析身份 | 最值得保留的作用 |
+| 论文 / 数学对象 | 原先希望它帮助什么 | 实际吸收、结论与后果 | 与预期比较 / 下一门槛 |
 |---|---|---|---|
-| F116-A One Rational Matrix Hitting Point | **P17-承重** | **POST-主动** | bounded rational system、multiplicity、ordered-word encoding |
-| F116-B Polynomial Hitting Lists | P17-背景 | **POST-主动** | 每个 inverse occurrence 的 definedness；universal nonadaptive test bank |
-| F229 Three-state reconstruction threshold | P17-背景 | **POST-主动** | experiment dominance / garbling；保守 finite upper experiment |
-| F266 Maximum MUB in dimension six | **P17-承重** | **POST-主动** | Root-like certificate；未解决记录不能被当 negative evidence |
-| F365-A Metric + connection from one patch | P17-背景 | **POST-主动** | quotient-first identifiability；response embedding |
-| F365-B Smooth anisotropic Calderón | P17-背景 | **POST-主动** | finite probe-jet completeness + superlinear bootstrap |
-| F365-C Rough scalar conductivity nonuniqueness | P17-背景 | **POST-主动** | regularity/model-class 改变可辨识性本身 |
-| F372 Smooth isotropic elasticity uniqueness | P17-背景 | **POST-主动** | physical-to-auxiliary injectivity audit；full operator ≠ finite reconstruction |
-| F374 Brenier one-third stability | P17-背景 | WATCH / 方法主动 | uniqueness 与 stability modulus 分开；边界切换可造成非 Lipschitz 放大 |
-| F355 Tangent-flow uniqueness | Pro17D 后发现 | **最高优先 POST** | goal-visible hidden dimension / minimum measurement |
-| F140 Memory-constrained inference | Pro17D 后发现 | **最高优先 POST** | finite information lower bound；adaptive selection 的 information charge |
-| F357 Bi-Lipschitz coordinates at regular RCD points | Pro17D 后发现 | **POST-主动 / 高优先** | multiscale directional defect；从 tangent regularity 到 all-pairs local chart 的 proof architecture |
-| F330 Bounded approximation failure | Pro17D 后发现 | **POST-主动 / 高优先** | finite-rank approximation 与 uniformly bounded stable representation 的分离 |
-| F094 Subpolynomial Lp reduction | Pro17D 后发现 | **POST-主动** | exact complexity 与 fixed-distortion approximate complexity 可以完全不同 |
-| F098 Doubling Hilbert obstruction | Pro17D 后发现 | **POST-主动** | finite-set success / doubling geometry 不保证 whole-class finite-dimensional bi-Lipschitz state |
-| F289 Kadison-Kastler + one-sided boundary | Pro17D 后发现 | **POST-主动 / 边界** | two-sided structural closeness 与 one-sided approximation 的分离 |
-| F251 Strong Ulam stability companion | Pro17D 后发现 | WATCH / 条件主动 | small algebra defect 能否 correction 成 exact algebra 取决于结构，不可默认 |
-| F325 Complete Crouzeix | Pro17D 后发现 | WATCH / 触发即主动 | fixed nonnormal propagator 的 polynomial/rational functional control |
-| F363 Boltzmann nonuniqueness refinement | Pro17D 后发现 | WATCH / claim guard | conservation / consistency 不等于 uniqueness |
-| F129 Exponential state cost | Pro17D 后发现 | WATCH / 长期 | future-context separation 可转成真正的 discrete state-complexity lower bound |
-| F332 Metric Markov cotype of ell1 | 后续深读 | POST-条件主动 | 已稳定 ell1-valued goal factor 的 dimension-free Lipschitz extension，不提供可辨识性 |
-| F324 Lipschitz-equivalent nonisomorphic Banach spaces | 后续深读 | WATCH / 表示边界 | metric equivalence 不推出无限维 linear isomorphism；与有限维 DPT rank 判据区分 |
-| F329 Metric-entropy duality counterexample | 后续深读 | POST-主动（边界启发） | 用 direct noise-fiber / packing audit，避免无假设的 polar entropy shortcut |
-| F376 Universal computation in forced Navier–Stokes | 后续深读 | POST-主动（方法） | original-domain command semantics、history record、within-command guard；不引申流体物理 headline |
-| F132 Block sensitivity exceeds squared ordinary sensitivity | 本轮深读 | POST-主动（方法） | 明确单扰动、联合谓词/组合干预两种证据，给 S09 robust interaction certificate 的建模动机 |
-| F122 Worst-case deletion trace reconstruction | 本轮深读 | WATCH / 条件主动 | 明确时标与删除信道；只有原始采集确有未知时标删除才开复杂度分支 |
-| F119 Sharp binary information contraction | 本轮深读 | WATCH | 仅在独立均匀 bit / symmetric noise 类被验证时可启用 sharp information bound |
-| F325 Complete Crouzeix（第二轮证明检查） | 本轮深读 | WATCH / 固定矩阵触发 | 对 pure exponential 先比较经典 logarithmic-norm 界，matrix-coefficient polynomial/rational 再考虑 F325 |
+| **F116-A**：word→小 ODE→统一 vanishing order→finite detection | 有限历史/command 是否存在统一 detection order；构造可组合有限对象 | 原构造采用 finite lift / command object；随后 actual-law forward 与 ordered-command native 检验落地。精读把 multiplicity 条件和 exact hit/robust gap 区分补齐 | **部分兑现：构造方向已用。** 尚无实际 DPT bounded rational class 或统一 detection-order 定理；native positive 不由 universal hit theorem 保证 |
+| **F116-B**：每个 inverse 的 definedness；独立 universal rank list | 固定 experiment family 同时检查 admissibility 与 rank/separation | 原表达树域原则、command/intermediate identity 已纳入工具与比较合同；明确 sampled cover 不保证全 reachable class。没有 native→affine-pencil 映射 | **域原则兑现，universal list 尚未兑现。** 只有合适类映射能带来新 command 预测时再开；不为利用该定理造大型 generator |
+| **F229**：posterior sufficiency、garbling、finite dominating experiment | 判断摘要是否足够、新 readout 是否增加独立信息 | 已接受 strict topology 下 Ig/Q 可由既有 command/VGS/Rg 推出：改 coordinate 可以有用，但不是新增 acquisition；MODEL_PRIOR 与测量分开。K/Q digital compression、full-history acquisition 与保留成本也分开 | **信息身份判断兑现。** 尚无 DPT prior/noise 下的 posterior-sufficient causal coordinate 或 finite dominating experiment |
+| **F266**：quotient→tangent proposal→normal remainder→atlas certificate | 将 fit/proposal 推为 whole-domain certificate，失败保留 unresolved | 原报告承重采用 proposal/certificate 架构；实际 Eth lift、event/flow/initial-state 联合数值预算及 source finite-defect/tube 分层已落地。有限两点符号与条件 tube 分开记录 | **部分兑现且实质有用。** sampled/domain-qualified certificates 已有；whole reachable domain、统一 remainder/branch containment 未成立 |
+| **F365-A**：gauge/observation quotient；source separation | 先 quotient，再判断可辨识参数或可用组合 | 原文 full-source 与 finite construction 依赖已核；本地明确 projection、observed estimator、forward target 的不同身份；local functional annihilates observation nullspace 可支撑组合/goal 判断 | **局部判据兑现。** 一般物理唯一性或全族 recovery 未由 PDE theorem 迁移得到 |
+| **F365-B**：jet surjectivity→finite frame→bootstrap | 从 tangent sufficiency 走向 finite-radius repair | local K/N/factor、actual source chain 和有限 defect correction 已构造；finite-input correction 对保存条件误差显著改善。条件 tube 的缺失余项被定位 | **部分兑现。** 连续邻域 sufficiency 与 actual guard/lift 的累计误差仍缺；本地优先 elementary finite-dimensional 方法 |
+| **F365-C**：regularity/model class 改变 uniqueness | 避免将固定本构结果误当整个未知类可辨识 | smooth/rough 与 full operator/scalarization 的对照已精读接受；same-law、允许 nuisance/本构变化与不同 operator 的证据层分开 | **边界作用已兑现。** 尚未构造该 PDE 反例的 DPT 对应物，也不预设必须有 |
+| **F372**：physical→auxiliary、combination→individual | internal fit 回到合法物理解；可预测组合先于完整参数唯一性 | 推动 actual command/own-preparation evaluator 与外部 goal 连接；full28/active27 只是声明 representation，不命名为最小 physical state。目标可预测与参数可唯一分解分别判断 | **连接要求已落实。** 更强 physical injectivity/minimal realization 仍需 reachable evidence |
+| **F374**：sharpness lower construction＋uniform stability upper mechanism | 找出 DPT 的稳定性模量，不以 good fit 代替 stability | 三原子解析 sharpness/control 与唯一 replay 已接受；本地分别处理 point fit、gain、数值 movement、finite remainder。没有移植 1/3 指数 | **原文机制已理解并用于边界。** 未给 DPT 的 uniform stability exponent/modulus；本地 finite-radius 条件界不是该定理实例 |
+| **F357**：跨尺度可求和 directional defect→all-pairs chart | tangent/implicit lift 升为有半径的稳定 prediction | 全文机制已精读；本地 finite-radius/curvature 分析与 Eth 联合误差沿该问题建设，明确多点验证、条件 tube 与连续球证书的区别 | **有限尺度建设部分兑现。** RCD/Bochner machinery 未移植；全邻域 uniform bound 尚缺 |
+| **F376-A**：original domain、每步 update、intermediate readout | 找出 composition 在哪一段失去闭合，而非只看 endpoint | 已接受 BA command landmarks/阶段 readout 的回溯定位；之后 ordered native 与强 affine 比较增加预测证据。actual consistency lift 补 stage 接缝。二者是 DPT 自身计算 | **诊断与新检验已兑现。** 可持续低维 future-word congruence 尚未建立；AB/BA 不自动证明非线性 memory |
+| **F140-A**：memory/precision/selection 信息预算 | 给低信息状态的真实成本或下界 | 定向阅读用于区分 acquired RAW、retained moments、数字 command summaries、internal model inputs；输入精度与 gain 的点上预算已可计算 | **预算澄清兑现。** 未得到该 Gaussian theorem 的 DPT sample/memory 下界；数字压缩不冒充减少 ADC 采样 |
+| **F329**：entropy-duality 反例；直接 noise-fiber audit | 从 archive 找 goal-visible collision，决定修复信息 | finite-bank ambiguity 与 source-null direction/repair 的问题框架已有；合法小 preparation 的局部预测 repair 获得 positive。exact fiber、容差接近和 finite gap 分开 | **局部 repair 实质推进。** 全 reachable fiber diameter 上下界未闭合；有限 bank 无碰撞不证明充分 |
+| **F355 方法启发＋独立 K/N lemma** | 最少额外 measurement、goal-visible hidden dimension | actual source K=DG·DF·DP 与两 command 固定 Q 构造、第三方向/半径/目标诊断已落实；固定 Q 第二行在较大半径保存点有效，局部 functional recovery 不要求全参数唯一 | **受限局部能力兑现。** best-rank-one 下界、最小部署 sensor 和持续 causal state 未证明；不把独立线性代数归为 F355 新定理 |
 
-Pro17D 自己在第 7 节明确把 F116-A 与 F266 作为重点亲读和实际采用的 OpenAI Math 来源；其余当时保持 navigation/background 身份。这里不会把后续发现倒写成 Pro17D 当时已经使用。
+### 未作承重迁移的储备
+
+F330/F094/F098 用于 approximation、stability 与 finite/global dimension 的分离；F332/F324 用于 extension/metric representation 与 physical/linear identity 的边界；F251/F289 用于 approximate algebra 与 exact correction 的区别。F325、F363、F129、F132、F122、F119 及 companions 保留各自触发条件，具体原文与推导在下文。
+
+这些材料有既有分析或工具控制，但本次没有接受一个分别由它们新增的 DPT native predictor/theorem。它们与上表的实际利用程度不同；没有新 material consequence 时不强行列成成果。Pro17B 的 exact conditional minimax 本身是重要项目结果，一般 recovery 原理来自既有理论，不能为增加 OpenAI Math 使用数量将其改记为某一 family 的贡献。
+
+### 本次对照得到的判断
+
+**超过早期预期的是落地深度**：现在已有 actual-law generator、ordered native evidence、廉价 one-Newton、目标反转解释、source repair 与合法局部 lift；此前 map 仍主要列候选动作。**尚未达到最强预期的是理论范围**：没有统一 low-dimensional causal state、continuous reachable sufficiency 或全域稳定界。
+
+下一轮不再按论文数量扩线。优先把已有这些对象连接成可更新或更经济的工程预测；某篇储备原文只有带来新的可计算后果才重新进入承重任务。
 
 ### 证据身份
 
