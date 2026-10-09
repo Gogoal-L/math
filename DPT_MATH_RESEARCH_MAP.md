@@ -1,89 +1,58 @@
-# DPT-R1 × OpenAI Math：主控研究利用图谱
+# DPT-R1 × OpenAI Math：研究利用与下一证据图谱
 
-这份文件服务于主控，不做论文摘要集。每篇文献只保留四件事：它在 Pro17D 中是什么身份、真正可迁移的数学动作、会改变哪个 DPT 决策、什么时候值得重新打开。
+最后更新：**2026-10-09**。本次同步 DPT-R1 本地主控已接受结果；原论文与 Lean scope 的上游身份仍沿用此前 `fd4aeeb2` 核查，本次没有重新验证整个数学论文集。
 
-最后更新：2026-10-08（对照官方 fd4aeeb2；扩展 F332/F324/F329/F376 proof transfer）  
-当前对象：DPT-R1 / Pro17D，预算上限 S09 + optional S10。
+这份 map 连接 **paper → mathematical object → DPT construction → accepted consequence → next evidence**。它保留原文定位和必要推导，帮助选择下一项研究；本地科学量值与冻结身份由 DPT-R1 原报告拥有，不在这里复制运行账本。
 
-### 使用方式：主控仍然只需要这份 MAP
+## 当前已取得什么
 
-本文件仍是主控唯一入口，保留问题、推导、优先级与决策材料。当前材料分为两个目录：
+研究已从 measurement-defined effective commutation coordinate 的恢复，推进到：**在给定准备条件、command、观测与工程目标下，需要保留哪些信息、使用多复杂的本构更新，才能可靠预测有限响应？** 低维 predictive state 是其中一条候选路线；目标相关的模型充分性、直接 command-to-goal 结构和可测有效组合也共同参与竞争。
 
-- [`literature/`](literature/README.md)：**7 份当前重要、尚需落实 DPT transfer 或确认主控吸收的核心 PDF**，附最相关的 Lean scope / selected statement。每次按问题读取 2–4 份即可。
-- [`literature_archive/`](literature_archive/README.md)：**26 份备用 PDF**及其 Lean 材料，涵盖 companion、条件式路线与长期边界，按 reopen condition 调用。原有分析与全部来源链接继续保留。
-
-一份 [`registry.json`](literature/registry.json) 追溯两个目录的 source commit、文件校验值、reading tier、DPT 推导、代码/测试、pending task 与 reopen condition。目录划分是研究阅读优先级，不改变 scientific authority。“已有分析”不等于“已在 native DPT 中验证”；当前未收到主控吸收确认，不把任何论文擅自标成主控已懂或从未读过。原 `preprints/` 与 `lean/` 继续保存完整源码与证明。
-
-**希望从先进数学获得的实际增量**：发现更好的预测对象、证明更少测量已经足够、构造现有模型无法排除的反例，或得到有明确误差范围的预测。数学结果若能改变这些对象，可以支持项目转向；先交付一个能与普通模型比较的 DPT 独立推导和最小验证，再由研究者判断转向价值。
-
-| 最先检验的问题 | 可以立即使用的数学动作 | 什么结果会改变主控决策 |
+| 已吸收的数学动作 | 已接受的 DPT 成果（截至 2026-10-09） | 当前作用与下一缺口 |
 |---|---|---|
-| 参数未唯一确定时，目标是否仍能稳定预测？ | 独立 K/N 因子化 + noise-fiber goal ambiguity | 找到 goal-visible collision，或在声明范围内得到有限 gain / remainder 的目标预测界 |
-| 已存 waveform 里有没有丢掉的有用信息？ | 比较压缩 observation 与 raw-trace 派生 feature | 现有特征足以消除关键歧义时，优先 zero-fresh 重分析；仍有歧义时明确所缺的独立信息 |
-| 一条 fusion 到底识别了什么？ | 四角混合差分 + cubic rival + bias/noise envelope | 区分 finite mixed response、严格二次系数和条件式中心系数区间，决定 optional S10 是否值得 |
+| moment-conditioned exact recovery；attainable extremizer；restricted measurement repair | 固定 affine history functional 的 conditional minimax center/radius 与 top-k blockwise repair 已完成逐步证明和原数组复算；压缩误差远小于会改变当前 programme decision 的尺度 | **CONSTRUCTION + BOUND**。intermediate-object fit 已足够，不继续压历史 fit。极值在 moment 类中可达到；实际 DPT preparation image 的 sharp witness 尚缺 |
+| finite command / ordered response；原表达路径 definedness（F116-A/B、F376 方法启发） | 已构造 actual-law command forward，并取得 600 V 两种 ordered commands 的 native 验证；E1 fine/half/quarter 保持 finite-storage waveform 优势，E2 fine/half 也支持该 family | **CONSTRUCTION + FALSIFIER**。command 顺序提供新判别信息；AB/BA 效应本身不证明非线性 memory 或低维更新闭合。没有宣称 vendor map 满足 universal rational hitting theorem |
+| actual nonlinear storage + previous-state dependence；Schur / scalar positive-root update | actual coupled BE law、强 evolving-affine 与同 law one-Newton 可公平比较。多个 150/600 V 条件保留 finite-law positive；one-Newton 可廉价复现 full 的主要预测能力 | **CONSTRUCTION**。区分本构近似与求解近似；SCFI 数值形式的必要性未成立。full 不是独立器件真值 |
+| goal-conditioned projection / signed residual / work product identity | full waveform 更准与 affine fixed VDS goal 更准可以同时成立；600 V、Rg 变化条件的 signed cumulative residual 定量显示相消机制。窗口 peak 与完整 event peak 已分开 | **CONSTRUCTION + FALSIFIER**。模型复杂度取决于 goal/H/command；继续寻找可从合法 pretarget 信息计算的 adequacy 条件，避免用局部本构余项替代输出分离 |
+| goal-visible nullspace、source derivative factorization、finite-defect correction（F365/F372/F329 等 proof-pattern 与边界启发） | actual preparation 链形成 K=DG·DF·DP；source-only repair 与两 command 的固定 Q 摘要已有局部模型 positive。25 mV 保存点单行误差小；较大半径删除 Q 第二行后误差越过既定 0.01，保留两行改善 | **CONSTRUCTION + FALSIFIER**。信息需求随 radius/command/goal/tolerance 改变；固定 Q 删除不是 best-rank-one 下界，更不是全局最小状态证明。内部温度、prefix/model 与 recorded-command 成本单独核算 |
+| tangent / implicit lift / event total derivative；certificate 分层（F266/F357/F365-B 方法启发） | Eth 已有 qualified local consistency continuation：27 storage 连续、23 algebraic coordinates 重建，Q2 junction coordinate 调整约 6.296 mV；moving-event 导数接入 lift。300/330 µV 两点联合数值预算支持响应符号 | **CONSTRUCTION + BOUND**。合法局部数值 chart 有用；diffusion underflow 下 active27 与 exact-real 状态分开。持续跨 stage 更新、连续半径与物理 preparation 可达性仍待建设 |
+| observation identity、信息预算与 dominance（F140/F229/F372 启发） | 既有 RAW 的软件 H 压力测试、history acquisition 与 retained-summary 成本区分已落地；Atlas→BED 可消费 frozen forecasts 和 accepted outcomes，分别比较 waveform/fixed goal/cost | **CLAIM_GUARD + ACQUISITION**。不把确定性排序称为 Bayesian EIG；没有由同模型软件压力测试推导硬件噪声/精度结论 |
 
-这些是当前可执行的研究问题。F355/F365-B/F357 提供 proof-pattern 启发，K/N 与误差界由 DPT 独立证明；F329/F332 的边界帮助选择正确的目标与假设。要进一步支持转向，最有价值的产物是一个新 predictive object，或一个较原对象更强且能被独立 history/command 反驳的预测，而非继续增加 theorem 名称。
+这些成果已经转成推导、唯一 replay、实际预测与反例，并非仅增加引用。**当前 S09 已检查的 OpenAI Math transfer 基本得到实质利用**；仍有来源只发挥边界或背景作用，不按“读过/上传过”宣布 exhausted。2026-10-08 的 bounded 未消费价值审查，在当时 fixed law / input / command / goal 范围内没有留下新的可执行 material delta；重开依据是新的 DPT 问题和可计算后果。
 
-### 当前核心队列：先落实这些问题
+### 证据范围与复查入口
 
-| PDF | 已有基础 | 尚待落实 / 决策用途 |
-|---|---|---|
-| [F116-A](literature/F116-A_noncommutative_hitting_point.pdf) | Pro17D 已采用 finite-lift / detection 方法 | 当前 command class 是否满足所用条件，哪些检测可以独立保证？ |
-| [F116-B](literature/F116-B_rational_hitting_lists.pdf) | MAP 与 sampled-domain 工具已记录 inverse-path 原则 | 补齐实际 command 的 definedness；再判断 fixed hitting bank 是否适用 |
-| [F266](literature/F266_dimension_six_MUB_certificate.pdf) | Pro17D 已使用 certificate architecture | 对当前承重结果落实 center/tangent/remainder/readout/provenance 与 unresolved 身份 |
-| [F329](literature/F329_metric_entropy_duality_counterexample.pdf) | 独立 finite-bank minimax 与 synthetic 工具已有 | 在 matched archive 上定位 goal-visible collision；确定 archived feature 的增量 |
-| [F365-B](literature/F365-B_smooth_anisotropic_Calderon.pdf) | finite-probe / superlinear lift 的 proof-pattern 分析已有 | 先判断简单 inverse/constant-rank theorem 是否足够，再选需要迁移的步骤 |
-| [F357](literature/F357_regular_RCD_bi_Lipschitz_coordinates.pdf) | multiscale directional/remainder 分析已有 | 将 tangent 结果接到声明邻域内的 gain 与 remainder，检验 finite-radius sufficiency |
-| [F140-A](literature/F140-A_Gaussian_regression_memory_precision.pdf) | elementary packing 与 memory/information 启发已有 | 明确信息预算和 class，先证明适用的独立下界；sharp Gaussian bound 保留原假设 |
+上述 native positives 属于同 vendor、同本地电路的模型预测检验，覆盖声明的 150/600 V 条件与各自数值路径。低维充分性、全域 physical identifiability、hardware truth 和 TOTAL_ERROR 各有独立证据门。强 ordinary 胜出的 goal 与既有失败保留在比较中。
 
-本队列是当前优先落实的研究选择，可由主控按证据调整；不要求七篇都成为承重来源。F355、F376 等已有方法分析继续保留在下文与归档区，只有相关 native 问题需要其具体 proof pattern 时再调入核心区。
+本次主控按已接受的原报告同步，local locators 如下（位于 DPT-R1 工作区，不是本 math 仓库的相对链接）：
 
-**本轮验证范围（2026-10-08）**：论文首页身份、上游 `fd4aeeb2ee4fc729c18d98444fed42fd0529eeeb` 的文件字节、Lean selected scope 与 37 个 synthetic Python tests。没有提供 native S09 archive；下一次真实 replay 仍需主控从 archive 明确 history/command identity、单位/时标、reference/query、信息预算与 provenance。当前不增加 adapter，不代替主控冻结证据或晋升 claim。
+- `run/S09_intervention_goal_transport/analysis/native_prediction.md`：E1/E2、ordered gaps、Rg 与 preparation native；goal reversal 与完整 event 支持。
+- `run/S09_intervention_goal_transport/constructive_theory.md`：source K/Q、rho repair、finite curvature、Eth joint qualification。
+- `docs/derivations/README.md`：2026-10-09 两轮承重链接受、公式到 thesis 的 maintext/appendix 映射和唯一 replay。
+- `pro_runs/20261003_pro17_s09_constructive_frontier/absorption.md`：原构造及其接受边界；不把后续本地发现倒写成原报告已知。
+- `run/goal_oriented_design_development/integrated_report.md` 与原 acquisition plan：Atlas→BED 比较、实际结果反馈及候选决策。
 
----
+### 当前该买什么证据
 
-## 0. 先读这一页：主控应当带走什么
+1. **可持续更新与 reachable repair**：优先构造合法 preparation family 中的 goal-visible alias，再检查一个预先选定 repair 是否跨 command/目标有效。持续更新必须连过实际 guard/lift，不以增加 state 数量替代 closure。
+2. **目标相关复杂度选择**：从合法 own-preparation 和实际本构推出 full/affine/one-Newton 的不同预测，分别冻结 waveform、work、peak/event goal，再购买有判别力的 native。新 current-parent single-wide 预测分离仅占 full increment RMS 的约 0.0116%/0.0359%，当前不为 finite-vs-affine 判别采购它。
+3. **不同物理事件或工况**：Rg、负载/热准备与完整 turn-off 都可进入候选。Wu turn-off 预测需要完整 loop、动态 charge、diode/topology 和事件输入映射先闭合；随后补 actual turn-off RAW 才能检验独立 balance-based ordinary rival。现有 notch/recovery RAW 不覆盖 8.010 µs turn-off，不能代替该证据。
 
-目前最有价值的统一问题是：
+本 map 只保留能改变 prediction、information、repair、acquisition 或 claim boundary 的新动作。继续复述论文、重复微小数值 refinement 或补充无分歧 grid 不优先。
 
-> 给定 future command family 和指定 goal，switching history 中最少需要保留什么信息，当前 observation 丢了哪些 goal-relevant directions，下一次 acquisition 应该购买哪一项尚未确定的信息？
+### 原文与工具导航
 
-OpenAI Math 与相关既有数学方法目前提供了若干互补动作；表中须区分**原论文已证明的定理**与**DPT 独立推导**：
+- [literature](literature/README.md)、[archive](literature_archive/README.md)：阅读优先级与备用全文，数量及文件身份以 registry 为准。
+- [registry](literature/registry.json)：原文 acquisition、reading tier、Lean selected scope。**本次只更新 map**；registry 的历史 pending 身份尚未同步，不能据此覆盖上方本地主控接受。
+- [dpt_tools](dpt_tools/README.md)：有限维/finite-bank auditors；数学工具自身通过不等于 native predictive claim。
 
-| 动作 | 主要来源 | 对 DPT 的直接作用 |
-|---|---|---|
-| 找最小缺失 measurement | 独立有限维 K/N lemma；F355 为 finite-jet 方法启发 | 从 observation nullspace 中分离真正影响 goal 的方向；需声明局部稳定性假设 |
-| 给 predictive state 做信息下界 | F140 | 从“这个 state 足够”推进到“更少信息不可能统一完成任务” |
-| 建立有 definedness 的 command algebra | F116-A/B | command 顺序、mixed term、所有 inverse gate 的定义域一起管理 |
-| 判断新 measurement 是否真的增加信息 | F229 | 用 experiment dominance / garbling 剪掉信息上冗余的 acquisition |
-| 把 numerical fit 变成 certificate | F266 | center residual、approximate tangent、normal remainder、provenance 分层 |
-| 从 tangent 结论升级到 finite-radius / nonlinear 结论 | F357 + F365-B，辅以 F374 | rank 之后还要有 multiscale directional/remainder control，不能把单点 Jacobian 当 neighborhood chart |
-| 区分低维 approximation 与可部署的 stable representation | F330 + F094/F098 + F324 | 追 dimension、error、gain 和作用域；低失真 metric encoding 不直接决定 linear/physical coordinates | 
-| 已有观测下的 deterministic worst-case goal ambiguity | 独立 finite-bank minimax；F329 作为反面启发 | 直接检验噪声 fiber 中的 goal gap，区分 archived feature 与新仿真 | 
-| 稳定 goal factor 的延拓 | F332 | 在全类 observation image 已有 Lipschitz factor 时，研究如何延拓到 ambient observation space | 
-| 可组合 predictive state | F376 + F116 + F129 + 经典 future-context equivalence | 检验未来命令词的 definedness、goal 与 stage telemetry，不只看 primitive endpoint |
-| 有界 mixed-interaction certificate | F132 的 joint-profile 思想；独立的有限差分余项与误差设计 | 给 S09 一次 fusion 的真实识别范围、bias/noise envelope、幅度选择与 cubic ordinary counterexample |
-| 固定 nonnormal propagator 的 operator envelope | F325 与经典 logarithmic norm | 一次比较 matrix-valued polynomial readout 的 numerical-range 界与更简单的 energy/lognorm 界 |
-
-另外两条是长期边界：
-
-- F365-A/C：identifiability 必须先声明 model class、goal 和不可见 symmetry；regularity 一变，uniqueness 可能直接翻转。
-- F372：physical data 到 auxiliary representation 的 reduction 必须检查 injectivity；辅助变量上的 uniqueness 不能从 physical data 自动继承。
-- F251/F289：small composition defect 或 one-sided trajectory fit 不自动给出 nearby exact algebra / structural equivalence；需要单独的 correction theorem 或 two-sided control。
-- F325：一旦 frozen stage 变成 fixed nonnormal propagator，numerical range 可以给 polynomial/rational readout 一个 operator-norm envelope。
-- F363：physics/conservation consistency 与 uniqueness 是两类证书；守恒本身不能替代 identifiability。
-
-新的综合优先顺序是：先在已存 raw waveform 上定位 noise-fiber goal ambiguity（F329 的反例精神 + 独立 minimax），用 empirical gain 判断是否需要新 feature（F332 的条件式延拓），再检查 rival history 是否被未来 command-word/stage event 区分（F376 + F116）；F324 只给 metric 与 linear physical state 的解释边界。
-
-如果主控只记一条执行规则：
-
-> **每次准备增加一个 theorem、sensor 或 simulation 前，先问它究竟减少了哪个 goal-visible ambiguity；如果没有明确减少，就不占 fresh budget。**
+以下逐篇分析保留来源定位与 proof-transfer 路径。原“POST-主动”表示形成候选分析，不是本次新增活动任务；当前执行优先级以上方已接受结果和下一证据为准。
 
 ---
 
 ## 1. 文献身份：Pro17D 当时用了什么，后来又发现了什么
 
-下表身份记录历史使用与已有分析，不等于当前必读队列；当前阅读顺序以开头的核心队列为准。
+下表保留截至 2026-10-08 的历史使用与候选分析；当前成果与下一证据以上方 2026-10-09 接受表为准。
 
 状态含义：
 
@@ -92,7 +61,7 @@ OpenAI Math 与相关既有数学方法目前提供了若干互补动作；表�
 - **POST-主动**：本轮重新深读后，已经形成可执行的 DPT 新路线。
 - **WATCH**：保留为边界或未来升级，不应占当前 S09/S10 预算。
 
-| 文献 | Pro17D 身份 | 当前身份 | 最值得保留的作用 |
+| 文献 | Pro17D 身份 | 截至 2026-10-08 的分析身份 | 最值得保留的作用 |
 |---|---|---|---|
 | F116-A One Rational Matrix Hitting Point | **P17-承重** | **POST-主动** | bounded rational system、multiplicity、ordered-word encoding |
 | F116-B Polynomial Hitting Lists | P17-背景 | **POST-主动** | 每个 inverse occurrence 的 definedness；universal nonadaptive test bank |
@@ -145,7 +114,7 @@ Pro17D 自己在第 7 节明确把 F116-A 与 F266 作为重点亲读和实际�
 - F132：lean/docs/132.md selected statement 覆盖其 superquadratic sensitivity separation；该 theorem 的 Boolean 模型和 DPT 的连续参数交互不同。
 - F122：lean/docs/122.md selected statement 覆盖 worst-case deletion trace **lower bound**；不是其 October uniform decoder 的同一套证明。
 - F119：lean/docs/119.md selected statement 覆盖 uniform-cube noisy binary summary 的 sharp contraction。
-- F325：lean/docs/325.md 覆盖 complete Crouzeix 的 polynomial/holomorphic/rational 指定端点；当前 DPT 没有已冻结 native generator A。
+- F325：此前 scope 核查涵盖 polynomial/holomorphic/rational 指定端点。本地已有 conditional stage Jacobian/propagator，但尚未将 F325 的 envelope 绑定并验证为当前实际预测界。
 - F324 的 lean/docs/324.md 涵盖 separable Banach 反例；F329 的 lean/docs/329.md 涵盖 dimension-free entropy-duality 反例。其 Lean scope 仅覆盖该 family 的指定 statements，不替 DPT 迁移证明背书。
 - F332：本轮未发现 lean/docs/332.md；按未经本项目独立证明核验的预印本使用。
 - F376：lean/docs/376.md 分别覆盖若干 sheet、box、particle/velocity detector statements；October 6 修订与各种 pressure/clock companions 不可整体继承旧 scope。
@@ -250,7 +219,7 @@ DPT 现在主要是 deterministic simulation，没有完整 probabilistic experi
 
 ---
 
-## 4. F266：把 E1/E2/N2 收成一个可复用 certificate object
+## 4. F266：proposal、certificate 与 unresolved 的分层
 
 ### 深读锚点
 
@@ -270,7 +239,7 @@ F266 促使 Pro17D 不把小 tangent residual 当成完整 certificate，而是�
 - nonlinear normal remainder；
 - operator/readout contribution。
 
-这已经进入 E1/E2/N2。
+此 proof architecture 已进入原构造；当前同名 E1/E2 的 native 验证状态见开头接受表，不能混用不同报告时点。
 
 ### 本轮再往前一步
 
@@ -827,233 +796,63 @@ D_{a,b}g=g(a,b)-g(a,0)-g(0,b)+g(0,0),\quad a b\ne0.
 
 ---
 
-## 11. 现在可以形成的 DPT 数学链
+## 11. 统一数学连接：对象、信息与更新
 
-把这些文献真正融合以后，最值得推进的是下面七层。它们是递进 gate，不要求全部在 IH2662 项目内完成。
+当前承重链可以写成：
 
-### T1. Goal quotient
+`legal preparation → actual dynamics → observation / retained coordinate → finite command update → engineering goal`。
 
-定义 history equivalence：
+其中有三种不同的充分性：固定 goal 的恢复、跨 command 的预测、以及可持续 stage transition。前两种 positive 已有局部结果；第三种仍是高价值上限。判断维数时同时声明 tolerance、gain、preparation radius、command/goal family 和实际输入成本。
 
-h1 ~_G h2 iff 对所有 c，G_c(h1)=G_c(h2)。
+K/N 与 factorization 是局部信息工具；moment-conditioned minimax 给声明类的完整上下界；reachable witness 才能把 obstruction 落到 DPT 合法 history。F357/F365-B 提醒如何补 finite-radius remainder，F266 提供 proposal/certificate/unresolved 的分层；各迁移结果仍由 DPT 推导与实际验证承担。
 
-先解决“目标需要什么状态”，不追求完整 internal-state recovery。
 
-### T2. Minimum local measurement
+## 12. S09 与后续 evidence：从计划到已执行
 
-用独立 K/N lemma 给 goal-visible hidden dimension（F355 仅作为有限阶证明启发），并在明确局部 Lipschitz 因子或一阶模型假设下证明 reduced law 上的一维 repair 下界。候选 measurement 的第一道 gate 是：
+原 fusion-only 采购阶段已经推进到多种 finite / ordered commands、150/600 V 与非电压工况的实际比较，不能继续把 fusion 写成尚未发生的“第一次”S09 query。一次 mixed contrast 能支持 finite interaction；中心 Taylor coefficient 还需要相应 class/remainder 条件。AB/BA 的区别在线性记忆系统中也可出现，必须结合强 ordinary 的冻结预测定位新增后果。
 
-ker(DP restricted to K) subseteq N。
+下一 evidence 由尚未解决的 consequential uncertainty 决定：同信息预算的模型分歧、reachable information repair、完整物理目标或跨工况迁移。optional S10 是否提升 evidence family，应与独立 vendor/measurement 或有机制意义的 domain stress 比较；不因已有 600 V 数据自动宣布 S10 或 high-voltage 全域闭合。
 
-### T2b. Bounded-noise scalar goal ambiguity
+所有后续 adaptive candidate 保留真实选择时点；已曝光数据可以支持机制诊断和更强 ordinary 构造，fresh promotion 另冻结。
 
-先声明 admissible histories、units/whitening、noise radius 和目标。直接在原始/派生 observation 的有限 history bank 找 `||Y(h)-Y(h')||<=2σ` 却具有大 goal gap 的 pair，输出确定性 minimax error 下界；它可决定应买哪个 feature/sensor，比只比较 raw sensitivity 更贴合目标。该 finite-bank 值不能当 operational continuous-class upper bound；完整类验证还需明确 domain 和统一误差边界。详见 F329 节和 goal_ambiguity_audit.py。
 
-### T3. Multiscale finite-radius predictive chart
+## 13. 决策时检查的五件事
 
-把 T2 从一个 center 扩到 frozen neighborhood / scales：
+1. **目标与信息**：哪个 goal、command、operating domain？输入来自 pretarget、内部状态、recorded command 还是 scoring outcome？
+2. **新后果**：能否算出新预测、有限界、合法反例或最小 repair？最强 ordinary 是否已经解释 positive？
+3. **域与数值**：原表达路径、guard/lift、完整 observation support 是否有效？数值分辨、cross-path 与用途材料性分别怎样？
+4. **充分性层级**：当前证据是 tangent、有限点、bank、连续邻域还是实际 reachable class？误差与 gain 是否随目标/半径改变？
+5. **下一选择**：什么结果会换模型、换表示或新增信息？若没有判别价值，先换 intervention/readout 而非追加同类 native。
 
-- goal-visible rank persistence；
-- measurement row-space containment persistence；
-- measurement-to-goal gain 不爆炸；
-- nonlinear / directional remainder 有明确 envelope。
 
-优先用简单 inverse/constant-rank theorem；需要更强 multiscale bootstrap 时，再借 F357 与 F365-B 的 proof architecture。没有 remainder/domain 证书时，只称 tangent sufficiency。
+## 14. 最小原文 bundle：只按具名缺口重开
 
-### T4. Stable approximate predictive dimension
+| 具名缺口 | 定向原文 / 原对象 | 必须产出的终态 |
+|---|---|---|
+| reachable goal-visible repair | F365/F372、实际 preparation map、K/Q 和匹配 histories | same-law witness 或可计算 repair；明确 full-command ordinary |
+| finite-radius / stage update | F357、F365-B、F266；actual guard、lift、flow | 有半径/余项的 prediction 或具名 failed transition |
+| ordered command / definedness | F116-A/B、F376；actual command 和内部逆路径 | 未见 word 的不同预测或明确域失败 |
+| information cost / sufficiency | F140、F229、F329；真实 acquisition/retention contract | 信息增量、ambiguity、gain 或成本决策 |
+| goal-conditioned adequacy | actual full/affine/one-Newton、signed residual、工程目标 | pretarget adequacy 条件或新 falsifier |
 
-不要只问 state dimension d。至少同时冻结：
+原文定理、proof-pattern 和 DPT 独立结果分别标识。已有源不能给出新后果时，不继续扩大阅读 bundle。
 
-- prediction tolerance epsilon；
-- stability/gain budget kappa；
-- admissible history class H；
-- command family C。
 
-把 finite-bank fitting 与 continuous operational-class representation 分开。F330 负责提醒“存在 approximant”与“存在 uniformly bounded approximant”不同；F094/F098 负责提醒 exact/approximate 与 finite/global complexity 也不同。
+## 15. 何时暂停与重开
 
-### T4b. Lipschitz extension is conditional
+没有合法 preparation map 时，不将 numerical rank 作为 physical reachable theorem；没有 uniform remainder 时，保留 tangent/有限点 positive 并具名缺口。没有真实 probabilistic experiment、deletion channel 或指定 Gaussian/bit 假设时，不迁移相关数值信息界。
 
-若全 class 上存在 G=Phi(Y) 且具有一致 finite Lipschitz gain，F332 的 Hilbert-to-ell1 extension theorem 才可能提供 ambient observation extension；finite-bank gain 仅是筛查。F324 进一步阻止从 metric accuracy 推 linear/physical latent identity。不得用“extension 存在”反向推出 identifiability。
+若 elementary factorization、inverse-function 或能量关系已能解决问题，优先使用它；大型 PDE、operator algebra 或 universal hitting machinery 只在实际 DPT 对象满足其结构并产生新后果时进入。
 
-### T5. Information lower bound + acquisition order
+暂停一个迁移不等于数学源已永久 exhausted。重开必须说明：**现有对象 → 新数学操作 → 可计算 DPT 后果 → strong rival / falsifier**。
 
-用独立 goal-packing lemma 给 state complexity 下界（F140 是严格条件下的 memory/sample 方法启发）；用 F229 的 dominance test 判断新 sensor/readout 是否真正增加信息。只有在 history/command class 真正冻结后才做复杂 information theorem。
 
-### T5b. Future-word state congruence
+## 16. 当前 priority：建设而不是重复审计
 
-对 finite partial deterministic command model，用所有 admissible future words 的 goal、definedness 与显式 stage outputs 来定义等价类。该最粗 equivalence 为 right congruence，能形成可更新的 reduced state；两条 primitive endpoint 相同的历史仍可能被 AB/BA 或 within-stage event 区分。command_word_audit.py 只在提交的有限模型上验证，不等于 native waveform guarantee。
+最值得推进的是合法可更新 prediction 与真实工程目标。把已有 consistency lift、source repair 和 finite-law forward 连成跨 stage/command 的对象；同时允许更经济的直接 goal operator 或 flux/work 关系胜出。
 
-### T6. Command algebra + domain + correction boundary
+已有 150/600 V finite positives、one-Newton 简化与 ordinary goal victories 构成建设起点。最多保留两个能产生材料性差异的未消费数学对象；没有新差异时明确收口，把注意力转回 DPT 物理输入、observation 和新预测。
 
-把 primitive / mixed / ordered commands 放进同一 representation：
-
-- primitive A, B；
-- simultaneous mixed coefficient C_AB；
-- sequential AB, BA；
-- composite rational maps。
-
-每个 inverse occurrence 单独记录 definedness。F116 管 expression-path domain；若要从 small composition defect 升级到 exact algebra，再用 F251/F289 作为 correction/structural-equivalence guard，而不是自动升级 claim。
-
-### T7. Certificate-grade native bridge
-
-用 F266 的结构给每个 load-bearing numerical claim 一个 certificate object，并把 simulator provenance 分开保存。certificate 至少应携带 center、basis/projector、rank tolerance、domain、remainder、gain、readout/operator bound 与 provenance。
-
-
----
-
-## 12. S09 / optional S10：当前最有信息效率的解释
-
-### S09
-
-若 frozen quadratic class 为：
-
-F(α,β)=F0+αL_A+βL_B+α²D_A+β²D_B+αβC_AB
-
-primitive axes 无法确定 C_AB。
-
-因此 S09 fusion 的角色不是“再跑一个 pulse”，而是：
-
-> **第一次直接 acquisition 一个 primitive characterization 无法推出的 mixed functional。**
-
-这仍然是当前最合理的 fresh query，但一次有限幅度 fusion 还不足以识别中心的 mixed Taylor coefficient。对矩形上 C² 的 F，mixed finite difference D_AB F(a,b) 等于从 0 到 a、0 到 b 的混合二阶导数积分，所以 D_AB/(ab) 是矩形平均导数；只有严格 quadratic class 或额外导数变化界才能称它为中心 C_AB。
-
-### S09 后再决定 S10 时，按这个顺序
-
-1. **先做 F229 dominance check**：候选 S10 是否真的新增 physical information，还是 S09/已有 waveform 的 post-processing？
-2. **看 remaining K/N**：还有哪个 goal-visible direction 没被当前 observations 切开？
-3. **看 command-word residual**：simultaneous mixed 已解决后，AB vs BA 是否成为最小新方向？
-4. **先做 mixed-class/uncertainty gate**：现有一条 fusion 究竟是严格 quadratic 的系数测试、带 remainder 的区间，还是普通 finite mixed response？剩余 cubic interaction 自由度可否通过 S10 消掉？
-5. **看 within-command event**：相同 endpoint 的 VDS peak、stage-boundary crossing 是否已被同一 waveform 区分？
-6. **看 adaptation 身份**：如果 S10 是看到 S09 后才挑的，明确记录为 adaptive follow-up，不再包装成同等级 prospective test。
-7. 若没有一个 query 能明显改变 theorem / representation / rival set，S10 不必使用。
-
----
-
-## 13. 主控的九个固定问题
-
-以后每次有新 idea，先过这九个问题。这样比继续增加文献摘要更有用。
-
-1. **Goal**：它解决的是哪个 future goal？换 goal 后结论还成立吗？
-2. **Fiber**：当前 observation fiber 上是否存在 goal-distinct histories？
-3. **Information**：新 measurement 真增加信息，还是已有 observation 的 post-processing？
-4. **Domain**：所有 rational/inverse intermediate states 是否都 defined？
-5. **Local-to-finite / mixed model**：现在只有 Jacobian/rank，还是已有 finite-radius remainder guarantee？S09 所估的是 finite mixed response、严格 quadratic 系数，还是带明确 C² variation/noise envelope 的系数区间？
-6. **Physical-to-auxiliary**：从 physical waveform 推 auxiliary state 时，injectivity 是否真的证明？
-7. **Certificate**：承重 numerical claim 是否有 center defect、tangent defect、remainder、domain 和 provenance？
-8. **Stability**：低维 representation 的 gain / condition number 是否在 frozen neighborhood 与 scales 内有界，还是只在某个 finite bank 上能 fit？
-9. **Structure**：当前证据只是 one-sided trajectory approximation / small composition defect，还是已经有 reciprocal control 或 explicit correction theorem？
-
-任何 idea 如果九个问题里没有一个答案发生变化，通常不值得占 fresh simulation budget。
-
----
-
-## 14. 主控调用文献的最小 bundle
-
-不要把整个 OpenAI Math 论文集一次性交给模型。
-
-### P2 / minimum measurement
-
-- Pro17D relevant derivation
-- F355 linear / finite-observation sections
-- F365-B local-extension proof architecture
-- F140 information comparison
-- reachable-pair evidence
-
-目标：证明 K/N 下界，并判断能否从 tangent sufficiency 升到 finite-radius sufficiency。
-
-### Command algebra / S09-S10
-
-- F116-A formula-system / iterated-integral sections
-- F116-B encoding / rank
-- frozen primitive and fusion definitions
-- current command matrices
-
-目标：定义 missing mixed/ordered functional，并做 inverse-occurrence definedness audit。
-
-### Acquisition pruning
-
-- F229 foundations + finite experiment section
-- candidate sensor/readout map
-- existing observations
-
-目标：建立 measurement dominance / redundancy map，剪掉不增加独立信息的 acquisition。
-
-### Numerical certificate
-
-- F266 Root / refinement / execution sections
-- exact derivations
-- simulator/model hashes
-- scorer and numerical margins
-
-目标：生成 reusable DPT certificate object，而不是更多 residual screenshots。
-
-### Identifiability boundary
-
-- F365-A/B/C
-- F372
-- explicit DPT model class / regularity / allowed symmetry
-
-目标：检查 claim 究竟是 quotient uniqueness、finite sufficiency 还是 stable reconstruction。
-
-
-### Stable predictive representation
-
-- F357 introduction + directional pinching
-- F330 obstruction / operator sections
-- F094/F098 dimension-reduction statements
-- frozen multiscale Jacobians、candidate measurements、remainder bounds
-
-目标：把“低维”拆成 dimension + error + gain + scope，判断 finite-bank success 是否真的支持 finite-radius / operational-class predictor。
-
-### Approximate algebra / surrogate equivalence escalation
-
-- F116 expression tree + domain certificate
-- F251 Strong Ulam companion
-- F289 strong two-sided stability + one-sided boundary companion
-- current primitive / fusion / ordered command residuals
-
-目标：只在 approximate algebra 或 surrogate structural-equivalence claim 真正承重时，判断是否需要 correction theorem；否则停留在 bounded approximate statement。
-
-
----
-
-## 15. 什么时候不要继续挖这条数学线
-
-保持 bounded programme 很重要。
-
-- F140：如果 admissible history class 还没冻结，不做复杂 entropy theorem；先用 elementary packing。
-- F355：如果 native preparation interface 还不能生成 independent hidden directions，不把 numerical rank 当 native theorem。
-- F116-B：如果 DPT command map 不能诚实写成 bounded rational / matrix class，不追 universal hitting-list theorem。
-- F229：没有 probabilistic/noise experiment model时，只用 dominance / data-processing logic，不写 Blackwell-theory headline。
-- F365-B：如果 inverse-function theorem 已足够给 finite-radius result，不复制 PDE 的 shrinking-sphere machinery。
-- F357：没有 multiscale neighborhood data 或 certified remainder 时，不把单点 Jacobian 成功包装成 bi-Lipschitz-like predictive chart。
-- F330/F094/F098：如果 operational history/command class 还没冻结，不从 finite-bank fit 推 global/continuous low-dimensional representation。
-- F251/F289：只有 approximate command algebra 或 surrogate structural-equivalence claim 真正承重时才打开；普通 waveform fit 不需要上升到 operator-algebra correction。
-- F325：只有 fixed nonnormal propagator / polynomial 或 rational functional 真正承重时才打开；对纯指数半群的欧氏范数先试经典 logarithmic-norm bound。
-- F132：不能把 Boolean block-sensitivity 的全局超二次分离当作连续 DPT 的 query-complexity 定理；只迁移 coupled/joint intervention proof pattern。
-- F122：若原始 waveform 有精确 timestamps、并未经历未知位置的独立 deletion channel，禁止搬用 trace-reconstruction sample-complexity theorem。
-- F119：若没有独立均匀 bits 与已标定 symmetric flip channel，不使用它的 sharp mutual-information 数值下界。
-- F363/F129：分别作为 uniqueness claim guard 与 discrete-state lower-bound reserve，不主动占 fresh simulation budget。
-
----
-
-## 16. 当前优先级
-
-如果只允许主控再投入三块高强度数学工作：
-
-**第一：F355 + F357 + F365-B**  
-把一维 charge repair 推成“minimum measurement + multiscale finite-radius local sufficiency”。优先交付一个能被 prospective evidence falsify 的 local theorem，而不是继续加抽象。
-
-**第二：F116-A/B**  
-把 command algebra 补上 ordered interaction 和 inverse-occurrence definedness certificate，并给 S09/S10 一个真正的 acquisition basis。F251/F289 只在要把 approximate algebra 升级成 exact/structural claim 时触发。
-
-**第三：F140 + F229 + F330 + F094/F098**  
-把“多少信息是必要的”“哪个 measurement 真新增信息”“低维 predictor 是否稳定可部署”放进同一个 dimension-error-gain-scope 框架。
-
-**本轮优先**：在 S09 query 被 freeze 前，先用新 mixed-interaction envelope 判断一条 fusion 能兑现的 theorem scope（严格二次、带三阶余项的区间、或仅 finite mixed response），并检查物理可行的 amplitude/noise trade-off；这项检查优先于再增加理论名称。F132 提醒不能从 primitive sensitivity 推出组合干预无效，F122 只在真实 trace deletion/alignment 模型出现时触发。F332 的 extension 和 F324 的 nonlinear-linear boundary 只在稳定目标状态/解释主张承重时启用；F329 的 primal noise ambiguity + F376 的 future word discriminator 则优先在 **zero-fresh archive** 上执行。F266 继续作为所有承重 numerical work 的固定证据层并行执行。F325 在 fixed nonnormal propagator 出现时即时启用，不单独开理论线。
-
-
----
 
 ## 17. 主控可直接运行的审计工具
 
@@ -1086,7 +885,7 @@ primitive axes 无法确定 C_AB。
 - [measurement_factor_audit.py](dpt_tools/measurement_factor_audit.py)：报告 DG=B DO+A DP+E 和条件式 all-direction bound；缺少任何 O/P/G remainder 时不输出 quadratic bound。
 - [expression_domain_inventory.py](dpt_tools/expression_domain_inventory.py)：为 original AST 标识每个 inverse occurrence 的独立 path；必须区分 undefined、numerically ill-conditioned 和由于前一个错误未曾检查的 occurrence。
 
-这些是 **synthetic / finite-bank auditable statements**。尚未提供 DPT-R1 native S09/S10 replay 输入，不产生 LTspice prospective claim；参见 [详细使用说明](dpt_tools/README.md)。
+这些是本 math 仓库的 **synthetic / finite-bank auditable statements**。工具本身尚未逐项绑定实际 DPT 输入；本地主控已有 native 预测与 source-repair 结果，不能把此工具接口缺口误写成 S09 没有 native evidence。参见 [详细使用说明](dpt_tools/README.md)。
 
 ### rational / matrix command-domain audit
 
@@ -1108,28 +907,11 @@ sampled PASS 仍不等于 continuous-domain closure。若要把它升级成 theo
 
 ---
 
-## 18. 维护规则
+## 18. 维护方式
 
-以后只有在文献改变下面至少一项时，才更新这份 map：
+按当前成果替换过时计划，合并重复规则，保留原文 locator 和 decisive evidence。每次更新只记录改变 scientific object、prediction、bound、measurement、falsifier、acquisition 或 claim ceiling 的内容。日期是吸收/接受日期，不伪装为每篇原文的首次深读日期。
 
-- scientific object；
-- theorem assumption；
-- lower/upper bound；
-- measurement choice；
-- falsifier；
-- certificate；
-- claim ceiling。
+本次更新记录：2026-10-09，同步已接受的 actual finite-law / ordered-native、goal reversal、source information repair、Eth lift 与两轮公式复核；替换 D-only 对象及待执行 fusion 叙述，合并重复 priorities/bundles。当前实现以本地唯一 evaluator/replay 为准；未上传 vendor payload、RAW、版权全文或私有 source。
 
-“读过”“很像”“可以引用”都不算 materially used。
+下次更新优先回答：新增的哪项可计算结构改变了预测能力、信息需求或工程使用，而不是又读了多少论文。
 
-当前最值得争取的最终结构仍是：
-
-> **finite predictive quotient  
-> + minimum goal-visible measurement  
-> + multiscale finite-radius sufficiency  
-> + stable approximate representation（dimension / error / gain / scope）  
-> + predictive information lower bound  
-> + mixed/ordered command acquisition  
-> + certificate-grade native validation**
-
-但现在每一项的来源、触发条件和失败边界已经更清楚。主控下一步应该优先把其中一项做成真正的新 theorem 或 prospective discriminator，而不是继续扩充方法名词。
