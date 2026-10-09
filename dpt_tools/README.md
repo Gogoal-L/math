@@ -211,3 +211,66 @@ Unconstrained analytic amplitude optima can be outside the physical domain;
 candidate amplitudes are accepted only when the corresponding archived axis
 anchors and derivative/noise envelopes are valid. Multiple waveform time samples
 at one query do not identify independently varying cubic-interaction waveforms.
+
+## `goal_word_quotient.py` (all-word linear goal state)
+
+For a **fixed linear switched model in one common state chart** `x' = A_command @ x`,
+this tool computes the smallest right-invariant row space containing the specified
+goal matrix `C`. It stops when the row-space rank saturates, so it does **not**
+enumerate every command word. It reports the minimal *autonomous goal-only
+linear-state dimension* and the number of extra freely designed linear
+measurement rows beyond `O`. It also returns an explicit orthonormal goal
+quotient, induced command matrices and numerical closure residuals.
+
+NPZ schema: `updates (n_commands,n,n)`, `command_names (n_commands,)`,
+`observation (m,n)`, `goal (q,n)`; float matrices must use common physical
+coordinates and pre-established scales.
+
+```bash
+python goal_word_quotient.py fixed_linear_model.npz --output all_word_quotient.json
+```
+
+This is a conditional *exact-model* result; rank under floating tolerances
+is a numerical diagnostic. Actual nonlinear stage Jacobians depend on the
+prefix and may change chart through Eth/guard. Do not label one local
+linearization an all-word native certificate. The algorithm complements
+`command_word_audit.py` (finite partial symbolic transition model) and
+`predictive_state_audit.py` (single-domain goal Jacobians).
+
+## `implicit_goal_certificate.py` (same-law cheap-solver goal bound)
+
+Evaluate a **full-law implicit residual at an already frozen cheap prediction**
+(eg. one-Newton). The tool solves the adjoint to compute signed goal correction
+`-lambda.T @ F(yhat)` and a conditional Newton--Kantorovich quadratic remainder.
+The bounds are not inferred from a passed test or measured output: inverse norm,
+Newton step, Jacobian Lipschitz constant, goal Hessian and branch-ball radius
+must each be independently established.
+
+Minimal scalar-goal JSON for `F(y)=y+y²-0.09` at `yhat=0`:
+
+```json
+{
+  "residual": [-0.09],
+  "jacobian": [[1.0]],
+  "goal_gradient": [1.0],
+  "inverse_norm_upper": 1.0,
+  "newton_step_upper": 0.09,
+  "jacobian_lipschitz_upper": 2.0,
+  "goal_hessian_upper": 0.0,
+  "domain_radius": 0.2
+}
+```
+
+```bash
+python implicit_goal_certificate.py bound_input.json --output goal_bound.json
+python -m unittest -v test_goal_ceiling_tools.py
+```
+
+The tool returns `INCONCLUSIVE_CURVATURE` or `INCONCLUSIVE_DOMAIN` when it
+cannot establish the conditional ball, rather than claiming that the cheap
+solver is inadequate. A stacked all-stage residual can be used only after
+the actual-law Eth lift, previous-state terms and moving-event derivatives
+have been incorporated into one smooth square system. Nonsmooth event/peak
+targets require separate analysis; an exact full-law root is not hardware truth.
+
+See the [full derivations and scientific claim boundary](../dpt_research/20261010_goal_information_solver_fidelity.md).
