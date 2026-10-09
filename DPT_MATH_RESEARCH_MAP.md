@@ -30,6 +30,24 @@
 
 **下一份 zero-fresh 证据**：首先验证实际 Eth lift 能否组成同 chart、无 prefix 偷换的 commanded Jacobians；同时在冻结 one-Newton 预测上计算真正 full-law residual 与 goal adjoint，看 signed correction 是否预测 full-vs-cheap 的目标差。若条件不成立应报告失败，并保留 current accepted S09 positives。工具已经过 synthetic/解析测试，但未使用主控 private RAW 与真实 native solver；不晋升 scientific authority。
 
+### 2026-10-10：ordered goal-defect transport——从单步信息/求解界到真实命令顺序的目标误差预算
+
+在已有 all-word goal quotient、goal ambiguity 和 one-Newton goal-residual certificate 之间，新增**一个不要求各 stage 算子交换的有限命令误差传递对象**。详见 [本轮原文深读与完整证明](dpt_research/20261010_ordered_goal_defect_transport.md)、[Python auditor](dpt_tools/goal_defect_transport.py) 及 [11 项合成测试](dpt_tools/test_goal_defect_transport.py)。
+
+若命令顺序对应同一合法线性状态 chart 的 \(x_{j+1}=A_jx_j+\xi_j\)，准备态隐藏误差满足 \(O\delta x_0=0,\ \|\delta x_0\|\le\rho\)，每阶段有独立 \(\|\xi_j\|\le\epsilon_j\)，目标 \(\delta g_k=c_k\delta x_k\)，则反向行向量 \(q_{k,k}=c_k,\ q_{k,j}=q_{k,j+1}A_j\) 给出
+
+\[
+\sup|\delta g_k|
+=\underbrace{\rho\|q_{k,0}P_{\ker O}\|_2}_{\text{准备态信息缺口}}
++\underbrace{\sum_{j<k}\epsilon_j\|q_{k,j+1}\|_2}_{\text{各 stage 数值/本构误差}}
+\]
+
+在**声明的独立欧氏扰动球线性模型**中这是可达到的精确最坏值，并可输出构造见证；不把其精确性直接扩展到物理 reachable fiber 或真实非线性 DAE。工具可发现 stable eigenvalues 下的 nonnormal goal-visible transient，也保留 AB/BA literal order。它与上一轮「信息半径 vs 单次求解精度」形成一个更明确的 programme 问题：**哪个未知方向会在几次 command 后影响指定 goal？哪个 stage 的误差预算才值得压？**
+
+本轮新增**深入原文** F251（October Strong Ulam）、F289（October near-inclusion/winding）、F325（direct complete Crouzeix）、F129（one-way liveness）、F363（local conservation nonuniqueness）和 F151（\(C^1\) entropy counterexample）。这些来源主要提供 correction obstruction、nonnormality、future-context state-cost 和物理平衡不足的边界；其直接数学定理并不推出上面的 DPT 公式。尤其 F325 的固定单算子函数演算不可用于 arbitrary mixed stage products，F251/F289 October companion 的 Lean selected scope 不覆盖其更强新结果。详细 source-claim/Lean 对照在新研究笔记中。
+
+**下一份零新增仿真检验**：结合已资格化 Eth lift / event derivative 与同 law source Jacobian，验证同 chart 的 \(A_j\)、pretarget \(O\)、goal row \(c_k\) 和可信 \(\epsilon_j\)，用 archived S09 source/one-Newton/TT-source 结果检查谁真正主导 goal discrepancy。若只有点估计而无连续域 error envelope，标记 sensitivity-only；无权直接升级 native claim、改 S09 freeze 或新增 solver budget。
+
 ### 证据范围与复查入口
 
 上述 native positives 属于同 vendor、同本地电路的模型预测检验，覆盖声明的 150/600 V 条件与各自数值路径。低维充分性、全域 physical identifiability、hardware truth 和 TOTAL_ERROR 各有独立证据门。强 ordinary 胜出的 goal 与既有失败保留在比较中。
