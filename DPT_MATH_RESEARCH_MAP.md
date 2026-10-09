@@ -20,6 +20,16 @@
 
 这些成果已经转成推导、唯一 replay、实际预测与反例，并非仅增加引用。**当前 S09 已检查的 OpenAI Math transfer 基本得到实质利用**；仍有来源只发挥边界或背景作用，不按“读过/上传过”宣布 exhausted。2026-10-08 的 bounded 未消费价值审查，在当时 fixed law / input / command / goal 范围内没有留下新的可执行 material delta；重开依据是新的 DPT 问题和可计算后果。
 
+### 2026-10-10：信息维数 × 求解精度（独立数学研究，尚非 native 接受）
+
+本轮在保持 2026-10-09 accepted science 不变的前提下，提出一个更强的、有两个独立证明义务的目标：**给定 preparation / command / goal / tolerance，同时确定未来预测需要多少状态信息，以及 one-Newton / affine 等廉价近似至少需要多少求解精度。** 详细推导与反例见 [goal information × solver fidelity frontier note](dpt_research/20261010_goal_information_solver_fidelity.md)。
+
+- **All-word linear goal quotient**：对同一精确线性 switched model，迭代 \\(W_{h+1}=W_h+\\sum_a W_h A_a\\) 到行空间稳定，就得到**所有有限 command words**的最小 autonomous goal-only linear state；额外自由设计测量维数为 \\(\\operatorname{rank}[O;W_*]-\\operatorname{rank}O\\)。新增 [goal_word_quotient.py](dpt_tools/goal_word_quotient.py) 不指数枚举 command words，还输出 reduced updates 和 closure residual。它不能把 Eth 的非线性、分 chart、随 prefix 改变的 Jacobian 直接当作全局定常 \\(A_a\\)；DPT native 和连续半径 claim 仍待做。
+- **Implicit goal-weighted residual**：对于固定 same-law 光滑隐式 residual \\(F(y)=0\\)，由 \\(J=DF(\\widehat y)\\)、‎ \\(J^T\\lambda=Dg(\\widehat y)^T\\) 构造 pretarget correction \\(-\\lambda^T F(\\widehat y)\\)。若同一完整 smooth branch 上另行证明 Newton–Kantorovich 的 inverse/Lipschitz/domain bounds，才有二阶 goal remainder \\(\\tfrac12(\\|\\lambda\\|L+H_g)\\rho^2\\)。新增 [implicit_goal_certificate.py](dpt_tools/implicit_goal_certificate.py) 会对不满足条件的案例返回 INCONCLUSIVE；它不负责证明输入 bounds 成立。可由单 BE stage 延至包含 Eth/event 的 **stacked full-trajectory**，但不能用单 stage 结果代替 whole-command 保证。
+- **上限与 prior art**：这两套代数对象分别属于已有 switched-linear realization/observability 与 Newton–Kantorovich + goal-oriented residual analysis；潜在 *DPT 新贡献* 是对 actual law、合法 reachable preparation、finite command / goal、数值 guard 给出物理上可检验的适用边界。OpenAI Math [F149 invariant-region proof](preprints/Uniform-Permanence-in-Weakly-Reversible-Mass-Action-Systems-October-5-2026/build/sections/trapping.tex) 和 [F328 resolvent/anchor construction](preprints/Fixed-Points-of-Nonexpansive-Maps-in-Reflexive-Banach-Spaces-September-24-2026/build/sections/02-anchor.tex) 仅为可达域/迭代构造提供证明技巧，**不直接授权 SiC 定理**。
+
+**下一份 zero-fresh 证据**：首先验证实际 Eth lift 能否组成同 chart、无 prefix 偷换的 commanded Jacobians；同时在冻结 one-Newton 预测上计算真正 full-law residual 与 goal adjoint，看 signed correction 是否预测 full-vs-cheap 的目标差。若条件不成立应报告失败，并保留 current accepted S09 positives。工具已经过 synthetic/解析测试，但未使用主控 private RAW 与真实 native solver；不晋升 scientific authority。
+
 ### 证据范围与复查入口
 
 上述 native positives 属于同 vendor、同本地电路的模型预测检验，覆盖声明的 150/600 V 条件与各自数值路径。低维充分性、全域 physical identifiability、hardware truth 和 TOTAL_ERROR 各有独立证据门。强 ordinary 胜出的 goal 与既有失败保留在比较中。
