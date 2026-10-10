@@ -62,3 +62,40 @@ Formalization scope in [lean/docs/360.md](https://github.com/openai/math/blob/fd
 **Highest-value positive next step:** use the existing qualified Sol9 Eth transition with a small interval of *pretarget* command perturbations. Quantify \`sigma_min(D_yR)\`, guard distance and boundary leakage and check whether a physically constrained set is forward-closed across one stage and one Eth lift. Keep archived S09 frozen outcomes untouched. A failed algebraic/interval certificate is a locator for missing hypotheses; it is not a negative native physics verdict.
 
 **Source confidence:** HIGH that the cited original manuscript sections contain the specified propositions and proof structure (complete body/appendix source enumeration), MODERATE for interpreting their general mathematical proof correctness (no independent formal review of every inference), and LOW for direct application to native SiC until stage equations, guards and perturbation domains are supplied.
+
+
+## PDF byte provenance and exhaustive source cross-reference audit (second pass)
+
+All three **official release-PDF objects** were fetched from GitHub's public contents API at the pinned upstream commit \`fd4aeeb2ee4fc729c18d98444fed42fd0529eeeb\` using Base64 mode. Their decoded sizes and *Git blob* identifiers are:
+
+| Family | Official PDF name | Git blob SHA-1 | Decoded file size |
+|---|---|---|---:|
+| F049 | \`stable-coordinate-four-variables.pdf\` | \`23f665104be0f62a20f7ea598a1c4c886e167022\` | 338,818 B |
+| F149 | \`permanence.pdf\` | \`d51ebd4947223597b9caefe5584a6781326d0fa4\` | 376,041 B |
+| F360 | \`paper.pdf\` | \`80735686057bc6bad3522fb59f89a2a8d415ced1\` | 410,709 B |
+
+This **closes PDF identity and presence**, not page-by-page visual verification. In this environment the GitHub PDF viewer returned a loading shell, web PDF open did not expose page screenshots, and the raw binary download could not be transferred to the local PDF renderer. The Base64 PDF payloads were fetched and the \`%PDF-1.7\` header / terminal EOF were inspected in memory; PDF objects are compressed and no page-level raster was inspected. Do not record the original PDFs as "every page visually verified". An exact PDF upload or working binary-to-renderer transfer is still needed to finish that task.
+
+Independently, **all authored body/appendix LaTeX files were retrieved** at the same source revision and mechanically scanned for cross-references (\`label\`, \`ref\`, \`eqref\`, \`cref\`, \`Cref\`, \`autoref\`). Results count only these exact token patterns and **do not constitute proof correctness**:
+
+| Family | Complete authored body/source coverage | Approx. source lines | Internal labels / cited refs | Unresolved internal ref names | Figure environments |
+|---|---|---:|---:|---:|---:|
+| F049 | Five included sections: introduction, construction, filtration, bundle, rigidity | 889 | 55 / 43 | 0 | 1 |
+| F149 | Four included sections **and** separately included \`figures/intervals.tex\` | 933 | 33 / 28 | 0 | 1 |
+| F360 | Four included sections plus optional \`appendices/degree.tex\` | 1,721 | 63 / 51 | 0 | 0 |
+
+**F049 visual-source check:** its sole figure is the Cartesian square
+\[
+\begin{CD}
+V(v) @>>> \operatorname{Spec}C\\
+@VVV @VVV\\
+V(I) @>>> Y=\operatorname{Spec}B
+\end{CD}
+\]
+encoding principalization of the pulled-back ideal \(IC=(v)\). It is **a scheme-theoretic pullback**, not a change-of-state or switched-system flowchart. The source drawing was reproduced by TeX and its rendered pixels were visually checked.
+
+**F149 visual-source check:** the single TikZ figure has open validity intervals \(I_{t_j}\) and thicker closed assigned regions \([q_{j-1},q_j]\subset I_{t_j}\), with overlapping neighborhoods and cut points. Its geometric role is proof of finite local-patch coverage for the affine-minimum lemma under even discontinuous error tolerances; it is **not** an invariant-set numerical simulation. TeX-rendered pixels were checked.
+
+**F360 figure check:** there are zero authored figure environments in the full body+appendix. The essential geometry is encoded by displayed Jacobi-field, index-form and Hessian inequalities. Without official PDF raster access, these displayed formulas were checked from LaTeX source and logical dependency, not image pixels on every original page.
+
+**Net confidence update:** high on source identity, source-file coverage, internal reference-name completeness and semantics of the two drawn figures; moderate on theorem-to-lemma dependency interpretation; *unverified* for original-PDF all-page visual/rendering parity or full formal proof correctness. The DPT translation rankings in the previous sections stay unchanged.
