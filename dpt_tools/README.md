@@ -360,3 +360,22 @@ python -m unittest -v test_goal_repair_cover.py
 ```
 
 `EXACT_MIN_COST_REPAIR` proves the cheapest feature subset only within the **supplied finite candidate library and finite bank**. `NO_LIBRARY_REPAIR` gives an unseparated goal-conflicting history pair; `INTRINSIC_GOAL_UNCERTAINTY` means a single history already exceeds the requested goal tolerance; `GREEDY_FEASIBLE_NOT_PROVEN_MINIMUM` is a feasible nonoptimality-qualified result. Neither finite-bank success nor an accepted native model prediction proves whole-reachable sufficiency, hardware noise, continuous-domain guarantees or autonomous future-command updating. [Derivation, source audit and adversarial cases](../dpt_research/20261010_goal_tolerance_repair_cover.md).
+
+## `goal_lipschitz_stability.py` — stable scalar goal recovery and transition-pair floor
+
+The preceding `goal_repair_cover.py` optimizes an **unrestricted decoder**. This companion tool enforces per-command *scalar* decoder gain `lipschitz_limits (K,)` under the same independently bounded **coordinatewise box** input uncertainty. It computes the **exact finite-bank minimax radius**
+
+[
+R_{K_c}(S;c)=\tfrac12\max_{i,j}\bigl(|g_{ic}-g_{jc}|+\eta_{ic}+\eta_{jc}-K_c\,\mathrm{dist}(B_i^S,B_j^S)\bigr).
+\]
+
+This is different from an empirical derivative and different from a global native Lipschitz certificate. A constructive scalar decoder is available as `decoder_value(...)`. With finite \(K_c\), the minimum-price feature subset satisfies additive **squared-separation** margins, not the binary hitting-set condition; two individually insufficient features can jointly be sufficient. The separate `transition_pair_floor(current_states,next_states,update_lipschitz)` gives a **necessary** per-command lower bound on any uniform approximate autonomous update defect, not a sufficient vector-valued extension theorem.
+
+NPZ requires `observations (N,m)`, `goals (N,K)`, `candidates (N,p)`, `observation_radii (m,)`, `candidate_radii (p,)`, `goal_uncertainty (N,K)`, `goal_tolerances (K,)`, `lipschitz_limits (K,)`, `candidate_costs (p,)`. Optional names are `candidate_names`, `command_names`. Costs/gains/scorers/noise budgets must be source-qualified and frozen, with candidate features legitimately available before future-command outcomes.
+
+```bash
+python goal_lipschitz_stability.py bank.npz --output stability.json
+python -m unittest -v test_goal_lipschitz_stability.py
+```
+
+The exact optimality label is finite-bank/fixed-candidate-library only, with floating arithmetic; above 18 candidates, greedy feasibility is **not** minimum cost. The closure/solver link, scalar Lipschitz proof, original F332/F331/F110 source audit, and DPT acceptance gates are in [the derivation](../dpt_research/20261010_goal_stability_compositional_closure.md).

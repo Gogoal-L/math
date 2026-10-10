@@ -30,6 +30,7 @@
 | ordered goal-defect transport | 指定 literal command 顺序的初态隐藏误差与 stage 注入误差分离，支持 nonnormal transient 和 pretarget adequacy 判断；仅在线性/可信误差球上 sharp | [ordered-goal derivation](dpt_research/20261010_ordered_goal_defect_transport.md) · [auditor](dpt_tools/goal_defect_transport.py) |
 | nonlinear observation fiber + finite-stage tubes | 一阶 Jacobian factorization 通过时仍可有二阶 same-observation goal gap；与整个有效域上的条件性 affine box enclosure 配套 | [fiber/tube theory](dpt_research/20261010_nonlinear_fiber_and_stage_tube.md) · [curvature](dpt_tools/fiber_curvature_audit.py) · [stage box](dpt_tools/stage_box_reachability.py) |
 | **新增：robust finite-bank goal-tolerance repair cover** | 对声明的合法历史 bank、多个固定 command goals、每坐标 deterministic noise 与目标区间，**精确判定候选 pretarget 特征的最低成本覆盖**；能给出不可修复的 alias pair。完整 reachable class 与 autonomous update 尚未证明 | [新证明、原文审查及 6 条候选研究路线](dpt_research/20261010_goal_tolerance_repair_cover.md) · [repair tool](dpt_tools/goal_repair_cover.py) · [独立穷举 tests](dpt_tools/test_goal_repair_cover.py) |
+| **稳定目标恢复与 stage 更新必要下界（新）** | 对有限合法 histories、Cartesian noise 与目标区间，精确求 **K-Lipschitz 标量预测器最优误差**、最低增益及最低成本特征组合；配对 next-state gap 给出自主更新必需的 defect floor。跨 Eth/command 的 uniform upper bound 仍要 native 区域证书 | [完整证明与适用边界](dpt_research/20261010_goal_stability_compositional_closure.md) · [auditor](dpt_tools/goal_lipschitz_stability.py) · [tests](dpt_tools/test_goal_lipschitz_stability.py) |
 | 论文原文与迁移审计 | F049 主要是 representation 边界；F149 的向内 trapping 证明与实际 switched flow/guard 不同；F360 的 MTW 无法代替 DPT DAE continuation | [F049/F149/F360 source-proof audit](dpt_research/20261010_F049_F149_F360_fulltext_proof_audit.md) |
 
 新深读 F175（概率阈值的 fractional→integral cover）、F125（带少量 bad clusters 的有界预算 recovery）、F139（精确一阶 oracle 的 query complexity），另检查 F110/F327/F331 的适用条件。**其原定理均不直接给出 DPT 的 sensor-optimality 或 solver-budget bound**；具体 theorem、selected Lean scope、强反例及 closest prior 在 [Frontier V 独立笔记](dpt_research/20261010_goal_tolerance_repair_cover.md)。
@@ -884,6 +885,7 @@ K/N 与 factorization 是局部信息工具；moment-conditioned minimax 给声�
 ### additional bounded goal / command / factor audits
 
 - [goal_repair_cover.py](dpt_tools/goal_repair_cover.py)：对固定 matched history bank 的多个 command goals、逐坐标确定性噪声及 goal-interval 半径，计算达到各目标容差所需的最低成本 candidate-feature cover；本质是**有限 bank 中的非自适应整数 set cover**，不能等同全域最小物理状态或 Euclidean joint-noise sensor fusion。
+- [goal_lipschitz_stability.py](dpt_tools/goal_lipschitz_stability.py)：将相同 finite-bank **box-noisy** 历史的任意解码器 minimax 提升为指定增益上限 `K` 的**精确 stable minimax**；增加多命令共同特征的最小成本 margin cover 和合法同命令状态对的 transition-defect 必要下界。全域/多阶段上界需独立源方程证明。
 
 - [mixed_interaction_audit.py](dpt_tools/mixed_interaction_audit.py)：对匹配四角的一个 scalar goal 计算 mixed finite difference、中心混合导数的**条件式误差区间**及预先限制的 query amplitude grid；其 zero exclusion 只在给定 C² variation/noise/domain 假设被另行证实后有 scientific force。
 
