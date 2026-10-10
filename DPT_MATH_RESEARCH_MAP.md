@@ -57,6 +57,16 @@
 - **上游数学启发。** 深读 F049（稳定坐标与原坐标差异）、F149（有限仿射 trapping）、F360（局部横截曲率到凸域需强条件），并审查 F334/F093/F377 的适用前提。它们提供新反例和 proof architecture，**不直接证明 DPT 定理**。本轮 23 项解析/合成测试和 CLI 检查完成，但不增加 native outcome 或改变已有 authority。
 
 **优先给主控的 zero-fresh 判别：** 固定同一 reachable history/command/goal，比较现有 fixed-Q 两行与一行在较大半径的差异，检查是否存在 Q(v) 的二阶信息泄漏；随后在 Eth-qualified chart 上尝试最小 stage-valid box 与 interval remainder。若缺 Hessian、物理可达性或持续 guard，应报告具体缺失的数据/方程，不强行把工具阴性结果当实际物理失败。
+### 2026-10-10：F049/F149/F360 全文源码证明链与源图复核（更新 source-to-DPT 权重）
+
+[逐篇完整正文/附录原文证据与源图复核](dpt_research/20261010_F049_F149_F360_fulltext_proof_audit.md)：已核对三篇各自 main.tex 包含的全部正文/附录与关键承重引理，重新用原始 TikZ 源码编译并目视检查 F049 的线丛/ideal 拉回交换图与 F149 的区间拼接图；**原始 GitHub PDF 二进制未能在本轮逐页截图审查，也没有独立形式化全部证明**。五条 F049 多项式身份已另行符号检验；图形只传达原文关系，不是 DPT 测量证据。
+
+- **F049：WATCH / 概念边界**。stable polynomial coordinate 与原环境坐标不同，是严谨反例；不由此推出 Eth storage/lift 的不存在性。
+- **F149：CONDITIONAL-MEDIUM**。真正承重的是 weak reversibility → 反应通量向内偏置 → min-affine plateau 的严格增加 → classwise absorbing set。DPT 最值得验证的替代命题是**具有真实 flow/guard/lift 条件的 hybrid invariant region**；现有 box auditor 没有证明无限时间吸收。
+- **F360：WATCH / first-failure 证明架构**。主要定理依赖 weak MTW、Jacobi index form、非共轭性和覆盖论。DPT 应从受约束 implicit-branch continuation 和真实 Eth Jacobian / guard 开始，不调用 MTW 定理替代物理条件。
+
+本轮是**文献来源深度和模型适用边界升级**，不改 S09 native evidence、代理分工、已冻结预测或 LTspice 预算。
+
 ### 证据范围与复查入口
 
 上述 native positives 属于同 vendor、同本地电路的模型预测检验，覆盖声明的 150/600 V 条件与各自数值路径。低维充分性、全域 physical identifiability、hardware truth 和 TOTAL_ERROR 各有独立证据门。强 ordinary 胜出的 goal 与既有失败保留在比较中。
