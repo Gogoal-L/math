@@ -323,3 +323,27 @@ mathematical uncertainty balls and may be physically unreachable.
 **Source and proof audit:** [2026-10-10 ordered goal-defect frontier](../dpt_research/20261010_ordered_goal_defect_transport.md)
 (deep reads of OpenAI Math F325/F251/F289/F129/F363/F151, exact linear
 support-function proof, counterexamples, transfer ceiling and DPT replay gate).
+
+## `fiber_curvature_audit.py` — second-order observation-fiber goal ambiguity
+
+Input JSON fields: `observation_jacobian` (m,n), `goal_gradient` (n), `observation_hessians` (m,n,n), `goal_hessian` (n,n). The auditor checks full-row-rank `DO` and the numerical first-order factor `DG = b DO`, then restricts `D2G - sum(b_i D2O_i)` to `ker(DO)` to locate an extremal curvature and a matching local level-set second derivative. A nonzero result yields a **conditional asymptotic same-observation goal-distinct witness**, not a finite-radius/native guarantee.
+
+```bash
+python fiber_curvature_audit.py nonlinear_chart.json --output fiber_report.json
+python -m unittest -v test_fiber_curvature_audit.py
+```
+
+`NEAR_FIRST_ORDER_FACTOR` prevents a tiny but nonzero linear goal leak from silently being treated as quadratic. `QUADRATIC_ZERO_NOT_SUFFICIENCY` explicitly allows cubic and higher leakage. Derivatives must come from the same physical reachable preparation chart, future command and scalar goal. C2 smoothness, Eth/guard branch and units are independent assumptions.
+
+## `stage_box_reachability.py` — finite-stage affine box inclusion
+
+NPZ: `updates` (H,n,n), `offsets` (H,n), `initial_lower`, `initial_upper` (n), `admissible_lower`, `admissible_upper` (H+1,n), `remainder_radii` (H,n). For the **actual** stage law written `x_next = A_k x + b_k + r_k(x)` on the entire supplied stage box, use independently validated componentwise `|r_k|<=eps_k`; the program computes a conservative interval hull and checks inclusion in the next valid stage box.
+
+```bash
+python stage_box_reachability.py stage_envelopes.npz --output tube_report.json
+python -m unittest -v test_stage_box_reachability.py
+```
+
+`CONDITIONAL_AFFINE_BOX_CHAIN` is conditional on all supplied map/guard/remainder assumptions, not a native or hardware certificate. A failed box check can be caused by neglected physical correlations; it is `INCONCLUSIVE_BOX_CONTAINMENT`, not a falsified SiC law. The `roundoff_margin_warning` field identifies stage guards too close to the computed hull for casual floating-point assurance; formal certification requires outward interval arithmetic. Existing files/CLIs are unchanged.
+
+Full derivations and source/Lean scope: [2026-10-10 nonlinear-fiber and stage-tube research note](../dpt_research/20261010_nonlinear_fiber_and_stage_tube.md).

@@ -48,6 +48,15 @@
 
 **下一份零新增仿真检验**：结合已资格化 Eth lift / event derivative 与同 law source Jacobian，验证同 chart 的 \(A_j\)、pretarget \(O\)、goal row \(c_k\) 和可信 \(\epsilon_j\)，用 archived S09 source/one-Newton/TT-source 结果检查谁真正主导 goal discrepancy。若只有点估计而无连续域 error envelope，标记 sensitivity-only；无权直接升级 native claim、改 S09 freeze 或新增 solver budget。
 
+### 2026-10-10：非线性 observation-fiber 曲率与 finite-stage 可达域（独立数学结果）
+
+本轮在 all-word linear quotient、one-Newton 误差和 ordered-stage transport 之上，新增两个不同于点上 Jacobian 与单一 trajectory 的**可证伪对象**。完整证明、OpenAI Math 六个 family 的原始定理/Lean-scope 审查及主控复算合同见 [nonlinear fiber & stage tube](dpt_research/20261010_nonlinear_fiber_and_stage_tube.md)。
+
+- **二阶观测 fiber 信息下界。** 当合法 preparation chart 上的观测 O 为 C² submersion，且固定目标 G 的一阶梯度精确因子化 DG=b DO 时，隐藏方向 v∈ker(DO) 的 fiber 曲率为 Q(v)=vᵀ(D²G−ΣbᵢD²Oᵢ)v。若 Q(v)≠0，存在**相同 O 但未来 G 相差二阶量**的局部合法历史对，说明一阶 K/N 通过仍不足以保证有限半径充分性。新增 [fiber_curvature_audit.py](dpt_tools/fiber_curvature_audit.py) 可寻找最大曲率方向与二阶 level-set witness；C² 及可达历史 chart 必须另证，数值近零一阶因子化不视作 exact。
+- **有限阶段连续域检查。** 对已验证 entire-stage box 内成立的仿射表示、偏置、逐坐标本构/求解 remainder bound，递推 interval hull；若每一步都落在下一 stage 有效 box 内，则给出**指定有限 command 序列**的条件 enclosure。新增 [stage_box_reachability.py](dpt_tools/stage_box_reachability.py)；保守 box 失败不等于物理状态越界，浮点计算不是 directed interval proof。
+- **上游数学启发。** 深读 F049（稳定坐标与原坐标差异）、F149（有限仿射 trapping）、F360（局部横截曲率到凸域需强条件），并审查 F334/F093/F377 的适用前提。它们提供新反例和 proof architecture，**不直接证明 DPT 定理**。本轮 23 项解析/合成测试和 CLI 检查完成，但不增加 native outcome 或改变已有 authority。
+
+**优先给主控的 zero-fresh 判别：** 固定同一 reachable history/command/goal，比较现有 fixed-Q 两行与一行在较大半径的差异，检查是否存在 Q(v) 的二阶信息泄漏；随后在 Eth-qualified chart 上尝试最小 stage-valid box 与 interval remainder。若缺 Hessian、物理可达性或持续 guard，应报告具体缺失的数据/方程，不强行把工具阴性结果当实际物理失败。
 ### 证据范围与复查入口
 
 上述 native positives 属于同 vendor、同本地电路的模型预测检验，覆盖声明的 150/600 V 条件与各自数值路径。低维充分性、全域 physical identifiability、hardware truth 和 TOTAL_ERROR 各有独立证据门。强 ordinary 胜出的 goal 与既有失败保留在比较中。
