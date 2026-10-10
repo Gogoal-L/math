@@ -20,52 +20,21 @@
 
 这些成果已经转成推导、唯一 replay、实际预测与反例，并非仅增加引用。**当前 S09 已检查的 OpenAI Math transfer 基本得到实质利用**；仍有来源只发挥边界或背景作用，不按“读过/上传过”宣布 exhausted。2026-10-08 的 bounded 未消费价值审查，在当时 fixed law / input / command / goal 范围内没有留下新的可执行 material delta；重开依据是新的 DPT 问题和可计算后果。
 
-### 2026-10-10：信息维数 × 求解精度（独立数学研究，尚非 native 接受）
+### 2026-10-10 数学前沿索引（独立研究；不替代 native acceptance）
 
-本轮在保持 2026-10-09 accepted science 不变的前提下，提出一个更强的、有两个独立证明义务的目标：**给定 preparation / command / goal / tolerance，同时确定未来预测需要多少状态信息，以及 one-Newton / affine 等廉价近似至少需要多少求解精度。** 详细推导与反例见 [goal information × solver fidelity frontier note](dpt_research/20261010_goal_information_solver_fidelity.md)。
+本次保持截至 2026-10-09 的 accepted DPT results 与正式主控权限不变；数学推导、合成测试及原论文证据放在独立笔记。最强推进目标是 **goal tolerance 下的信息必要性、求解精度与合法跨 stage 更新共同闭合**，允许低成本 direct goal predictor 或 ordinary model 胜出。
 
-- **All-word linear goal quotient**：对同一精确线性 switched model，迭代 \(W_{h+1}=W_h+\sum_a W_h A_a\) 到行空间稳定，就得到**所有有限 command words**的最小 autonomous goal-only linear state；额外自由设计测量维数为 \(\operatorname{rank}[O;W_*]-\operatorname{rank}O\)。新增 [goal_word_quotient.py](dpt_tools/goal_word_quotient.py) 不指数枚举 command words，还输出 reduced updates 和 closure residual。它不能把 Eth 的非线性、分 chart、随 prefix 改变的 Jacobian 直接当作全局定常 \(A_a\)；DPT native 和连续半径 claim 仍待做。
-- **Implicit goal-weighted residual**：对于固定 same-law 光滑隐式 residual \(F(y)=0\)，由 \(J=DF(\widehat y)\)、 \(J^T\lambda=Dg(\widehat y)^T\) 构造 pretarget correction \(-\lambda^T F(\widehat y)\)。若同一完整 smooth branch 上另行证明 Newton–Kantorovich 的 inverse/Lipschitz/domain bounds，才有二阶 goal remainder \(\tfrac12(\|\lambda\|L+H_g)\rho^2\)。新增 [implicit_goal_certificate.py](dpt_tools/implicit_goal_certificate.py) 会对不满足条件的案例返回 INCONCLUSIVE；它不负责证明输入 bounds 成立。可由单 BE stage 延至包含 Eth/event 的 **stacked full-trajectory**，但不能用单 stage 结果代替 whole-command 保证。
-- **上限与 prior art**：这两套代数对象分别属于已有 switched-linear realization/observability 与 Newton–Kantorovich + goal-oriented residual analysis；潜在 *DPT 新贡献* 是对 actual law、合法 reachable preparation、finite command / goal、数值 guard 给出物理上可检验的适用边界。OpenAI Math [F149 invariant-region proof](preprints/Uniform-Permanence-in-Weakly-Reversible-Mass-Action-Systems-October-5-2026/build/sections/trapping.tex) 和 [F328 resolvent/anchor construction](preprints/Fixed-Points-of-Nonexpansive-Maps-in-Reflexive-Banach-Spaces-September-24-2026/build/sections/02-anchor.tex) 仅为可达域/迭代构造提供证明技巧，**不直接授权 SiC 定理**。
+| 已构造对象 | 数学增量及判别用途 | 全文证明 / executable |
+|---|---|---|
+| all-word linear goal quotient + implicit goal-weighted residual | 把 command-family 的 autonomous linear state 下界与 one-Newton same-law goal correction 分开核验；Eth nonlinear branch 与可信 residual bound 是 native gate | [信息 × 求解精度](dpt_research/20261010_goal_information_solver_fidelity.md) · [word quotient](dpt_tools/goal_word_quotient.py) · [implicit certificate](dpt_tools/implicit_goal_certificate.py) |
+| ordered goal-defect transport | 指定 literal command 顺序的初态隐藏误差与 stage 注入误差分离，支持 nonnormal transient 和 pretarget adequacy 判断；仅在线性/可信误差球上 sharp | [ordered-goal derivation](dpt_research/20261010_ordered_goal_defect_transport.md) · [auditor](dpt_tools/goal_defect_transport.py) |
+| nonlinear observation fiber + finite-stage tubes | 一阶 Jacobian factorization 通过时仍可有二阶 same-observation goal gap；与整个有效域上的条件性 affine box enclosure 配套 | [fiber/tube theory](dpt_research/20261010_nonlinear_fiber_and_stage_tube.md) · [curvature](dpt_tools/fiber_curvature_audit.py) · [stage box](dpt_tools/stage_box_reachability.py) |
+| **新增：robust finite-bank goal-tolerance repair cover** | 对声明的合法历史 bank、多个固定 command goals、每坐标 deterministic noise 与目标区间，**精确判定候选 pretarget 特征的最低成本覆盖**；能给出不可修复的 alias pair。完整 reachable class 与 autonomous update 尚未证明 | [新证明、原文审查及 6 条候选研究路线](dpt_research/20261010_goal_tolerance_repair_cover.md) · [repair tool](dpt_tools/goal_repair_cover.py) · [独立穷举 tests](dpt_tools/test_goal_repair_cover.py) |
+| 论文原文与迁移审计 | F049 主要是 representation 边界；F149 的向内 trapping 证明与实际 switched flow/guard 不同；F360 的 MTW 无法代替 DPT DAE continuation | [F049/F149/F360 source-proof audit](dpt_research/20261010_F049_F149_F360_fulltext_proof_audit.md) |
 
-**下一份 zero-fresh 证据**：首先验证实际 Eth lift 能否组成同 chart、无 prefix 偷换的 commanded Jacobians；同时在冻结 one-Newton 预测上计算真正 full-law residual 与 goal adjoint，看 signed correction 是否预测 full-vs-cheap 的目标差。若条件不成立应报告失败，并保留 current accepted S09 positives。工具已经过 synthetic/解析测试，但未使用主控 private RAW 与真实 native solver；不晋升 scientific authority。
+新深读 F175（概率阈值的 fractional→integral cover）、F125（带少量 bad clusters 的有界预算 recovery）、F139（精确一阶 oracle 的 query complexity），另检查 F110/F327/F331 的适用条件。**其原定理均不直接给出 DPT 的 sensor-optimality 或 solver-budget bound**；具体 theorem、selected Lean scope、强反例及 closest prior 在 [Frontier V 独立笔记](dpt_research/20261010_goal_tolerance_repair_cover.md)。
 
-### 2026-10-10：ordered goal-defect transport——从单步信息/求解界到真实命令顺序的目标误差预算
-
-在已有 all-word goal quotient、goal ambiguity 和 one-Newton goal-residual certificate 之间，新增**一个不要求各 stage 算子交换的有限命令误差传递对象**。详见 [本轮原文深读与完整证明](dpt_research/20261010_ordered_goal_defect_transport.md)、[Python auditor](dpt_tools/goal_defect_transport.py) 及 [11 项合成测试](dpt_tools/test_goal_defect_transport.py)。
-
-若命令顺序对应同一合法线性状态 chart 的 \(x_{j+1}=A_jx_j+\xi_j\)，准备态隐藏误差满足 \(O\delta x_0=0,\ \|\delta x_0\|\le\rho\)，每阶段有独立 \(\|\xi_j\|\le\epsilon_j\)，目标 \(\delta g_k=c_k\delta x_k\)，则反向行向量 \(q_{k,k}=c_k,\ q_{k,j}=q_{k,j+1}A_j\) 给出
-
-\[
-\sup|\delta g_k|
-=\underbrace{\rho\|q_{k,0}P_{\ker O}\|_2}_{\text{准备态信息缺口}}
-+\underbrace{\sum_{j<k}\epsilon_j\|q_{k,j+1}\|_2}_{\text{各 stage 数值/本构误差}}
-\]
-
-在**声明的独立欧氏扰动球线性模型**中这是可达到的精确最坏值，并可输出构造见证；不把其精确性直接扩展到物理 reachable fiber 或真实非线性 DAE。工具可发现 stable eigenvalues 下的 nonnormal goal-visible transient，也保留 AB/BA literal order。它与上一轮「信息半径 vs 单次求解精度」形成一个更明确的 programme 问题：**哪个未知方向会在几次 command 后影响指定 goal？哪个 stage 的误差预算才值得压？**
-
-本轮新增**深入原文** F251（October Strong Ulam）、F289（October near-inclusion/winding）、F325（direct complete Crouzeix）、F129（one-way liveness）、F363（local conservation nonuniqueness）和 F151（\(C^1\) entropy counterexample）。这些来源主要提供 correction obstruction、nonnormality、future-context state-cost 和物理平衡不足的边界；其直接数学定理并不推出上面的 DPT 公式。尤其 F325 的固定单算子函数演算不可用于 arbitrary mixed stage products，F251/F289 October companion 的 Lean selected scope 不覆盖其更强新结果。详细 source-claim/Lean 对照在新研究笔记中。
-
-**下一份零新增仿真检验**：结合已资格化 Eth lift / event derivative 与同 law source Jacobian，验证同 chart 的 \(A_j\)、pretarget \(O\)、goal row \(c_k\) 和可信 \(\epsilon_j\)，用 archived S09 source/one-Newton/TT-source 结果检查谁真正主导 goal discrepancy。若只有点估计而无连续域 error envelope，标记 sensitivity-only；无权直接升级 native claim、改 S09 freeze 或新增 solver budget。
-
-### 2026-10-10：非线性 observation-fiber 曲率与 finite-stage 可达域（独立数学结果）
-
-本轮在 all-word linear quotient、one-Newton 误差和 ordered-stage transport 之上，新增两个不同于点上 Jacobian 与单一 trajectory 的**可证伪对象**。完整证明、OpenAI Math 六个 family 的原始定理/Lean-scope 审查及主控复算合同见 [nonlinear fiber & stage tube](dpt_research/20261010_nonlinear_fiber_and_stage_tube.md)。
-
-- **二阶观测 fiber 信息下界。** 当合法 preparation chart 上的观测 O 为 C² submersion，且固定目标 G 的一阶梯度精确因子化 DG=b DO 时，隐藏方向 v∈ker(DO) 的 fiber 曲率为 Q(v)=vᵀ(D²G−ΣbᵢD²Oᵢ)v。若 Q(v)≠0，存在**相同 O 但未来 G 相差二阶量**的局部合法历史对，说明一阶 K/N 通过仍不足以保证有限半径充分性。新增 [fiber_curvature_audit.py](dpt_tools/fiber_curvature_audit.py) 可寻找最大曲率方向与二阶 level-set witness；C² 及可达历史 chart 必须另证，数值近零一阶因子化不视作 exact。
-- **有限阶段连续域检查。** 对已验证 entire-stage box 内成立的仿射表示、偏置、逐坐标本构/求解 remainder bound，递推 interval hull；若每一步都落在下一 stage 有效 box 内，则给出**指定有限 command 序列**的条件 enclosure。新增 [stage_box_reachability.py](dpt_tools/stage_box_reachability.py)；保守 box 失败不等于物理状态越界，浮点计算不是 directed interval proof。
-- **上游数学启发。** 深读 F049（稳定坐标与原坐标差异）、F149（有限仿射 trapping）、F360（局部横截曲率到凸域需强条件），并审查 F334/F093/F377 的适用前提。它们提供新反例和 proof architecture，**不直接证明 DPT 定理**。本轮 23 项解析/合成测试和 CLI 检查完成，但不增加 native outcome 或改变已有 authority。
-
-**优先给主控的 zero-fresh 判别：** 固定同一 reachable history/command/goal，比较现有 fixed-Q 两行与一行在较大半径的差异，检查是否存在 Q(v) 的二阶信息泄漏；随后在 Eth-qualified chart 上尝试最小 stage-valid box 与 interval remainder。若缺 Hessian、物理可达性或持续 guard，应报告具体缺失的数据/方程，不强行把工具阴性结果当实际物理失败。
-### 2026-10-10：F049/F149/F360 全文源码证明链与源图复核（更新 source-to-DPT 权重）
-
-[逐篇完整正文/附录原文证据与源图复核](dpt_research/20261010_F049_F149_F360_fulltext_proof_audit.md)：已核对三篇各自 main.tex 包含的全部正文/附录与关键承重引理，重新用原始 TikZ 源码编译并目视检查 F049 的线丛/ideal 拉回交换图与 F149 的区间拼接图；**原始 GitHub PDF 二进制未能在本轮逐页截图审查，也没有独立形式化全部证明**。五条 F049 多项式身份已另行符号检验；图形只传达原文关系，不是 DPT 测量证据。
-
-- **F049：WATCH / 概念边界**。stable polynomial coordinate 与原环境坐标不同，是严谨反例；不由此推出 Eth storage/lift 的不存在性。
-- **F149：CONDITIONAL-MEDIUM**。真正承重的是 weak reversibility → 反应通量向内偏置 → min-affine plateau 的严格增加 → classwise absorbing set。DPT 最值得验证的替代命题是**具有真实 flow/guard/lift 条件的 hybrid invariant region**；现有 box auditor 没有证明无限时间吸收。
-- **F360：WATCH / first-failure 证明架构**。主要定理依赖 weak MTW、Jacobi index form、非共轭性和覆盖论。DPT 应从受约束 implicit-branch continuation 和真实 Eth Jacobian / guard 开始，不调用 MTW 定理替代物理条件。
-
-本轮是**文献来源深度和模型适用边界升级**，不改 S09 native evidence、代理分工、已冻结预测或 LTspice 预算。
+**优先 zero-fresh 复算：**在同 law、合法 reachable history、共同命令及固定 goal/scorer 下，比较 existing Q one/two rows、Iload+Q2_Tj 与新特征的容差成本；再用 Eth 真实 guard/lift 检查长期更新。若缺 pretarget provenance 或无法建立连续域 envelope，就报告具名缺口，不用 synthetic PASS 晋升物理充分性。
 
 ### 证据范围与复查入口
 
@@ -913,6 +882,8 @@ K/N 与 factorization 是局部信息工具；moment-conditioned minimax 给声�
 它故意把 claim ceiling 写进输出：rank PASS 仍只是 tangent statement；remainder coefficient 的真实性必须由 derivation / interval / native evidence 单独保证。
 
 ### additional bounded goal / command / factor audits
+
+- [goal_repair_cover.py](dpt_tools/goal_repair_cover.py)：对固定 matched history bank 的多个 command goals、逐坐标确定性噪声及 goal-interval 半径，计算达到各目标容差所需的最低成本 candidate-feature cover；本质是**有限 bank 中的非自适应整数 set cover**，不能等同全域最小物理状态或 Euclidean joint-noise sensor fusion。
 
 - [mixed_interaction_audit.py](dpt_tools/mixed_interaction_audit.py)：对匹配四角的一个 scalar goal 计算 mixed finite difference、中心混合导数的**条件式误差区间**及预先限制的 query amplitude grid；其 zero exclusion 只在给定 C² variation/noise/domain 假设被另行证实后有 scientific force。
 

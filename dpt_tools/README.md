@@ -347,3 +347,16 @@ python -m unittest -v test_stage_box_reachability.py
 `CONDITIONAL_AFFINE_BOX_CHAIN` is conditional on all supplied map/guard/remainder assumptions, not a native or hardware certificate. A failed box check can be caused by neglected physical correlations; it is `INCONCLUSIVE_BOX_CONTAINMENT`, not a falsified SiC law. The `roundoff_margin_warning` field identifies stage guards too close to the computed hull for casual floating-point assurance; formal certification requires outward interval arithmetic. Existing files/CLIs are unchanged.
 
 Full derivations and source/Lean scope: [2026-10-10 nonlinear-fiber and stage-tube research note](../dpt_research/20261010_nonlinear_fiber_and_stage_tube.md).
+
+## `goal_repair_cover.py` (robust finite-bank goal-tolerance feature cover)
+
+A separate extension of `goal_ambiguity_audit.py`: the latter uses **Euclidean** observation-noise balls, while this optimizer uses **independent coordinatewise interval bounds** (Cartesian boxes), plus fixed per-history goal intervals. For each declared command `c`, the exact finite-bank minimax error after retaining features `S` is `max(max_i eta[i,c], max_compatible_pairs (abs(g[i,c]-g[j,c])+eta[i,c]+eta[j,c])/2)`. A finite library of candidate scalar pretarget features is solved as an exact weighted hitting set when the number of candidates is at most 18; for larger libraries a deterministic weighted-greedy feasible upper bound is reported.
+
+Required NPZ: `observations (N,m)`, `goals (N,K)` (or one-column vector), `candidates (N,p)`, `observation_radii (m,)`, `candidate_radii (p,)`, `goal_tolerances (K,)`, `candidate_costs (p,)`. Optional `goal_uncertainty (N,K)`, `candidate_names (p,)`, `command_names (K,)`. Units must be consistent *per goal*; all histories must be legal and all goals use the same intended reference/scorer. Costs must be declared externally, including whether a feature is already archived, retained digitally, or requires fresh acquisition.
+
+```bash
+python goal_repair_cover.py finite_bank.npz --output feature_cover.json
+python -m unittest -v test_goal_repair_cover.py
+```
+
+`EXACT_MIN_COST_REPAIR` proves the cheapest feature subset only within the **supplied finite candidate library and finite bank**. `NO_LIBRARY_REPAIR` gives an unseparated goal-conflicting history pair; `INTRINSIC_GOAL_UNCERTAINTY` means a single history already exceeds the requested goal tolerance; `GREEDY_FEASIBLE_NOT_PROVEN_MINIMUM` is a feasible nonoptimality-qualified result. Neither finite-bank success nor an accepted native model prediction proves whole-reachable sufficiency, hardware noise, continuous-domain guarantees or autonomous future-command updating. [Derivation, source audit and adversarial cases](../dpt_research/20261010_goal_tolerance_repair_cover.md).
