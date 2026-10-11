@@ -362,42 +362,42 @@ $$
 
 **新的正向救援：** 18B 已揭示 peak/event 对历史很敏感；但这并不要求每一种 peak-value 预测都满足唯一、非退化峰的条件。对共享同一个合法物理时间窗口 \([a,b]\) 的两条连续电压波形 \(V_1,V_2\)，仅从 max 的基本定义就有
 
-$
+$$
 \boxed{\left|\max_{t\in[a,b]}V_1(t)-\max_{t\in[a,b]}V_2(t)\right|
 \le \|V_1-V_2\|_{L^\infty[a,b]}.}
 \tag{M30}
-$
+$$
 
 **推导：** 对任意 \(t\)，\(V_1(t)\le V_2(t)+\|V_1-V_2\|_\infty\)；取两端的 supremum 得到一侧不等式，交换 1/2 得另一侧。无论 ringing 在两处几乎等高、argmax 因微小扰动从第一个峰跳到第二个峰，**peak 值**仍然 1-Lipschitz 于完整波形 sup norm；**峰出现时间**则完全可能跳变，必须另给事件分支选择与横截条件。若工程目标是 overshoot \(V_{\rm peak}-V_{\rm DC}\)，还要对 bus voltage 基准差另加 \(|\Delta V_{\rm DC}|\)。这为 Pro18B 提供一个比强行拟合稳定 peak-event time 更经济的潜在证明路线：先证准许历史域内的完整波形 sup norm 界，再直接给 peak-value 上界。
 
 同一固定窗口的 stage work 也具有无需微分求峰时刻的通用目标上界。利用 \(V_1I_1-V_2I_2=I_1(V_1-V_2)+V_2(I_1-I_2)\)，积分与 Hölder 给
 
-$
+$$
 \boxed{|W_1-W_2|
 \le (b-a)\left[
 \|I_1\|_\infty\|V_1-V_2\|_\infty+
 \|V_2\|_\infty\|I_1-I_2\|_\infty
 \right].}
 \tag{M31}
-$
+$$
 
 这两式提供可复用、目标相关的**充分上界**，但可能比伴随积分的 signed cancellation 松很多；已观察到 18B 两个阶段 work 几乎相消时，应同时报告 stage-wise bound 与直接 signed total-work estimator，不能把逐阶段绝对盒和当成必要误差下界。若窗口随 guard/events 移动，仍需式 (M21–M22) 的边界项与 guard 资格。
 
 **反例：只做一阶 rank/quotient 测试可能把二阶 goal ambiguity 漏成零。** 考虑严格合法的数学状态圆盘 \(\mathcal H_r=\{(x,y):x^2+y^2\le r^2\}\)，现有观测 \(O(x,y)=x\)，未来目标 \(G(x,y)=y^2\)。在中心 \(DG(0,0)=(0,0)\)，且 \(DO(0,0)=(1,0)\)，**一阶 goal-row 缺口为零**；但固定观测 \(O=x\) 时，\(0\le G\le r^2-x^2\)，所以条件最坏误差精确是 \((r^2-x^2)/2\)，全域最优 minimax 半径为
 
-$
+$$
 \boxed{R_{\mathcal H_r}(O,G)=\frac{r^2}{2}>0,\qquad
 DG(0,0)|_{\ker DO(0,0)}=0.}
 \tag{M32}
-$
+$$
 
 实现该半径的解码器可取 \(\widehat G(x)=(r^2-x^2)/2\)。这是一个**明确可计算的二阶漏信息反例**，展示“局部一阶 target 不可见方向的 DG=0”不等于有限半径 goal recovery。对于沿精确 observation fiber 的光滑曲线 \(h(t)\)，若 \(DG[h'(0)]=0\)，则二阶 goal 变化一般仍为
 
-$
+$$
 \left.\frac{d^2}{dt^2}G(h(t))\right|_{t=0}
 =D^2G[h'(0),h'(0)]+DG[h''(0)].
 \tag{M33}
-$
+$$
 
 因此要从 18C 的 source Jacobian 读出有限 CAL chart 的可靠预测，需要**连同 observation-fiber 曲率/合法域与 goal 余项**一并约束；某一中心的 rank=0 不自动升级为非零域 sufficient information。反过来，如果直接的 \(L^\infty\) 波形包络已经足够小，式 (M30–M31) 可能不用支付高阶参数重构的代价。这是两个真正可判别的研究分支，而不是再列一批候选文献。
 
