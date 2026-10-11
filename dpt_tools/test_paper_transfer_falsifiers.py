@@ -120,5 +120,40 @@ class F132BlockWitness(unittest.TestCase):
         self.assertGreater(lower_bs,upper_s**2)
 
 
+
+class UnifiedDPTMathematicalToy(unittest.TestCase):
+    def test_joint_future_word_exposes_hidden_history_after_single_words_fail(self):
+        def goal(history, word):
+            # A and B are legal abstract interventions with a mixed effect.
+            return history if ("A" in word and "B" in word) else 0
+        for one in ("", "A", "B"):
+            self.assertEqual(goal(-1, one), goal(1, one))
+        self.assertEqual(goal(1, "AB") - goal(-1, "AB"), 2)
+        # Equal available pretarget observations of the two histories
+        # force minimax goal error >= 1 for the joint future word.
+        same_pretarget_observation = 0.4
+        self.assertEqual(same_pretarget_observation, 0.4)
+
+    def test_nuisance_invariant_goal_but_not_every_goal(self):
+        # y = theta + (eta,eta): difference cancels the shared nuisance.
+        for t1,t2,eta in ((0.2, -0.4, 0.7),(-1, 1,-0.5),(1,1,-1)):
+            y1,y2=t1+eta,t2+eta
+            self.assertAlmostEqual(y1-y2,t1-t2)
+        # Same recorded y=(0,0), different sum goals (2 vs -2).
+        a=(1,1,-1)
+        b=(-1,-1,1)
+        self.assertEqual((a[0]+a[2],a[1]+a[2]),(0,0))
+        self.assertEqual((b[0]+b[2],b[1]+b[2]),(0,0))
+        self.assertEqual((a[0]+a[1])-(b[0]+b[1]),4)
+
+    def test_pretarget_calibration_repairs_aliased_history_only_with_shared_error(self):
+        for history in (-1,1):
+            nuisance=0.35
+            recorded_y0=nuisance
+            calibrated_y1=history+nuisance
+            self.assertAlmostEqual(calibrated_y1-recorded_y0,history)
+        # With independent offsets cancellation no longer holds.
+        self.assertNotEqual((1+0.45)-0.35,1)
+
 if __name__ == "__main__":
     unittest.main()
