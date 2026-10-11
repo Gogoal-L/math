@@ -283,10 +283,10 @@ finite-horizon worst-case scalar goal deviation when the initial state is
 unobservable under an *exact* preparation observation and independent
 Euclidean-bounded defects can enter at each stage:
 
-\[
+$
 \delta x_{j+1}=A_j\delta x_j+\xi_j,\quad
 O\delta x_0=0,\quad \|\delta x_0\|_2\le\rho,\quad \|\xi_j\|_2\le\epsilon_j.
-\]
+$
 
 The backward goal row for each endpoint supplies an **information radius**
 (initial observation nullspace), a **defect radius** (sum of stage disturbance
@@ -365,11 +365,11 @@ python -m unittest -v test_goal_repair_cover.py
 
 The preceding `goal_repair_cover.py` optimizes an **unrestricted decoder**. This companion tool enforces per-command *scalar* decoder gain `lipschitz_limits (K,)` under the same independently bounded **coordinatewise box** input uncertainty. It computes the **exact finite-bank minimax radius**
 
-\[
+$
 R_{K_c}(S;c)=\tfrac12\max_{i,j}\bigl(|g_{ic}-g_{jc}|+\eta_{ic}+\eta_{jc}-K_c\,\mathrm{dist}(B_i^S,B_j^S)\bigr).
-\]
+$
 
-This is different from an empirical derivative and different from a global native Lipschitz certificate. A constructive scalar decoder is available as `decoder_value(...)`. With finite \(K_c\), the minimum-price feature subset satisfies additive **squared-separation** margins, not the binary hitting-set condition; two individually insufficient features can jointly be sufficient. The separate `transition_pair_floor(current_states,next_states,update_lipschitz)` gives a **necessary** per-command lower bound on any uniform approximate autonomous update defect, not a sufficient vector-valued extension theorem.
+This is different from an empirical derivative and different from a global native Lipschitz certificate. A constructive scalar decoder is available as `decoder_value(...)`. With finite $`K_c`$, the minimum-price feature subset satisfies additive **squared-separation** margins, not the binary hitting-set condition; two individually insufficient features can jointly be sufficient. The separate `transition_pair_floor(current_states,next_states,update_lipschitz)` gives a **necessary** per-command lower bound on any uniform approximate autonomous update defect, not a sufficient vector-valued extension theorem.
 
 NPZ requires `observations (N,m)`, `goals (N,K)`, `candidates (N,p)`, `observation_radii (m,)`, `candidate_radii (p,)`, `goal_uncertainty (N,K)`, `goal_tolerances (K,)`, `lipschitz_limits (K,)`, `candidate_costs (p,)`. Optional names are `candidate_names`, `command_names`. Costs/gains/scorers/noise budgets must be source-qualified and frozen, with candidate features legitimately available before future-command outcomes.
 
@@ -399,12 +399,12 @@ An analytic two-state fixture has nuisance N=[1,1].T, current goal (1,-1), and f
 
 ## Continuous scalar goal recovery: goal_ellipsoid_recovery.py
 
-Source chart: \(x=x_0+Bz,\ \|z\|_2\le1\); observation \(y-y_0=HBz+Ee,\ \|e\|_2\le1\); scalar goal \(G-G_0=g^\top Bz\). The rectangular/rank-deficient matrix E is a **joint deterministic hard sensor-error factor**, not unqualified covariance. The exact linear-model minimax risk, after eliminating any noise-free observation constraints, is
+Source chart: $`x=x_0+Bz,\ \|z\|_2\le1`$; observation $`y-y_0=HBz+Ee,\ \|e\|_2\le1`$; scalar goal $`G-G_0=g^\top Bz`$. The rectangular/rank-deficient matrix E is a **joint deterministic hard sensor-error factor**, not unqualified covariance. The exact linear-model minimax risk, after eliminating any noise-free observation constraints, is
 
-\[
+$
 R=\max_{\|v\|\le1,\|Av\|\le1}|c^\top v|
 =\min_{a}\bigl(\|B^\top g-(HB)^\top a\|+\|E^\top a\|\bigr).
-\]
+$
 
 The full singular SVD projection, one-parameter q formula and proof are in [MAP M13–M16](../DPT_MATH_RESEARCH_MAP.md). NPZ input: state_factor (n,n), observation (m,n), noise_factor (m,p), goal (n,). Run:
 
@@ -417,12 +417,12 @@ Output includes mathematical radius estimate, a separately evaluated linear deco
 
 For one centered global source-state chart and all pretarget measurements, assume
 
-\[
+$
 x=x_0+Bz,\quad\|z\|\le1,\qquad
 y-y_0=HBz+N\eta+Ee,\quad\eta\in\mathbb R^p,\quad\|e\|\le1.
-\]
+$
 
-N is an **unbounded shared nuisance vector**; E is a separate **jointly bounded, possibly correlated measurement error**. The program projects onto \(\ker N^\top\), then evaluates the scalar radius for every **explicitly listed finite future command word** and each goal row \(C F_w\), preserving actual command multiplication order. The row-specific radius divided by its specified goal-unit tolerance yields a minimax risk ratio. One conservative external linear decoder is returned per word and goal. No nonlinear/global native DPT closure is claimed.
+N is an **unbounded shared nuisance vector**; E is a separate **jointly bounded, possibly correlated measurement error**. The program projects onto $`\ker N^\top`$, then evaluates the scalar radius for every **explicitly listed finite future command word** and each goal row $`C F_w`$, preserving actual command multiplication order. The row-specific radius divided by its specified goal-unit tolerance yields a minimax risk ratio. One conservative external linear decoder is returned per word and goal. No nonlinear/global native DPT closure is claimed.
 
 JSON schema: updates (K,n,n), state_factor (n,n), observation (m,n), unbounded_nuisance (m,p), bounded_noise (m,q), goal (g,n), words (lists of command indices; [] means immediate goal), goal_tolerances (g positive values). One example:
 
