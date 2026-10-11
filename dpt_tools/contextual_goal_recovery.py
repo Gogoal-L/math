@@ -91,7 +91,7 @@ def audit_contextual_goal_recovery(
         "rows":rows,
         "max_absolute_radius":max(q["radius"] for q in rows),
         "max_radius_relative_to_tolerance":max(q["relative_radius"] for q in rows),
-        "meets_all_goal_tolerances":all(q["algorithm_upper"]<=q["goal_tolerance"]+1e-9 for q in rows),
+        "meets_all_goal_tolerances":all(q["algorithm_upper"]<=q["goal_tolerance"] for q in rows),
         "scope":"specified finite words, common global linear chart, unrestricted shared nuisance, independent joint B2 state/error bounds; numerical ranks only"
     }
 
