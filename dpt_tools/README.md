@@ -441,3 +441,35 @@ JSON schema: updates (K,n,n), state_factor (n,n), observation (m,n), unbounded_n
     python -m unittest -v test_contextual_goal_recovery.py
 
 Under this **dimensionless** two-state prior, the immediate goal x1-x2 has R=0, while the goal after A=diag(1,-1) is x1+x2 with R=sqrt(2). A legal pretarget shared-offset calibration can repair this information loss; independent sensor errors leave a nonzero residual. For physical replay, source preparation/reference, port definition, sensor/error joint factor, all command and CAL admissibility, goal units, stage event guards, nonlinear remainder and strong ordinary controls must each be verified. See [MAP M17–M27](../DPT_MATH_RESEARCH_MAP.md). Tests are synthetic mathematics, not hardware evidence.
+
+
+## fiber_goal_curvature.py — regular nonlinear fiber goal recovery and command Hessian pullback
+
+This is a **conditional finite-dimensional math audit**, not a nonlinear SiC circuit solver. Inputs must use a single source reference and source-qualified future command.
+
+Let $O(h)$ be the pretarget observation and $G_w(h)$ the future scalar goal. Assume $DO(h_0)$ has full row rank, $Z$ spans its null space and $DG_w(h_0)Z=0$. The **relative observation-fiber Hessian** is:
+
+$$
+Q_w=Z^\top\left(
+D^2G_w(h_0)-\sum_j\lambda_jD^2O_j(h_0)
+\right)Z,\quad DG_w(h_0)=\lambda^\top DO(h_0).
+$$
+
+On a true **source-legal exact fiber chart** with orthonormal tangent coordinates $\|v\|\le r$, a certified third derivative bound $M$ for the *composite fiber goal* controls its exact minimax scalar radius to within $Mr^3/6$ of
+
+$$
+R_2=\frac{r^2}{4}\left[
+\max(0,\lambda_{\max}(Q_w))-
+\min(0,\lambda_{\min}(Q_w))\right].
+$$
+
+JSON input: observation_jacobian (m,n), goal_gradient (n,), observation_hessians (m,n,n), goal_hessian (n,n), radius (positive); optional fiber_third_derivative_bound (nonnegative and **externally source-certified**), rank_rtol.
+
+    python fiber_goal_curvature.py chart.json --output fiber_goal.json
+    python -m unittest -v test_fiber_goal_curvature.py
+
+The report gives the relative Hessian, its eigenvalues and inertia, a local $r^2$ leading risk, plus rigorous lower/upper **only when** the actual third-derivative certificate is provided. No physical reality or source reachability is inferred from compatible array shapes.
+
+The accompanying function pullback_goal_derivatives(J,H_f,g_next,H_next) implements a reverse command derivative transport: $g_{\rm prev}=J^\top g_{\rm next}$ and $H_{\rm prev}=J^\top H_{\rm next}J+\sum_j (g_{\rm next})_j H_{f,j}$. Each command-stage Jacobian and Hessian must be evaluated at its *legally reached state*. Twelve tests cover exact/curved observation fibers, a two-stage polynomial command oracle and 120 independent cubic-fiber cases.
+
+[Full second-order fiber derivation](../dpt_research/20261012_second_order_goal_fiber.md), [main MAP M40–M49](../DPT_MATH_RESEARCH_MAP.md). Moving peak/events require further guard and timing qualification; local Hessians do not automatically certify source-native DPT targets.
