@@ -131,8 +131,14 @@ class UnifiedDPTMathematicalToy(unittest.TestCase):
         self.assertEqual(goal(1, "AB") - goal(-1, "AB"), 2)
         # Equal available pretarget observations of the two histories
         # force minimax goal error >= 1 for the joint future word.
-        same_pretarget_observation = 0.4
-        self.assertEqual(same_pretarget_observation, 0.4)
+        def pretarget_observation(history, nuisance):
+            return nuisance  # hidden state is unobserved before CAL
+        self.assertEqual(pretarget_observation(-1, 0.4),
+                         pretarget_observation(1, 0.4))
+        # Both future goals must be decoded from the same observation.
+        outcomes = (goal(-1, "AB"), goal(1, "AB"))
+        minimax_constant = sum(outcomes)/2
+        self.assertEqual(max(abs(value-minimax_constant) for value in outcomes), 1)
 
     def test_nuisance_invariant_goal_but_not_every_goal(self):
         # y = theta + (eta,eta): difference cancels the shared nuisance.
