@@ -387,7 +387,7 @@ The exact optimality label is finite-bank/fixed-candidate-library only, with flo
 
     min_extra_ideal_rows = rank([R;G_W]) - rank(R).
 
-This is the exact minimum number of **arbitrarily designed new noiseless source-linear scalar readout rows** needed for the given *finite* word family under the stated chart; not a physical minimum measurement, not a finite candidate-library choice, not an all-word nonlinear dynamic state, and not a noise-bounded prediction guarantee. In particular an accepted *unbounded* η makes absolute levels impossible to reconstruct unless they cancel or are calibrated; use goal_ellipsoid_recovery from existing PR #4 for a distinctly **bounded** uncertainty model instead.
+This is the exact minimum number of **arbitrarily designed new noiseless source-linear scalar readout rows** needed for the given *finite* word family under the stated chart; not a physical minimum measurement, not a finite candidate-library choice, not an all-word nonlinear dynamic state, and not a noise-bounded prediction guarantee. In particular an accepted *unbounded* η makes absolute levels impossible to reconstruct unless they cancel or are calibrated; use the now-main goal_ellipsoid_recovery.py or contextual_goal_recovery.py under a qualified **bounded joint** uncertainty model instead.
 
 JSON input keys: `updates` (K,n,n), `observation` (m,n), `nuisance` (m,p), `goal` (q,n), and `words` (list of index words, e.g. [[],[0],[0,1]]). Command words are applied in listed order, latest matrix multiplying on the left. Only those words are checked. Output includes rank quotient, goal-space residual per row, a same-observation opposite-history witness and its goal spread. All SVD ranks are floating diagnostics with explicitly stated thresholds; fix units/regularity and source domain before interpreting as physics.
 
@@ -395,3 +395,49 @@ JSON input keys: `updates` (K,n,n), `observation` (m,n), `nuisance` (m,p), `goal
     python -m unittest -v test_contextual_goal_quotient.py
 
 An analytic two-state fixture has nuisance N=[1,1].T, current goal (1,-1), and future command A=diag(1,-1): current goal is identifiable, while after A the goal is (1,1), requiring **one ideal new row** under arbitrary common offset. A pretarget CAL channel measuring only η (observation row [0,0], nuisance coefficient 1) repairs it within the toy. A locally executed separate 160-case integer-rational SymPy rank oracle agreed with numerical rank results; this remains **toy validation**, not a native replay. Full mathematical/scientific boundary: [F119/F129/F132 proof-level bridge](../dpt_research/20261011_F119_F129_F132_proof_level_DPT_bridge.md).
+
+
+## Continuous scalar goal recovery: goal_ellipsoid_recovery.py
+
+Source chart: \(x=x_0+Bz,\ \|z\|_2\le1\); observation \(y-y_0=HBz+Ee,\ \|e\|_2\le1\); scalar goal \(G-G_0=g^\top Bz\). The rectangular/rank-deficient matrix E is a **joint deterministic hard sensor-error factor**, not unqualified covariance. The exact linear-model minimax risk, after eliminating any noise-free observation constraints, is
+
+\[
+R=\max_{\|v\|\le1,\|Av\|\le1}|c^\top v|
+=\min_{a}\bigl(\|B^\top g-(HB)^\top a\|+\|E^\top a\|\bigr).
+\]
+
+The full singular SVD projection, one-parameter q formula and proof are in [MAP M13–M16](../DPT_MATH_RESEARCH_MAP.md). NPZ input: state_factor (n,n), observation (m,n), noise_factor (m,p), goal (n,). Run:
+
+    python goal_ellipsoid_recovery.py linear_chart.npz --output goal_radius.json
+    python -m unittest -v test_goal_ellipsoid_recovery.py
+
+Output includes mathematical radius estimate, a separately evaluated linear decoder **dual upper**, reduced-coordinate feasible witness lower, their floating numerical gap, rank thresholds and external measurement weights. A second least-squares decoder candidate prevents catastrophic dual inflation when sensor error scales near 1e-10, and tolerance acceptance must use the actual upper bound—not a fixed 1e-9 additive slack. Small SVD singular values are not physical evidence of exact common errors.
+
+## Finite future-command robust recovery: contextual_goal_recovery.py
+
+For one centered global source-state chart and all pretarget measurements, assume
+
+\[
+x=x_0+Bz,\quad\|z\|\le1,\qquad
+y-y_0=HBz+N\eta+Ee,\quad\eta\in\mathbb R^p,\quad\|e\|\le1.
+\]
+
+N is an **unbounded shared nuisance vector**; E is a separate **jointly bounded, possibly correlated measurement error**. The program projects onto \(\ker N^\top\), then evaluates the scalar radius for every **explicitly listed finite future command word** and each goal row \(C F_w\), preserving actual command multiplication order. The row-specific radius divided by its specified goal-unit tolerance yields a minimax risk ratio. One conservative external linear decoder is returned per word and goal. No nonlinear/global native DPT closure is claimed.
+
+JSON schema: updates (K,n,n), state_factor (n,n), observation (m,n), unbounded_nuisance (m,p), bounded_noise (m,q), goal (g,n), words (lists of command indices; [] means immediate goal), goal_tolerances (g positive values). One example:
+
+    {
+      "updates": [[[1,0],[0,-1]]],
+      "state_factor": [[1,0],[0,1]],
+      "observation": [[1,0],[0,1]],
+      "unbounded_nuisance": [[1],[1]],
+      "bounded_noise": [[],[]],
+      "goal": [[1,-1]],
+      "words": [[],[0]],
+      "goal_tolerances": [0.2]
+    }
+
+    python contextual_goal_recovery.py finite_words.json --output contextual_radius.json
+    python -m unittest -v test_contextual_goal_recovery.py
+
+Under this **dimensionless** two-state prior, the immediate goal x1-x2 has R=0, while the goal after A=diag(1,-1) is x1+x2 with R=sqrt(2). A legal pretarget shared-offset calibration can repair this information loss; independent sensor errors leave a nonzero residual. For physical replay, source preparation/reference, port definition, sensor/error joint factor, all command and CAL admissibility, goal units, stage event guards, nonlinear remainder and strong ordinary controls must each be verified. See [MAP M17–M27](../DPT_MATH_RESEARCH_MAP.md). Tests are synthetic mathematics, not hardware evidence.
