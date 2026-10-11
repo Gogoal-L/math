@@ -278,30 +278,6 @@ $$
 
 这解释了为什么单个 total-work goal 可以比两阶段 work、peak/event 更稳定。它**不是** total Eon/Eoff 的全局稳定定理；目标必须与正式窗口、积分符号及 source 端口一致。
 
-#### 传感器关联误差真正进入 stage-work：common time shift 与 relative deskew 的定量分解
-
-这是一条来自 DPT 积分定义、独立于 F119 随机通道定理的**物理测量方程**。在固定窗口 \([t_a,t_b]\) 上，若探头读到 \(V_m(t)=V(t+\delta_v)\)、\(I_m(t)=I(t+\delta_i)\)，且两波形在声明窗口中 \(C^2\)、偏移足够小，Taylor 展开给
-
-$$
-W_m-W
-=\delta_v\!\int_{t_a}^{t_b}\dot V I\,dt
-+\delta_i\!\int_{t_a}^{t_b}V\dot I\,dt+O(\|\delta\|^2).
-\tag{M26}
-$$
-
-设共同偏移 \(\delta_c=(\delta_v+\delta_i)/2\)、相对偏移 \(\delta_r=(\delta_v-\delta_i)/2\)，由分部积分 \(\int(\dot VI+V\dot I)=[VI]_{t_a}^{t_b}\) 可得
-
-$$
-\boxed{
-W_m-W
-=\underbrace{\delta_c[VI]_{t_a}^{t_b}}_{\text{共同时间平移的固定窗口边界项}}
-+\underbrace{\delta_r\!\int_{t_a}^{t_b}(\dot V I-V\dot I)\,dt}_{\text{相对 V–I deskew 的开关重叠误差}}
-+O(\|\delta\|^2).
-}\tag{M27}
-$$
-
-**可检查的解析负控：** \(V(t)=2+3t,\ I(t)=5-2t,\ [t_a,t_b]=[0,1]\)，符号积分精确给 \(W=13.5\)，并且 \(W_m-W=5\delta_c+19\delta_r-6\delta_c^2+6\delta_r^2\)。两项的系数 5、19 与 (M27) 严格一致。若积分窗口也随两条波形**共同平移**而移动，完整时间平移可由换元消去；(M27) 的共同边界项是针对**固定物理积分窗口**，不可混到自动事件窗口中。若两探头带宽/滤波不同，其误差不等价于单一 timing skew，还必须纳入频率响应 discrepancy。DPT 原始测量指导：[Wolfspeed Dynamic Characterization](https://www.wolfspeed.com/knowledge-center/article/dynamic-characterization-and-measurement-methods/)；[Hardware Testing Methodologies for Wide Bandgap High-Power Converters, Electronics 13 (2024), 3918](https://www.mdpi.com/2079-9292/13/19/3918)。这才是 F119“信息依赖噪声相关结构”的**可执行物理启发**：实际 source 需要同一波形时标、校准手段和误差相关性证据才能兑现；公式本身不测量任何探头偏差。
-
 ### 0.7 回接原始 R1 的可辨识方向，而非把数学停在抽象 chart
 
 在**声明 KVL 符号、实际 source 电流导数与明确 discrepancy**的低阶 turn-off 诊断中，可将外部 overshoot 近似写作
@@ -325,6 +301,30 @@ $$
 $$
 
 若 \(P_\perp s=0\)，该实验无法区分有效 L 和允许 nuisance；若它很小，即使 waveform 拟合完美，参数也会不稳定。注意 **s 的数值微分误差、gate-charge/Coss 非线性、internal Kelvin source 与 external cut port 不一致**均可破坏 (M24) 的条件；它不是 LTspice/硬件的已核验器件方程。更重要的是，某个未来 overshoot/work 的导数 \(DG\) 可能在这个不可辨识方向上很小，于是 (M1)/(M14) 允许目标稳定而 L 不唯一。下一步该拿真实 R1 reference 的同源 \(O,DO,DG,s,N_s\) 与设备外部 cut record 来检验，而不是借用 150 V CAL 的 chart 替 100 V R1 作证。
+
+#### 传感器关联误差真正进入 stage-work：common time shift 与 relative deskew 的定量分解
+
+这是一条来自 DPT 积分定义、独立于 F119 随机通道定理的**物理测量方程**。在固定窗口 \([t_a,t_b]\) 上，若探头读到 \(V_m(t)=V(t+\delta_v)\)、\(I_m(t)=I(t+\delta_i)\)，且两波形在声明窗口中 \(C^2\)、偏移足够小，Taylor 展开给
+
+$$
+W_m-W
+=\delta_v\!\int_{t_a}^{t_b}\dot V I\,dt
++\delta_i\!\int_{t_a}^{t_b}V\dot I\,dt+O(\|\delta\|^2).
+\tag{M26}
+$$
+
+设共同偏移 \(\delta_c=(\delta_v+\delta_i)/2\)、相对偏移 \(\delta_r=(\delta_v-\delta_i)/2\)，由分部积分 \(\int(\dot VI+V\dot I)=[VI]_{t_a}^{t_b}\) 可得
+
+$$
+\boxed{
+W_m-W
+=\underbrace{\delta_c[VI]_{t_a}^{t_b}}_{\text{共同时间平移的固定窗口边界项}}
++\underbrace{\delta_r\!\int_{t_a}^{t_b}(\dot V I-V\dot I)\,dt}_{\text{相对 V–I deskew 的开关重叠误差}}
++O(\|\delta\|^2).
+}\tag{M27}
+$$
+
+**可检查的解析负控：** \(V(t)=2+3t,\ I(t)=5-2t,\ [t_a,t_b]=[0,1]\)，符号积分精确给 \(W=13.5\)，并且 \(W_m-W=5\delta_c+19\delta_r-6\delta_c^2+6\delta_r^2\)。两项的系数 5、19 与 (M27) 严格一致。若积分窗口也随两条波形**共同平移**而移动，完整时间平移可由换元消去；(M27) 的共同边界项是针对**固定物理积分窗口**，不可混到自动事件窗口中。若两探头带宽/滤波不同，其误差不等价于单一 timing skew，还必须纳入频率响应 discrepancy。DPT 原始测量指导：[Wolfspeed Dynamic Characterization](https://www.wolfspeed.com/knowledge-center/article/dynamic-characterization-and-measurement-methods/)；[Hardware Testing Methodologies for Wide Bandgap High-Power Converters, Electronics 13 (2024), 3918](https://www.mdpi.com/2079-9292/13/19/3918)。这才是 F119“信息依赖噪声相关结构”的**可执行物理启发**：实际 source 需要同一波形时标、校准手段和误差相关性证据才能兑现；公式本身不测量任何探头偏差。
 
 ### 0.8 真正的 acquisition 判别：CAL 是干预，不只是增加一行 sensor
 
@@ -357,6 +357,50 @@ $$
 这两个对象固定 **同一 CAL-induced physical history**，所以 \(R_{\rm measured}^K\le R_{\rm withheld}^K\)；若把 \(R_{\rm measured}^K\) 与 no-CAL future \(G(T_wh)\) 直接比较，观测的信息增益和操作 \(K\) 的物理效应已混在一起。必须单列 CAL-versus-NO-CAL **干预/状态转移效应**，才能科学地解释 Pro18C 结果。
 
 **最低成本可取得信息**还必须打败强 ordinary：完整记录 command、固定波形/斜率估计、合格 deskew、已知 CAL 执行日志、基于原 source 的低阶近似。优先的下一项证据是 150 V 同 reference 的 CAL-executed-and-withheld 对照或真实 B/history pair 的 source chart，冻结未来 word 和目标后再算 (M28)；不是扩大 PDF 数目或把理想 rank 直接命名为真实 sensor minimum。
+
+### 0.9 用不光滑工程目标反向检验：peak 值可稳定，但 peak 时间不一定稳定
+
+**新的正向救援：** 18B 已揭示 peak/event 对历史很敏感；但这并不要求每一种 peak-value 预测都满足唯一、非退化峰的条件。对共享同一个合法物理时间窗口 \([a,b]\) 的两条连续电压波形 \(V_1,V_2\)，仅从 max 的基本定义就有
+
+$
+\boxed{\left|\max_{t\in[a,b]}V_1(t)-\max_{t\in[a,b]}V_2(t)\right|
+\le \|V_1-V_2\|_{L^\infty[a,b]}.}
+\tag{M30}
+$
+
+**推导：** 对任意 \(t\)，\(V_1(t)\le V_2(t)+\|V_1-V_2\|_\infty\)；取两端的 supremum 得到一侧不等式，交换 1/2 得另一侧。无论 ringing 在两处几乎等高、argmax 因微小扰动从第一个峰跳到第二个峰，**peak 值**仍然 1-Lipschitz 于完整波形 sup norm；**峰出现时间**则完全可能跳变，必须另给事件分支选择与横截条件。若工程目标是 overshoot \(V_{\rm peak}-V_{\rm DC}\)，还要对 bus voltage 基准差另加 \(|\Delta V_{\rm DC}|\)。这为 Pro18B 提供一个比强行拟合稳定 peak-event time 更经济的潜在证明路线：先证准许历史域内的完整波形 sup norm 界，再直接给 peak-value 上界。
+
+同一固定窗口的 stage work 也具有无需微分求峰时刻的通用目标上界。利用 \(V_1I_1-V_2I_2=I_1(V_1-V_2)+V_2(I_1-I_2)\)，积分与 Hölder 给
+
+$
+\boxed{|W_1-W_2|
+\le (b-a)\left[
+\|I_1\|_\infty\|V_1-V_2\|_\infty+
+\|V_2\|_\infty\|I_1-I_2\|_\infty
+\right].}
+\tag{M31}
+$
+
+这两式提供可复用、目标相关的**充分上界**，但可能比伴随积分的 signed cancellation 松很多；已观察到 18B 两个阶段 work 几乎相消时，应同时报告 stage-wise bound 与直接 signed total-work estimator，不能把逐阶段绝对盒和当成必要误差下界。若窗口随 guard/events 移动，仍需式 (M21–M22) 的边界项与 guard 资格。
+
+**反例：只做一阶 rank/quotient 测试可能把二阶 goal ambiguity 漏成零。** 考虑严格合法的数学状态圆盘 \(\mathcal H_r=\{(x,y):x^2+y^2\le r^2\}\)，现有观测 \(O(x,y)=x\)，未来目标 \(G(x,y)=y^2\)。在中心 \(DG(0,0)=(0,0)\)，且 \(DO(0,0)=(1,0)\)，**一阶 goal-row 缺口为零**；但固定观测 \(O=x\) 时，\(0\le G\le r^2-x^2\)，所以条件最坏误差精确是 \((r^2-x^2)/2\)，全域最优 minimax 半径为
+
+$
+\boxed{R_{\mathcal H_r}(O,G)=\frac{r^2}{2}>0,\qquad
+DG(0,0)|_{\ker DO(0,0)}=0.}
+\tag{M32}
+$
+
+实现该半径的解码器可取 \(\widehat G(x)=(r^2-x^2)/2\)。这是一个**明确可计算的二阶漏信息反例**，展示“局部一阶 target 不可见方向的 DG=0”不等于有限半径 goal recovery。对于沿精确 observation fiber 的光滑曲线 \(h(t)\)，若 \(DG[h'(0)]=0\)，则二阶 goal 变化一般仍为
+
+$
+\left.\frac{d^2}{dt^2}G(h(t))\right|_{t=0}
+=D^2G[h'(0),h'(0)]+DG[h''(0)].
+\tag{M33}
+$
+
+因此要从 18C 的 source Jacobian 读出有限 CAL chart 的可靠预测，需要**连同 observation-fiber 曲率/合法域与 goal 余项**一并约束；某一中心的 rank=0 不自动升级为非零域 sufficient information。反过来，如果直接的 \(L^\infty\) 波形包络已经足够小，式 (M30–M31) 可能不用支付高阶参数重构的代价。这是两个真正可判别的研究分支，而不是再列一批候选文献。
+
 
 **验证账本：** F119/F129/F132 的上述定理式从钉住的 [openai/math source](https://github.com/openai/math/tree/fd4aeeb2ee4fc729c18d98444fed42fd0529eeeb) 抽出；(M5–M6),(M8–M9),(M13–M22),(M24–M25) 是在具名假设下的独立有限维/分析推导。F119 相关噪声反例有精确有限枚举，F129 二状态 relation context 有全枚举，F132 小局部 grouped witness 有合成审计；[proof-level 细节](dpt_research/20261011_F119_F129_F132_proof_level_DPT_bridge.md)。联合半径工具另经独立的 70 组随机受约束 primal/dual 数值交叉检查（最坏绝对差约 \(9.14\cdot10^{-12}\)，其中 6 个严格容差下的 SciPy line-search status 未成功但最终可行迭代满足 \(10^{-8}\) 约束容差；非形式证书），以及 analytic/CLI regressions。**没有真实 SiC source replay、没有物理参数/测量噪声资格、没有全部非线性 remainder 的统一证书。**
 
