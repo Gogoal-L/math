@@ -4,10 +4,14 @@ on:
   push:
     paths:
       - "dpt_tools/**"
+      - "DPT_MATH_RESEARCH_MAP.md"
+      - "dpt_research/20261012_mixed_nuisance_goal_radius_formal_derivation.md"
       - ".github/workflows/dpt-math-auditors.yml"
   pull_request:
     paths:
       - "dpt_tools/**"
+      - "DPT_MATH_RESEARCH_MAP.md"
+      - "dpt_research/20261012_mixed_nuisance_goal_radius_formal_derivation.md"
       - ".github/workflows/dpt-math-auditors.yml"
   workflow_dispatch:
 
@@ -25,6 +29,8 @@ jobs:
           filter: blob:none
           sparse-checkout: |
             dpt_tools
+            DPT_MATH_RESEARCH_MAP.md
+            dpt_research/20261012_mixed_nuisance_goal_radius_formal_derivation.md
           sparse-checkout-cone-mode: true
       - name: Set up Python
         uses: actions/setup-python@v5
@@ -37,3 +43,19 @@ jobs:
       - name: Run entire discovered DPT auditor regression suite
         working-directory: dpt_tools
         run: python -m unittest discover -v -p 'test_*.py'
+
+      - name: Set up Node for independent MathJax source rendering
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - name: Install MathJax engine (isolated CI dependency)
+        run: npm install --prefix /tmp/dpt-math-tex --no-save mathjax-full@3.2.2
+      - name: Audit GitHub-compatible math syntax and extract equations
+        run: |
+          python dpt_tools/markdown_math_audit.py \
+            DPT_MATH_RESEARCH_MAP.md \
+            dpt_research/20261012_mixed_nuisance_goal_radius_formal_derivation.md \
+            dpt_tools/README.md \
+            --dump-json /tmp/dpt-math-equations.json
+      - name: Compile every math expression with MathJax
+        run: NODE_PATH=/tmp/dpt-math-tex/node_modules node dpt_tools/compile_mathjax.js /tmp/dpt-math-equations.json
