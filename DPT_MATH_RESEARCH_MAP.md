@@ -482,6 +482,111 @@ $$
 这条 (M34–M39) 是对**已提供实际耦合 BE 本构**的条件余项建设：F132 提醒不可漏组合项；F119 提醒不能用不合格噪声独立性；F129 提醒 previous-step charge 及合法命令历史影响后继响应。**数学计算来自指数电荷方程自身**；不是将任何 F119/F129/F132 的原定理直接移植到 SiC。该结果对应 V6 **600 V coupled BE branch**，与先前 150-V reference-completed trapezoidal descriptor 分开，不共享求解/物理资格。
 
 
+### 0.11 深挖：真正的二阶可辨识对象是 observation fiber 的相对 Hessian
+
+进一步核对 [Neuberger–Alexanderian–van Bloemen Waanders 2024 原文 §3](https://arxiv.org/html/2411.07532) 后，需要与其 **Bayesian-Gaussian quadratic-goal OED** 区分：它使用二次目标展开和后验方差进行传感器设计；我们这里独立推导的是**确定性、固定观测相容类上的最坏 scalar-goal 半径**。[Zhong et al. 2026 SIAM/ASA](https://doi.org/10.1137/24M1649344) 进一步处理非线性观察和未来 QoI 的 Bayesian information gain，但不提供以下硬误差界。完整证明、强反例、来源与物理接口见 [二阶 goal fiber 专题笔记](dpt_research/20261012_second_order_goal_fiber.md)。
+
+**合法前提：** 在一份固定 source reference 的 pretarget preparation 点 $h_0$，外部观测 $O(h)$ 和冻结合法未来命令后的标量目标 $G_w(h)$ 是 $C^3$；$DO(h_0)$ 对观测空间满行秩。取 $Z$ 的列为 $\ker DO(h_0)$ 正交基，且最有趣的一阶“看似足够”情形满足
+
+$$
+DO(h_0)Z=0,\qquad
+DG_w(h_0)Z=0
+\iff DG_w(h_0)=\lambda^\top DO(h_0).
+\tag{M40}
+$$
+
+根据正则水平集隐函数定理，若一整个**明确的、source-合法的 chart-ball** 都可达，则存在真正保持同一观测的曲线族 $h(v)$：
+
+$$
+O(h(v))=O(h_0),\quad
+h(0)=h_0,\quad Dh(0)=Z,\quad \|v\|_2\le r.
+\tag{M41}
+$$
+
+对观测约束二次微分并消去曲线弯曲的法向加速度，得到真正的目标二阶矩阵：
+
+$$
+\boxed{
+Q_w=Z^\top\left[
+D^2G_w(h_0)-\sum_j\lambda_jD^2O_j(h_0)
+\right]Z.
+}\tag{M42}
+$$
+
+**推导：** $DO\,h''(0)[v,v]+D^2O[Zv,Zv]=0$，且 $DG_w=\lambda^\top DO$，所以 $D^2(G_w\circ h)(0)=Z^\top(D^2G_w-\lambda^\top D^2O)Z$。因此**只看 $D^2G$ 自身是错的**：非线性 observation 的曲率可以制造、也可以完全抵消未来目标的二阶歧义。
+
+若确有整个合法 chart-ball 上的统一三阶上界 $M_w$（它是**真正复合函数 $G_w\circ h$** 的三阶导数界，不是单独 goal 的 ambient 三阶导数），Taylor 定理给
+
+$$
+G_w(h(v))=G_w(h_0)+\tfrac12v^\top Q_wv+R_3(v),
+\qquad |R_3(v)|\le M_wr^3/6.
+\tag{M43}
+$$
+
+定义 $s_+=\max(0,\lambda_{\max}(Q_w))$、$s_-=\min(0,\lambda_{\min}(Q_w))$。球内包括中心 $v=0$，二次型的精确最大最小分别是 $r^2s_+/2,r^2s_-/2$。固定外部观测时，一个 scalar decoder 必须输出同一数，其 minimax 最优输出是目标范围中点，故
+
+$$
+\boxed{R_2(r)=\frac{r^2}{4}(s_+-s_-).}
+\tag{M44}
+$$
+
+对每个状态的目标统一扰动不超过 $M_wr^3/6$ 时，max 和 min 各移动至多该值。因此可得到**真正双侧的局部目标半径资格**：
+
+$$
+\boxed{
+\bigl[R_2(r)-M_wr^3/6\bigr]_+
+\le R_{\rm fiber}(r)
+\le R_2(r)+M_wr^3/6.
+}
+\tag{M45}
+$$
+
+这里正号 $[x]_+=\max(x,0)$。若整个 global observation fiber 比这个 chart-ball 大，(M45) **仅有下界**可直接传递到全域，不能把局部上界命名为全域预测充分性。若 third-derivative 常数尚无严格来源，数值 Hessian 只能提供 $R_2$ 的主项诊断。
+
+**两个物理直觉相反、但一阶完全相同的精确反例。** 在二维合法局部 chart $|y|\le r$，取 $O=x+y^2$。若目标 $G=x$，虽然 $DG=DO$ 于中心，其精确 observation fiber 为 $x=-y^2$，故 $Q=-2$ 且
+
+$$
+R_{\rm fiber}(O=x+y^2,G=x)=r^2/2;
+\quad R_{\rm fiber}(O,G=O)=0.
+\tag{M46}
+$$
+
+第二个目标 $G=O$ 的 ambient Hessian 并非零，但观测本身已经充分，所以相对 Hessian 正确地抵消了它。
+
+**新增信息甚至可能一阶 Jacobian 为零。** 若旧观测为 $O=x$、未来目标为 $G=y^2$，一个**假设在 future 之前合法取得的非线性 CAL proxy** $P=y^2+e,\ |e|\le\epsilon$，在中心有 $DP=0$，却给出准确 deterministic minimax 半径
+
+$$
+\boxed{R_{\rm with\ P}=\min(\epsilon,r^2/2).}
+\tag{M47}
+$$
+
+证明是：给定读数 $p$，相容目标值落在 $[0,r^2]\cap[p-\epsilon,p+\epsilon]$，最大区间长度为 $\min(r^2,2\epsilon)$。此 toy 不能被误说成工程上能在开关前直接测量未来 work；需要真实合法 CAL 的对应 proxy 与误差资格。它证明 first-order **rank 不是 nonlinear candidate 的完整 acquisition 价值标准**。
+
+**未来命令的二阶曲率如何向 preparation 传播？** 设一步合法光滑更新 $x_+=f_u(x)$，后续 goal 为 $g_+(x_+)$，$J_u=Df_u$，则（所有量在对应实际 stage point 求值）
+
+$$
+\begin{aligned}
+D(g_+\circ f_u)&=J_u^\top Dg_+,\\
+D^2(g_+\circ f_u)
+&=J_u^\top D^2g_+J_u\\
+&\quad+\sum_j(Dg_+)_jD^2(f_u)_j.
+\end{aligned}\tag{M48}
+$$
+
+即使最后一阶段工程目标 $g_+$ 是线性的，**非线性 source command 的第二项仍可制造目标曲率**。这提供一种比把所有历史压成 28-state 直接构造更经济的必要信息审计：沿冻结命令词回传 goal gradient/Hessian，再在**同一 pretarget observation fiber** 上计算 $Q_w$。在共同合法 chart-ball、所有目标共同的 pretarget observation 和具名工程容差 $\tau_j$ 下，任意预测器至少要承担
+
+$$
+R_{\infty,\mathcal W}\ge
+\max_{w,j}
+\frac{\bigl[\frac{r^2}{4}(s_{+,w,j}-s_{-,w,j})
+-M_{w,j}r^3/6\bigr]_+}{\tau_j}.
+\tag{M49}
+$$
+
+**可验证代码**：[regular fiber curvature](dpt_tools/fiber_goal_curvature.py) 的 source Hessian/grad 输入及 backward command pullback；[12 项独立测试](dpt_tools/test_fiber_goal_curvature.py) 包括 120 个 cubic exact-fiber 场景和真实多项式两阶段命令的解析 oracle。它们验证数学实现，不代表自动提取了 LTspice/BE/trapezoidal source 的导数或完成了本构全域余项证书。
+
+**对 18B/C 的可证伪选择：** (i) 150-V 同 reference/source 的完整 recorded-command ordinary 是否已经充分；(ii) 若不足，未见 pair 的未来 work/peak 歧义是否能由 $Q_w$ 特征方向定量预测；(iii) 合法 CAL 在不混入自身状态干预效应的条件下能否缩小真实 goal fiber，而不只是提高参数 Hessian 的秩；(iv) peak/event guard 换支导致光滑 chart 失效时，退回前面的 sup-norm peak 和分段 work 界。最强科学出口是**源码同域的条件下界 + 非线性有界上界 + 未参与拟合的未来预测**，而不是将这套微分几何称为已有 SiC 全局证书。
+
 **验证账本：** F119/F129/F132 的上述定理式从钉住的 [openai/math source](https://github.com/openai/math/tree/fd4aeeb2ee4fc729c18d98444fed42fd0529eeeb) 抽出；(M5–M6),(M8–M9),(M13–M22),(M24–M25) 是在具名假设下的独立有限维/分析推导。F119 相关噪声反例有精确有限枚举，F129 二状态 relation context 有全枚举，F132 小局部 grouped witness 有合成审计；[proof-level 细节](dpt_research/20261011_F119_F129_F132_proof_level_DPT_bridge.md)。联合半径工具另经独立的 70 组随机受约束 primal/dual 数值交叉检查（最坏绝对差约 $`9.14\cdot10^{-12}`$，其中 6 个严格容差下的 SciPy line-search status 未成功但最终可行迭代满足 $`10^{-8}`$ 约束容差；非形式证书），以及 analytic/CLI regressions。**没有真实 SiC source replay、没有物理参数/测量噪声资格、没有全部非线性 remainder 的统一证书。**
 
 ---
