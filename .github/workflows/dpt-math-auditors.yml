@@ -5,12 +5,14 @@ on:
     paths:
       - "dpt_tools/**"
       - "DPT_MATH_RESEARCH_MAP.md"
+      - "dpt_research/20261012_second_order_goal_fiber.md"
       - "dpt_research/20261012_mixed_nuisance_goal_radius_formal_derivation.md"
       - ".github/workflows/dpt-math-auditors.yml"
   pull_request:
     paths:
       - "dpt_tools/**"
       - "DPT_MATH_RESEARCH_MAP.md"
+      - "dpt_research/20261012_second_order_goal_fiber.md"
       - "dpt_research/20261012_mixed_nuisance_goal_radius_formal_derivation.md"
       - ".github/workflows/dpt-math-auditors.yml"
   workflow_dispatch:
@@ -30,6 +32,7 @@ jobs:
           sparse-checkout: |
             dpt_tools
             DPT_MATH_RESEARCH_MAP.md
+            dpt_research/20261012_second_order_goal_fiber.md
             dpt_research/20261012_mixed_nuisance_goal_radius_formal_derivation.md
           sparse-checkout-cone-mode: true
       - name: Set up Python
@@ -55,6 +58,7 @@ jobs:
           python dpt_tools/markdown_math_audit.py \
             DPT_MATH_RESEARCH_MAP.md \
             dpt_research/20261012_mixed_nuisance_goal_radius_formal_derivation.md \
+            dpt_research/20261012_second_order_goal_fiber.md \
             dpt_tools/README.md \
             --dump-json /tmp/dpt-math-equations.json
       - name: Compile every math expression with MathJax
