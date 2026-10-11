@@ -81,6 +81,18 @@ class MixedNuisanceGoalRadius(unittest.TestCase):
         with self.assertRaises(ValueError):
             self.model(bounded_noise=np.eye(3))
 
+    def test_tiny_tolerance_is_not_overridden_by_fixed_absolute_slack(self):
+        q=self.model(words=[[]],bounded_noise=1e-10*np.eye(2),
+                     goal_tolerances=[1e-12])
+        self.assertGreater(q["rows"][0]["radius"],1e-12)
+        self.assertFalse(q["meets_all_goal_tolerances"])
+
+    def test_small_noise_goal_can_pass_appropriate_tolerance(self):
+        q=self.model(words=[[]],bounded_noise=1e-10*np.eye(2),
+                     goal_tolerances=[1e-8])
+        self.assertLess(q["rows"][0]["radius"],1e-8)
+        self.assertTrue(q["meets_all_goal_tolerances"])
+
     def test_cli_json_replay(self):
         d=dict(updates=[[[1.,0.],[0.,-1.]]],
                state_factor=[[1.,0.],[0.,1.]],
