@@ -383,12 +383,12 @@ The exact optimality label is finite-bank/fixed-candidate-library only, with flo
 
 ## goal_ellipsoid_recovery.py — continuous correlated-noise scalar-goal minimax
 
-**Math-only**: exact for a centered finite-dimensional **linear model**, not automatically for native nonlinear SiC. State x=x0+Bz with Euclidean norm(z)<=1, recorded pretarget observation y=Hx+Ee with norm(e)<=1, and frozen scalar goal G(x)=G(x0)+g.T(x-x0). The *entire* prior ellipsoid must be legal; E must be a justified nonsingular **joint deterministic** noise factor rather than an unqualified sample covariance. All inputs must use one reference model, ports, preparation, time window, future command and consistent physical units.
+**Math-only**: exact for a centered finite-dimensional **linear model**, not automatically for native nonlinear SiC. State x=x0+Bz with Euclidean norm(z)<=1, recorded pretarget observation y=Hx+Ee with norm(e)<=1, and frozen scalar goal G(x)=G(x0)+g.T(x-x0). The *entire* prior ellipsoid must be legal; E is a justified **joint deterministic** sensor error factor, including possible exact shared-mode directions; empirical covariance does not itself prove a hard bound or exact rank. All inputs must use one reference model, ports, preparation, time window, future command and consistent physical units.
 
 NPZ fields:
 - state_factor: B, shape (n,n), may be rank deficient;
 - observation: H, shape (m,n), actual pretarget observation Jacobian;
-- noise_factor: E, shape (m,m), nonsingular correlated deterministic sensor-error factor;
+- noise_factor: E, shape (m,p), **rectangular/rank-deficient allowed**; a jointly justified deterministic E @ e sensor-error factor with ||e||<=1;
 - goal: g, shape (n,), gradient of one smooth frozen future target.
 
 Run:
@@ -398,6 +398,15 @@ python goal_ellipsoid_recovery.py frozen_chart.npz --output goal_radius.json
 python -m unittest -v test_goal_ellipsoid_recovery.py
 ~~~
 
-Returns radius in *goal units*, minimax-optimal **unwhitened external** measurement_weights, a linear predictor's algorithm_upper, feasible_witness_lower, numerical_gap and optimizer q; the status is LINEAR_ELLIPSOID_NUMERIC_DIAGNOSTIC. The absolute predictor is G(x0)+weights.T@(y-Hx0). Bounds and gap are floating numerical diagnostics, not interval-certified error claims. NumPy only; no additional dependency.
+Returns radius in *goal units*, minimax-optimal **unwhitened external** measurement_weights, a linear predictor's algorithm_upper, feasible_witness_lower, numerical_gap, optimizer q, noise_rank, noise_free_readout_count, exact_observation_constraint_rank and witness_noiseless_constraint_norm; the status is LINEAR_ELLIPSOID_NUMERIC_DIAGNOSTIC. The absolute predictor is G(x0)+weights.T@(y-Hx0). Bounds and gap are floating numerical diagnostics, not interval-certified error claims. NumPy only; no additional dependency.
 
 Let A=E^{-1}HB, c=B.Tg. The exact *assumed-model* minimax risk equals max{|c.Tz|: norm(z)<=1, norm(Az)<=1}; by convex duality this equals the best linear decoder risk and a one-dimensional convex minimization. **Mathematical prior:** [Foucart–Liao (2024)](https://doi.org/10.1016/j.jco.2024.101841). The [research note](../dpt_research/20261011_continuous_goal_information_bridge.md) contains the scoped proof, new OpenAI Math F119/F129/F132 source audit, synthetic cases, falsifiers and the source-to-controller acceptance gate. If native nonlinear curvature, unknown hard sensor bounds or moving/tied peak events matter, do not use this linear radius as a native guarantee; qualify the chart and remainder separately.
+
+
+### Correlated singular-noise extension (2026-10-11)
+
+The published tool now accepts E with shape (m,p), including p=0 and rank(E)<m. Split the recorded observation with a full left singular basis [U_r,U_0] of E. The U_0 rows have **exactly zero** error under the declared factor model, so an indistinguishable prior direction z must satisfy U_0.T @ H @ B @ z=0. Let Z span that nullspace. Only on this compatible subspace do we compute the old positive-noise radius via A=diag(s_E^-1) U_r.T @ H @ B @ Z and c=Z.T @ B.T @ goal. The full unwhitened sensor decoder includes a noise-free U_0 component chosen to match the eliminated goal directions.
+
+For H=B=I and shared error factor E=0.2*[1,1].T, scalar goal x1-x2 has exact radius 0 and weights [1,-1], whereas goal x1+x2 has radius 0.4; adding independent factor 0.05 to the second sensor raises the difference-goal radius to 0.05. These are **analytic conditional linear-source fixtures** and not characterized noise correlations in the real SiC fixture.
+
+Any numerical SVD cutoff is a chart/sensor **rank hypothesis**, not an exact physical nullspace certificate; repeat under plausible correlation/noise floors and qualified bounds before claiming cancellation. For the theoretical proof, the true zero singular directions are separated algebraically from nonzero ones. The implementer uses the SVD rank decision to approximate that split and reports its threshold. See the updated [source note](../dpt_research/20261011_continuous_goal_information_bridge.md) and [tests](test_goal_ellipsoid_recovery.py).
