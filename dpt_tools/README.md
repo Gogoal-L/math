@@ -473,3 +473,23 @@ The report gives the relative Hessian, its eigenvalues and inertia, a local $r^2
 The accompanying function pullback_goal_derivatives(J,H_f,g_next,H_next) implements a reverse command derivative transport: $g_{\rm prev}=J^\top g_{\rm next}$ and $H_{\rm prev}=J^\top H_{\rm next}J+\sum_j (g_{\rm next})_j H_{f,j}$. Each command-stage Jacobian and Hessian must be evaluated at its *legally reached state*. Twelve tests cover exact/curved observation fibers, a two-stage polynomial command oracle and 120 independent cubic-fiber cases.
 
 [Full second-order fiber derivation](../dpt_research/20261012_second_order_goal_fiber.md), [main MAP M40–M49](../DPT_MATH_RESEARCH_MAP.md). Moving peak/events require further guard and timing qualification; local Hessians do not automatically certify source-native DPT targets.
+
+
+## implicit_goal_hessian.py — source-residual second-order goal transport
+
+This auditor connects the regular nonlinear observation-fiber Hessian to one **implicit** source-law state update without constructing an explicit nonlinear transition. For a fixed legal command u and the same-reference residual F(z,x;u)=0, the current-state Jacobian A=F_z must be invertible. Set J=-A^{-1}F_x and solve A.T lambda = grad g(z) for the chosen postcommand scalar goal g(z).
+
+For previous-state perturbations a,b, extend the source perturbations to (Ja,a),(Jb,b) in the concatenated coordinates [next z, previous x]. The exact Hessian is:
+
+$$
+D^2(g\circ f_u)[a,b]
+=(Ja)^\top D^2g(z)(Jb)
+-\lambda^\top D^2F(z,x;u)[(Ja,a),(Jb,b)].
+$$
+
+Every current/previous source Hessian cross-block must be retained. JSON schema: current_jacobian (n,n), previous_jacobian (n,n), residual_hessians (n,2n,2n) with axes ordered [z,x], next_goal_gradient (n,), next_goal_hessian (n,n). Output: Jacobian update, source adjoint, goal gradient/Hessian in previous-state coordinates, solve residuals and Jacobian condition number.
+
+    python implicit_goal_hessian.py implicit_chart.json --output goal_hessian.json
+    python -m unittest -v test_implicit_goal_hessian.py
+
+Seven analytic/regression tests include a mixed current/previous rational residual, other implicit nonlinear scalar sources, a two-state quadratic source and 200 independently generated random quadratic source laws. To make a native physical claim, provide full source-law F including network, charge and thermal equations, legal stage states and correct BE/TRAP time convention; confirm target work/peak guard qualification and a uniform error certificate. [MAP M50–M54](../DPT_MATH_RESEARCH_MAP.md), [proof C15–C23](../dpt_research/20261012_second_order_goal_fiber.md).
