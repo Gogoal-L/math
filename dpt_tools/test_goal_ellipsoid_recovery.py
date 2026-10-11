@@ -119,5 +119,14 @@ class SingularCommonModeRecovery(unittest.TestCase):
         self.assertAlmostEqual(out["radius"],0.,places=8)
         self.check_gap(out)
 
+    def test_tiny_sensor_noise_dual_and_witness_are_consistent(self):
+        u=np.array([[1.,-1.]])/np.sqrt(2.)
+        report=recover_scalar_goal(np.eye(2),u,np.array([[1e-10]]),np.array([1.,-1.]))
+        self.assertAlmostEqual(report["radius"],np.sqrt(2)*1e-10,delta=2e-13)
+        self.assertLess(report["algorithm_upper"],2e-9)
+        self.assertLess(report["numerical_gap"],2e-9)
+        self.assertLessEqual(report["witness_whitened_observation_norm"],1+1e-8)
+
+
 if __name__ == "__main__":
     unittest.main()
