@@ -178,3 +178,56 @@ Neither bound needs a smooth unique peak time; they can be conservative relative
 - Real scientific next packet must come from a **single** 150-V active source reference or separately the original 100-V R1 external cut: reachable prior B/chart and preparation; observation H, error-factor N/E with port, timing and joint calibration; legal future matrix/state transitions; goal gradients C and nonlinear radius envelopes; prospective held-out ordinary baselines. Currently there is **no native replay and no nonlinear R1 hardware/model certificate** from this note.
 
 The best route is a **qualified, goal-aligned new measurement/conditioning decision**, not a forced full recovery of individual Lg/Ls/Ld/Lloop/Rg. If the required source factors are unavailable, report only the proved conditional linear result and the lower bounds from actual observed-compatible history pairs.
+
+
+## VII. One actual supplied DPT charge law: a sharp source-level defect, not an analogy
+
+The supplied IH2662 V6 §4.7 explicitly records a 600-V *coupled backward-Euler* source-evaluator body-diode branch with finite conduction \(i_{\rm cond}(v)=I_s(e^{v/a}-1)\), stored charge \(q_D(v)=\tau I_s e^{v/a}\), and BE storage current \([q_D(v_n)-q_D(v_{n-1})]/h_n\). The strong evolving-affine competitor replaces the charge surface at a fixed authorized BASE \(\bar v\) by
+
+$$
+q_D^{\rm aff}(v)=q_D(\bar v)+q_D'(\bar v)(v-\bar v),\qquad
+q_D'(\bar v)=q_D(\bar v)/a.
+\tag{P14}
+$$
+
+Set \(u=(v-\bar v)/a\). Direct algebra, not a transferred theorem, gives
+
+$$
+q_D(v)-q_D^{\rm aff}(v)
+=q_D(\bar v)(e^u-1-u).
+\tag{P15}
+$$
+
+For \(|u|\le t=d/a\), this is nonnegative and the **sharp symmetric-interval maximum** occurs at \(u=t\). Indeed \(r(u)=e^u-1-u\) has r'(u)=e^u-1, so r decreases up to zero then increases. Comparing endpoints,
+\(r(t)-r(-t)=2(\sinh t-t)\ge0\). Hence
+
+$$
+0\le q_D(v)-q_D^{\rm aff}(v)
+\le q_D(\bar v)(e^{d/a}-1-d/a)
+\le \frac{q_D(\bar v)}2e^{d/a}(d/a)^2.
+\tag{P16}
+$$
+
+The last inequality follows from \(\int_0^1(1-s)e^{us}\,ds=(e^u-1-u)/u^2\) and \(|u|\le d/a\). This has physically relevant units C; dividing the n and n−1 charge remainder by h_n converts the defect to A:
+
+$$
+|R^{\rm full}_{D,n}-R^{\rm aff}_{D,n}|
+\le[\epsilon_{q,n}+\epsilon_{q,n-1}]/h_n.
+\tag{P17}
+$$
+
+If the previous-step charge is not approximated, drop \(\epsilon_{q,n-1}\). If T changes, then a(T), I_s(T), BASE and guards need uniform joint control; the scalar formula is not the full coupled residual.
+
+**Contraction route to a goal bound (separate obligation).** For a full same-law residual \(F(x)\), assume a closed weighted box around a, a fixed verified H, \(\sup_{\mathrm{box}}\|I-HJ_F\|_{\rho,\infty}\le\kappa<1\), and a verified self-mapping condition \(\|HF(a)\|_{\rho,\infty}\le1-\kappa\). Banach's theorem gives a unique root inside and
+
+$$
+\|x^\star-a\|_{\rho,\infty}
+\le\frac{\|HF(a)\|_{\rho,\infty}}{1-\kappa};
+\quad |G(x^\star)-G(a)|
+\le L_G\frac{\|HF(a)\|_{\rho,\infty}}{1-\kappa},
+\tag{P18}
+$$
+
+where \(L_G\) includes the actual guarded goal/event/window map on the same box. V6 already describes a related componentwise certificate architecture in its nonlinear charge subclass, but the full vendor conduction/network/thermal/event certificate is **not** inherited by this derivation. The 600-V BE and the separate 150-V trapezoidal analysis remain distinct physical and numerical references.
+
+This is the direct physical/scientific gain from original-paper frontier exploration: it makes the *missing source evidence* specific and calculable (voltage-domain bound d, conditioning H/κ, whole-system residual, goal Lipschitz) instead of merely saying “need a nonlinear remainder”. It also shows precisely why a low-cost one-Newton source solve and a surrogate affine-storage law have different error chains, as required by V6.
