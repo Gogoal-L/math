@@ -1,6 +1,6 @@
 # DPT-R1 × OpenAI Math：成果利用与下一数学问题
 
-更新：2026-10-11。覆盖本地已接受的 Pro18A/B/C 及其后续定向复算；尚在建设的证书只记为未决对象。
+更新：2026-10-12。覆盖本地已接受的 Pro18A/B/C 及其后续定向复算；尚在建设的证书只记为未决对象。
 
 OpenAI Math 对 DPT 的主要贡献，已经从“提示如何检查信息不足”发展到三个可计算对象：**同一可达类上的信息下界与观测修复上界、主动多阶段命令中的历史反例、主动校准后的目标预测**。下一步最值得攻的是把这些对象接成有限域、多阶段的可靠预测结构，同时回接原始有效换流电感问题。
 
@@ -277,6 +277,30 @@ $
 $
 
 这解释了为什么单个 total-work goal 可以比两阶段 work、peak/event 更稳定。它**不是** total Eon/Eoff 的全局稳定定理；目标必须与正式窗口、积分符号及 source 端口一致。
+
+#### 传感器关联误差真正进入 stage-work：common time shift 与 relative deskew 的定量分解
+
+这是一条来自 DPT 积分定义、独立于 F119 随机通道定理的**物理测量方程**。在固定窗口 \([t_a,t_b]\) 上，若探头读到 \(V_m(t)=V(t+\delta_v)\)、\(I_m(t)=I(t+\delta_i)\)，且两波形在声明窗口中 \(C^2\)、偏移足够小，Taylor 展开给
+
+$
+W_m-W
+=\delta_v\!\int_{t_a}^{t_b}\dot V I\,dt
++\delta_i\!\int_{t_a}^{t_b}V\dot I\,dt+O(\|\delta\|^2).
+\tag{M26}
+$
+
+设共同偏移 \(\delta_c=(\delta_v+\delta_i)/2\)、相对偏移 \(\delta_r=(\delta_v-\delta_i)/2\)，由分部积分 \(\int(\dot VI+V\dot I)=[VI]_{t_a}^{t_b}\) 可得
+
+$
+\boxed{
+W_m-W
+=\underbrace{\delta_c[VI]_{t_a}^{t_b}}_{\text{共同时间平移的固定窗口边界项}}
++\underbrace{\delta_r\!\int_{t_a}^{t_b}(\dot V I-V\dot I)\,dt}_{\text{相对 V–I deskew 的开关重叠误差}}
++O(\|\delta\|^2).
+}\tag{M27}
+$
+
+**可检查的解析负控：** \(V(t)=2+3t,\ I(t)=5-2t,\ [t_a,t_b]=[0,1]\)，符号积分精确给 \(W=13.5\)，并且 \(W_m-W=5\delta_c+19\delta_r-6\delta_c^2+6\delta_r^2\)。两项的系数 5、19 与 (M27) 严格一致。若积分窗口也随两条波形**共同平移**而移动，完整时间平移可由换元消去；(M27) 的共同边界项是针对**固定物理积分窗口**，不可混到自动事件窗口中。若两探头带宽/滤波不同，其误差不等价于单一 timing skew，还必须纳入频率响应 discrepancy。DPT 原始测量指导：[Wolfspeed Dynamic Characterization](https://www.wolfspeed.com/knowledge-center/article/dynamic-characterization-and-measurement-methods/)；[Hardware Testing Methodologies for Wide Bandgap High-Power Converters, Electronics 13 (2024), 3918](https://www.mdpi.com/2079-9292/13/19/3918)。这才是 F119“信息依赖噪声相关结构”的**可执行物理启发**：实际 source 需要同一波形时标、校准手段和误差相关性证据才能兑现；公式本身不测量任何探头偏差。
 
 ### 0.7 回接原始 R1 的可辨识方向，而非把数学停在抽象 chart
 
