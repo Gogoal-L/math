@@ -118,10 +118,11 @@ $$
 在**均匀独立输入 + 各坐标独立 binary-symmetric noise** 的原定理中，令
 
 $$
-\psi(r)=\tfrac12[(1+r)\ln(1+r)+(1-r)\ln(1-r)],\
-I(u)=H(\mathbb E u)-\mathbb E H(u),\
-F(\psi(r))=r\,\operatorname{atanh}r.
-\tag{M10}
+\begin{aligned}
+\psi(r)&=\tfrac12\bigl[(1+r)\ln(1+r)+(1-r)\ln(1-r)\bigr],\\
+I(u)&=H(\mathbb E u)-\mathbb E H(u),\\
+F(\psi(r))&=r\,\operatorname{atanh}r.
+\end{aligned}\tag{M10}
 $$
 
 噪声半群 $`P_t=T_{e^{-t}}`$、$`N_0=\frac12\sum_i(\mathrm{Id}-\mathrm{flip}_i)`$ 满足精确导数
@@ -220,21 +221,22 @@ $$
 源器件电荷本构、Coss/Crss、body diode 与模式/事件切换一般使 (M13) 只是局部近似。在同一**具名合法非零域**，若观测与某个 future scalar goal 有
 
 $$
-O(z)=y_0+Az+N\eta+Ee+r_O(z),\qquad
-G_w(z)=G_{w,0}+c_w^\top z+r_{G,w}(z),
-\quad\|r_O\|\le\beta_O,\ |r_{G,w}|\le\beta_{G,w},
-\tag{M19}
+\begin{aligned}
+O(z)&=y_0+Az+N\eta+Ee+r_O(z),\\
+G_w(z)&=G_{w,0}+c_w^\top z+r_{G,w}(z),\\
+\|r_O\|&\le\beta_O,\qquad |r_{G,w}|\le\beta_{G,w}.
+\end{aligned}\tag{M19}
 $$
 
 则对任何 $`N^\top a=0`$，有可复算的**非线性条件上界**
 
 $$
-\boxed{
+\begin{aligned}
 \sup|\widehat G_a-G_w|
-\le\|c_w-A^\top a\|+\|E^\top a\|
-+\beta_{G,w}+\|a\|\beta_O,\qquad
-\widehat G_a=G_{w,0}+a^\top(y-y_0).
-}\tag{M20}
+&\le\|c_w-A^\top a\|+\|E^\top a\|\\
+&\quad+\beta_{G,w}+\|a\|\beta_O,\\
+\widehat G_a&=G_{w,0}+a^\top(y-y_0).
+\end{aligned}\tag{M20}
 $$
 
 证明是展开残差、消去 $`N\eta`$、逐项取范数。最小化右侧时**应当把 $`\|a\|\beta_O`$ 一起计入**；先以 (M14) 选出放大系数很高的 decoder 再忽略 remainder，会虚报修复。关键不足是从 actual coupled source 给出 $`\beta_O,\beta_G`$ 在准备/未来共同合法域的统一上界，而不是把 finite-bank 最大残差称为证书。式 (M14) 的精确 minimax 下界不能在非线性 remainder 未控制时照搬。
@@ -248,12 +250,13 @@ $$
 Leibniz rule 给出真实目标导数：
 
 $$
-\boxed{
-DW[\delta z]=\int_{t_a}^{t_b}
-\big(I_D\,DV_{DS}[\delta z]+V_{DS}\,DI_D[\delta z]\big)\,dt
-+\big[V_{DS}I_D\big]_{t_b}Dt_b[\delta z]
--\big[V_{DS}I_D\big]_{t_a}Dt_a[\delta z].
-}\tag{M21}
+\begin{aligned}
+DW[\delta z]
+&=\int_{t_a}^{t_b}
+\bigl(I_D\,DV_{DS}[\delta z]+V_{DS}\,DI_D[\delta z]\bigr)\,dt\\
+&\quad+[V_{DS}I_D]_{t_b}Dt_b[\delta z]\\
+&\quad-[V_{DS}I_D]_{t_a}Dt_a[\delta z].
+\end{aligned}\tag{M21}
 $$
 
 若事件由 $`\phi(t,z)=0`$ 定义且 **transversal**，$`|\partial_t\phi|\ge\gamma>0`$，隐函数定理给
@@ -268,12 +271,13 @@ $$
 18B 的配对实值例子表明目标种类本身很重要：
 
 $$
-\Delta W_1\approx+1.628664~\mu{\rm J},\qquad
-\Delta W_2\approx-1.686273~\mu{\rm J},\qquad
-\Delta W_{\rm total}\approx-57.609755~{\rm nJ};
-\quad
-1-\frac{|\Delta W_{\rm total}|}{|\Delta W_1|+|\Delta W_2|}\approx98.26\%.
-\tag{M23}
+\begin{aligned}
+\Delta W_1&\approx+1.628664~\mu{\rm J},\\
+\Delta W_2&\approx-1.686273~\mu{\rm J},\\
+\Delta W_{\rm total}&\approx-57.609755~{\rm nJ},\\
+1-\frac{|\Delta W_{\rm total}|}{|\Delta W_1|+|\Delta W_2|}
+&\approx 98.26\%.
+\end{aligned}\tag{M23}
 $$
 
 这解释了为什么单个 total-work goal 可以比两阶段 work、peak/event 更稳定。它**不是** total Eon/Eoff 的全局稳定定理；目标必须与正式窗口、积分符号及 source 端口一致。
@@ -409,11 +413,13 @@ $$
 前面 (M13–M20) 将非线性实际 law 的余项留作 $`\beta`$；下面不再停留于抽象 $`D^2G`$。用户提供的《IH2662 DPT Research Design V6》§4.7 明确给出了**后续 600-V coupled backward-Euler evaluator** 的 body-diode conduction/storage 支路（位于指数、charge 和 breakdown guards 内）：
 
 $$
-i_{\rm cond}(v_j)=I_s(e^{v_j/a}-1),\qquad
-q_D(v_j)=\tau I_s e^{v_j/a},\qquad
-R^{\rm full}_{D,n}=i_{b,n}-i_{\rm cond}(v_{j,n})
--\frac{q_D(v_{j,n})-q_D(v_{j,n-1})}{h_n}.
-\tag{M34}
+\begin{aligned}
+i_{\rm cond}(v_j)&=I_s\bigl(e^{v_j/a}-1\bigr),\\
+q_D(v_j)&=\tau I_s e^{v_j/a},\\
+R^{\rm full}_{D,n}
+&=i_{b,n}-i_{\rm cond}(v_{j,n})\\
+&\quad-\frac{q_D(v_{j,n})-q_D(v_{j,n-1})}{h_n}.
+\end{aligned}\tag{M34}
 $$
 
 此处 $`\tau=2\,\mathrm{ns}`$、$`a>0`$ 是相关固定温度 branch 的 emission-factor thermal voltage；V6 中强 evolving-affine 对手在合法 BASE 电压 $`\bar v_n`$ 取 $`q_D^{\rm aff}(v)=q_D(\bar v)+q'_D(\bar v)(v-\bar v)`$。令 $`\delta v=v-\bar v`$，直接代入指数原函数得到**恒等式**：
