@@ -379,3 +379,19 @@ python -m unittest -v test_goal_lipschitz_stability.py
 ```
 
 The exact optimality label is finite-bank/fixed-candidate-library only, with floating arithmetic; above 18 candidates, greedy feasibility is **not** minimum cost. The closure/solver link, scalar Lipschitz proof, original F332/F331/F110 source audit, and DPT acceptance gates are in [the derivation](../dpt_research/20261010_goal_stability_compositional_closure.md).
+
+
+## contextual_goal_quotient.py — finite-command goal observability modulo shared nuisance
+
+**Independent Math-only conditional test** synthesizing an appropriate limited form of F129 future-context distinguishability and F119 shared-nuisance cancellation (neither paper's theorem is applied to native SiC). In a common linear state chart, ordered command updates x_next=A_command x, recorded *pretarget* observation y=Hx+Nη with **unrestricted arbitrary nuisance** η, and selected future goals g_w=C A_(last)...A_(first) x, let U0 span ker(N.T). Available nuisance-invariant sensor rows are R=U0.T H; stack selected future goal rows into G_W. Then
+
+    min_extra_ideal_rows = rank([R;G_W]) - rank(R).
+
+This is the exact minimum number of **arbitrarily designed new noiseless source-linear scalar readout rows** needed for the given *finite* word family under the stated chart; not a physical minimum measurement, not a finite candidate-library choice, not an all-word nonlinear dynamic state, and not a noise-bounded prediction guarantee. In particular an accepted *unbounded* η makes absolute levels impossible to reconstruct unless they cancel or are calibrated; use goal_ellipsoid_recovery from existing PR #4 for a distinctly **bounded** uncertainty model instead.
+
+JSON input keys: `updates` (K,n,n), `observation` (m,n), `nuisance` (m,p), `goal` (q,n), and `words` (list of index words, e.g. [[],[0],[0,1]]). Command words are applied in listed order, latest matrix multiplying on the left. Only those words are checked. Output includes rank quotient, goal-space residual per row, a same-observation opposite-history witness and its goal spread. All SVD ranks are floating diagnostics with explicitly stated thresholds; fix units/regularity and source domain before interpreting as physics.
+
+    python contextual_goal_quotient.py input.json --output context_report.json
+    python -m unittest -v test_contextual_goal_quotient.py
+
+An analytic two-state fixture has nuisance N=[1,1].T, current goal (1,-1), and future command A=diag(1,-1): current goal is identifiable, while after A the goal is (1,1), requiring **one ideal new row** under arbitrary common offset. A pretarget CAL channel measuring only η (observation row [0,0], nuisance coefficient 1) repairs it within the toy. A locally executed separate 160-case integer-rational SymPy rank oracle agreed with numerical rank results; this remains **toy validation**, not a native replay. Full mathematical/scientific boundary: [F119/F129/F132 proof-level bridge](../dpt_research/20261011_F119_F129_F132_proof_level_DPT_bridge.md).
