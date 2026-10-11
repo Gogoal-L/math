@@ -39,6 +39,16 @@ $$
         src = '```python\nfoo = r"\\(ignored\\)"\n```\n'
         self.assertEqual(audit_markdown(src, 'map.md'), [])
 
+    def test_duplicate_equation_tags_rejected(self):
+        src='$$\na=1\\tag{M1}\n$$\n$$\nb=2\\tag{M1}\n$$'
+        errors=audit_markdown(src,'map.md')
+        self.assertTrue(any('DUPLICATE_TAG' in e for e in errors),errors)
+
+    def test_repository_map_numbering_gaps_rejected(self):
+        src='$$\na=1\\tag{M1}\n$$\n$$\nb=2\\tag{M3}\n$$'
+        errors=audit_markdown(src,'DPT_MATH_RESEARCH_MAP.md')
+        self.assertTrue(any('NONSEQUENTIAL_TAG' in e for e in errors),errors)
+
     def test_reports_unclosed_inline_math(self):
         e = audit_markdown('一个未关闭的公式 $\\sqrt{x}', 'map.md')
         self.assertTrue(any('UNCLOSED_INLINE' in q for q in e), e)
