@@ -406,68 +406,68 @@ $$
 
 前面 (M13–M20) 将非线性实际 law 的余项留作 \(\beta\)；下面不再停留于抽象 \(D^2G\)。用户提供的《IH2662 DPT Research Design V6》§4.7 明确给出了**后续 600-V coupled backward-Euler evaluator** 的 body-diode conduction/storage 支路（位于指数、charge 和 breakdown guards 内）：
 
-$
+$$
 i_{\rm cond}(v_j)=I_s(e^{v_j/a}-1),\qquad
 q_D(v_j)=\tau I_s e^{v_j/a},\qquad
 R^{\rm full}_{D,n}=i_{b,n}-i_{\rm cond}(v_{j,n})
 -\frac{q_D(v_{j,n})-q_D(v_{j,n-1})}{h_n}.
 \tag{M34}
-$
+$$
 
 此处 \(\tau=2\,\mathrm{ns}\)、\(a>0\) 是相关固定温度 branch 的 emission-factor thermal voltage；V6 中强 evolving-affine 对手在合法 BASE 电压 \(\bar v_n\) 取 \(q_D^{\rm aff}(v)=q_D(\bar v)+q'_D(\bar v)(v-\bar v)\)。令 \(\delta v=v-\bar v\)，直接代入指数原函数得到**恒等式**：
 
-$
+$$
 \boxed{
 q_D(v)-q_D^{\rm aff}(v)
 =q_D(\bar v)\!\left(e^{\delta v/a}-1-\frac{\delta v}{a}\right).
 }
 \tag{M35}
-$
+$$
 
 没有从 Boolean F132 借用任何曲率常数。由于 \(e^s\ge1+s\) 且 \(|\delta v|\le d\) 时指数 Taylor 余项的最大值在 \(\delta v=+d\) 端点，得到该**固定 BASE、固定 \(a,I_s,\tau\) 的 sharp uniform bound**：
 
-$
+$$
 0\le q_D(v)-q_D^{\rm aff}(v)
 \le \underbrace{q_D(\bar v)\bigl(e^{d/a}-1-d/a\bigr)}_{\epsilon_q(d;\bar v)}
 \le\frac{q_D(\bar v)}2e^{d/a}(d/a)^2.
 \tag{M36}
-$
+$$
 
 第二个不等式由积分余项 \(e^s-1-s=s^2\int_0^1(1-t)e^{ts}\,dt\) 给出。数值量纲核查：\(d/a=0.2\) 时 sharp charge remainder 为 \(0.02140275816\,q_D(\bar v)\)；若 \(d/a=1\)，则为 \(0.71828182846\,q_D(\bar v)\)。因此不能因为某段 gate 电压变化“看起来较小”就默认 affine-storage 精度足够；真正支配量是控制电压位移相对于本构热尺度 \(a\) 的比值。这里没有将这些无量纲示例误写为 V6 已实测的实验误差。
 
 若 BE 残差中当前与前一步 charge 均以各自 evolving-affine law 代替，从 (M34–M35) 逐项相减，有
 
-$
+$$
 R^{\rm full}_{D,n}-R^{\rm aff}_{D,n}
 =-\frac{\delta q_n-\delta q_{n-1}}{h_n},
 \qquad
 |R^{\rm full}_{D,n}-R^{\rm aff}_{D,n}|
 \le\frac{\epsilon_{q,n}+\epsilon_{q,n-1}}{h_n}.
 \tag{M37}
-$
+$$
 
 若前一步 storage 值保留 actual full-law charge，只需 \(\epsilon_{q,n}/h_n\)；电流误差的单位由 \(\mathrm C/\mathrm s=\mathrm A\) 检查。若 thermal \(a\) 随模拟状态变化、BASE 未预先冻结或跨越 branch/guard，该单一 \(\epsilon_q\) 不能当作全 coupled residual 的一致上界，必须重新覆盖这些真实状态维度。
 
 **从 local storage defect 真正传到工程目标还需要哪条桥？** 对完整**同一**离散 source residual \(F(x)=0\)，在某个具名全状态合法凸盒 \(B_\rho(c)\) 中寻找可验证近逆 \(H\)，满足
 
-$
+$$
 \|I-HJ_F(x)\|_{\rho,\infty}\le\kappa<1
 \quad(x\in B_\rho(c)),
 \qquad
 \|HF(c)\|_{\rho,\infty}\le(1-\kappa)\,;
 \tag{M38}
-$
+$$
 
 最后一个条件这里的规范化盒半径定义为 \(\|x-c\|_{\rho,\infty}\le1\)。则 \(T(x)=x-HF(x)\) 把该盒映入自身且收缩，有唯一合法 root \(x^\star\)，并且
 
-$
+$$
 \|x^\star-c\|_{\rho,\infty}
 \le\frac{\|HF(c)\|_{\rho,\infty}}{1-\kappa},
 \qquad
 |G(x^\star)-G(c)|
 \le L_G\frac{\|HF(c)\|_{\rho,\infty}}{1-\kappa}.
 \tag{M39}
-$
+$$
 
 第二式假设在同盒内 \(G\) 对相同加权范数有统一 Lipschitz 常数 \(L_G\)，其 guard、事件与积分窗口都已合格。**证明结构**是 Banach 自映射与收缩，加上 \(G\) 的统一一阶增益；不是当前 600-V vendor 源已通过该完整 box 的宣告。把 (M37) 传入 \(\|HF(c)\|\) 时还需其余 nodal/charge/network/thermal residual rows、共享 previous-state 相关性与完整伴随/goal 传播，不能只对一个 diode scalar 宣称全波形误差。
 
