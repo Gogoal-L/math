@@ -326,6 +326,38 @@ $
 
 若 \(P_\perp s=0\)，该实验无法区分有效 L 和允许 nuisance；若它很小，即使 waveform 拟合完美，参数也会不稳定。注意 **s 的数值微分误差、gate-charge/Coss 非线性、internal Kelvin source 与 external cut port 不一致**均可破坏 (M24) 的条件；它不是 LTspice/硬件的已核验器件方程。更重要的是，某个未来 overshoot/work 的导数 \(DG\) 可能在这个不可辨识方向上很小，于是 (M1)/(M14) 允许目标稳定而 L 不唯一。下一步该拿真实 R1 reference 的同源 \(O,DO,DG,s,N_s\) 与设备外部 cut record 来检验，而不是借用 150 V CAL 的 chart 替 100 V R1 作证。
 
+### 0.8 真正的 acquisition 判别：CAL 是干预，不只是增加一行 sensor
+
+对于允许购买的预测前观测集合 \(\mathcal S\subseteq\mathcal M_{\rm legal}\)，每一个 candidate 都要有实物端口、获取时间、共同 nuisance/误差关联列和成本 \(c_s\)。在**同一个 source reference 与未来目标**上，有限预算下的目标相关设计问题为
+
+$
+\boxed{
+\min_{\mathcal S\subseteq\mathcal M_{\rm legal}}
+\sum_{s\in\mathcal S}c_s
+\quad\mathrm{s.t.}\quad
+\max_{w,j}R_{w,j}(\mathcal S)/\tau_j\le1.
+}\tag{M28}
+$
+
+这里 \(R_{w,j}(\mathcal S)\) 来自具名 observation/N/E/goal chart 的 (M14–M17)；并非以单个参数 Jacobian condition number 或“测量越多越好”来替代目标误差。**若增加一个纯观测而不改变 preparation/物理状态，且旧误差合同仍作为新合同的正确 marginal**，最优 minimax radius 不会变大：新预测器可以忽略新读数，直接复用旧预测器。若 CAL 同时改变了物理状态，单纯套这个单调性是错误的实验比较。
+
+尤其对于 18C 的**主动** CAL，设 \(K:\mathcal H\to\mathcal H\) 是实际 CAL 操作，\(O_K\) 是 CAL 后得到的外部读数。CAL 后未来目标是 \(G_w^K(h)=G(T_wK(h))\)，而非原来的 \(G(T_wh)\)。要只估计 **CAL 带来的信息价值**，需要同样执行 \(K\)、同样的后续未来，但在 predictor 输入中分别**隐藏或开放 CAL 数据**：
+
+$
+\begin{aligned}
+R_{\rm withheld}^{K}
+&=\inf_\delta\sup_h
+ |\delta(O_{\rm pre}(h))-G(T_wK(h))|,\\
+R_{\rm measured}^{K}
+&=\inf_\delta\sup_h
+ |\delta(O_{\rm pre}(h),O_K(K(h)))-G(T_wK(h))|.
+\end{aligned}\tag{M29}
+$
+
+这两个对象固定 **同一 CAL-induced physical history**，所以 \(R_{\rm measured}^K\le R_{\rm withheld}^K\)；若把 \(R_{\rm measured}^K\) 与 no-CAL future \(G(T_wh)\) 直接比较，观测的信息增益和操作 \(K\) 的物理效应已混在一起。必须单列 CAL-versus-NO-CAL **干预/状态转移效应**，才能科学地解释 Pro18C 结果。
+
+**最低成本可取得信息**还必须打败强 ordinary：完整记录 command、固定波形/斜率估计、合格 deskew、已知 CAL 执行日志、基于原 source 的低阶近似。优先的下一项证据是 150 V 同 reference 的 CAL-executed-and-withheld 对照或真实 B/history pair 的 source chart，冻结未来 word 和目标后再算 (M28)；不是扩大 PDF 数目或把理想 rank 直接命名为真实 sensor minimum。
+
 **验证账本：** F119/F129/F132 的上述定理式从钉住的 [openai/math source](https://github.com/openai/math/tree/fd4aeeb2ee4fc729c18d98444fed42fd0529eeeb) 抽出；(M5–M6),(M8–M9),(M13–M22),(M24–M25) 是在具名假设下的独立有限维/分析推导。F119 相关噪声反例有精确有限枚举，F129 二状态 relation context 有全枚举，F132 小局部 grouped witness 有合成审计；[proof-level 细节](dpt_research/20261011_F119_F129_F132_proof_level_DPT_bridge.md)。联合半径工具另经独立的 70 组随机受约束 primal/dual 数值交叉检查（最坏绝对差约 \(9.14\cdot10^{-12}\)，其中 6 个严格容差下的 SciPy line-search status 未成功但最终可行迭代满足 \(10^{-8}\) 约束容差；非形式证书），以及 analytic/CLI regressions。**没有真实 SiC source replay、没有物理参数/测量噪声资格、没有全部非线性 remainder 的统一证书。**
 
 ---
