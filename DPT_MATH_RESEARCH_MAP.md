@@ -148,3 +148,20 @@ DPT 本地复算 locator（以下路径属于 DPT 工作区，不是本 Math 仓
 | Cal 科学判读 | simulation/source_evaluator.py、simulation/README.md；comparison identity、bounded nuisance、signed-error chain、filtered flux 与用途区间 |
 
 维护时只更新有材料性改变的行：新定理/反例、实际输入上的工具 replay、被兑现的 falsifier、修复后的误差范围，或决定下一项证据的卡点。读过、用于构造、通过复算、进入 native 判别分别登记；不以 PDF 数量、代码量或思考时长衡量吸收程度。
+
+
+## 6. 2026-10-11：连续域目标信息半径（新 Math-only 桥梁）
+
+**增量：** [完整推导、反例和新增论文审计](dpt_research/20261011_continuous_goal_information_bridge.md)；[连续信息半径 NumPy 计算器](dpt_tools/goal_ellipsoid_recovery.py)；[解析/CLI 测试](dpt_tools/test_goal_ellipsoid_recovery.py)。这是对已有 finite-bank fiber / repair-cover 的补充：在**整个中心椭球合法**、具有**确定性联合相关测量误差**的同一线性 chart 上，给定未来 scalar engineering goal，直接计算其 global minimax 风险和达到该风险的外部读数线性解码器。
+
+设 \(x=x_0+Bz,\|z\|\le1;\ y=Hx+Ee,\|e\|\le1;\ G=G_0+g^\top Bz\)。当 \(E\) 非奇异且全部信息来自同一合法模型/准备域时，令 \(A=E^{-1}HB,c=B^\top g\)，则
+\[
+R=\max_{\|z\|\le1,\|Az\|\le1}|c^\top z|
+=\min_w(\|c-A^\top w\|+\|w\|)
+=\sqrt{\min_{q\in[0,1]}c^\top[(1-q)I+qA^\top A]^{-1}c}.
+\]
+**此数学定理属于 prior art**：Foucart–Liao, *Journal of Complexity* 83 (2024), 101841，[DOI](https://doi.org/10.1016/j.jco.2024.101841)。本仓库成果是可执行的 DPT 信息/goal 接口，不是新的最优恢复定理或物理精度证明。合成例中，使用同一单通道观测，可观测目标半径 0.2，未观测目标半径 1；parameter nonuniqueness 与 goal predictability 可分开检验。工具的 witness/dual gap 是浮点诊断，不替代 verified interval 或 source-native validation。
+
+**新增 OpenAI Math 原文阅读（限定范围）：** [F132](https://github.com/openai/math/blob/main/preprints/A-superquadratic-separation-between-sensitivity-and-block-sensitivity-September-25-2026/build/sections/02-recurrences.tex) individual/block sensitivity 可启发合法成组干预（DPT 已有 mixed_interaction_audit；其 Boolean exponent 不可迁移）；[F129](https://github.com/openai/math/blob/main/preprints/An-exponential-two-way-deterministic-state-lower-bound-for-one-way-liveness-September-25-2026/build/sections/rank.tex) full relation-monoid / future-context lower bound 不构成 SiC nonlinear memory dimension 定理；[F119](https://github.com/openai/math/blob/main/preprints/Sharp-binary-information-contraction-on-the-discrete-cube-September-24-2026/build/main.tex) 的独立 Boolean-noise mutual information 也不能当作 correlated deterministic DPT sensor information budget。三者分别为 TEST-DESIGN ANALOGY、PARK、REJECT FOR CURRENT GATE。
+
+**最小接入/证伪：** 本地主控提供一个**150-V Pro18C 同 reference** 的真实 source-legal state/parameter 域、预目标观测导数 H、完整确定性误差 E、未来 work 导数 g、非线性 remainder、冻结 ordinary 对手与一个 prospective CAL。计算保留原信息预算时 NO_CAL 与 CAL 的 target 半径，并用实际合法近匹配历史检验上下界。100-V scalar R1、150-V active CAL 和 600-V native 各有自己的 reference，不拼成一个物理保证；18B 的跨阶段历史更新另需 dynamic closure。**目前只有 synthetic testing，没有仓库模块对真实 DPT 输入的 native replay，也没有科学晋升。**
