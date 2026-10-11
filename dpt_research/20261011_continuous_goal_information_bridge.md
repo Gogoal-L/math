@@ -14,7 +14,7 @@ y=Hx+Ee,\quad\|e\|_2\le1;\qquad
 G(x)=G(x_0)+g^\top(x-x_0).
 \]
 
-The entire ellipsoid B must be physically admissible, not just its tangent; H contains *pretarget* measurement rows; E specifies a **joint deterministic** error ellipsoid (not automatically the data covariance); g is the same-law gradient of a smooth future goal. E is nonsingular, B may be rank deficient and physical units stay explicit.
+The entire ellipsoid B must be physically admissible, not just its tangent; H contains *pretarget* measurement rows; E specifies a **joint deterministic** error ellipsoid (not automatically the data covariance); g is the same-law gradient of a smooth future goal. E may be rectangular or rank deficient; B may be rank deficient and physical units stay explicit.
 
 Set A=E^{-1}HB and c=B^\top g. Then the **global** scalar minimax risk over all estimators, possible observations and admissible states/noise is
 
@@ -67,3 +67,35 @@ Inspected the listed original LaTeX statements and selected proof sections at op
 **Strongest counterexamples.** G(x)=x^2 on [-1,1] centered at 0 has derivative g=0 and therefore zero linearized radius but nonzero true goal variation: a linear chart cannot certify a nonlinear DPT goal without an independent remainder. Correlated measurement error cannot be reinterpreted as unrelated axis-aligned boxes without changing the uncertainty set. A source-complete ordinary native predictor may already satisfy the declared work/peak tolerance without added information; this is a valid NO_NEW_MEASUREMENT outcome.
 
 **Terminal:** Math-only conditional construction and synthetic numerical validation. Do not promote, freeze S09, or claim a native performance improvement until the local scientific owner supplies and scores a legal same-reference prospective packet.
+
+
+## Extension: rank-deficient/common-mode deterministic observation uncertainty (2026-10-11)
+
+**Motivation from a deliberately invalid F119 transfer.** The OpenAI Math F119 binary-coordinate optimum requires *independently* corrupted channels. With perfectly correlated sensor noise, a goal-aligned contrast can be exact although neither individual sensor is noiseless. The original E^{-1} implementation silently excludes this physically important regime. The extension allows E in R^{m x p} of any rank (including 0), with a **joint hard error ball** ||e||_2<=1; it does not assume independent sensor errors.
+
+**Reduction and proof.** Start with the same centered prior ||z||<=1, observations H B z+E e, and goal c.T z. Take a full left SVD E=U_r Sigma_r V_r.T and complement U_0. Two opposite states z and -z are observation-indistinguishable exactly when H B z belongs to E(B2), equivalent to the pair of conditions
+
+    C z=0,                        C=U_0.T @ H @ B;
+    ||Sigma_r^-1 U_r.T H B z|| <=1.
+
+Choose orthonormal columns Z spanning ker C. Then the information radius reduces without approximation (for **mathematically exact ranks**) to
+
+    R = max_{||v||<=1, ||A v||<=1} |c_red.T v|,
+    A=Sigma_r^-1 U_r.T H B Z,  c_red=Z.T c.
+
+It is the same convex two-ellipsoid problem **after** enforcing exact noiseless observations. An optimal full linear decoder a is obtained by (i) solving the dual in noisy U_r directions, (ii) adding U_0 components to match the goal response in row(C), which costs zero measurement error because E.T U_0=0. The code returns the achieved upper ||c-(HB).T a||+||E.T a||, a feasible opposite-state lower, and their floating gap. No pseudo-inverse of the full E is used for inversion on its nullspace.
+
+**Independent analytic fixtures and numerically checkable consequences.**
+
+- H=B=I_2, E=[0.2,0.2].T, target g=(1,-1): observation difference exactly cancels the common factor, R=0, a=(1,-1).
+- Same prior/measurement, g=(1,1): common source uncertainty remains, R=0.4.
+- Add an *independent* uncertainty factor (0,0.05).T to E: target g=(1,-1) now has R=0.05.
+- Make E a two-column rank-one matrix; the same R=0 holds.
+- E shape (2,0) represents ideal noiseless recording; full H=I removes all uncertainty for a linear goal.
+- Legacy full-rank correlated-noise, elliptical prior, no-observation and independent-measurement fixtures remain in the test suite.
+
+This feature was developed with a failing-test-first record (old model rejected valid E), then corrected the older test that still expected such rejection; 13 focused tests and 350 seeded heterogeneous random matrix diagnostics were executed locally. **GitHub Actions run** [38178623705](https://github.com/Gogoal-L/math/actions/runs/38178623705) after source+test update ran all 128 current branch tests and passed. Conditional mathematical validity and floating arithmetic are separate from a physically qualified SiC instrument.
+
+**Critical numerical/scientific qualification.** This computation branches on floating SVD thresholds. If a tiny *nonzero* unshared noise mode is truncated, it can spuriously label a noisy contrast exact and understate physical risk. Noise covariance alone is neither an absolute error ball nor a certificate that a small singular value is zero. Set and justify signal units, correlation drift, common gain/offset/skew origin, acquisition timing, and a reliable bound on all unshared components. In particular, the ideal R=0 in the synthetic rank-one model is **not** a prediction of 0-V or 0-nJ physical uncertainty in an actual DPT waveform. Nonlinear remainder and legally reachable ellipsoid still require separate certificates.
+
+**Closest original mathematical foundation:** Foucart--Liao (2024) remains the general optimal-recovery prior. This is a structured reduction for singular sensor uncertainty, not a claimed new theorem. The F119/F129/F132 deep proof audit and three-mechanism DPT test are maintained on main at [20261011_F119_F129_F132_proof_level_DPT_bridge.md](../dpt_research/20261011_F119_F129_F132_proof_level_DPT_bridge.md).
