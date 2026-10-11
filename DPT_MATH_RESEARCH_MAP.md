@@ -402,6 +402,78 @@ $$
 因此要从 18C 的 source Jacobian 读出有限 CAL chart 的可靠预测，需要**连同 observation-fiber 曲率/合法域与 goal 余项**一并约束；某一中心的 rank=0 不自动升级为非零域 sufficient information。反过来，如果直接的 \(L^\infty\) 波形包络已经足够小，式 (M30–M31) 可能不用支付高阶参数重构的代价。这是两个真正可判别的研究分支，而不是再列一批候选文献。
 
 
+### 0.10 从 IH2662 V6 实际耦合 BE 本构导出 charge surrogate 的严格余项（600-V source model）
+
+前面 (M13–M20) 将非线性实际 law 的余项留作 \(\beta\)；下面不再停留于抽象 \(D^2G\)。用户提供的《IH2662 DPT Research Design V6》§4.7 明确给出了**后续 600-V coupled backward-Euler evaluator** 的 body-diode conduction/storage 支路（位于指数、charge 和 breakdown guards 内）：
+
+$
+i_{\rm cond}(v_j)=I_s(e^{v_j/a}-1),\qquad
+q_D(v_j)=\tau I_s e^{v_j/a},\qquad
+R^{\rm full}_{D,n}=i_{b,n}-i_{\rm cond}(v_{j,n})
+-\frac{q_D(v_{j,n})-q_D(v_{j,n-1})}{h_n}.
+\tag{M34}
+$
+
+此处 \(\tau=2\,\mathrm{ns}\)、\(a>0\) 是相关固定温度 branch 的 emission-factor thermal voltage；V6 中强 evolving-affine 对手在合法 BASE 电压 \(\bar v_n\) 取 \(q_D^{\rm aff}(v)=q_D(\bar v)+q'_D(\bar v)(v-\bar v)\)。令 \(\delta v=v-\bar v\)，直接代入指数原函数得到**恒等式**：
+
+$
+\boxed{
+q_D(v)-q_D^{\rm aff}(v)
+=q_D(\bar v)\!\left(e^{\delta v/a}-1-\frac{\delta v}{a}\right).
+}
+\tag{M35}
+$
+
+没有从 Boolean F132 借用任何曲率常数。由于 \(e^s\ge1+s\) 且 \(|\delta v|\le d\) 时指数 Taylor 余项的最大值在 \(\delta v=+d\) 端点，得到该**固定 BASE、固定 \(a,I_s,\tau\) 的 sharp uniform bound**：
+
+$
+0\le q_D(v)-q_D^{\rm aff}(v)
+\le \underbrace{q_D(\bar v)\bigl(e^{d/a}-1-d/a\bigr)}_{\epsilon_q(d;\bar v)}
+\le\frac{q_D(\bar v)}2e^{d/a}(d/a)^2.
+\tag{M36}
+$
+
+第二个不等式由积分余项 \(e^s-1-s=s^2\int_0^1(1-t)e^{ts}\,dt\) 给出。数值量纲核查：\(d/a=0.2\) 时 sharp charge remainder 为 \(0.02140275816\,q_D(\bar v)\)；若 \(d/a=1\)，则为 \(0.71828182846\,q_D(\bar v)\)。因此不能因为某段 gate 电压变化“看起来较小”就默认 affine-storage 精度足够；真正支配量是控制电压位移相对于本构热尺度 \(a\) 的比值。这里没有将这些无量纲示例误写为 V6 已实测的实验误差。
+
+若 BE 残差中当前与前一步 charge 均以各自 evolving-affine law 代替，从 (M34–M35) 逐项相减，有
+
+$
+R^{\rm full}_{D,n}-R^{\rm aff}_{D,n}
+=-\frac{\delta q_n-\delta q_{n-1}}{h_n},
+\qquad
+|R^{\rm full}_{D,n}-R^{\rm aff}_{D,n}|
+\le\frac{\epsilon_{q,n}+\epsilon_{q,n-1}}{h_n}.
+\tag{M37}
+$
+
+若前一步 storage 值保留 actual full-law charge，只需 \(\epsilon_{q,n}/h_n\)；电流误差的单位由 \(\mathrm C/\mathrm s=\mathrm A\) 检查。若 thermal \(a\) 随模拟状态变化、BASE 未预先冻结或跨越 branch/guard，该单一 \(\epsilon_q\) 不能当作全 coupled residual 的一致上界，必须重新覆盖这些真实状态维度。
+
+**从 local storage defect 真正传到工程目标还需要哪条桥？** 对完整**同一**离散 source residual \(F(x)=0\)，在某个具名全状态合法凸盒 \(B_\rho(c)\) 中寻找可验证近逆 \(H\)，满足
+
+$
+\|I-HJ_F(x)\|_{\rho,\infty}\le\kappa<1
+\quad(x\in B_\rho(c)),
+\qquad
+\|HF(c)\|_{\rho,\infty}\le(1-\kappa)\,;
+\tag{M38}
+$
+
+最后一个条件这里的规范化盒半径定义为 \(\|x-c\|_{\rho,\infty}\le1\)。则 \(T(x)=x-HF(x)\) 把该盒映入自身且收缩，有唯一合法 root \(x^\star\)，并且
+
+$
+\|x^\star-c\|_{\rho,\infty}
+\le\frac{\|HF(c)\|_{\rho,\infty}}{1-\kappa},
+\qquad
+|G(x^\star)-G(c)|
+\le L_G\frac{\|HF(c)\|_{\rho,\infty}}{1-\kappa}.
+\tag{M39}
+$
+
+第二式假设在同盒内 \(G\) 对相同加权范数有统一 Lipschitz 常数 \(L_G\)，其 guard、事件与积分窗口都已合格。**证明结构**是 Banach 自映射与收缩，加上 \(G\) 的统一一阶增益；不是当前 600-V vendor 源已通过该完整 box 的宣告。把 (M37) 传入 \(\|HF(c)\|\) 时还需其余 nodal/charge/network/thermal residual rows、共享 previous-state 相关性与完整伴随/goal 传播，不能只对一个 diode scalar 宣称全波形误差。
+
+这条 (M34–M39) 是对**已提供实际耦合 BE 本构**的条件余项建设：F132 提醒不可漏组合项；F119 提醒不能用不合格噪声独立性；F129 提醒 previous-step charge 及合法命令历史影响后继响应。**数学计算来自指数电荷方程自身**；不是将任何 F119/F129/F132 的原定理直接移植到 SiC。该结果对应 V6 **600 V coupled BE branch**，与先前 150-V reference-completed trapezoidal descriptor 分开，不共享求解/物理资格。
+
+
 **验证账本：** F119/F129/F132 的上述定理式从钉住的 [openai/math source](https://github.com/openai/math/tree/fd4aeeb2ee4fc729c18d98444fed42fd0529eeeb) 抽出；(M5–M6),(M8–M9),(M13–M22),(M24–M25) 是在具名假设下的独立有限维/分析推导。F119 相关噪声反例有精确有限枚举，F129 二状态 relation context 有全枚举，F132 小局部 grouped witness 有合成审计；[proof-level 细节](dpt_research/20261011_F119_F129_F132_proof_level_DPT_bridge.md)。联合半径工具另经独立的 70 组随机受约束 primal/dual 数值交叉检查（最坏绝对差约 \(9.14\cdot10^{-12}\)，其中 6 个严格容差下的 SciPy line-search status 未成功但最终可行迭代满足 \(10^{-8}\) 约束容差；非形式证书），以及 analytic/CLI regressions。**没有真实 SiC source replay、没有物理参数/测量噪声资格、没有全部非线性 remainder 的统一证书。**
 
 ---
