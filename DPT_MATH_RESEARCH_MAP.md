@@ -14,21 +14,21 @@ OpenAI Math 对 DPT 的主要贡献，已经从“提示如何检查信息不足
 
 令 \(h\in\mathcal H_{\mathcal R}\) 是由合法 preparation 在参考系统 \(\mathcal R\) 中生成的 source-reachable 历史；\(O(h)\) 是**目标计算之前允许取得的外部观测**；\(T_w(h)\) 是按实际顺序执行合法有限命令字 \(w\) 后的 source state；\(G_j(T_w(h))\) 是具名 work/peak/event-time。参数 \(\theta=(L_g,L_s,L_d,L_{\rm loop},R_g,\ldots)\) 及未测电荷/热态并不默认可由 \(O\) 唯一恢复。正确的决策对象是：
 
-$
+$$
 \boxed{
 \mathcal R_{j,w}(O,\mathcal H_{\mathcal R})=
 \inf_{\widehat G:\,O\mapsto\mathbb R}\ 
 \sup_{h\in\mathcal H_{\mathcal R},\ \text{合法误差}}
 |\widehat G(O(h))-G_j(T_w(h))|.
 }\tag{M1}
-$
+$$
 
 若两个合法 \(h_+,h_-\) 在误差合同下可生成同一观测 \(y\)，则任何观测型预测器在 \(y\) 只能输出同一个数，三角不等式立即给
 
-$
+$$
 \mathcal R_{j,w}\ge\tfrac12|G_j(T_w(h_+))-G_j(T_w(h_-))|.
 \tag{M2}
-$
+$$
 
 这解释 18B 的未来 peak 差是**不可避免误差的下界见证**，不是整个可达类的上界；18C 的 L 不唯一与目标 work 稳定可同时成立。有限 bank 的小 goal spread **不是**全域小 \(\mathcal R\) 的证明。该统一对象既可作用于工程目标，也容纳 18A 的严格噪声/证书结果。
 
@@ -38,41 +38,41 @@ $
 
 对 total Boolean \(f\)，\(s(f,x)\) 统计单 bit 翻转的变化数，\(\operatorname{bs}(f,x)\) 是可同时选出的**互不相交敏感输入块**数。F132 构造深度 \(d\)、目标数 \(M\)、门控数 \(k=2M^2+1\)、\(r=\lceil\sqrt M\rceil\) 的嵌套 predicate。其承重处是必须同时维护普通敏感度 \(S_{\ell,b}\) 与共同翻转两种 predicate 的 \(J_{\ell,b}\)，其典型递推为
 
-$
+$$
 \begin{aligned}
  S_{\ell,1}&\le M^2S_{\ell-1,0}+rS_{\ell-1,1},&
  J_{\ell,1}&\le M^2J_{\ell-1,0}+rS_{\ell-1,1},\\
  S_{\ell,0}&\le16S_{\ell-1,0}+S_{\ell-1,1}+3J_{\ell-1,1},&
  J_{\ell,0}&\le16S_{\ell-1,0}+3J_{\ell-1,1}.
 \end{aligned}\tag{M3}
-$
+$$
 
 其中常数 16 来自标签控制的 near-accepting targets，3 来自 tournament gate-only 候选；省去 \(J\) 会漏掉“一次 bit 翻转同时修复多个 gate”的路径。最终 Boolean 构造有
 
-$
+$$
 s(f)\le2(d+2)M^{d+1},\qquad
 \operatorname{bs}(f,0)\ge M^2(2M^2+1)^d,
 \quad
 \frac{\operatorname{bs}(f)}{s(f)^2}
 \ge\frac{2^d}{4(d+2)^2}.
 \tag{M4}
-$
+$$
 
 **独立 DPT 迁移引理：** 对两个**同时可合法操控**的物理/命令参数 \(a,b\)，固定同 reference 的四角目标值 \(G_{00},G_{10},G_{01},G_{11}\)。定义交互对比
 
-$
+$$
 \Delta_{ab}G=G_{11}-G_{10}-G_{01}+G_{00}
 =\int_{a_0}^{a_1}\!\!\int_{b_0}^{b_1}
 \frac{\partial^2G}{\partial a\,\partial b}\,db\,da
 \tag{M5}
-$
+$$
 
 （积分式需要整块合法域内 \(C^2\) 正则）。**任何**加性 ordinary \(Q(a,b)=q_1(a)+q_2(b)\) 均有 \(\Delta_{ab}Q=0\)。若四角的 absolute forecast error 都不超过 \(\epsilon\)，则 \( |\Delta_{ab}G|\le4\epsilon\)；因此
 
-$
+$$
 \boxed{\max_{\text{四角}}|G-Q|\ge|\Delta_{ab}G|/4.}
 \tag{M6}
-$
+$$
 
 若四次 source goal 求值分别仅知误差界 \(\eta_{00},\eta_{10},\eta_{01},\eta_{11}\)，能核验的下界为 \((|\Delta_{\rm observed}|-\sum\eta)_+/4\)。此界对 \(G(a,b)=ab\) 的四个 \(0/1\) 角点可达到（最佳加性拟合误差 \(1/4\)）。因此它是**针对加性模型类的锋利 falsifier**，不是“所有普通 nonlinear 模型不可能”的定理，也不继承 F132 的 superquadratic exponent。对于 Rg×L、历史×CAL、stage×command 等，只在四角 preparation/branch/端口一致且合法时应用。比较现有 [mixed_interaction_audit](dpt_tools/mixed_interaction_audit.py) 的 source-level four-corner 对比；普通二阶耦合模型仍是强 rival。
 
@@ -82,32 +82,32 @@ $
 
 F129 不是“模型状态越少越好”的口号。它用完整二元关系字母表（\(2^{h^2}\) 个 letters）和左右 singleton contexts \(I_i A I_j\)，把关系 \(A\) 的任意一项 \((i,j)\) 转化为非空/空接受判据。匹配图有 idempotent corner、rank 和 common support：32 个共轭共用至多 \(64c\) 个支持位置却制造 256 个独立关系增量；每次必须损失至少 \(L(h-31)/2\) 个 rank，因此
 
-$
+$$
 64c\ge256\,L(h-31)/2,\qquad
 c\ge2L(h-31),\qquad
 L(h)=2^{\lfloor(h-2)/31\rfloor}.
 \tag{M7}
-$
+$$
 
 **DPT 真正可迁移的对象是右侧未来上下文，不是该指数下界。** 对具有**全局同一线性 chart**的切换模型 \(x_{t+1}=A_u x_t\)，未来 scalar rows \(C A_w\) 按**实际命令顺序**产生。令
 
-$
+$$
 \mathcal V_0=\operatorname{row}(C),\qquad
 \mathcal V_{k+1}=\mathcal V_k+
 \sum_{u\in\mathcal A}\mathcal V_k A_u,\qquad
 \mathcal V_\infty=\operatorname{span}_{w\in\mathcal A^*}\operatorname{row}(CA_w).
 \tag{M8}
-$
+$$
 
 若 \(\dim x=n\)，该升链最多发生 \(n-\dim\mathcal V_0\) 次严格增维；稳定后 \(\mathcal V_\infty A_u\subseteq\mathcal V_\infty\)，所以以此 row basis \(T\) 定义 \(z=Tx\)，存在准确 reduced update \(T A_u=\bar A_u T\)。任何线性**自主演化且覆盖所有词目标**的商状态，其 row space 必须含 \(\mathcal V_\infty\)；最小维数为 \(\dim\mathcal V_\infty\)。[goal_word_quotient](dpt_tools/goal_word_quotient.py) 计算这一命题。**有限指定** \(\mathcal W\) 则只要求 \(\operatorname{row}(CA_w:w\in\mathcal W)\)，不是 all-word autonomous closure。
 
 另一个可以直接测试的结果是**顺序交换缺陷**：
 
-$
+$$
 G_{A\to B}(x)-G_{B\to A}(x)
 =C(BA-AB)x=C[B,A]x.
 \tag{M9}
-$
+$$
 
 若两个短命令是连续 vector fields \(f_A,f_B\) 的小 \(\Delta t\) 演化且流光滑，状态交换缺陷的一阶非零项为 \(\Delta t^2(Df_B f_A-Df_A f_B)+O(\Delta t^3)\)；stage 输出/事件守卫仍可能额外产生差异。既有 18B 的 ordered-command 结果与此**问题形式**相符，但 actual switched/guarded law 并非一个全局线性交换子，因此必须用 native legal \(A\to B,B\to A\) 两次实际执行来判定。
 
@@ -117,28 +117,28 @@ $
 
 在**均匀独立输入 + 各坐标独立 binary-symmetric noise** 的原定理中，令
 
-$
+$$
 \psi(r)=\tfrac12[(1+r)\ln(1+r)+(1-r)\ln(1-r)],\
 I(u)=H(\mathbb E u)-\mathbb E H(u),\
 F(\psi(r))=r\,\operatorname{atanh}r.
 \tag{M10}
-$
+$$
 
 噪声半群 \(P_t=T_{e^{-t}}\)、\(N_0=\frac12\sum_i(\mathrm{Id}-\mathrm{flip}_i)\) 满足精确导数
 
-$
+$$
 \frac{dI(P_tu)}{dt}
 =-\mathbb E[\operatorname{atanh}(P_tu)\,N_0P_tu]
 =-D(P_tu).
 \tag{M11}
-$
+$$
 
 论文经 three-point entropy-budget optimizer、convex-perspective reserve、common-output thinning 和维数归纳证明 \(D(g)\ge F(I(g))\)。置 \(r_t=\psi^{-1}(I(P_tu))\)，由 \(\psi'(r)=\operatorname{atanh}r\) 得 \(r_t'\le-r_t\)，积分即
 
-$
+$$
 \boxed{I(T_\rho u)\le\psi(|\rho|\psi^{-1}(I(u)))}.
 \tag{M12}
-$
+$$
 
 **必须区别两个独立性假设：** 中间 joining cost 优化允许两个 child fields 耦合，但输入 \(X_i\) 与噪声 \(Z_i\) 的独立性在原定理中不可取消。显式反例：\(X_1,X_2\) 独立公平 signs，\(Y_i=X_i Z_i\)。独立 \(Z_i\) 时，coordinate/parity 的互信息为 \(\psi(\rho),\psi(\rho^2)\)；若噪声完全共享 \(Z_1=Z_2=Z\)，则 \(Y_1Y_2=X_1X_2\)，**parity 恰好无损**。这只推翻“F119 coordinate optimum 也适用于相关噪声”的迁移，未推翻 F119 本身。DPT 的工程启发是检查**共享 offset/gain/skew 是否真的构成可消去的 nuisance 方向**，不是把二元互信息 bits 当作 volt/nJ deterministic error guarantee。
 
@@ -146,17 +146,17 @@ $
 
 这是本 Math 仓库的新**独立线性模型推导与实现**，不是宣称 F119/F129/F132 直接推出 SiC 定理。假设有限 source chart 由
 
-$
+$$
 x=x_0+Bz,\quad \|z\|_2\le1;\qquad
 y-y_0=HBz+N\eta+Ee,\quad\|e\|_2\le1,\quad\eta\in\mathbb R^p.
 \tag{M13}
-$
+$$
 
 这里 \(N\eta\) 是**可任意大的同一个未知线性 nuisance**，\(Ee\) 是**联合、可相关、确定性有界**的传感器误差；\(z,e\) 是**彼此独立的两个单位球预算**，不能由普通样本 covariance 自动获得。命令 \(w=(u_1,\ldots,u_\ell)\) 的 linear update 为 \(F_w=A_{u_\ell}\cdots A_{u_1}\)，第 \(j\) 个未来目标的线性部分是 \(c_{w,j}^\top z\)，其中 \(c_{w,j}=B^\top F_w^\top C_j^\top\)。令 \(A=HB\)。
 
 **定理（标量、有限维、整个声明线性 chart 的 minimax radius）：**
 
-$
+$$
 \begin{aligned}
 R(c;A,N,E)
 &=\inf_{\widehat g}\sup_{\|z\|,\|e\|\le1,\eta}
@@ -166,50 +166,50 @@ R(c;A,N,E)
 &=\min_{\substack{a\in\mathbb R^m\\N^\top a=0}}
  \left(\|c-A^\top a\|_2+\|E^\top a\|_2\right).
 \end{aligned}\tag{M14}
-$
+$$
 
 证明的三步：① 对可由反号 \((z,e,\eta)\) 形成同一 \(y=0\) 的两条历史，所有 decoder 至少承担 \(|c^\top z|\)；② 对任意 \(N^\top a=0\)，线性预测器 \(a^\top(y-y_0)\) 的误差由两个单位球的 support function 上界给出式 (M14) 最后一行；③ 将 \((z,e)\) 的紧凸对称积球与观测线性等式作 Lagrange/Fenchel dual（原点满足严格球内点），上下界相合。因此**存在最优线性外部 readout**，不需要先估计全部 \(x,\theta,\eta\)。该结论属于已有 optimal-recovery 范畴，相关标准来源：[Foucart–Liao, Journal of Complexity 83 (2024), 101841](https://doi.org/10.1016/j.jco.2024.101841)；这里只作具名 mixed-nuisance 归约与 DPT 使用合同。
 
 **把无界 nuisance 与零噪声 contrast 分两次剔除：** 取 \(U_0\) 张成 \(\ker N^\top\)，设 \(A_0=U_0^\top A,E_0=U_0^\top E\)。\(E_0\) 的 compact/full-left SVD 写成 \(E_0=U_r\Sigma_rV_r^\top\)，其正交余方向为 \(U_\perp\)。由于 \(U_\perp^\top E_0=0\)，任何兼容状态差 \(z\) 必须满足
 
-$
+$$
 Kz=0,\quad K=U_\perp^\top A_0;
 \qquad z=Zv,\quad Z^\top Z=I,\quad\operatorname{im}Z=\ker K.
 \tag{M15}
-$
+$$
 
 再定义 \(M=\Sigma_r^{-1}U_r^\top A_0Z\)、\(c_r=Z^\top c\)，则
 
-$
+$$
 \boxed{
 R=\max_{\|v\|\le1,\ \|Mv\|\le1}|c_r^\top v|,
 \qquad
 R^2=\min_{0\le q\le1}
  c_r^\top\big[(1-q)I+qM^\top M\big]^{-1}c_r.
 }\tag{M16}
-$
+$$
 
 端点奇异时沿 \(q\to0^+,1^-\) 取兼容极限，不以盲目 Moore–Penrose 代替无穷方向。**推导而非仅引用优化器：** 对 \(D_q=(1-q)I+qM^\top M\)，Cauchy–Schwarz 给
 \((c_r^\top v)^2\le(c_r^\top D_q^{-1}c_r)(v^\top D_qv)\le c_r^\top D_q^{-1}c_r\)；在最小化的内点 \(q^\star\)，令 \(v_\star=D_{q^\star}^{-1}c_r\)，一阶导数为 \(\|v_\star\|^2-\|Mv_\star\|^2=0\)，规范化即可同时触及两个约束并达到上界。端点最优时对应单个活跃约束；若有奇异方向先依 (M15) 消去。故式 (M16) 是全局可计算结果，而不仅是局部 SVD heuristic。实际代码仍有 floating-rank 门槛，其“半径 0”只有在物理证明 exact common mode 时才可以作为物理零误差。
 
 多个未来词、多个工程目标各有容许误差 \(\tau_j>0\)。对所有目标使用同一预测前观测、分别构造最优线性 decoder，**归一化 worst-case 最大误差**准确等于
 
-$
+$$
 R_{\infty,\mathcal W}=
 \max_{w\in\mathcal W,\ j}\frac{R(c_{w,j};A,N,E)}{\tau_j}.
 \tag{M17}
-$
+$$
 
 因此 \(R_{\infty,\mathcal W}\le1\) 是声明模型/传感器/有限 word 下的**达到工程容差的充分且必要条件**；不是全 command language 或 nonlinear source 的证书。[contextual_goal_recovery.py](dpt_tools/contextual_goal_recovery.py) 实际计算此式，调用 [goal_ellipsoid_recovery.py](dpt_tools/goal_ellipsoid_recovery.py) 的一维 \(q\) 求解器；[8 项解析＋CLI 测试](dpt_tools/test_contextual_goal_recovery.py) 覆盖命令先后、rank-one shared noise、independent noise、预测前 CAL 和非法输入。
 
 **由 (M16) 退化出的无噪声 rank 定理：** 当 \(E=0\)，\(R(c)=0\) 当且仅当 \(c\in\operatorname{row}(U_0^\top HB)\)。若一组未来目标在 \(z\) 坐标堆为 \(\Gamma_{\mathcal W}\)，允许免费设计任意理想、无新增 nuisance 的标量测量，则最少还缺的独立读数为
 
-$
+$$
 k_{\rm ideal}=
 \operatorname{rank}\begin{pmatrix}U_0^\top HB\\\Gamma_{\mathcal W}\end{pmatrix}
 -\operatorname{rank}(U_0^\top HB).
 \tag{M18}
-$
+$$
 
 这与已有 [contextual_goal_quotient.py](dpt_tools/contextual_goal_quotient.py) 一致；\(B\) 非满秩时必须先写在可达 \(z\) chart 中，不能把整个 ambient parameter space 当作真实 reachable space。真实 CAL/传感器只能从**有限合法候选库**购买，所需 channel 数可能大于理想 \(k_{\rm ideal}\)。
 
@@ -219,62 +219,62 @@ $
 
 源器件电荷本构、Coss/Crss、body diode 与模式/事件切换一般使 (M13) 只是局部近似。在同一**具名合法非零域**，若观测与某个 future scalar goal 有
 
-$
+$$
 O(z)=y_0+Az+N\eta+Ee+r_O(z),\qquad
 G_w(z)=G_{w,0}+c_w^\top z+r_{G,w}(z),
 \quad\|r_O\|\le\beta_O,\ |r_{G,w}|\le\beta_{G,w},
 \tag{M19}
-$
+$$
 
 则对任何 \(N^\top a=0\)，有可复算的**非线性条件上界**
 
-$
+$$
 \boxed{
 \sup|\widehat G_a-G_w|
 \le\|c_w-A^\top a\|+\|E^\top a\|
 +\beta_{G,w}+\|a\|\beta_O,\qquad
 \widehat G_a=G_{w,0}+a^\top(y-y_0).
 }\tag{M20}
-$
+$$
 
 证明是展开残差、消去 \(N\eta\)、逐项取范数。最小化右侧时**应当把 \(\|a\|\beta_O\) 一起计入**；先以 (M14) 选出放大系数很高的 decoder 再忽略 remainder，会虚报修复。关键不足是从 actual coupled source 给出 \(\beta_O,\beta_G\) 在准备/未来共同合法域的统一上界，而不是把 finite-bank 最大残差称为证书。式 (M14) 的精确 minimax 下界不能在非线性 remainder 未控制时照搬。
 
 对于真正的 DPT signed stage work（需固定端口、电流方向与窗口），设
 
-$
+$$
 W(z)=\int_{t_a(z)}^{t_b(z)} V_{DS}(t,z)I_D(t,z)\,dt.
-$
+$$
 
 Leibniz rule 给出真实目标导数：
 
-$
+$$
 \boxed{
 DW[\delta z]=\int_{t_a}^{t_b}
 \big(I_D\,DV_{DS}[\delta z]+V_{DS}\,DI_D[\delta z]\big)\,dt
 +\big[V_{DS}I_D\big]_{t_b}Dt_b[\delta z]
 -\big[V_{DS}I_D\big]_{t_a}Dt_a[\delta z].
 }\tag{M21}
-$
+$$
 
 若事件由 \(\phi(t,z)=0\) 定义且 **transversal**，\(|\partial_t\phi|\ge\gamma>0\)，隐函数定理给
 
-$
+$$
 Dt_\ast[\delta z]=-\frac{D_z\phi[\delta z]}{\partial_t\phi}.
 \tag{M22}
-$
+$$
 
 当 crossing 斜率接近 0、峰值多重或 guard 换支时，\(DG\) 及 \(\beta_G\) 可能剧增甚至失去该光滑表示。对于唯一内部光滑非退化 peak，包络定理的一阶 peak-value 导数是 \(D_z V_{DS}(t_\ast,z)\)，但 **peak time** 仍需另行求导；有多个几乎相等的 ringing peaks 时不能随意选择其中一个导数。
 
 18B 的配对实值例子表明目标种类本身很重要：
 
-$
+$$
 \Delta W_1\approx+1.628664~\mu{\rm J},\qquad
 \Delta W_2\approx-1.686273~\mu{\rm J},\qquad
 \Delta W_{\rm total}\approx-57.609755~{\rm nJ};
 \quad
 1-\frac{|\Delta W_{\rm total}|}{|\Delta W_1|+|\Delta W_2|}\approx98.26\%.
 \tag{M23}
-$
+$$
 
 这解释了为什么单个 total-work goal 可以比两阶段 work、peak/event 更稳定。它**不是** total Eon/Eoff 的全局稳定定理；目标必须与正式窗口、积分符号及 source 端口一致。
 
@@ -282,23 +282,23 @@ $
 
 这是一条来自 DPT 积分定义、独立于 F119 随机通道定理的**物理测量方程**。在固定窗口 \([t_a,t_b]\) 上，若探头读到 \(V_m(t)=V(t+\delta_v)\)、\(I_m(t)=I(t+\delta_i)\)，且两波形在声明窗口中 \(C^2\)、偏移足够小，Taylor 展开给
 
-$
+$$
 W_m-W
 =\delta_v\!\int_{t_a}^{t_b}\dot V I\,dt
 +\delta_i\!\int_{t_a}^{t_b}V\dot I\,dt+O(\|\delta\|^2).
 \tag{M26}
-$
+$$
 
 设共同偏移 \(\delta_c=(\delta_v+\delta_i)/2\)、相对偏移 \(\delta_r=(\delta_v-\delta_i)/2\)，由分部积分 \(\int(\dot VI+V\dot I)=[VI]_{t_a}^{t_b}\) 可得
 
-$
+$$
 \boxed{
 W_m-W
 =\underbrace{\delta_c[VI]_{t_a}^{t_b}}_{\text{共同时间平移的固定窗口边界项}}
 +\underbrace{\delta_r\!\int_{t_a}^{t_b}(\dot V I-V\dot I)\,dt}_{\text{相对 V–I deskew 的开关重叠误差}}
 +O(\|\delta\|^2).
 }\tag{M27}
-$
+$$
 
 **可检查的解析负控：** \(V(t)=2+3t,\ I(t)=5-2t,\ [t_a,t_b]=[0,1]\)，符号积分精确给 \(W=13.5\)，并且 \(W_m-W=5\delta_c+19\delta_r-6\delta_c^2+6\delta_r^2\)。两项的系数 5、19 与 (M27) 严格一致。若积分窗口也随两条波形**共同平移**而移动，完整时间平移可由换元消去；(M27) 的共同边界项是针对**固定物理积分窗口**，不可混到自动事件窗口中。若两探头带宽/滤波不同，其误差不等价于单一 timing skew，还必须纳入频率响应 discrepancy。DPT 原始测量指导：[Wolfspeed Dynamic Characterization](https://www.wolfspeed.com/knowledge-center/article/dynamic-characterization-and-measurement-methods/)；[Hardware Testing Methodologies for Wide Bandgap High-Power Converters, Electronics 13 (2024), 3918](https://www.mdpi.com/2079-9292/13/19/3918)。这才是 F119“信息依赖噪声相关结构”的**可执行物理启发**：实际 source 需要同一波形时标、校准手段和误差相关性证据才能兑现；公式本身不测量任何探头偏差。
 
@@ -306,23 +306,23 @@ $
 
 在**声明 KVL 符号、实际 source 电流导数与明确 discrepancy**的低阶 turn-off 诊断中，可将外部 overshoot 近似写作
 
-$
+$$
 u(t):=V_{DS}(t)-V_{\rm DC}
 \approx L_{\rm eff}s(t)+R_{\rm loop}I_D(t)+b(t),
 \qquad s(t)=-\frac{dI_D}{dt}.
 \tag{M24}
-$
+$$
 
 若将允许的 offset/电阻/传感器偏差基函数离散堆成 \(N_s\)，令 \(P_\perp\) 是加权 \(W\)-内积对 \(\operatorname{col}N_s\) 的正交投影，则在线性、已知 \(s\) 情形
 
-$
+$$
 \widehat L_{\rm eff}
 =\frac{\langle P_\perp s,P_\perp u\rangle_W}{\|P_\perp s\|_W^2},
 \qquad
 |\widehat L_{\rm eff}-L_{\rm eff}|
 \le\frac{\|\epsilon\|_W}{\|P_\perp s\|_W}.
 \tag{M25}
-$
+$$
 
 若 \(P_\perp s=0\)，该实验无法区分有效 L 和允许 nuisance；若它很小，即使 waveform 拟合完美，参数也会不稳定。注意 **s 的数值微分误差、gate-charge/Coss 非线性、internal Kelvin source 与 external cut port 不一致**均可破坏 (M24) 的条件；它不是 LTspice/硬件的已核验器件方程。更重要的是，某个未来 overshoot/work 的导数 \(DG\) 可能在这个不可辨识方向上很小，于是 (M1)/(M14) 允许目标稳定而 L 不唯一。下一步该拿真实 R1 reference 的同源 \(O,DO,DG,s,N_s\) 与设备外部 cut record 来检验，而不是借用 150 V CAL 的 chart 替 100 V R1 作证。
 
@@ -330,20 +330,20 @@ $
 
 对于允许购买的预测前观测集合 \(\mathcal S\subseteq\mathcal M_{\rm legal}\)，每一个 candidate 都要有实物端口、获取时间、共同 nuisance/误差关联列和成本 \(c_s\)。在**同一个 source reference 与未来目标**上，有限预算下的目标相关设计问题为
 
-$
+$$
 \boxed{
 \min_{\mathcal S\subseteq\mathcal M_{\rm legal}}
 \sum_{s\in\mathcal S}c_s
 \quad\mathrm{s.t.}\quad
 \max_{w,j}R_{w,j}(\mathcal S)/\tau_j\le1.
 }\tag{M28}
-$
+$$
 
 这里 \(R_{w,j}(\mathcal S)\) 来自具名 observation/N/E/goal chart 的 (M14–M17)；并非以单个参数 Jacobian condition number 或“测量越多越好”来替代目标误差。**若增加一个纯观测而不改变 preparation/物理状态，且旧误差合同仍作为新合同的正确 marginal**，最优 minimax radius 不会变大：新预测器可以忽略新读数，直接复用旧预测器。若 CAL 同时改变了物理状态，单纯套这个单调性是错误的实验比较。
 
 尤其对于 18C 的**主动** CAL，设 \(K:\mathcal H\to\mathcal H\) 是实际 CAL 操作，\(O_K\) 是 CAL 后得到的外部读数。CAL 后未来目标是 \(G_w^K(h)=G(T_wK(h))\)，而非原来的 \(G(T_wh)\)。要只估计 **CAL 带来的信息价值**，需要同样执行 \(K\)、同样的后续未来，但在 predictor 输入中分别**隐藏或开放 CAL 数据**：
 
-$
+$$
 \begin{aligned}
 R_{\rm withheld}^{K}
 &=\inf_\delta\sup_h
@@ -352,7 +352,7 @@ R_{\rm measured}^{K}
 &=\inf_\delta\sup_h
  |\delta(O_{\rm pre}(h),O_K(K(h)))-G(T_wK(h))|.
 \end{aligned}\tag{M29}
-$
+$$
 
 这两个对象固定 **同一 CAL-induced physical history**，所以 \(R_{\rm measured}^K\le R_{\rm withheld}^K\)；若把 \(R_{\rm measured}^K\) 与 no-CAL future \(G(T_wh)\) 直接比较，观测的信息增益和操作 \(K\) 的物理效应已混在一起。必须单列 CAL-versus-NO-CAL **干预/状态转移效应**，才能科学地解释 Pro18C 结果。
 
@@ -518,12 +518,9 @@ DPT 本地复算 locator（以下路径属于 DPT 工作区，不是本 Math 仓
 
 自建的精确两比特负控：X1,X2 为独立公平 signs，Y_i=X_i Z_i。**独立** Z_i 且 E Z_i=ρ 时，coordinate 的 retained MI 为 ψ(ρ)，parity 为 ψ(ρ²)；**完全共享** Z1=Z2=Z 时，Y1Y2=X1X2，parity 信息保持 **1 bit**。ρ=0.3 的枚举结果为独立：0.0659319446 vs 0.0058508285 bits，共享：0.0659319446 vs 1 bit。此结论直接击穿“F119 的 coordinate optimality 不依赖噪声相关结构”的过强迁移，**不反驳 F119 原定理**。DPT 应优先测试可测的 nuisance-invariant paired contrast 与共同误差合法域；不是宣称 parity 对模拟波形最优，也不是混用 MI bits 与 goal nJ 的评价。
 
-**GitHub Actions 最新实测。** 已将 [DPT mathematics auditors workflow](.github/workflows/dpt-math-auditors.yml) 从仅执行两个旧单测文件改为 `python -m unittest discover -v -p 'test_*.py'`。主分支 [run 38178258633](https://github.com/Gogoal-L/math/actions/runs/38178258633) 实测 **124 tests / OK**（包括 9 个 F119/F129/F132+综合 toy）；[原 PR #4 现有研究分支 run 38178623705](https://github.com/Gogoal-L/math/actions/runs/38178623705) 实测 **128 tests / OK**，包括 singular correlated-noise recovery 新增 5 个测试。两者是不同分支/提交，不可以把 128 当成 main 全部通过。本轮深读的 [完整逐定理依赖、原始 TikZ 多模态理解、反事实与 DPT 有界接入](dpt_research/20261011_F119_F129_F132_proof_level_DPT_bridge.md) 已落实在 main。绿色 CI 证明已执行的有限合成程序行为，不证明论文所有数学量词、源 DPT 实际法则或硬件物理。
+**GitHub Actions 最新实测（2026-10-12）。** 已采用 `python -m unittest discover -v -p 'test_*.py'` 执行完整自动发现的回归套件；本轮主分支 [run 38180573299](https://github.com/Gogoal-L/math/actions/runs/38180573299) 实际报告 **153 tests / OK**，涵盖 F119/F129/F132 有限反例、连续目标信息半径、rank-deficient sensor noise、finite future words 和 mixed-nuisance prediction；新增加的极小噪声数值稳定性和严格容差测试均在其中。这里的通过只意味着声明的合成工具合同，不能替代 native DPT/实验硬件验证。
 
-
-**F119 真正促成的程序性修复。** 上述 correlated-noise 反例曝光上一轮 [goal_ellipsoid_recovery](https://github.com/Gogoal-L/math/blob/research/20261011-continuous-goal-information/dpt_tools/goal_ellipsoid_recovery.py) 仅接受 nonsingular square noise-factor E 的实际数学接口缺口。现已在**原 draft PR #4 分支**允许 E∈R^{m×p} 任意 rank，并严格将 zero-noise channel contrasts 投影为观测相容子空间后再计算 goal radius；其 [完备条件推导](https://github.com/Gogoal-L/math/blob/research/20261011-continuous-goal-information/dpt_research/20261011_continuous_goal_information_bridge.md) 和 13 个针对性单测在 [CI run 38178623705](https://github.com/Gogoal-L/math/actions/runs/38178623705) 通过。解析正例：共享传感器误差 0.2·(1,1)，goal x1−x2 半径 0，goal x1+x2 半径 0.4；额外独立误差 0.05 恢复前者非零风险 0.05。**这只是具名线性误差球模型的结论**：相近但非零的噪声奇异值被误判为 0、未资格化相关偏差或真实 DPT 非线性都可能让该 zero-radius 正例失效。此工具及本段链接尚不代表 main 已有此代码（等待既有 PR #4 决策）；主控可按同 reference 消费真实 B/H/E/g 并明确仪器可得性。
-
-
+**F119 引发的程序修复（已在 main）。** [goal_ellipsoid_recovery](dpt_tools/goal_ellipsoid_recovery.py) 现接受 E∈R^{m×p} 任意 rank；[推导](dpt_research/20261011_continuous_goal_information_bridge.md) 区分无噪声 readout、相关 bounded noise、证据边界。主分支另有 [contextual_goal_recovery](dpt_tools/contextual_goal_recovery.py) 将无限共享 nuisance 与有限指令集目标半径统一到式 (M13–M17)。极小 E 的 SVD 浮点泄漏曾令最优 decoder 上界虚增，现增加独立最小二乘/零基线候选、可行 witness 检查，并移除了随意的 1e-9 全局容差宽限。**数学零半径只有在 physical noise rank、误差地板、端口及时间关联都已证实时才是物理结论。** 原 draft [PR #4](https://github.com/Gogoal-L/math/pull/4) 的已验证实现按文件纳入 main 后已关闭，所属临时分支已清理；无需保留长期 feature branch。
 
 **OpenAI Math 自身 Lean 定理层的进一步核对（2026-10-11）。** 三篇均有官方 [F119](https://github.com/openai/math/blob/fd4aeeb2ee4fc729c18d98444fed42fd0529eeeb/lean/docs/119.md)、[F129](https://github.com/openai/math/blob/fd4aeeb2ee4fc729c18d98444fed42fd0529eeeb/lean/docs/129.md)、[F132](https://github.com/openai/math/blob/fd4aeeb2ee4fc729c18d98444fed42fd0529eeeb/lean/docs/132.md) formalized-scope 页面和真正的证明源码，而不仅有论文声称。[F119 SoftChannel.Main](https://github.com/openai/math/blob/fd4aeeb2ee4fc729c18d98444fed42fd0529eeeb/lean/OAI/InformationTheory/SoftChannel/Main.lean) 从 SoftInformation 及 CourtadeKumar 的底层证明推出 contraction、attainment、偏置 refinement 与 selected production；[F129 Automata.Main](https://github.com/openai/math/blob/fd4aeeb2ee4fc729c18d98444fed42fd0529eeeb/lean/OAI/Combinatorics/Automata/Main.lean) 拼接 small_nfa 与 deterministic_lower_bound；[F132 Sensitivity.Separation](https://github.com/openai/math/blob/fd4aeeb2ee4fc729c18d98444fed42fd0529eeeb/lean/OAI/Combinatorics/Sensitivity/Separation.lean) 给出 quantitative、unbounded quadratic、fixed-power 三个结论。**关键版本/检查边界：** `lean/ComparatorChallenges/*.lean` 的相应题目含有 `sorry`，它们是 comparator statement placeholders；不能误读为实际 proof 文件的缺口。已实读上述 *证明主入口* 与官方 statement scope，但**尚未重新以 Lean/lake 完整构建整个依赖闭包**，也未完成 source Lean→纸本全部技术引理的一一审计，因此只登记“上游有对应形式化源码和声明”，不是本地新通过的机器证明。即便原 theorem 经 Lean 正式核证，也不保证其不同模型前提的 DPT transfer。
 
