@@ -587,6 +587,69 @@ $$
 
 **对 18B/C 的可证伪选择：** (i) 150-V 同 reference/source 的完整 recorded-command ordinary 是否已经充分；(ii) 若不足，未见 pair 的未来 work/peak 歧义是否能由 $Q_w$ 特征方向定量预测；(iii) 合法 CAL 在不混入自身状态干预效应的条件下能否缩小真实 goal fiber，而不只是提高参数 Hessian 的秩；(iv) peak/event guard 换支导致光滑 chart 失效时，退回前面的 sup-norm peak 和分段 work 界。最强科学出口是**源码同域的条件下界 + 非线性有界上界 + 未参与拟合的未来预测**，而不是将这套微分几何称为已有 SiC 全局证书。
 
+### 0.12 直接回接实际隐式 source 残差：不必显式构造整套 nonlinear update
+
+上一段 (M48) 需要每个未来命令的状态更新 Hessian，但真实 DPT source evaluator 通常只提供离散隐式节点残差，例如 coupled backward Euler、梯形积分或带 charge/thermal 的求解器。正确的接口不必先全局求出状态转移 $f_u$。固定一个**合法命令** $u$，令前态 $x$、后态 $z=f_u(x)$ 满足整套离散 source 方程 $F(z,x;u)=0$，并假设真实点处 $A=F_z$ 可逆。于是由隐函数定理：
+
+$$
+\begin{aligned}
+F(z,x;u)&=0,\qquad A=F_z,\quad B=F_x,\\
+J_u:=Df_u&=-A^{-1}B,\qquad A J_u+B=0.
+\end{aligned}\tag{M50}
+$$
+
+目标 $g(z)$ 若只通过 postcommand 状态计算，则定义当前态 future goal $G(x)=g(f_u(x))$，求解 $A^\top\lambda=\nabla g(z)$ 得到 adjoint $\lambda$。任何前态方向 $a,b$ 诱导扩展 source 方向 $p_a=(J_u a,a)$、$p_b=(J_u b,b)$。连续对源残差**二次微分**并消去 $D^2f_u$，给出下式精确 Hessian-vector pairing：
+
+$$
+\boxed{
+\begin{aligned}
+DG(x)&=J_u^\top\nabla g(z),\\
+D^2G(x)[a,b]
+&=(J_ua)^\top D^2g(z)(J_ub)\\
+&\quad-\lambda^\top D^2F(z,x;u)[p_a,p_b].
+\end{aligned}
+}\tag{M51}
+$$
+
+**推导：** $D^2F[(J_ua,a),(J_ub,b)]+A D^2 f_u[a,b]=0$；代入 $D^2(g\circ f_u)[a,b]=(J_ua)^\top D^2g(J_ub)+(\nabla g)^\top D^2 f_u[a,b]$，再用 $A^\top\lambda=\nabla g$ 即得第二项的**负号**。实际实现须保留 $F_{zz},F_{zx},F_{xz},F_{xx}$ 全部块，尤其**同一步 current/previous charge 的相关性**，不能只对目标和当前态求 Hessian。该式可用求解当前 node Jacobian 与其转置来构造目标二阶方向导数；大规模 source 可采用 Hessian-vector products，而不必显式形成完整三阶存储张量。
+
+**把式子作用到已提供的 V6 二极管 BE 子本构。** 若固定 $a,I_s,\tau$，并暂只检查 §4.7 的二极管 charge/conduction 对残差的贡献
+
+$$
+F_{D,n}=i_{b,n}-I_s(e^{v_n/a}-1)
+-\frac{\tau I_s(e^{v_n/a}-e^{v_{n-1}/a})}{h_n},
+\tag{M52}
+$$
+
+则控制电压块的**精确二阶残差导数**为
+
+$$
+\begin{aligned}
+\frac{\partial^2 F_{D,n}}{\partial v_n^2}
+&=-\frac{I_s e^{v_n/a}}{a^2}
+\left(1+\frac{\tau}{h_n}\right),\\
+\frac{\partial^2 F_{D,n}}{\partial v_{n-1}^2}
+&=+\frac{\tau I_s e^{v_{n-1}/a}}{h_n a^2}.
+\end{aligned}\tag{M53}
+$$
+
+这两个项符号相反，且 previous charge 通过 $1/h_n$ 放大；**这是跨步 charge history 必须进入目标 Hessian 的精确 source 原因之一**。本式对该 scalar BE diode contribution 的交叉 $v_n,v_{n-1}$ 导数为零；但整套网络/器件/热残差的 mixed Hessian、隐式状态求解耦合与 guard 并不必为零。若 $a=a(T)$、$I_s=I_s(T)$，还要加入温度方向和其交叉偏导。本节不是把 diode branch 当作整个 vendor model。
+
+对于一个合法相容 source 状态邻域，定义 $\|D^2F\|$ 为从两项归一化 source 方向到残差向量的双线性算子范数。由 (M51) 和 $\|[J_u;I]\|_2^2=1+\|J_u\|_2^2$（此处 $\|[J_u;I]\|_2^2$ **实际上等于** $1+\|J_u\|_2^2$），得条件目标曲率上界：
+
+$$
+\boxed{
+\|D^2G\|
+\le \|J_u\|^2\|D^2g\|
++\|\lambda\|\,\|D^2F\|
+  \bigl(1+\|J_u\|^2\bigr).
+}\tag{M54}
+$$
+
+这帮助确定哪个 source 区域更值得重做有限域证书：$F_z$ 接近奇异、$\|J_u\|$ 大、指数电荷曲率大时，简单 constant/affine ordinary 的余项可能迅速上升；若 adjoint $\lambda$ 与曲率 source rows 正交，**某个工程目标**仍可稳定。这是**带目标投影的物理计算压力测试**，不是绝对的 source 器件精度定理。完整多步 work/peak 还需 stage goal/window boundary 与 guard。V6 的 150-V trapezoidal 与 600-V BE 残差不可混接。
+
+[可执行隐式 source Hessian 工具](dpt_tools/implicit_goal_hessian.py) 实现式 (M50–M51)，输入同点完整 $F_z,F_x,D^2F,\nabla g,D^2g$；[独立解析测试](dpt_tools/test_implicit_goal_hessian.py) 包括精确含 $F_{zx}$ 交叉项的 rational source、含 $F_{zz},F_{xx}$ 的 implicit source，以及 200 个随机解析显式律与隐式残差一致性比较。需要在实际 DPT source 中冻结 reference、nodal 变量单位、求解分支和正确的上一时步 state，才可将输出放进 (M42–M49) 的真实 observation-fiber 计算。
+
 **验证账本：** F119/F129/F132 的上述定理式从钉住的 [openai/math source](https://github.com/openai/math/tree/fd4aeeb2ee4fc729c18d98444fed42fd0529eeeb) 抽出；(M5–M6),(M8–M9),(M13–M22),(M24–M25) 是在具名假设下的独立有限维/分析推导。F119 相关噪声反例有精确有限枚举，F129 二状态 relation context 有全枚举，F132 小局部 grouped witness 有合成审计；[proof-level 细节](dpt_research/20261011_F119_F129_F132_proof_level_DPT_bridge.md)。联合半径工具另经独立的 70 组随机受约束 primal/dual 数值交叉检查（最坏绝对差约 $`9.14\cdot10^{-12}`$，其中 6 个严格容差下的 SciPy line-search status 未成功但最终可行迭代满足 $`10^{-8}`$ 约束容差；非形式证书），以及 analytic/CLI regressions。**没有真实 SiC source replay、没有物理参数/测量噪声资格、没有全部非线性 remainder 的统一证书。**
 
 ---
