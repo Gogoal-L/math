@@ -34,6 +34,6 @@ jobs:
         run: python -m pip install -r dpt_tools/requirements.txt
       - name: Compile audit modules
         run: python -m compileall -q dpt_tools
-      - name: Run original and frontier regression tests
+      - name: Run entire discovered DPT auditor regression suite
         working-directory: dpt_tools
-        run: python -m unittest -v test_dpt_tools.py test_frontier_tools.py
+        run: python -m unittest discover -v -p 'test_*.py'
