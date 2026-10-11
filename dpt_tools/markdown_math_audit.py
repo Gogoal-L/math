@@ -125,6 +125,18 @@ def audit_markdown(source: str, name='document') -> list[str]:
             errors += [f'{name}:{e}' for e in source_errors]
             for x in fragments:
                 errors += _tex_errors(x['tex'], prefix)
+    # Protect against an accidental text replacement that duplicates equation sections.
+    labels = [
+        tag for item in extract_math(source) if item["kind"] == "display"
+        for tag in re.findall(r'\\tag\{([A-Za-z]+[0-9]+)\}', item["tex"])
+    ]
+    if len(labels) != len(set(labels)):
+        errors.append(f'{name}: DUPLICATE_TAG detected in display mathematics')
+    if Path(name).name == 'DPT_MATH_RESEARCH_MAP.md':
+        ids = [int(t[1:]) for t in labels if re.fullmatch(r'M[0-9]+', t)]
+        if not ids or ids != list(range(1, len(ids) + 1)):
+            errors.append(f'{name}: NONSEQUENTIAL_TAG in M-equation series')
+
     return errors
 
 
