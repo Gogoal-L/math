@@ -73,12 +73,51 @@ class GoalEllipsoidTests(unittest.TestCase):
             self.assertEqual(proc.returncode, 0, proc.stderr)
             self.assertAlmostEqual(json.loads(outpath.read_text())["radius"], 0.1, places=8)
 
-    def test_reject_singular_noise_and_invalid_shapes(self):
-        with self.assertRaises(ValueError):
-            recover_scalar_goal(np.eye(2), np.eye(2), np.diag([0.1, 0.]), np.ones(2))
+    def test_accept_singular_noise_and_reject_invalid_shapes(self):
+        out = recover_scalar_goal(np.eye(2), np.eye(2),
+                                  np.diag([0.1, 0.]), np.ones(2))
+        self.assertAlmostEqual(out["radius"], 0.1, places=8)
+        self.check_gap(out)
         with self.assertRaises(ValueError):
             recover_scalar_goal(np.eye(2), np.eye(1), np.eye(1), np.ones(2))
 
+
+
+class SingularCommonModeRecovery(unittest.TestCase):
+    def check_gap(self, out, tol=1e-7):
+        self.assertLess(out["numerical_gap"], tol)
+        self.assertLessEqual(out["feasible_witness_lower"], out["algorithm_upper"]+tol)
+
+    def test_rectangular_shared_nuisance_exact_difference(self):
+        E=np.array([[0.2],[0.2]])
+        out=recover_scalar_goal(np.eye(2),np.eye(2),E,np.array([1.,-1.]))
+        self.assertAlmostEqual(out["radius"],0.,places=8)
+        np.testing.assert_allclose(out["measurement_weights"],[1.,-1.],atol=1e-7)
+        self.check_gap(out)
+
+    def test_same_shared_nuisance_still_limits_sum_goal(self):
+        E=np.array([[0.2],[0.2]])
+        out=recover_scalar_goal(np.eye(2),np.eye(2),E,np.array([1.,1.]))
+        self.assertAlmostEqual(out["radius"],0.4,places=7)
+        self.check_gap(out)
+
+    def test_rank_deficient_square_factor(self):
+        E=np.array([[0.2,0.],[0.2,0.]])
+        out=recover_scalar_goal(np.eye(2),np.eye(2),E,np.array([1.,-1.]))
+        self.assertAlmostEqual(out["radius"],0.,places=8)
+        self.check_gap(out)
+
+    def test_small_unshared_noise_restores_nonzero_radius(self):
+        E=np.array([[0.2,0.],[0.2,0.05]])
+        out=recover_scalar_goal(np.eye(2),np.eye(2),E,np.array([1.,-1.]))
+        self.assertAlmostEqual(out["radius"],0.05,places=6)
+        self.check_gap(out)
+
+    def test_zero_noise_factor_is_exact_observation(self):
+        E=np.empty((2,0))
+        out=recover_scalar_goal(np.eye(2),np.eye(2),E,np.array([1.,1.]))
+        self.assertAlmostEqual(out["radius"],0.,places=8)
+        self.check_gap(out)
 
 if __name__ == "__main__":
     unittest.main()
