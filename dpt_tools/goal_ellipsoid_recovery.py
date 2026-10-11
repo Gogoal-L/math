@@ -90,11 +90,22 @@ def recover_scalar_goal(state_factor, observation, noise_factor, goal):
         a=a_r+U_0 @ t
     else:
         a=a_r
-    upper=float(np.linalg.norm(c-HB.T @ a)+np.linalg.norm(E.T @ a))
+    # Tiny sensor noise drives q toward an endpoint: numerical leakage
+    # into ker(A) can corrupt the q-based decoder by many orders.
+    # Keep only independently valid dual upper candidates.
+    ls_decoder=np.linalg.lstsq(HB.T,c,rcond=None)[0]
+    def decoder_upper(a_vec):
+        return float(np.linalg.norm(c-HB.T @ a_vec)+np.linalg.norm(E.T @ a_vec))
+    a=min((a,ls_decoder,np.zeros(m)),key=decoder_upper)
+    upper=decoder_upper(a)
     scale=max(float(np.linalg.norm(v)), float(np.linalg.norm(A @ v)))
     if scale==0: scale=1.0
-    z=Z @ (v/scale)
-    lower=float(abs(c @ z))
+    # Normalize and score the feasible primal witness in the reduced
+    # coordinate system to avoid ill-conditioned SVD round trips.
+    v_w=v/scale
+    safe=max(1.0,float(np.linalg.norm(v_w)),float(np.linalg.norm(A @ v_w)))
+    v_w=v_w/(safe*(1.0+8*np.finfo(float).eps))
+    lower=float(abs(c_red @ v_w))
     return {
         "status": "LINEAR_ELLIPSOID_NUMERIC_DIAGNOSTIC",
         "radius": float(np.sqrt(max(f, 0.))),
@@ -103,9 +114,9 @@ def recover_scalar_goal(state_factor, observation, noise_factor, goal):
         "algorithm_upper": upper,
         "feasible_witness_lower": lower,
         "numerical_gap": max(0., upper-lower),
-        "witness_prior_norm": float(np.linalg.norm(z)),
-        "witness_whitened_observation_norm": float(np.linalg.norm(A @ (v/scale))),
-        "witness_noiseless_constraint_norm": float(np.linalg.norm(C @ z)),
+        "witness_prior_norm": float(np.linalg.norm(v_w)),
+        "witness_whitened_observation_norm": float(np.linalg.norm(A @ v_w)),
+        "witness_noiseless_constraint_norm": float(np.linalg.norm(C @ (Z @ v_w))),
         "noise_rank": r_E,
         "noise_free_readout_count": m-r_E,
         "exact_observation_constraint_rank": r_C,
