@@ -6,6 +6,306 @@ OpenAI Math 对 DPT 的主要贡献，已经从“提示如何检查信息不足
 
 本页服务 Math side 的选题和复用。DPT 科学 authority 仍由本地 accepted evidence 拥有；这里记录使用后果，不替代冻结评分。原来的长篇阅读展开可从 [Git 历史](https://github.com/Gogoal-L/math/commits/main/DPT_MATH_RESEARCH_MAP.md) 找回，专题推导继续保留在 [dpt_research](dpt_research/)。
 
+## 0. 承重数学主线：从论文公式到 DPT 可验证命题（2026-10-12）
+
+本节直接给定义、推导、适用前提、反例和具名物理接口。专题笔记提供证明原文 locator；这里不再把“看过某篇论文”当作数学成果。**上游 F119/F129/F132 的定理**与**以下独立构造的 DPT 线性/非线性引理**始终分开。共同前提：reference、source law、preparation、外部 observation、端口/符号、合法 command word、目标窗口和 nuisance 域必须固定；100 V 原始 R1、150 V active history/CAL 与 600 V native 是不同 evidence chart。
+
+### 0.1 科学目标不是恢复 θ，而是恢复规定命令下的 G
+
+令 \(h\in\mathcal H_{\mathcal R}\) 是由合法 preparation 在参考系统 \(\mathcal R\) 中生成的 source-reachable 历史；\(O(h)\) 是**目标计算之前允许取得的外部观测**；\(T_w(h)\) 是按实际顺序执行合法有限命令字 \(w\) 后的 source state；\(G_j(T_w(h))\) 是具名 work/peak/event-time。参数 \(\theta=(L_g,L_s,L_d,L_{\rm loop},R_g,\ldots)\) 及未测电荷/热态并不默认可由 \(O\) 唯一恢复。正确的决策对象是：
+
+$
+\boxed{
+\mathcal R_{j,w}(O,\mathcal H_{\mathcal R})=
+\inf_{\widehat G:\,O\mapsto\mathbb R}\ 
+\sup_{h\in\mathcal H_{\mathcal R},\ \text{合法误差}}
+|\widehat G(O(h))-G_j(T_w(h))|.
+}\tag{M1}
+$
+
+若两个合法 \(h_+,h_-\) 在误差合同下可生成同一观测 \(y\)，则任何观测型预测器在 \(y\) 只能输出同一个数，三角不等式立即给
+
+$
+\mathcal R_{j,w}\ge\tfrac12|G_j(T_w(h_+))-G_j(T_w(h_-))|.
+\tag{M2}
+$
+
+这解释 18B 的未来 peak 差是**不可避免误差的下界见证**，不是整个可达类的上界；18C 的 L 不唯一与目标 work 稳定可同时成立。有限 bank 的小 goal spread **不是**全域小 \(\mathcal R\) 的证明。该统一对象既可作用于工程目标，也容纳 18A 的严格噪声/证书结果。
+
+### 0.2 F132：从嵌套敏感度证明提炼“联合干预”的可证伪方程
+
+原文：[F132 construction](https://github.com/openai/math/blob/fd4aeeb2ee4fc729c18d98444fed42fd0529eeeb/preprints/A-superquadratic-separation-between-sensitivity-and-block-sensitivity-September-25-2026/build/sections/01-construction.tex)、[recurrences](https://github.com/openai/math/blob/fd4aeeb2ee4fc729c18d98444fed42fd0529eeeb/preprints/A-superquadratic-separation-between-sensitivity-and-block-sensitivity-September-25-2026/build/sections/02-recurrences.tex)、[separation](https://github.com/openai/math/blob/fd4aeeb2ee4fc729c18d98444fed42fd0529eeeb/preprints/A-superquadratic-separation-between-sensitivity-and-block-sensitivity-September-25-2026/build/sections/03-separation.tex)。
+
+对 total Boolean \(f\)，\(s(f,x)\) 统计单 bit 翻转的变化数，\(\operatorname{bs}(f,x)\) 是可同时选出的**互不相交敏感输入块**数。F132 构造深度 \(d\)、目标数 \(M\)、门控数 \(k=2M^2+1\)、\(r=\lceil\sqrt M\rceil\) 的嵌套 predicate。其承重处是必须同时维护普通敏感度 \(S_{\ell,b}\) 与共同翻转两种 predicate 的 \(J_{\ell,b}\)，其典型递推为
+
+$
+\begin{aligned}
+ S_{\ell,1}&\le M^2S_{\ell-1,0}+rS_{\ell-1,1},&
+ J_{\ell,1}&\le M^2J_{\ell-1,0}+rS_{\ell-1,1},\\
+ S_{\ell,0}&\le16S_{\ell-1,0}+S_{\ell-1,1}+3J_{\ell-1,1},&
+ J_{\ell,0}&\le16S_{\ell-1,0}+3J_{\ell-1,1}.
+\end{aligned}\tag{M3}
+$
+
+其中常数 16 来自标签控制的 near-accepting targets，3 来自 tournament gate-only 候选；省去 \(J\) 会漏掉“一次 bit 翻转同时修复多个 gate”的路径。最终 Boolean 构造有
+
+$
+s(f)\le2(d+2)M^{d+1},\qquad
+\operatorname{bs}(f,0)\ge M^2(2M^2+1)^d,
+\quad
+\frac{\operatorname{bs}(f)}{s(f)^2}
+\ge\frac{2^d}{4(d+2)^2}.
+\tag{M4}
+$
+
+**独立 DPT 迁移引理：** 对两个**同时可合法操控**的物理/命令参数 \(a,b\)，固定同 reference 的四角目标值 \(G_{00},G_{10},G_{01},G_{11}\)。定义交互对比
+
+$
+\Delta_{ab}G=G_{11}-G_{10}-G_{01}+G_{00}
+=\int_{a_0}^{a_1}\!\!\int_{b_0}^{b_1}
+\frac{\partial^2G}{\partial a\,\partial b}\,db\,da
+\tag{M5}
+$
+
+（积分式需要整块合法域内 \(C^2\) 正则）。**任何**加性 ordinary \(Q(a,b)=q_1(a)+q_2(b)\) 均有 \(\Delta_{ab}Q=0\)。若四角的 absolute forecast error 都不超过 \(\epsilon\)，则 \( |\Delta_{ab}G|\le4\epsilon\)；因此
+
+$
+\boxed{\max_{\text{四角}}|G-Q|\ge|\Delta_{ab}G|/4.}
+\tag{M6}
+$
+
+若四次 source goal 求值分别仅知误差界 \(\eta_{00},\eta_{10},\eta_{01},\eta_{11}\)，能核验的下界为 \((|\Delta_{\rm observed}|-\sum\eta)_+/4\)。此界对 \(G(a,b)=ab\) 的四个 \(0/1\) 角点可达到（最佳加性拟合误差 \(1/4\)）。因此它是**针对加性模型类的锋利 falsifier**，不是“所有普通 nonlinear 模型不可能”的定理，也不继承 F132 的 superquadratic exponent。对于 Rg×L、历史×CAL、stage×command 等，只在四角 preparation/branch/端口一致且合法时应用。比较现有 [mixed_interaction_audit](dpt_tools/mixed_interaction_audit.py) 的 source-level four-corner 对比；普通二阶耦合模型仍是强 rival。
+
+### 0.3 F129：双侧上下文分辨 → 有限未来词的目标商空间
+
+原文：[F129 machines](https://github.com/openai/math/blob/fd4aeeb2ee4fc729c18d98444fed42fd0529eeeb/preprints/An-exponential-two-way-deterministic-state-lower-bound-for-one-way-liveness-September-25-2026/build/sections/machines.tex)、[matching corners](https://github.com/openai/math/blob/fd4aeeb2ee4fc729c18d98444fed42fd0529eeeb/preprints/An-exponential-two-way-deterministic-state-lower-bound-for-one-way-liveness-September-25-2026/build/sections/matching.tex)、[rank-loss proof](https://github.com/openai/math/blob/fd4aeeb2ee4fc729c18d98444fed42fd0529eeeb/preprints/An-exponential-two-way-deterministic-state-lower-bound-for-one-way-liveness-September-25-2026/build/sections/rank.tex)。
+
+F129 不是“模型状态越少越好”的口号。它用完整二元关系字母表（\(2^{h^2}\) 个 letters）和左右 singleton contexts \(I_i A I_j\)，把关系 \(A\) 的任意一项 \((i,j)\) 转化为非空/空接受判据。匹配图有 idempotent corner、rank 和 common support：32 个共轭共用至多 \(64c\) 个支持位置却制造 256 个独立关系增量；每次必须损失至少 \(L(h-31)/2\) 个 rank，因此
+
+$
+64c\ge256\,L(h-31)/2,\qquad
+c\ge2L(h-31),\qquad
+L(h)=2^{\lfloor(h-2)/31\rfloor}.
+\tag{M7}
+$
+
+**DPT 真正可迁移的对象是右侧未来上下文，不是该指数下界。** 对具有**全局同一线性 chart**的切换模型 \(x_{t+1}=A_u x_t\)，未来 scalar rows \(C A_w\) 按**实际命令顺序**产生。令
+
+$
+\mathcal V_0=\operatorname{row}(C),\qquad
+\mathcal V_{k+1}=\mathcal V_k+
+\sum_{u\in\mathcal A}\mathcal V_k A_u,\qquad
+\mathcal V_\infty=\operatorname{span}_{w\in\mathcal A^*}\operatorname{row}(CA_w).
+\tag{M8}
+$
+
+若 \(\dim x=n\)，该升链最多发生 \(n-\dim\mathcal V_0\) 次严格增维；稳定后 \(\mathcal V_\infty A_u\subseteq\mathcal V_\infty\)，所以以此 row basis \(T\) 定义 \(z=Tx\)，存在准确 reduced update \(T A_u=\bar A_u T\)。任何线性**自主演化且覆盖所有词目标**的商状态，其 row space 必须含 \(\mathcal V_\infty\)；最小维数为 \(\dim\mathcal V_\infty\)。[goal_word_quotient](dpt_tools/goal_word_quotient.py) 计算这一命题。**有限指定** \(\mathcal W\) 则只要求 \(\operatorname{row}(CA_w:w\in\mathcal W)\)，不是 all-word autonomous closure。
+
+另一个可以直接测试的结果是**顺序交换缺陷**：
+
+$
+G_{A\to B}(x)-G_{B\to A}(x)
+=C(BA-AB)x=C[B,A]x.
+\tag{M9}
+$
+
+若两个短命令是连续 vector fields \(f_A,f_B\) 的小 \(\Delta t\) 演化且流光滑，状态交换缺陷的一阶非零项为 \(\Delta t^2(Df_B f_A-Df_A f_B)+O(\Delta t^3)\)；stage 输出/事件守卫仍可能额外产生差异。既有 18B 的 ordered-command 结果与此**问题形式**相符，但 actual switched/guarded law 并非一个全局线性交换子，因此必须用 native legal \(A\to B,B\to A\) 两次实际执行来判定。
+
+### 0.4 F119：从信息产生率看清“相关噪声”的定理边界
+
+原文：[F119 main theorem](https://github.com/openai/math/blob/fd4aeeb2ee4fc729c18d98444fed42fd0529eeeb/preprints/Sharp-binary-information-contraction-on-the-discrete-cube-September-24-2026/build/main.tex)、[canonical three-point optimizer](https://github.com/openai/math/blob/fd4aeeb2ee4fc729c18d98444fed42fd0529eeeb/preprints/Sharp-binary-information-contraction-on-the-discrete-cube-September-24-2026/build/sections/canonical.tex)、[thinning](https://github.com/openai/math/blob/fd4aeeb2ee4fc729c18d98444fed42fd0529eeeb/preprints/Sharp-binary-information-contraction-on-the-discrete-cube-September-24-2026/build/sections/thinning.tex)、[flow](https://github.com/openai/math/blob/fd4aeeb2ee4fc729c18d98444fed42fd0529eeeb/preprints/Sharp-binary-information-contraction-on-the-discrete-cube-September-24-2026/build/sections/flow.tex)。
+
+在**均匀独立输入 + 各坐标独立 binary-symmetric noise** 的原定理中，令
+
+$
+\psi(r)=\tfrac12[(1+r)\ln(1+r)+(1-r)\ln(1-r)],\
+I(u)=H(\mathbb E u)-\mathbb E H(u),\
+F(\psi(r))=r\,\operatorname{atanh}r.
+\tag{M10}
+$
+
+噪声半群 \(P_t=T_{e^{-t}}\)、\(N_0=\frac12\sum_i(\mathrm{Id}-\mathrm{flip}_i)\) 满足精确导数
+
+$
+\frac{dI(P_tu)}{dt}
+=-\mathbb E[\operatorname{atanh}(P_tu)\,N_0P_tu]
+=-D(P_tu).
+\tag{M11}
+$
+
+论文经 three-point entropy-budget optimizer、convex-perspective reserve、common-output thinning 和维数归纳证明 \(D(g)\ge F(I(g))\)。置 \(r_t=\psi^{-1}(I(P_tu))\)，由 \(\psi'(r)=\operatorname{atanh}r\) 得 \(r_t'\le-r_t\)，积分即
+
+$
+\boxed{I(T_\rho u)\le\psi(|\rho|\psi^{-1}(I(u)))}.
+\tag{M12}
+$
+
+**必须区别两个独立性假设：** 中间 joining cost 优化允许两个 child fields 耦合，但输入 \(X_i\) 与噪声 \(Z_i\) 的独立性在原定理中不可取消。显式反例：\(X_1,X_2\) 独立公平 signs，\(Y_i=X_i Z_i\)。独立 \(Z_i\) 时，coordinate/parity 的互信息为 \(\psi(\rho),\psi(\rho^2)\)；若噪声完全共享 \(Z_1=Z_2=Z\)，则 \(Y_1Y_2=X_1X_2\)，**parity 恰好无损**。这只推翻“F119 coordinate optimum 也适用于相关噪声”的迁移，未推翻 F119 本身。DPT 的工程启发是检查**共享 offset/gain/skew 是否真的构成可消去的 nuisance 方向**，不是把二元互信息 bits 当作 volt/nJ deterministic error guarantee。
+
+### 0.5 三篇真正联合的严格结果：future-goal minimax radius with mixed nuisance
+
+这是本 Math 仓库的新**独立线性模型推导与实现**，不是宣称 F119/F129/F132 直接推出 SiC 定理。假设有限 source chart 由
+
+$
+x=x_0+Bz,\quad \|z\|_2\le1;\qquad
+y-y_0=HBz+N\eta+Ee,\quad\|e\|_2\le1,\quad\eta\in\mathbb R^p.
+\tag{M13}
+$
+
+这里 \(N\eta\) 是**可任意大的同一个未知线性 nuisance**，\(Ee\) 是**联合、可相关、确定性有界**的传感器误差；\(z,e\) 是**彼此独立的两个单位球预算**，不能由普通样本 covariance 自动获得。命令 \(w=(u_1,\ldots,u_\ell)\) 的 linear update 为 \(F_w=A_{u_\ell}\cdots A_{u_1}\)，第 \(j\) 个未来目标的线性部分是 \(c_{w,j}^\top z\)，其中 \(c_{w,j}=B^\top F_w^\top C_j^\top\)。令 \(A=HB\)。
+
+**定理（标量、有限维、整个声明线性 chart 的 minimax radius）：**
+
+$
+\begin{aligned}
+R(c;A,N,E)
+&=\inf_{\widehat g}\sup_{\|z\|,\|e\|\le1,\eta}
+ |c^\top z-\widehat g(Az+N\eta+Ee)|\\
+&=\max_{\substack{\|z\|\le1,\ \|e\|\le1\\Az+Ee\in\operatorname{im}N}}
+ |c^\top z|\\
+&=\min_{\substack{a\in\mathbb R^m\\N^\top a=0}}
+ \left(\|c-A^\top a\|_2+\|E^\top a\|_2\right).
+\end{aligned}\tag{M14}
+$
+
+证明的三步：① 对可由反号 \((z,e,\eta)\) 形成同一 \(y=0\) 的两条历史，所有 decoder 至少承担 \(|c^\top z|\)；② 对任意 \(N^\top a=0\)，线性预测器 \(a^\top(y-y_0)\) 的误差由两个单位球的 support function 上界给出式 (M14) 最后一行；③ 将 \((z,e)\) 的紧凸对称积球与观测线性等式作 Lagrange/Fenchel dual（原点满足严格球内点），上下界相合。因此**存在最优线性外部 readout**，不需要先估计全部 \(x,\theta,\eta\)。该结论属于已有 optimal-recovery 范畴，相关标准来源：[Foucart–Liao, Journal of Complexity 83 (2024), 101841](https://doi.org/10.1016/j.jco.2024.101841)；这里只作具名 mixed-nuisance 归约与 DPT 使用合同。
+
+**把无界 nuisance 与零噪声 contrast 分两次剔除：** 取 \(U_0\) 张成 \(\ker N^\top\)，设 \(A_0=U_0^\top A,E_0=U_0^\top E\)。\(E_0\) 的 compact/full-left SVD 写成 \(E_0=U_r\Sigma_rV_r^\top\)，其正交余方向为 \(U_\perp\)。由于 \(U_\perp^\top E_0=0\)，任何兼容状态差 \(z\) 必须满足
+
+$
+Kz=0,\quad K=U_\perp^\top A_0;
+\qquad z=Zv,\quad Z^\top Z=I,\quad\operatorname{im}Z=\ker K.
+\tag{M15}
+$
+
+再定义 \(M=\Sigma_r^{-1}U_r^\top A_0Z\)、\(c_r=Z^\top c\)，则
+
+$
+\boxed{
+R=\max_{\|v\|\le1,\ \|Mv\|\le1}|c_r^\top v|,
+\qquad
+R^2=\min_{0\le q\le1}
+ c_r^\top\big[(1-q)I+qM^\top M\big]^{-1}c_r.
+}\tag{M16}
+$
+
+端点奇异时沿 \(q\to0^+,1^-\) 取兼容极限，不以盲目 Moore–Penrose 代替无穷方向。**推导而非仅引用优化器：** 对 \(D_q=(1-q)I+qM^\top M\)，Cauchy–Schwarz 给
+\((c_r^\top v)^2\le(c_r^\top D_q^{-1}c_r)(v^\top D_qv)\le c_r^\top D_q^{-1}c_r\)；在最小化的内点 \(q^\star\)，令 \(v_\star=D_{q^\star}^{-1}c_r\)，一阶导数为 \(\|v_\star\|^2-\|Mv_\star\|^2=0\)，规范化即可同时触及两个约束并达到上界。端点最优时对应单个活跃约束；若有奇异方向先依 (M15) 消去。故式 (M16) 是全局可计算结果，而不仅是局部 SVD heuristic。实际代码仍有 floating-rank 门槛，其“半径 0”只有在物理证明 exact common mode 时才可以作为物理零误差。
+
+多个未来词、多个工程目标各有容许误差 \(\tau_j>0\)。对所有目标使用同一预测前观测、分别构造最优线性 decoder，**归一化 worst-case 最大误差**准确等于
+
+$
+R_{\infty,\mathcal W}=
+\max_{w\in\mathcal W,\ j}\frac{R(c_{w,j};A,N,E)}{\tau_j}.
+\tag{M17}
+$
+
+因此 \(R_{\infty,\mathcal W}\le1\) 是声明模型/传感器/有限 word 下的**达到工程容差的充分且必要条件**；不是全 command language 或 nonlinear source 的证书。[contextual_goal_recovery.py](dpt_tools/contextual_goal_recovery.py) 实际计算此式，调用 [goal_ellipsoid_recovery.py](dpt_tools/goal_ellipsoid_recovery.py) 的一维 \(q\) 求解器；[8 项解析＋CLI 测试](dpt_tools/test_contextual_goal_recovery.py) 覆盖命令先后、rank-one shared noise、independent noise、预测前 CAL 和非法输入。
+
+**由 (M16) 退化出的无噪声 rank 定理：** 当 \(E=0\)，\(R(c)=0\) 当且仅当 \(c\in\operatorname{row}(U_0^\top HB)\)。若一组未来目标在 \(z\) 坐标堆为 \(\Gamma_{\mathcal W}\)，允许免费设计任意理想、无新增 nuisance 的标量测量，则最少还缺的独立读数为
+
+$
+k_{\rm ideal}=
+\operatorname{rank}\begin{pmatrix}U_0^\top HB\\\Gamma_{\mathcal W}\end{pmatrix}
+-\operatorname{rank}(U_0^\top HB).
+\tag{M18}
+$
+
+这与已有 [contextual_goal_quotient.py](dpt_tools/contextual_goal_quotient.py) 一致；\(B\) 非满秩时必须先写在可达 \(z\) chart 中，不能把整个 ambient parameter space 当作真实 reachable space。真实 CAL/传感器只能从**有限合法候选库**购买，所需 channel 数可能大于理想 \(k_{\rm ideal}\)。
+
+**精确小例子：** \(B=H=I_2,\ N=(1,1)^\top,\ E=0,\ C=(1,-1),\ A_{\rm future}=\mathrm{diag}(1,-1)\)。当前 goal 为 \(x_1-x_2\)，可用 \(y_1-y_2\) 精确计算，\(R_{\rm now}=0\)；未来 goal 变成 \(x_1+x_2\)，却与无界共同 offset 混淆，\(R_{\rm future}=\sqrt2\)（状态先验是 \(\|z\|_2\le1\)，不是两个独立区间）。若合法预测前 CAL 另读 \(y_3=\eta\)，则 \(y_1+y_2-2y_3=x_1+x_2\)，future 半径归零。若原两通道分别有联合球 \(\|e\|\le1\) 的 **0.1 倍独立误差**，CAL 后 \(R_{\rm future}=0.1\sqrt2\)；共享的 0.2 倍噪声 \(E=0.2(1,1)^\top\) 则在差分方向仍完全消去。**这个小例子的单位是归一化状态/目标，不是 V、nH 或 nJ。**
+
+### 0.6 非线性 DPT 恰好还缺的东西：余项、work 事件、peak 守卫
+
+源器件电荷本构、Coss/Crss、body diode 与模式/事件切换一般使 (M13) 只是局部近似。在同一**具名合法非零域**，若观测与某个 future scalar goal 有
+
+$
+O(z)=y_0+Az+N\eta+Ee+r_O(z),\qquad
+G_w(z)=G_{w,0}+c_w^\top z+r_{G,w}(z),
+\quad\|r_O\|\le\beta_O,\ |r_{G,w}|\le\beta_{G,w},
+\tag{M19}
+$
+
+则对任何 \(N^\top a=0\)，有可复算的**非线性条件上界**
+
+$
+\boxed{
+\sup|\widehat G_a-G_w|
+\le\|c_w-A^\top a\|+\|E^\top a\|
++\beta_{G,w}+\|a\|\beta_O,\qquad
+\widehat G_a=G_{w,0}+a^\top(y-y_0).
+}\tag{M20}
+$
+
+证明是展开残差、消去 \(N\eta\)、逐项取范数。最小化右侧时**应当把 \(\|a\|\beta_O\) 一起计入**；先以 (M14) 选出放大系数很高的 decoder 再忽略 remainder，会虚报修复。关键不足是从 actual coupled source 给出 \(\beta_O,\beta_G\) 在准备/未来共同合法域的统一上界，而不是把 finite-bank 最大残差称为证书。式 (M14) 的精确 minimax 下界不能在非线性 remainder 未控制时照搬。
+
+对于真正的 DPT signed stage work（需固定端口、电流方向与窗口），设
+
+$
+W(z)=\int_{t_a(z)}^{t_b(z)} V_{DS}(t,z)I_D(t,z)\,dt.
+$
+
+Leibniz rule 给出真实目标导数：
+
+$
+\boxed{
+DW[\delta z]=\int_{t_a}^{t_b}
+\big(I_D\,DV_{DS}[\delta z]+V_{DS}\,DI_D[\delta z]\big)\,dt
++\big[V_{DS}I_D\big]_{t_b}Dt_b[\delta z]
+-\big[V_{DS}I_D\big]_{t_a}Dt_a[\delta z].
+}\tag{M21}
+$
+
+若事件由 \(\phi(t,z)=0\) 定义且 **transversal**，\(|\partial_t\phi|\ge\gamma>0\)，隐函数定理给
+
+$
+Dt_\ast[\delta z]=-\frac{D_z\phi[\delta z]}{\partial_t\phi}.
+\tag{M22}
+$
+
+当 crossing 斜率接近 0、峰值多重或 guard 换支时，\(DG\) 及 \(\beta_G\) 可能剧增甚至失去该光滑表示。对于唯一内部光滑非退化 peak，包络定理的一阶 peak-value 导数是 \(D_z V_{DS}(t_\ast,z)\)，但 **peak time** 仍需另行求导；有多个几乎相等的 ringing peaks 时不能随意选择其中一个导数。
+
+18B 的配对实值例子表明目标种类本身很重要：
+
+$
+\Delta W_1\approx+1.628664~\mu{\rm J},\qquad
+\Delta W_2\approx-1.686273~\mu{\rm J},\qquad
+\Delta W_{\rm total}\approx-57.609755~{\rm nJ};
+\quad
+1-\frac{|\Delta W_{\rm total}|}{|\Delta W_1|+|\Delta W_2|}\approx98.26\%.
+\tag{M23}
+$
+
+这解释了为什么单个 total-work goal 可以比两阶段 work、peak/event 更稳定。它**不是** total Eon/Eoff 的全局稳定定理；目标必须与正式窗口、积分符号及 source 端口一致。
+
+### 0.7 回接原始 R1 的可辨识方向，而非把数学停在抽象 chart
+
+在**声明 KVL 符号、实际 source 电流导数与明确 discrepancy**的低阶 turn-off 诊断中，可将外部 overshoot 近似写作
+
+$
+u(t):=V_{DS}(t)-V_{\rm DC}
+\approx L_{\rm eff}s(t)+R_{\rm loop}I_D(t)+b(t),
+\qquad s(t)=-\frac{dI_D}{dt}.
+\tag{M24}
+$
+
+若将允许的 offset/电阻/传感器偏差基函数离散堆成 \(N_s\)，令 \(P_\perp\) 是加权 \(W\)-内积对 \(\operatorname{col}N_s\) 的正交投影，则在线性、已知 \(s\) 情形
+
+$
+\widehat L_{\rm eff}
+=\frac{\langle P_\perp s,P_\perp u\rangle_W}{\|P_\perp s\|_W^2},
+\qquad
+|\widehat L_{\rm eff}-L_{\rm eff}|
+\le\frac{\|\epsilon\|_W}{\|P_\perp s\|_W}.
+\tag{M25}
+$
+
+若 \(P_\perp s=0\)，该实验无法区分有效 L 和允许 nuisance；若它很小，即使 waveform 拟合完美，参数也会不稳定。注意 **s 的数值微分误差、gate-charge/Coss 非线性、internal Kelvin source 与 external cut port 不一致**均可破坏 (M24) 的条件；它不是 LTspice/硬件的已核验器件方程。更重要的是，某个未来 overshoot/work 的导数 \(DG\) 可能在这个不可辨识方向上很小，于是 (M1)/(M14) 允许目标稳定而 L 不唯一。下一步该拿真实 R1 reference 的同源 \(O,DO,DG,s,N_s\) 与设备外部 cut record 来检验，而不是借用 150 V CAL 的 chart 替 100 V R1 作证。
+
+**验证账本：** F119/F129/F132 的上述定理式从钉住的 [openai/math source](https://github.com/openai/math/tree/fd4aeeb2ee4fc729c18d98444fed42fd0529eeeb) 抽出；(M5–M6),(M8–M9),(M13–M22),(M24–M25) 是在具名假设下的独立有限维/分析推导。F119 相关噪声反例有精确有限枚举，F129 二状态 relation context 有全枚举，F132 小局部 grouped witness 有合成审计；[proof-level 细节](dpt_research/20261011_F119_F129_F132_proof_level_DPT_bridge.md)。联合半径工具另经独立的 70 组随机受约束 primal/dual 数值交叉检查（最坏绝对差约 \(9.14\cdot10^{-12}\)，其中 6 个严格容差下的 SciPy line-search status 未成功但最终可行迭代满足 \(10^{-8}\) 约束容差；非形式证书），以及 analytic/CLI regressions。**没有真实 SiC source replay、没有物理参数/测量噪声资格、没有全部非线性 remainder 的统一证书。**
+
+---
+
 ## 1. 从原预期到实际成果
 
 Pro17C/D/E 提供了 actual coupled law、ordered-command forecast、有限更新与 source-derived 信息修复的执行基础。S09 随后建立同模型 native 对照、goal-dependent model reversal，以及强 affine / one-Newton 的竞争条件。18A/B/C 分别推进证明、动态反例和主动辨识；原始 R1 的观测受限恢复仍有独立证据义务。
