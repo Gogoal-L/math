@@ -194,3 +194,104 @@ For a single 150-V Pro18B/C actual-law reference or the distinct original R1 at 
 - The executable matrix auditor [fiber_goal_curvature.py](../dpt_tools/fiber_goal_curvature.py) checks full-row-rank, tangent goal-gradient factorization, Hessian symmetry, relative Q eigenvalues, r²/4 radius, and outputs a numeric interval **only** when a uniform composed-fiber third derivative bound M is supplied.
 - [12 tests](../dpt_tools/test_fiber_goal_curvature.py) include exact linear-goal hidden nonlinear observation, cancellation, positive/negative Hessian modes, 120 synthetic cubic exact-fiber cases, invalid regularity, and a two-stage command-pullback polynomial oracle. They prove software behavior on these fixtures, not a universal theorem or source physical truth.
 - Assumed $C^3$ charts and uniform M do **not** follow from one finite-difference Hessian or a green MathJax syntax check. For the actual device, derive local derivatives and uniform bounds from the source residual (implicit differentiation/validated interval calculations), correct prepared state and legal guard branches.
+
+
+## I. Direct implicit source-law bridge: adjoint Hessian without forming explicit f
+
+**Why this matters for the actual DPT project.** The supplied *IH2662 DPT Research Design V6* §4.7 and §6.5 describe a coupled backward-Euler source residual with current/previous diode stored charge, conduction, network and thermal equations. Other stages use trapezoidal source updates. The future-goal Hessian (C12) cannot be assumed known: computing derivatives of an explicit multi-stage update f may be costly or misleading if source signs/current-before-next conventions are wrong. The following formula supplies a pointwise **exact implicit** route, without claiming the whole source has been differentiated yet.
+
+Fix one legal command u and a regular source pair (z,x) satisfying F(z,x;u)=0. For clarity both z and x have n coordinates (a real BE evaluator must map its own actual coordinate chart and time step). Let
+
+$$
+A=F_z,\qquad B=F_x,\qquad J=-A^{-1}B,\qquad A J+B=0.
+\tag{C15}
+$$
+
+The implicit function theorem gives z=f(x) near that root when A is invertible. Let g(z) be the goal after this step and solve the **source adjoint**
+
+$$
+A^\top\lambda=\nabla g(z).
+\tag{C16}
+$$
+
+For any old-state tangent vectors a,b, define complete residual directions $\widetilde a=(Ja,a)$ and $\widetilde b=(Jb,b)$, in the concatenated coordinates (next z, previous x). Differentiate F(f(x),x;u)=0 twice:
+
+$$
+A\,D^2 f[a,b]+D^2F(z,x;u)[\widetilde a,\widetilde b]=0.
+\tag{C17}
+$$
+
+The second derivative of the postcommand scalar goal, **including current/previous coupling**, is then
+
+$$
+\boxed{
+\begin{aligned}
+D(g\circ f)&=J^\top\nabla g,\\
+D^2(g\circ f)[a,b]
+&=(Ja)^\top D^2g(z)(Jb)\\
+&\quad-\lambda^\top D^2F[\widetilde a,\widetilde b].
+\end{aligned}
+}\tag{C18}
+$$
+
+The minus sign arises from the source residual differentiation. **It does not equal simply $J^\top D^2g\,J$** except when the source residual has zero second variation on the legal directions (or the adjoint kills it).
+
+The weighted source Hessian includes four physically distinct blocks $F_{zz},F_{zx},F_{xz},F_{xx}$. In particular **retaining only $F_{zz}$ misses old charge, preparation memory and cross derivatives**, even if g is linear. The code [implicit_goal_hessian.py](../dpt_tools/implicit_goal_hessian.py) accepts precisely these full derivatives in concatenated [z,x] order and returns both gradient and Hessian in previous-state coordinates. A matrix-free source implementation would use adjoint-weighted Hessian-vector products to avoid materializing F2.
+
+### Sharp ordinary counterexample: current–previous mixed Hessian alone
+
+For an exact scalar nonlinear discrete source equation
+
+$$
+F(z,x)=z+\kappa zx-x=0,\qquad
+z=f(x)=\frac{x}{1+\kappa x},\quad 1+\kappa x\ne0,
+\tag{C19}
+$$
+
+take a *linear* terminal goal g(z)=z. Here $F_{zz}=F_{xx}=0$, but $F_{zx}=F_{xz}=\kappa$, and exact differentiation gives
+
+$$
+\frac{d}{dx}g(f(x))=\frac{1}{(1+\kappa x)^2},
+\quad
+\frac{d^2}{dx^2}g(f(x))
+=-\frac{2\kappa}{(1+\kappa x)^3}.
+\tag{C20}
+$$
+
+A Hessian transport that kept only $F_{zz}$ and $F_{xx}$ would incorrectly report **zero source curvature**, despite the exact nonzero result. This mechanism is not a claim that a vendor SiC branch has precisely z+κzx; it is an **adversarial analytic circuit-like residual** showing why the cross-block cannot be dropped from the *general* method.
+
+### Actual V6 diode law: curvature formula and scope
+
+For fixed temperature/emission thermal scale a>0, fixed τ>0, and known time step h>0, the actual V6 BE diode-residual component is (up to the declared source sign conventions)
+
+$$
+F_D=i_b-I_s(e^{v_n/a}-1)
+-\frac{\tau I_s}{h_n}\bigl(e^{v_n/a}-e^{v_{n-1}/a}\bigr).
+\tag{C21}
+$$
+
+Its **isolated diode current/charge contribution** has second derivative entries
+
+$$
+\begin{aligned}
+(F_D)_{v_nv_n}
+&=-\frac{I_se^{v_n/a}}{a^2}(1+\tau/h_n),\\
+(F_D)_{v_{n-1}v_{n-1}}
+&=+\frac{\tau I_s e^{v_{n-1}/a}}{h_na^2}.
+\end{aligned}\tag{C22}
+$$
+
+Even this simple model contributes with **opposite signs** at current and previous steps; dropping previous stored charge violates its source law. Further mixed derivatives can arise from the rest of the full coupled BE residual (and from T-dependence of Is and a), so the stand-alone diode entries are **not** a complete DPT Hessian. Under uniformly bounded source/goal operators on a shared legal chart, (C18) immediately provides a conditional estimate
+
+$$
+\|D^2(g\circ f)\|
+\le\|J\|^2\|D^2g\|
++\|\lambda\|\,\|D^2F\|(1+\|J\|^2).
+\tag{C23}
+$$
+
+The numerical Jacobian/adjoint condition number must be included in error propagation; if F_z becomes near singular, a pointwise float Hessian need not have a useful finite-radius uniform bound.
+
+**Independent verification:** analytic tests for (C19)–(C20), an implicit nonlinear current+previous scalar residual, a two-state quadratic command, and 200 random exactly specified quadratic maps represented through an invertible implicit residual all matched the source-free explicit chain rule. This validates the algebra and program on those fixtures, not the actual Wolfspeed/TRAP/BE vendor source.
+
+**Source-level acquisition required to close the loop:** actual executable F(z,x;u) and correct frozen command; measured source-consistent preparation/state chart; analytic/AD/validated finite-interval F_z,F_x,F_zz,F_zx,F_xx; goal g(z) or full stage work/readout including guard/event terms; and uniform implicit invertibility and third-derivative bounds on one physically legal history fiber. These feed (C5)–(C9) to decide the engineering goal radius *without* claiming recoverability of all parasitic inductances.
