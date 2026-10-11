@@ -379,3 +379,25 @@ python -m unittest -v test_goal_lipschitz_stability.py
 ```
 
 The exact optimality label is finite-bank/fixed-candidate-library only, with floating arithmetic; above 18 candidates, greedy feasibility is **not** minimum cost. The closure/solver link, scalar Lipschitz proof, original F332/F331/F110 source audit, and DPT acceptance gates are in [the derivation](../dpt_research/20261010_goal_stability_compositional_closure.md).
+
+
+## goal_ellipsoid_recovery.py — continuous correlated-noise scalar-goal minimax
+
+**Math-only**: exact for a centered finite-dimensional **linear model**, not automatically for native nonlinear SiC. State x=x0+Bz with Euclidean norm(z)<=1, recorded pretarget observation y=Hx+Ee with norm(e)<=1, and frozen scalar goal G(x)=G(x0)+g.T(x-x0). The *entire* prior ellipsoid must be legal; E must be a justified nonsingular **joint deterministic** noise factor rather than an unqualified sample covariance. All inputs must use one reference model, ports, preparation, time window, future command and consistent physical units.
+
+NPZ fields:
+- state_factor: B, shape (n,n), may be rank deficient;
+- observation: H, shape (m,n), actual pretarget observation Jacobian;
+- noise_factor: E, shape (m,m), nonsingular correlated deterministic sensor-error factor;
+- goal: g, shape (n,), gradient of one smooth frozen future target.
+
+Run:
+
+~~~bash
+python goal_ellipsoid_recovery.py frozen_chart.npz --output goal_radius.json
+python -m unittest -v test_goal_ellipsoid_recovery.py
+~~~
+
+Returns radius in *goal units*, minimax-optimal **unwhitened external** measurement_weights, a linear predictor's algorithm_upper, feasible_witness_lower, numerical_gap and optimizer q; the status is LINEAR_ELLIPSOID_NUMERIC_DIAGNOSTIC. The absolute predictor is G(x0)+weights.T@(y-Hx0). Bounds and gap are floating numerical diagnostics, not interval-certified error claims. NumPy only; no additional dependency.
+
+Let A=E^{-1}HB, c=B.Tg. The exact *assumed-model* minimax risk equals max{|c.Tz|: norm(z)<=1, norm(Az)<=1}; by convex duality this equals the best linear decoder risk and a one-dimensional convex minimization. **Mathematical prior:** [Foucart–Liao (2024)](https://doi.org/10.1016/j.jco.2024.101841). The [research note](../dpt_research/20261011_continuous_goal_information_bridge.md) contains the scoped proof, new OpenAI Math F119/F129/F132 source audit, synthetic cases, falsifiers and the source-to-controller acceptance gate. If native nonlinear curvature, unknown hard sensor bounds or moving/tied peak events matter, do not use this linear radius as a native guarantee; qualify the chart and remainder separately.
