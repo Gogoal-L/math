@@ -144,7 +144,7 @@ This result is **elementary independent linear algebra**, not a direct corollary
 1. Every listed future goal is uniquely determined by y for *all possible x,η* if and only if row(G_W)⊆row(R).
 2. If arbitrary ideal new scalar measurements of x without new nuisance may be added, the minimum number needed for simultaneous exact recovery of the listed future goals equals
 ```math
-k_{\min}=\operatorname{rank}\begin{bmatrix}R\\G_W\end{bmatrix}-\operatorname{rank}R.
+k_{\min}=\mathop{\mathrm{rank}}\begin{bmatrix}R\\G_W\end{bmatrix}-\mathop{\mathrm{rank}}R.
 ```
 3. For any single goal row g outside row(R), let v be the orthogonal projection of g.T onto ker(R), normalized. Then two histories x=±v are observationally compatible for some (possibly different) nuisance assignments and have future goal gap 2|gv|>0. If ||x||<=1 is the accepted symmetric prior and all such states and nuisance offsets are admissible, every decoder has worst-case error ≥|gv|; for unbounded x the ambiguity can be scaled without limit.
 
@@ -155,3 +155,97 @@ k_{\min}=\operatorname{rank}\begin{bmatrix}R\\G_W\end{bmatrix}-\operatorname{ran
 **Decisive two-state example.** H=I2, N=[1,1].T; instantaneous goal C=[1,-1]. Its value is recovered exactly by the nuisance-invariant contrast y1-y2. One future legal abstract command A=diag(1,-1) changes the target row to CA=[1,1]. This row is not in row([1,-1]), so a one-dimensional observation-only prediction defect appears despite instantaneous sufficiency. A new *ideal* reading of x1+x2 eliminates the deficit, and so does a distinct legal acquisition measuring η itself through a third sensor row (H_extra=[0,0], N_extra=[1]), which changes the nuisance knowledge rather than directly sensing state.
 
 **Mandatory DPT qualification:** A is a global linear map only in this toy. DPT 18B/18C actual-law Jacobians change with preparation, command, branch/guard and thermal memory, and θ-space may have nonlinear curvature. Source gradient and observations must share the same units, exact ports, timing, state lift and achieved conditions; numerical near-zero singular values require a physically justified rank tolerance and nuisance floor. A previously recorded common offset need not equal a later calibration offset. Real source-reachable history sets may not contain opposite witnesses, and a finite command list does not cover all futures. A finite k_min never proves sensor count, physical model reduction or unbounded error-free reconstruction on actual hardware.
+
+---
+
+## Legacy MAP derivations: grouped contrasts and binary information (M3–M6, M10–M12)
+
+These are the original source-theorem/transfer expressions relocated from the controller-facing MAP. F119/F129/F132 assumptions and DPT analogues remain separate; the [original formula record](https://github.com/Gogoal-L/math/blob/15b3fde162b2f7cb729ec106b847be1ad046d222/DPT_MATH_RESEARCH_MAP.md) is immutable.
+
+### 0.2 F132：从嵌套敏感度证明提炼“联合干预”的可证伪方程
+
+原文：[F132 construction](https://github.com/openai/math/blob/fd4aeeb2ee4fc729c18d98444fed42fd0529eeeb/preprints/A-superquadratic-separation-between-sensitivity-and-block-sensitivity-September-25-2026/build/sections/01-construction.tex)、[recurrences](https://github.com/openai/math/blob/fd4aeeb2ee4fc729c18d98444fed42fd0529eeeb/preprints/A-superquadratic-separation-between-sensitivity-and-block-sensitivity-September-25-2026/build/sections/02-recurrences.tex)、[separation](https://github.com/openai/math/blob/fd4aeeb2ee4fc729c18d98444fed42fd0529eeeb/preprints/A-superquadratic-separation-between-sensitivity-and-block-sensitivity-September-25-2026/build/sections/03-separation.tex)。
+
+对 total Boolean $`f`$，$`s(f,x)`$ 统计单 bit 翻转的变化数，$`\mathop{\mathrm{bs}}(f,x)`$ 是可同时选出的**互不相交敏感输入块**数。F132 构造深度 $`d`$、目标数 $`M`$、门控数 $`k=2M^2+1`$、$`r=\lceil\sqrt M\rceil`$ 的嵌套 predicate。其承重处是必须同时维护普通敏感度 $`S_{\ell,b}`$ 与共同翻转两种 predicate 的 $`J_{\ell,b}`$，其典型递推为
+
+**(M3)**
+
+```math
+\begin{aligned}
+ S_{\ell,1}&\le M^2S_{\ell-1,0}+rS_{\ell-1,1},&
+ J_{\ell,1}&\le M^2J_{\ell-1,0}+rS_{\ell-1,1},\\
+ S_{\ell,0}&\le16S_{\ell-1,0}+S_{\ell-1,1}+3J_{\ell-1,1},&
+ J_{\ell,0}&\le16S_{\ell-1,0}+3J_{\ell-1,1}.
+\end{aligned}
+```
+
+其中常数 16 来自标签控制的 near-accepting targets，3 来自 tournament gate-only 候选；省去 $`J`$ 会漏掉“一次 bit 翻转同时修复多个 gate”的路径。最终 Boolean 构造有
+
+**(M4)**
+
+```math
+\begin{aligned}
+s(f)&\le 2(d+2)M^{d+1},\\
+\mathop{\mathrm{bs}}(f,0)&\ge M^2(2M^2+1)^d,\\
+\frac{\mathop{\mathrm{bs}}(f)}{s(f)^2}
+&\ge \frac{2^d}{4(d+2)^2}.
+\end{aligned}
+```
+
+**独立 DPT 迁移引理：** 对两个**同时可合法操控**的物理/命令参数 $`a,b`$，固定同 reference 的四角目标值 $`G_{00},G_{10},G_{01},G_{11}`$。定义交互对比
+
+**(M5)**
+
+```math
+\Delta_{ab}G=G_{11}-G_{10}-G_{01}+G_{00}
+=\int_{a_0}^{a_1}\!\!\int_{b_0}^{b_1}
+\frac{\partial^2G}{\partial a\,\partial b}\,db\,da
+```
+
+（积分式需要整块合法域内 $`C^2`$ 正则）。**任何**加性 ordinary $`Q(a,b)=q_1(a)+q_2(b)`$ 均有 $`\Delta_{ab}Q=0`$。若四角的 absolute forecast error 都不超过 $`\epsilon`$，则 $` |\Delta_{ab}G|\le4\epsilon`$；因此
+
+**(M6)**
+
+```math
+\boxed{\max_{\text{四角}}|G-Q|\ge|\Delta_{ab}G|/4.}
+```
+
+若四次 source goal 求值分别仅知误差界 $`\eta_{00},\eta_{10},\eta_{01},\eta_{11}`$，能核验的下界为 $`(|\Delta_{\rm observed}|-\sum\eta)_+/4`$。此界对 $`G(a,b)=ab`$ 的四个 $`0/1`$ 角点可达到（最佳加性拟合误差 $`1/4`$）。因此它是**针对加性模型类的锋利 falsifier**，不是“所有普通 nonlinear 模型不可能”的定理，也不继承 F132 的 superquadratic exponent。对于 Rg×L、历史×CAL、stage×command 等，只在四角 preparation/branch/端口一致且合法时应用。比较现有 [mixed_interaction_audit](dpt_tools/mixed_interaction_audit.py) 的 source-level four-corner 对比；普通二阶耦合模型仍是强 rival。
+
+---
+
+### 0.4 F119：从信息产生率看清“相关噪声”的定理边界
+
+原文：[F119 main theorem](https://github.com/openai/math/blob/fd4aeeb2ee4fc729c18d98444fed42fd0529eeeb/preprints/Sharp-binary-information-contraction-on-the-discrete-cube-September-24-2026/build/main.tex)、[canonical three-point optimizer](https://github.com/openai/math/blob/fd4aeeb2ee4fc729c18d98444fed42fd0529eeeb/preprints/Sharp-binary-information-contraction-on-the-discrete-cube-September-24-2026/build/sections/canonical.tex)、[thinning](https://github.com/openai/math/blob/fd4aeeb2ee4fc729c18d98444fed42fd0529eeeb/preprints/Sharp-binary-information-contraction-on-the-discrete-cube-September-24-2026/build/sections/thinning.tex)、[flow](https://github.com/openai/math/blob/fd4aeeb2ee4fc729c18d98444fed42fd0529eeeb/preprints/Sharp-binary-information-contraction-on-the-discrete-cube-September-24-2026/build/sections/flow.tex)。
+
+在**均匀独立输入 + 各坐标独立 binary-symmetric noise** 的原定理中，令
+
+**(M10)**
+
+```math
+\begin{aligned}
+\psi(r)&=\tfrac12\bigl[(1+r)\ln(1+r)+(1-r)\ln(1-r)\bigr],\\
+I(u)&=H(\mathbb E u)-\mathbb E H(u),\\
+F(\psi(r))&=r\,\mathop{\mathrm{atanh}}r.
+\end{aligned}
+```
+
+噪声半群 $`P_t=T_{e^{-t}}`$、$`N_0=\frac12\sum_i(\mathrm{Id}-\mathrm{flip}_i)`$ 满足精确导数
+
+**(M11)**
+
+```math
+\frac{dI(P_tu)}{dt}
+=-\mathbb E[\mathop{\mathrm{atanh}}(P_tu)\,N_0P_tu]
+=-D(P_tu).
+```
+
+论文经 three-point entropy-budget optimizer、convex-perspective reserve、common-output thinning 和维数归纳证明 $`D(g)\ge F(I(g))`$。置 $`r_t=\psi^{-1}(I(P_tu))`$，由 $`\psi'(r)=\mathop{\mathrm{atanh}}r`$ 得 $`r_t'\le-r_t`$，积分即
+
+**(M12)**
+
+```math
+\boxed{I(T_\rho u)\le\psi(|\rho|\psi^{-1}(I(u)))}.
+```
+
+**必须区别两个独立性假设：** 中间 joining cost 优化允许两个 child fields 耦合，但输入 $`X_i`$ 与噪声 $`Z_i`$ 的独立性在原定理中不可取消。显式反例：$`X_1,X_2`$ 独立公平 signs，$`Y_i=X_i Z_i`$。独立 $`Z_i`$ 时，coordinate/parity 的互信息为 $`\psi(\rho),\psi(\rho^2)`$；若噪声完全共享 $`Z_1=Z_2=Z`$，则 $`Y_1Y_2=X_1X_2`$，**parity 恰好无损**。这只推翻“F119 coordinate optimum 也适用于相关噪声”的迁移，未推翻 F119 本身。DPT 的工程启发是检查**共享 offset/gain/skew 是否真的构成可消去的 nuisance 方向**，不是把二元互信息 bits 当作 volt/nJ deterministic error guarantee。
