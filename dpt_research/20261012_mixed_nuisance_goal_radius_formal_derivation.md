@@ -479,9 +479,9 @@ Q_h\{\delta(Y)\ne h\}
 
 ```math
 \begin{aligned}
-P_{0j}=P_{1j}&=(1/2,1/2)\quad(j=1,2),\\
-Q_0&=\begin{pmatrix}1/2&0\\0&1/2\end{pmatrix},\\
-Q_1&=\begin{pmatrix}0&1/2\\1/2&0\end{pmatrix},\\
+P_{0j}=P_{1j}&=(1/2,1/2)\quad (j=1,2),\\
+Q_0(0,0)=Q_0(1,1)&=1/2,\\
+Q_1(0,1)=Q_1(1,0)&=1/2,\\
 \max_j\mathrm{TV}(P_{0j},P_{1j})&=0,\\
 \mathrm{TV}(Q_0,Q_1)&=1.
 \end{aligned}
