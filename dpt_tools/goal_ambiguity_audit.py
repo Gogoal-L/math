@@ -371,6 +371,13 @@ def audit_marginal_sensor_coupling(
             "hall_tested_nonempty_row_cuts_per_history": (1 << bins) - 1,
             "exact_feasibility_checked": bool(np.all(leakage == 0)),
             "support_inferred_joint_tv_lower_bound": inferred_tv,
+            "unrestricted_marginal_only_baseline_not_post_support_optimum": True,
+            "best_certified_equal_prior_failure_upper_bound": (
+                min(risk, .5 * float(np.sum(leakage)))
+                if disjoint and far_goals else risk),
+            "best_certified_worst_history_failure_upper_bound": (
+                min(max(e0,e1),float(np.max(leakage)))
+                if disjoint and far_goals else max(e0,e1) if far_goals else 0.),
             "conditional_goal_failure_upper_bounds":
                 leakage.tolist() if disjoint and far_goals
                 else [0.,0.] if not far_goals else None,
@@ -400,7 +407,6 @@ def audit_marginal_sensor_coupling(
             raise ValueError("each joint distribution must sum to one")
         for h in range(2):
             for s in range(n_sensors):
-                other_axes = tuple(1+i for i in range(n_sensors) if i != s)
                 recovered = j[h].sum(axis=tuple(i for i in range(n_sensors)
                                                 if i != s))
                 if not np.allclose(recovered, p[h,s], rtol=0., atol=1e-9):
