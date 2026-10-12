@@ -418,8 +418,11 @@ Output includes mathematical radius estimate, a separately evaluated linear deco
 For one centered global source-state chart and all pretarget measurements, assume
 
 ```math
-x=x_0+Bz,\quad\|z\|\le1,\qquad
-y-y_0=HBz+N\eta+Ee,\quad\eta\in\mathbb R^p,\quad\|e\|\le1.
+\begin{aligned}
+x&=x_0+Bz,\qquad\|z\|\le1,\\
+y-y_0&=HBz+N\eta+Ee,\\
+\eta&\in\mathbb R^p,\qquad\|e\|\le1.
+\end{aligned}
 ```
 
 N is an **unbounded shared nuisance vector**; E is a separate **jointly bounded, possibly correlated measurement error**. The program projects onto $`\ker N^\top`$, then evaluates the scalar radius for every **explicitly listed finite future command word** and each goal row $`C F_w`$, preserving actual command multiplication order. The row-specific radius divided by its specified goal-unit tolerance yields a minimax risk ratio. One conservative external linear decoder is returned per word and goal. No nonlinear/global native DPT closure is claimed.
@@ -450,9 +453,13 @@ This is a **conditional finite-dimensional math audit**, not a nonlinear SiC cir
 Let $`O(h)`$ be the pretarget observation and $`G_w(h)`$ the future scalar goal. Assume $`DO(h_0)`$ has full row rank, $`Z`$ spans its null space and $`DG_w(h_0)Z=0`$. The **relative observation-fiber Hessian** is:
 
 ```math
-Q_w=Z^\top\left(
-D^2G_w(h_0)-\sum_j\lambda_jD^2O_j(h_0)
-\right)Z,\quad DG_w(h_0)=\lambda^\top DO(h_0).
+\begin{aligned}
+Q_w&=Z^\top\Bigl[
+D^2G_w(h_0)\\
+&\qquad-\sum_j\lambda_jD^2O_j(h_0)
+\Bigr]Z,\\
+DG_w(h_0)&=\lambda^\top DO(h_0).
+\end{aligned}
 ```
 
 On a true **source-legal exact fiber chart** with orthonormal tangent coordinates $`\|v\|\le r`$, a certified third derivative bound $`M`$ for the *composite fiber goal* controls its exact minimax scalar radius to within $`Mr^3/6`$ of
