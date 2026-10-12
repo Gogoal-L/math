@@ -87,9 +87,9 @@ Independently, **all authored body/appendix LaTeX files were retrieved** at the 
 **F049 visual-source check:** its sole figure is the Cartesian square
 ```math
 \begin{CD}
-V(v) @>>> \operatorname{Spec}C\\
+V(v) @>>> \mathop{\mathrm{Spec}}C\\
 @VVV @VVV\\
-V(I) @>>> Y=\operatorname{Spec}B
+V(I) @>>> Y=\mathop{\mathrm{Spec}}B
 \end{CD}
 ```
 encoding principalization of the pulled-back ideal $`IC=(v)`$. It is **a scheme-theoretic pullback**, not a change-of-state or switched-system flowchart. The source drawing was reproduced by TeX and its rendered pixels were visually checked.

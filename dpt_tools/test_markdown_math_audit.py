@@ -85,5 +85,19 @@ c &= d
         src = 'Pay \\$5 and use `\\foo` in code; math $x_1^2$ okay.'
         self.assertEqual(audit_markdown(src, 'map.md'), [])
 
+    def test_github_disallowed_operatorname_in_math_is_rejected(self):
+        cases = (
+            r'Inline $\operatorname{rank}(A)$.',
+            '```math\n\\operatorname{Spec} A\n```',
+        )
+        for source in cases:
+            with self.subTest(source=source):
+                errors = audit_markdown(source, 'proof.md')
+                self.assertTrue(any('GITHUB_DISALLOWED_MACRO' in error for error in errors), errors)
+
+    def test_github_macro_check_ignores_literal_code(self):
+        source = 'Example `\\operatorname{rank}`.\n```python\ns = r"\\operatorname{Spec}"\n```\n'
+        self.assertEqual(audit_markdown(source, 'proof.md'), [])
+
 
 if __name__=='__main__': unittest.main()

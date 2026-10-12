@@ -320,7 +320,7 @@ each require further modeling. A stable per-stage eigenvalue does **not**
 exclude transient goal error amplification. The maximizing witness is for the
 mathematical uncertainty balls and may be physically unreachable.
 
-**Source and proof audit:** [2026-10-10 ordered goal-defect frontier](../dpt_research/20261010_ordered_goal_defect_transport.md)
+**Source and proof audit:** [living goal-stability / ordered-defect derivation](../dpt_research/20261010_goal_stability_compositional_closure.md)
 (deep reads of OpenAI Math F325/F251/F289/F129/F363/F151, exact linear
 support-function proof, counterexamples, transfer ceiling and DPT replay gate).
 
@@ -346,7 +346,7 @@ python -m unittest -v test_stage_box_reachability.py
 
 `CONDITIONAL_AFFINE_BOX_CHAIN` is conditional on all supplied map/guard/remainder assumptions, not a native or hardware certificate. A failed box check can be caused by neglected physical correlations; it is `INCONCLUSIVE_BOX_CONTAINMENT`, not a falsified SiC law. The `roundoff_margin_warning` field identifies stage guards too close to the computed hull for casual floating-point assurance; formal certification requires outward interval arithmetic. Existing files/CLIs are unchanged.
 
-Full derivations and source/Lean scope: [2026-10-10 nonlinear-fiber and stage-tube research note](../dpt_research/20261010_nonlinear_fiber_and_stage_tube.md).
+Full derivations and source/Lean scope: [living nonlinear-fiber and stage-tube derivation](../dpt_research/20261012_second_order_goal_fiber.md).
 
 ## `goal_repair_cover.py` (robust finite-bank goal-tolerance feature cover)
 
@@ -359,7 +359,7 @@ python goal_repair_cover.py finite_bank.npz --output feature_cover.json
 python -m unittest -v test_goal_repair_cover.py
 ```
 
-`EXACT_MIN_COST_REPAIR` proves the cheapest feature subset only within the **supplied finite candidate library and finite bank**. `NO_LIBRARY_REPAIR` gives an unseparated goal-conflicting history pair; `INTRINSIC_GOAL_UNCERTAINTY` means a single history already exceeds the requested goal tolerance; `GREEDY_FEASIBLE_NOT_PROVEN_MINIMUM` is a feasible nonoptimality-qualified result. Neither finite-bank success nor an accepted native model prediction proves whole-reachable sufficiency, hardware noise, continuous-domain guarantees or autonomous future-command updating. [Derivation, source audit and adversarial cases](../dpt_research/20261010_goal_tolerance_repair_cover.md).
+`EXACT_MIN_COST_REPAIR` proves the cheapest feature subset only within the **supplied finite candidate library and finite bank**. `NO_LIBRARY_REPAIR` gives an unseparated goal-conflicting history pair; `INTRINSIC_GOAL_UNCERTAINTY` means a single history already exceeds the requested goal tolerance; `GREEDY_FEASIBLE_NOT_PROVEN_MINIMUM` is a feasible nonoptimality-qualified result. Neither finite-bank success nor an accepted native model prediction proves whole-reachable sufficiency, hardware noise, continuous-domain guarantees or autonomous future-command updating. [Derivation, source audit and adversarial cases](../dpt_research/20261012_mixed_nuisance_goal_radius_formal_derivation.md).
 
 ## `goal_lipschitz_stability.py` — stable scalar goal recovery and transition-pair floor
 
@@ -406,7 +406,7 @@ R=\max_{\|v\|\le1,\|Av\|\le1}|c^\top v|
 =\min_{a}\bigl(\|B^\top g-(HB)^\top a\|+\|E^\top a\|\bigr).
 ```
 
-The full singular SVD projection, one-parameter q formula and proof are in [MAP M13–M16](../DPT_MATH_RESEARCH_MAP.md). NPZ input: state_factor (n,n), observation (m,n), noise_factor (m,p), goal (n,). Run:
+The full singular SVD projection, one-parameter q formula and proof are in [mixed-nuisance P1–P18 proof](../dpt_research/20261012_mixed_nuisance_goal_radius_formal_derivation.md). NPZ input: state_factor (n,n), observation (m,n), noise_factor (m,p), goal (n,). Run:
 
     python goal_ellipsoid_recovery.py linear_chart.npz --output goal_radius.json
     python -m unittest -v test_goal_ellipsoid_recovery.py
@@ -443,7 +443,7 @@ JSON schema: updates (K,n,n), state_factor (n,n), observation (m,n), unbounded_n
     python contextual_goal_recovery.py finite_words.json --output contextual_radius.json
     python -m unittest -v test_contextual_goal_recovery.py
 
-Under this **dimensionless** two-state prior, the immediate goal x1-x2 has R=0, while the goal after A=diag(1,-1) is x1+x2 with R=sqrt(2). A legal pretarget shared-offset calibration can repair this information loss; independent sensor errors leave a nonzero residual. For physical replay, source preparation/reference, port definition, sensor/error joint factor, all command and CAL admissibility, goal units, stage event guards, nonlinear remainder and strong ordinary controls must each be verified. See [MAP M17–M27](../DPT_MATH_RESEARCH_MAP.md). Tests are synthetic mathematics, not hardware evidence.
+Under this **dimensionless** two-state prior, the immediate goal x1-x2 has R=0, while the goal after A=diag(1,-1) is x1+x2 with R=sqrt(2). A legal pretarget shared-offset calibration can repair this information loss; independent sensor errors leave a nonzero residual. For physical replay, source preparation/reference, port definition, sensor/error joint factor, all command and CAL admissibility, goal units, stage event guards, nonlinear remainder and strong ordinary controls must each be verified. See [mixed-nuisance proof (legacy M17–M27)](../dpt_research/20261012_mixed_nuisance_goal_radius_formal_derivation.md). Tests are synthetic mathematics, not hardware evidence.
 
 
 ## fiber_goal_curvature.py — regular nonlinear fiber goal recovery and command Hessian pullback
@@ -479,7 +479,7 @@ The report gives the relative Hessian, its eigenvalues and inertia, a local $`r^
 
 The accompanying function pullback_goal_derivatives(J,H_f,g_next,H_next) implements a reverse command derivative transport: $`g_{\rm prev}=J^\top g_{\rm next}`$ and $`H_{\rm prev}=J^\top H_{\rm next}J+\sum_j (g_{\rm next})_j H_{f,j}`$. Each command-stage Jacobian and Hessian must be evaluated at its *legally reached state*. Twelve tests cover exact/curved observation fibers, a two-stage polynomial command oracle and 120 independent cubic-fiber cases.
 
-[Full second-order fiber derivation](../dpt_research/20261012_second_order_goal_fiber.md), [main MAP M40–M49](../DPT_MATH_RESEARCH_MAP.md). Moving peak/events require further guard and timing qualification; local Hessians do not automatically certify source-native DPT targets.
+[Full second-order fiber derivation](../dpt_research/20261012_second_order_goal_fiber.md), [nonlinear-fiber proof (legacy M40–M49)](../dpt_research/20261012_second_order_goal_fiber.md). Moving peak/events require further guard and timing qualification; local Hessians do not automatically certify source-native DPT targets.
 
 
 ## implicit_goal_hessian.py — source-residual second-order goal transport
@@ -502,4 +502,4 @@ Every current/previous source Hessian cross-block must be retained. JSON schema:
     python implicit_goal_hessian.py implicit_chart.json --output goal_hessian.json
     python -m unittest -v test_implicit_goal_hessian.py
 
-Seven analytic/regression tests include a mixed current/previous rational residual, other implicit nonlinear scalar sources, a two-state quadratic source and 200 independently generated random quadratic source laws. To make a native physical claim, provide full source-law F including network, charge and thermal equations, legal stage states and correct BE/TRAP time convention; confirm target work/peak guard qualification and a uniform error certificate. [MAP M50–M54](../DPT_MATH_RESEARCH_MAP.md), [proof C15–C23](../dpt_research/20261012_second_order_goal_fiber.md).
+Seven analytic/regression tests include a mixed current/previous rational residual, other implicit nonlinear scalar sources, a two-state quadratic source and 200 independently generated random quadratic source laws. To make a native physical claim, provide full source-law F including network, charge and thermal equations, legal stage states and correct BE/TRAP time convention; confirm target work/peak guard qualification and a uniform error certificate. [implicit source-Hessian proof (legacy M50–M54)](../dpt_research/20261012_second_order_goal_fiber.md), [proof C15–C23](../dpt_research/20261012_second_order_goal_fiber.md).
