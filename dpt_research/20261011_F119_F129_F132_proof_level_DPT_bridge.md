@@ -25,34 +25,7 @@ Random labels guarantee no t-subset has compatible failed-target coordinates: un
     S1 <= M² S0' + r S1'      J1 <= M² J0' + r S1'
     S0 <= t S0' + S1' + 3J1'  J0 <= t S0' + 3J1'
 
-Normalizing by M^(ℓ+b) and using ε=max(r,t)/M≤2/3^(d+1), the proof bounds # F119 / F129 / F132 proof-level audit and a DPT contextual-contrast bridge
-
-**Date:** 2026-10-11. **Upstream:** [openai/math @ fd4aeeb2ee4fc729c18d98444fed42fd0529eeeb](https://github.com/openai/math/tree/fd4aeeb2ee4fc729c18d98444fed42fd0529eeeb). **DPT:** IH2662 V6 (2026-10-10) and accepted 18A/B/C statements in the [current Math map](../DPT_MATH_RESEARCH_MAP.md). **Status:** targeted original-proof reading, original TikZ figure reconstruction/visual inspection, independently derived conditional finite toy, exact enumeration and selected algebraic identity checks. Not complete theorem formalization, a mathematical discovery-claim, or native SiC source validation.
-
-## Scientific outcome before paper-by-paper detail
-
-The three papers point to **three different obstructions** to a cheap and reliable DPT predictor, which must not be collapsed into one theorem:
-
-- **F132 — grouped input effect:** a baseline one-coordinate perturbation may miss a response that is activated only by a *legal joint* change. Mixed finite contrasts and branch guards, not F132's Boolean exponent, are the DPT operational tool.
-- **F129 — distinguishing context:** present-time observation equivalence can be broken by an admissible *future command word*. A guaranteed minimal dynamic state requires covering the declared command language, not a single scalar goal at one time; the paper's exponential lower bound is specific to a full relation alphabet and matching representation.
-- **F119 — measurement-noise structure:** the best binary observable changes under correlated noise. Shared nuisance can make a contrast **exactly recoverable** even if single channels are unreliable. F119 proves coordinate optimality only in its iid binary-symmetric channel; its proof locally allows coupled child-pair laws, which is **not** a relaxation of iid channel noise.
-
-These combine into a *legal context + grouped stimulus + nuisance-invariant readout* test. The strongest current artifact is a falsifiable, source-independent mathematical construction and explicit owner-facing DPT input contract—not a new engineering measurement claim.
-
-## 1. F132: read the combinatorial proof, not just the headline
-
-Source: [introduction and theorem](https://github.com/openai/math/blob/fd4aeeb2ee4fc729c18d98444fed42fd0529eeeb/preprints/A-superquadratic-separation-between-sensitivity-and-block-sensitivity-September-25-2026/build/sections/00-introduction.tex), [construction and TikZ target/gate figure](https://github.com/openai/math/blob/fd4aeeb2ee4fc729c18d98444fed42fd0529eeeb/preprints/A-superquadratic-separation-between-sensitivity-and-block-sensitivity-September-25-2026/build/sections/01-construction.tex), [Proposition prop:recurrences](https://github.com/openai/math/blob/fd4aeeb2ee4fc729c18d98444fed42fd0529eeeb/preprints/A-superquadratic-separation-between-sensitivity-and-block-sensitivity-September-25-2026/build/sections/02-recurrences.tex), [final separation and composition](https://github.com/openai/math/blob/fd4aeeb2ee4fc729c18d98444fed42fd0529eeeb/preprints/A-superquadratic-separation-between-sensitivity-and-block-sensitivity-September-25-2026/build/sections/03-separation.tex). Inspected all four original section sources, including recurrence proof and the large-parameter cost.
-
-**Exact object.** For a total Boolean f, s(f,x) counts one-bit flips changing f(x); bs(f,x) is the maximum number of **disjoint nonempty coordinate blocks** whose simultaneous flips change f(x). The paper builds total f with bs(f)>C s(f)^2 for every C, then a fixed exponent α>2 by composition. This is a statement about the **global maximum** of single-bit sensitivity, not just the derivative at one chosen input.
-
-**Construction and proof hinges.** Fix depth d, M≥9^(d+1), L=d+2, k=2M²+1, r=ceil(sqrt M), t=16. A regular k-vertex tournament has k r child locations; each edge label selects a gate child. Parent clause i requires every one of its r target children to satisfy the strongest nested predicate; every outgoing edge i→j requires a *weaker* predicate of the selected child in row j to be zero. One flipped raw bit hits only one condition in any fixed clause, but may change **multiple** nested predicates in the same child. This is the reason the proof keeps two families, ordinary S_{level,0/1} and joint J_{level,0/1}, and does not merely reuse S.
-
-Random labels guarantee no t-subset has compatible failed-target coordinates: union bound k^t r^(t-t(t-1)/2)≤3^16 M^(-20)<1. Thus fewer than 16 near-accepting target-only clauses exist. The induced tournament of gate-only near-accepting clauses has each outdegree≤1 and hence at most three vertices; the joint predicate J is required to count gate repairs. This gives the actual coupled recurrence (S and J at level ℓ, primed at ℓ-1):
-
-    S1 <= M² S0' + r S1'      J1 <= M² J0' + r S1'
-    S0 <= t S0' + S1' + 3J1'  J0 <= t S0' + 3J1'
-
-Normalizing by M^(ℓ+b) and using ε=max(r,t)/M≤2/3^(d+1), the proof bounds S_{\ell,b}\le 2L M^{\ell+b}`$. The block construction gives M k^d disjoint zero-input sensitive blocks for each final predicate; OR-balancing across M copies yields global s(f)≤2L M^(d+1) and bs(f,0)≥M² k^d. Hence bs/s²≥2^d/[4(d+2)²]. At d=9, B/A²≥128/121; seed composition amplifies it.
+Normalizing by M^(ℓ+b) and using ε=max(r,t)/M≤2/3^(d+1), the proof bounds $`S_{\ell,b}\le 2L M^{\ell+b}`$. The block construction gives M k^d disjoint zero-input sensitive blocks for each final predicate; OR-balancing across M copies yields global s(f)≤2L M^(d+1) and bs(f,0)≥M² k^d. Hence bs/s²≥2^d/[4(d+2)²]. At d=9, B/A²≥128/121; seed composition amplifies it.
 
 **Feasibility counterweight.** The explicit d=9 seed requires M≥9^10=3,486,784,401, and the minimal prescribed ambient n=L M²(kr)^9 has **238 decimal digits**. This is an existence proof with huge dimensions; it supplies neither a feasible sensor design nor a physical bound on DPT information cost. The local toy d=1,M=3 (which does **not** meet the full sensitivity theorem's M bound) has 342 input bits, zero singleton positives at the all-zero baseline, but 57 disjoint six-bit positive blocks. This is an independent executable witness of the *missed local joint effect*, not a test of the theorem's global s(f) inequality.
 
