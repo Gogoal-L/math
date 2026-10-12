@@ -59,3 +59,30 @@ jobs:
             --dump-json /tmp/dpt-math-equations.json
       - name: Compile every math expression with MathJax
         run: NODE_PATH=/tmp/dpt-math-tex/node_modules node dpt_tools/compile_mathjax.js /tmp/dpt-math-equations.json
+      - name: Inspect actual GitHub GFM Markdown API output
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          python - <<'PY'
+          import json,os,re,urllib.request
+          from pathlib import Path
+          for file in ['DPT_MATH_RESEARCH_MAP.md','dpt_research/20261012_second_order_goal_fiber.md']:
+              payload=json.dumps({'text':Path(file).read_text(encoding='utf8'),'mode':'gfm',
+                                  'context':'Gogoal-L/math'}).encode('utf8')
+              req=urllib.request.Request('https://api.github.com/markdown',data=payload,
+                  headers={'Accept':'text/html','Content-Type':'application/json',
+                           'Authorization':'Bearer '+os.environ['GH_TOKEN'],
+                           'X-GitHub-Api-Version':'2022-11-28'},method='POST')
+              with urllib.request.urlopen(req,timeout=40) as response:
+                  html=response.read().decode('utf8')
+              print('GITHUB_GFM_RENDER',file,'html_bytes',len(html),
+                    'math_renderer',html.count('math-renderer'),
+                    'language_math',html.count('language-math'),
+                    'math_display',html.count('math-display'),
+                    'M33',html.count('M33'),'M54',html.count('M54'))
+              marker=html.find('math-renderer')
+              if marker<0: marker=html.find('language-math')
+              print('GITHUB_GFM_MATH_CONTEXT',repr(html[max(0,marker-90):marker+360]))
+              if Path(file).name=='DPT_MATH_RESEARCH_MAP.md':
+                  assert 'M33' in html and 'M54' in html, 'GitHub GFM lost numbered equation labels'
+          PY
