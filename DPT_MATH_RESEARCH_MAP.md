@@ -57,11 +57,12 @@ OpenAI Math 对 DPT 的主要贡献，已经从“提示如何检查信息不足
 **(M4)**
 
 ```math
-s(f)\le2(d+2)M^{d+1},\qquad
-\operatorname{bs}(f,0)\ge M^2(2M^2+1)^d,
-\quad
+\begin{aligned}
+s(f)&\le 2(d+2)M^{d+1},\\
+\operatorname{bs}(f,0)&\ge M^2(2M^2+1)^d,\\
 \frac{\operatorname{bs}(f)}{s(f)^2}
-\ge\frac{2^d}{4(d+2)^2}.
+&\ge \frac{2^d}{4(d+2)^2}.
+\end{aligned}
 ```
 
 **独立 DPT 迁移引理：** 对两个**同时可合法操控**的物理/命令参数 $`a,b`$，固定同 reference 的四角目标值 $`G_{00},G_{10},G_{01},G_{11}`$。定义交互对比
@@ -103,10 +104,13 @@ L(h)=2^{\lfloor(h-2)/31\rfloor}.
 **(M8)**
 
 ```math
-\mathcal V_0=\operatorname{row}(C),\qquad
-\mathcal V_{k+1}=\mathcal V_k+
-\sum_{u\in\mathcal A}\mathcal V_k A_u,\qquad
-\mathcal V_\infty=\operatorname{span}_{w\in\mathcal A^*}\operatorname{row}(CA_w).
+\begin{aligned}
+\mathcal V_0&=\operatorname{row}(C),\\
+\mathcal V_{k+1}
+&=\mathcal V_k+\sum_{u\in\mathcal A}\mathcal V_kA_u,\\
+\mathcal V_\infty
+&=\operatorname{span}_{w\in\mathcal A^*}\operatorname{row}(CA_w).
+\end{aligned}
 ```
 
 若 $`\dim x=n`$，该升链最多发生 $`n-\dim\mathcal V_0`$ 次严格增维；稳定后 $`\mathcal V_\infty A_u\subseteq\mathcal V_\infty`$，所以以此 row basis $`T`$ 定义 $`z=Tx`$，存在准确 reduced update $`T A_u=\bar A_u T`$。任何线性**自主演化且覆盖所有词目标**的商状态，其 row space 必须含 $`\mathcal V_\infty`$；最小维数为 $`\dim\mathcal V_\infty`$。[goal_word_quotient](dpt_tools/goal_word_quotient.py) 计算这一命题。**有限指定** $`\mathcal W`$ 则只要求 $`\operatorname{row}(CA_w:w\in\mathcal W)`$，不是 all-word autonomous closure。
@@ -165,8 +169,11 @@ F(\psi(r))&=r\,\operatorname{atanh}r.
 **(M13)**
 
 ```math
-x=x_0+Bz,\quad \|z\|_2\le1;\qquad
-y-y_0=HBz+N\eta+Ee,\quad\|e\|_2\le1,\quad\eta\in\mathbb R^p.
+\begin{aligned}
+x&=x_0+Bz,\qquad \|z\|_2\le1,\\
+y-y_0&=HBz+N\eta+Ee,\\
+&\|e\|_2\le1,\qquad \eta\in\mathbb R^p.
+\end{aligned}
 ```
 
 这里 $`N\eta`$ 是**可任意大的同一个未知线性 nuisance**，$`Ee`$ 是**联合、可相关、确定性有界**的传感器误差；$`z,e`$ 是**彼此独立的两个单位球预算**，不能由普通样本 covariance 自动获得。命令 $`w=(u_1,\ldots,u_\ell)`$ 的 linear update 为 $`F_w=A_{u_\ell}\cdots A_{u_1}`$，第 $`j`$ 个未来目标的线性部分是 $`c_{w,j}^\top z`$，其中 $`c_{w,j}=B^\top F_w^\top C_j^\top`$。令 $`A=HB`$。
@@ -357,12 +364,13 @@ W_m-W
 **(M27)**
 
 ```math
-\boxed{
+\begin{aligned}
 W_m-W
-=\underbrace{\delta_c[VI]_{t_a}^{t_b}}_{\text{共同时间平移的固定窗口边界项}}
-+\underbrace{\delta_r\!\int_{t_a}^{t_b}(\dot V I-V\dot I)\,dt}_{\text{相对 V–I deskew 的开关重叠误差}}
-+O(\|\delta\|^2).
-}
+&=\delta_c[VI]_{t_a}^{t_b}\\
+&\quad+\delta_r\int_{t_a}^{t_b}
+(\dot V I-V\dot I)\,dt\\
+&\quad+O(\|\delta\|^2).
+\end{aligned}
 ```
 
 **可检查的解析负控：** $`V(t)=2+3t,\ I(t)=5-2t,\ [t_a,t_b]=[0,1]`$，符号积分精确给 $`W=13.5`$，并且 $`W_m-W=5\delta_c+19\delta_r-6\delta_c^2+6\delta_r^2`$。两项的系数 5、19 与 (M27) 严格一致。若积分窗口也随两条波形**共同平移**而移动，完整时间平移可由换元消去；(M27) 的共同边界项是针对**固定物理积分窗口**，不可混到自动事件窗口中。若两探头带宽/滤波不同，其误差不等价于单一 timing skew，还必须纳入频率响应 discrepancy。DPT 原始测量指导：[Wolfspeed Dynamic Characterization](https://www.wolfspeed.com/knowledge-center/article/dynamic-characterization-and-measurement-methods/)；[Hardware Testing Methodologies for Wide Bandgap High-Power Converters, Electronics 13 (2024), 3918](https://www.mdpi.com/2079-9292/13/19/3918)。这才是 F119“信息依赖噪声相关结构”的**可执行物理启发**：实际 source 需要同一波形时标、校准手段和误差相关性证据才能兑现；公式本身不测量任何探头偏差。
@@ -743,8 +751,11 @@ Pro17C/D/E 提供了 actual coupled law、ordered-command forecast、有限更�
 在声明的离散可达族和目标中，本地重放得到：
 
 ```math
-R_{Q\text{-only}}\ge 2.2864273\ \mu\mathrm V,\qquad
-R_{Q+V}\le 0.68783535+1.06041884\,\varepsilon_V\quad(\mu\mathrm V).
+\begin{aligned}
+R_{Q\text{-only}}&\ge 2.2864273\ \mu\mathrm V,\\
+R_{Q+V}&\le0.68783535
++1.06041884\,\varepsilon_V\quad(\mu\mathrm V).
+\end{aligned}
 ```
 
 这里 $`\varepsilon_V`$ 的数值以 µV 表示。若 $`\varepsilon_V<1.50750997\ \mu\mathrm V`$，增加预测前电压读出后的统一上界严格小于 Q-only 的不可避免误差下界。
@@ -811,9 +822,13 @@ R_{Q+V}\le 0.68783535+1.06041884\,\varepsilon_V\quad(\mu\mathrm V).
 1. **合法观测相容对给下界。** 在声明误差集合内，两条可达历史允许同一观测，则仅使用该信息的 scalar-goal 预测器最坏误差至少为目标间隔的一半。source 目标存在求值误差时，要先扣除两端的误差上界。有限 bank 见证给整个类的下界，不给整个类的上界。
 2. **有限域修复给上界。** 固定中心和系数，令 $`f=g-BO-AQ`$。若合法半径内确有 $`\|D^2f\|\le M`$，则
 ```math
+\begin{aligned}
 |\Delta g-B\Delta O-A\Delta Q|
-   \le \|E\|r+\tfrac12Mr^2+\|B\|\varepsilon_{\Delta O}
-        +\|A\|\varepsilon_{\Delta Q}+\eta_{\rm evaluation}.
+&\le\|E\|r+\tfrac12Mr^2\\
+&\quad+\|B\|\varepsilon_{\Delta O}
++\|A\|\varepsilon_{\Delta Q}\\
+&\quad+\eta_{\rm evaluation}.
+\end{aligned}
 ```
    关键建设对象是合法域、统一 M、初态/事件传播和摘要取得方式，不是 Taylor 公式本身。
 3. **目标投影决定求解精度的价值。** 同一离散 law、正号伴随约定下，
