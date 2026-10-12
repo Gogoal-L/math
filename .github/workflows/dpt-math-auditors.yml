@@ -97,5 +97,5 @@ jobs:
               if marker<0: marker=html.find('language-math')
               print('GITHUB_GFM_MATH_CONTEXT',repr(html[max(0,marker-90):marker+360]))
               if Path(file).name=='DPT_MATH_RESEARCH_MAP.md':
-                  assert 'M33' in html and 'M54' in html, 'GitHub GFM lost numbered equation labels'
+                  assert 'MAIN_ACCEPTED' in html and 'SIDE_VERIFIED' in html, 'DPT controller-side transfer state lost'
           PY
