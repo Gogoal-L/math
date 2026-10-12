@@ -15,18 +15,18 @@ The proposed next object is a **goal-, horizon-, radius-, and solver-conditional
 
 Assume one fixed common state chart, finite alphabet `A`, and an exact linear homogeneous model
 
-\[
- x_{k+1}=A_a x_k,\qquad g_k=Cx_k,\qquad y_0=Ox_0.
-\]
+```math
+x_{k+1}=A_a x_k,\qquad g_k=Cx_k,\qquad y_0=Ox_0.
+```
 
 Each `A_a` must be a specified matrix **valid after every reachable admissible prefix**. This strong condition is not established by one Jacobian of a nonlinear DPT. The current observation `O` is known at preparation; it is not automatically an autonomously updating state.
 
 Define row spaces
 
-\[
- W_0=\operatorname{row}(C),\quad
+```math
+W_0=\operatorname{row}(C),\quad
  W_{h+1}= W_h + \sum_{a\in\mathcal A} W_h A_a.
-\]
+```
 
 **Proposition (standard switched-linear realization/observability argument; elementary proof here).** The sequence stabilizes after at most `n-rank(C)` strict rank increments. Write its least fixed space as `W_*`, of dimension `d_*`, and choose any full-row-rank matrix `B` with `row(B)=W_*`. Then:
 
@@ -35,9 +35,9 @@ Define row spaces
 - `d_*` is **minimal among autonomous linear goal-only state representations valid for all x in R^n**;
 - given already available noiseless preparation rows `O`, the minimum count of additional **arbitrarily designed scalar linear measurements** needed to recover all-word goal data is
 
-\[
- k_{\mathrm{free}}=\operatorname{rank}\begin{bmatrix}O\\B\end{bmatrix}-\operatorname{rank}(O).
-\]
+```math
+k_{\mathrm{free}}=\operatorname{rank}\begin{bmatrix}O\\B\end{bmatrix}-\operatorname{rank}(O).
+```
 
 **Proof.** `W_h` is nested, so any genuine strict step raises rank by at least one and rank is at most `n`. Equality `W_{h+1}=W_h` makes `W_h A_a \subseteq W_h` for all `a`, so it contains all word rows by induction. Choosing `B` as a basis of `W_*` gives `BA_a=M_a B` and `C=DB`. Conversely, any valid linear state `Px`, updated by all commands with output `Cx`, must have row(P) containing `C` and be invariant under all `A_a`; hence it contains `W_*`. The measurement formula follows by completing row(O) to span row(O)+`W_*`. □
 
@@ -45,10 +45,10 @@ The new `dpt_tools/goal_word_quotient.py` computes the iterative row-space basis
 
 **Counterexample: primitive adequacy does not imply BA adequacy.** For
 
-\[
- A=\begin{pmatrix}1&0&0\\0&1&1\\0&0&1\end{pmatrix},\quad
+```math
+A=\begin{pmatrix}1&0&0\\0&1&1\\0&0&1\end{pmatrix},\quad
  B=\begin{pmatrix}1&1&0\\0&1&0\\0&0&1\end{pmatrix},\quad C=O=(1,0,0),
-\]
+```
 
 `C e3=CA e3=CB e3=0`, while `CBA e3=1`. For words of length at most `0,1,2`, ranks of goal information are `1,2,3`; missing free linear measurement counts beyond O are `0,1,2`. An extra hidden direction is exposed only by command A followed by B. The demonstration is exact algebra, not a DPT-native BA claim.
 
@@ -58,9 +58,9 @@ The new `dpt_tools/goal_word_quotient.py` computes the iterative row-space basis
 
 Suppose a previously frozen preparation and future command induce a *square smooth* implicit system `F(y)=0` on one qualified branch. Here `y` may contain one BE stage or the **entire stacked stage trajectory** after a legal consistency lift. Evaluate the full-law residual and Jacobian at a cheaper predicted state `yhat`:
 
-\[
- r=F(\widehat y),\quad J=DF(\widehat y),\quad q=Dg(\widehat y).
-\]
+```math
+r=F(\widehat y),\quad J=DF(\widehat y),\quad q=Dg(\widehat y).
+```
 
 Assume, in a complete closed ball `B(yhat,R)` contained in the *same smooth physical/DAE branch*:
 
@@ -71,18 +71,18 @@ Assume, in a complete closed ball `B(yhat,R)` contained in the *same smooth phys
 
 Let `h=beta*L*eta`. For `h<=1/2`, set
 
-\[
- \rho=\frac{2\eta}{1+\sqrt{1-2h}}\qquad (\rho=\eta\text{ when }L=0).
-\]
+```math
+\rho=\frac{2\eta}{1+\sqrt{1-2h}}\qquad (\rho=\eta\text{ when }L=0).
+```
 
 If `rho<=R`, the standard Newton--Kantorovich result supplies a nearby full-law root `y*` with `||y*-yhat||<=rho` (with the usual domain hypotheses). Solve one adjoint system `J^T lambda=q^T`. Then our elementary **goal-specific correction and remainder** is:
 
-\[
- \boxed{
+```math
+\boxed{
  \left|\,[g(y^*)-g(\widehat y)]+\lambda^T r\,\right|
  \le \tfrac12(\|\lambda\|_2 L + H_g)\rho^2 .
  }
-\]
+```
 
 **Proof of the goal bound.** Put `d=y*-yhat`. Taylor's theorem gives `0=r+Jd+R_F`, with `||R_F||<=L||d||²/2`. Thus `d=-J^{-1}r-J^{-1}R_F`. Taylor-expanding the goal gives `g(y*)-g(yhat)=q d+R_g`, `|R_g|<=H_g||d||²/2`. Since `qJ^{-1}=lambda^T`, the formula follows from the triangle inequality and `||d||<=rho`. □
 
