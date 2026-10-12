@@ -209,6 +209,7 @@ def gaussian_replicate_goal_pair(
 def audit_marginal_sensor_coupling(
     marginal_probabilities, future_goals, goal_tolerance, *,
     joint_probabilities=None, sensor_names=None,
+    allowed_joint_supports=None, support_leakage_bounds=None,
 ):
     """Sharp finite-categorical Fréchet-class equal-prior goal-information audit.
 
@@ -314,6 +315,79 @@ def audit_marginal_sensor_coupling(
                   " checked, not physically qualified; empirical histogram uncertainty"
                   " and physical source legality are NOT certified."),
     }
+    if allowed_joint_supports is None and support_leakage_bounds is not None:
+        raise ValueError("support_leakage_bounds requires allowed_joint_supports")
+    support_mask = None
+    leakage = None
+    if allowed_joint_supports is not None:
+        if n_sensors != 2:
+            raise ValueError("declared allowed_joint_supports currently require two sensor channels")
+        if bins > 14:
+            raise ValueError("support cut enumeration capped at 14 bins per sensor")
+        mask_numeric = np.asarray(allowed_joint_supports, dtype=float)
+        if (mask_numeric.shape != (2, bins, bins)
+                or not np.all(np.isfinite(mask_numeric))
+                or not np.all((mask_numeric == 0) | (mask_numeric == 1))):
+            raise ValueError("allowed_joint_supports must be 0/1 array (2,k,k)")
+        support_mask = mask_numeric.astype(bool)
+        leakage = (np.zeros(2) if support_leakage_bounds is None
+                   else np.asarray(support_leakage_bounds, dtype=float))
+        if (leakage.shape != (2,) or not np.all(np.isfinite(leakage))
+                or np.any(leakage < 0) or np.any(leakage > 1)):
+            raise ValueError("support_leakage_bounds must be probabilities (2,) in [0,1]")
+        # Classical bipartite transportation (weighted Hall/max-flow min-cut):
+        # exact least mass forced outside the allowed cell support under each
+        # history equals max_I (a_h(I) - b_h(N_h(I)))_+.
+        # Full enumeration is deliberate and bounded by the 14-bin cap.
+        minimum_outside = []
+        worst_cuts = []
+        for h in (0,1):
+            maximum_deficit = 0.
+            worst_rows = []
+            for cut_bits in range(1, 1 << bins):
+                rows = [i for i in range(bins) if cut_bits & (1 << i)]
+                neighbors = np.any(support_mask[h,rows],axis=0)
+                deficit = (float(np.sum(p[h,0,rows])) -
+                           float(np.sum(p[h,1,neighbors])))
+                if deficit > maximum_deficit:
+                    maximum_deficit = deficit
+                    worst_rows = rows
+            minimum_outside.append(maximum_deficit)
+            worst_cuts.append(worst_rows)
+            if maximum_deficit > float(leakage[h]) + 1e-10:
+                raise ValueError(
+                    f"Hall transport deficiency for history {h}:"
+                    f" minimum support leakage {maximum_deficit:.12g}"
+                    f" exceeds declared bound {leakage[h]:.12g};"
+                    f" witnessing row bins {worst_rows}")
+        disjoint = not bool(np.any(support_mask[0] & support_mask[1]))
+        inferred_tv = max(d, 1. - float(np.sum(leakage))) if disjoint else d
+        inferred_tv = max(0.,min(1.,inferred_tv))
+        out["support_certificate"] = {
+            "input_status": "CONDITIONAL_USER_DECLARED_SUPPORT_NOT_PHYSICALLY_VERIFIED",
+            "source_supports_disjoint": bool(disjoint),
+            "minimum_required_support_leakage": minimum_outside,
+            "hall_worst_row_cuts": worst_cuts,
+            "hall_tested_nonempty_row_cuts_per_history": (1 << bins) - 1,
+            "exact_feasibility_checked": bool(np.all(leakage == 0)),
+            "support_inferred_joint_tv_lower_bound": inferred_tv,
+            "conditional_goal_failure_upper_bounds":
+                leakage.tolist() if disjoint and far_goals
+                else [0.,0.] if not far_goals else None,
+            "equal_prior_goal_failure_upper_bound":
+                .5*float(np.sum(leakage)) if disjoint and far_goals
+                else 0. if not far_goals else None,
+            "decision_rule": (
+                "History 0 if observed joint bin belongs to history-0"
+                " declared support; otherwise history 1"
+                if disjoint and far_goals else None),
+            "boundary": (
+                "Sharp weighted Hall minimum leakage on the declared 2-sensor"
+                " marginal transport polytope, numerical tolerance 1e-10."
+                " The supplied masks and tail upper bounds are assumed physical,"
+                " not inferred from PMFs or certified hardware. When masks"
+                " overlap, no extra positive TV guarantee is inferred.")
+        }
     if joint_probabilities is not None:
         j = np.asarray(joint_probabilities, dtype=float)
         expected_shape = (2,) + (bins,) * n_sensors
@@ -334,6 +408,13 @@ def audit_marginal_sensor_coupling(
         joint_tv = .5 * float(np.abs(j[0]-j[1]).sum())
         if joint_tv + 1e-9 < d:
             raise ArithmeticError("joint TV violates marginal data processing")
+        if support_mask is not None:
+            for h in (0,1):
+                actual_leakage = float(np.sum(j[h,~support_mask[h]]))
+                if actual_leakage > float(leakage[h]) + 1e-10:
+                    raise ValueError(
+                        f"supplied joint probabilities violate history {h}"
+                        " declared support leakage upper bound")
         out["qualified_joint"] = {
             "input_status": "MARGINAL_CONSISTENCY_CHECKED_PHYSICS_UNVERIFIED",
             "tv": joint_tv,
@@ -369,7 +450,11 @@ def main() -> int:
                 joint_probabilities=data["joint_probabilities"]
                 if "joint_probabilities" in data.files else None,
                 sensor_names=[str(x) for x in data["sensor_names"]]
-                if "sensor_names" in data.files else None)
+                if "sensor_names" in data.files else None,
+                allowed_joint_supports=data["allowed_joint_supports"]
+                if "allowed_joint_supports" in data.files else None,
+                support_leakage_bounds=data["support_leakage_bounds"]
+                if "support_leakage_bounds" in data.files else None)
         elif a.gaussian_repeat_goal:
             fields = ["observed_means", "future_goals", "goal_tolerance",
                       "independent_sigma", "shared_sigma", "failure_probability"]
