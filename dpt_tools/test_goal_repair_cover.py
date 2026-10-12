@@ -276,6 +276,28 @@ class RetainedGoalBitsTests(unittest.TestCase):
                 self.assertEqual(r["minimum_messages"], oracle)
                 self.assertEqual(r["minimum_retained_bits"], (oracle - 1).bit_length())
 
+    def test_retained_bits_cli_reads_exact_transcript_categories(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            source = Path(tmp) / "history.npz"
+            output = Path(tmp) / "bits.json"
+            np.savez(
+                source,
+                observations=np.zeros((3, 1)),
+                goals=np.array([[0.], [4.], [8.]]),
+                transcript_ids=np.array(["first", "second", "third"]),
+                observation_radii=np.array([0.0]),
+                goal_tolerances=np.array([1.0]),
+            )
+            cp = subprocess.run(
+                [sys.executable, str(Path(grc.__file__)), str(source),
+                 "--retained-goal-bits", "--output", str(output)],
+                check=False, capture_output=True, text=True,
+            )
+            self.assertEqual(cp.returncode, 0, cp.stderr)
+            report = json.loads(output.read_text())
+            self.assertEqual(report["minimum_retained_bits"], 2)
+            self.assertEqual(report["minimum_messages"], 3)
+
     def test_invalid_data_rejected(self):
         for kwargs in (
             {"observations": [[0.0]], "goals": [[2.0]], "transcript_ids": []},
