@@ -154,6 +154,39 @@ The mathematical synthetic regression has **three sensors with identical one-sho
 
 [Complete conditional theorem P23–P26 and source-critical OpenAI F122/F115/F373/F139 audit](../dpt_research/20261012_mixed_nuisance_goal_radius_formal_derivation.md). F122's deletion-channel superpolynomial complete-string reconstruction claim is *not* used to infer DPT sample complexity.
 
+### Separate marginal-only sensor-dependence / future-goal fusion audit
+
+**--marginal-only-fusion** extends the two-history goal question to p simultaneously legal **pretarget sensor channels** with finite categorical readout histograms. It requires *no independence assumption* between sensors. It is different from both the deterministic Euclidean-ball model and the repeated Gaussian-with-common-drift model above. Its exact object is the **Fréchet class of joint observation distributions with specified separate per-sensor marginals**, without any other dependence or physical support constraints.
+
+Required NPZ: marginal_probabilities(2,p,k), with each [history,sensor] vector a finite nonnegative PMF summing to one; future_goals(2,), scalar goal_tolerance. Every sensor uses k named categorical bins (unused bins may be zero-padded), but the labels must have consistent meaning **across the two histories** for that sensor. Optional sensor_names(p) Unicode strings, and optionally **complete** joint_probabilities(2,k,...,k) (p factors of k) *only when independently qualified*. The matrix sizes grow exponentially for a complete joint PMF, but the marginal-only worst-case theorem and its **factorized attaining witness** do not enumerate k^p states.
+
+```bash
+python goal_ambiguity_audit.py two_histories_sensor_marginals.npz --marginal-only-fusion --output dependence.json
+python -m unittest -v test_goal_ceiling_tools.py
+```
+
+Under two **separated fixed future scalar goals**, the lowest total-variation distinction among *all possible compatible cross-sensor joint laws* is **exactly the largest single-sensor total variation**. Therefore the best guaranteed **equal-prior average** goal-testing error is (1-best_single_tv)/2. The tool returns a constructive attaining mixture-of-products coupling plus a feasible single-sensor likelihood decision rule, with its TWO **per-history conditional error rates**. The equal-prior average error is not necessarily the minimax *worst-history* error, and is **not** a 95%-per-history safety guarantee. If the two goal tolerance intervals overlap, a constant forecast needs no sensor.
+
+When joint_probabilities are supplied, the tool checks they match the stated marginals and separately reports **supplied joint-TV advantage**. It does NOT assert that this PMF or the available histogram calibration is physical: mismatched source reference, incomplete digitally recorded commands, untested legal preparation, sample size, missing joint dependence, bin choice, hysteresis and capture timing can make this number misleading. With two perfectly uniform Bernoulli marginals under both hypotheses, a qualified parity-dependent **joint law** can give joint TV=1, yet the unrestricted marginal-only TV guarantee is zero. Conversely, under **independent** qualified three-channel observations with individual 0.8-versus-0.2 Bernoulli probabilities, marginal TV=0.6 while actual joint TV=0.792. These are strictly **synthetic analytical cases**, not SiC evidence.
+
+**Primary-source discipline:** OpenAI F115-A samples integer tables uniformly at fixed margins; companion F115-B handles bounded cells and structural zeros. Neither automatically specifies a semiconductor sensor noise prior. F373 supplies a special Coulomb non-Monge counterexample, not a Gaussian/SiC transport theorem. F122 supplies the general statistical testing logic. The sharp Fréchet sensor-TV theorem and witness are proved **independently** in [P27–P30](../dpt_research/20261012_mixed_nuisance_goal_radius_formal_derivation.md). A real positive result needs same-shot paired port calibration and a frozen held-out future-goal scorer, compared against **complete recorded-command** and strongest-one-sensor ordinaries.
+
+#### Optional source-qualified joint-support / bounded-leakage repair (two sensors)
+
+Without changing --marginal-only-fusion, add the **optional** NPZ arrays allowed_joint_supports(2,k,k) (0/1 mask for each history, with 1 indicating a possible joint bin) and support_leakage_bounds(2,) (each in [0,1], default **zero**). This optional submode accepts exactly **two** sensor channels, at most **14 bins** each; the general marginal-only TV result works for more sensors without these masks.
+
+A bounded exhaustive **weighted Hall/min-cut** calculation checks, for *each history independently*, the minimum possible mass outside the declared support while satisfying both categorical sensor marginals:
+
+```math
+\ell_h^{\min}=\max_{I}
+\left[\sum_{i\in I}P_h(Y_1=i)-
+\sum_{j\in N_h(I)}P_h(Y_2=j)\right]_+.
+```
+
+If a claimed support-leakage upper bound is below this mathematical minimum, the tool rejects the input with a violating row subset: the **joint support contract is inconsistent with its own marginals**. A hard-zero mask is therefore checked for feasibility, not blindly assumed. If two history-specific high-probability support masks are disjoint, a simple joint-bin membership decision has **per-history** error no greater than that history's declared support-leakage bound; joint-TV is at least the maximum of best-single-sensor TV and 1−(sum of leakage bounds). This is a positive **conditional** repair even when all single-sensor marginals match.
+
+These masks and leakage bounds must come from a legal same-shot physical source/noise model or independent hardware qualification. The code cannot infer physically impossible port-bin pairs, accept Gaussian noise as bounded without justification, or turn binned empirical measurements into error-free PMFs. A supplied joint_probabilities input is checked against the stated masks/leakage, but a numerically consistent table is not hardware evidence. The bounded-flow viewpoint is related to the **F115-B** original table/flow construction, while the sharp two-dimensional Hall deficiency is classical network-flow duality, independently proved in [P31–P32](../dpt_research/20261012_mixed_nuisance_goal_radius_formal_derivation.md).
+
 ## `command_word_audit.py` (finite partial command model)
 
 Input JSON structure:
