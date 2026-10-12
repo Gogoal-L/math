@@ -20,10 +20,11 @@ Assume $`DO(h_0)`$ has full row rank $`m\le n`$. Let $`Z\in\mathbb R^{n\times (n
 **(C1)**
 
 ```math
-h(v)=h_0+Zv+Uq(v),\quad
-\|v\|_2\le r,\quad
-DO(h_0)U=I_m,\quad
-q(0)=Dq(0)=0.
+\begin{aligned}
+h(v)&=h_0+Zv+Uq(v),\\
+\|v\|_2&\le r,\quad DO(h_0)U=I_m,\\
+q(0)&=0,\quad Dq(0)=0.
+\end{aligned}
 ```
 
 Here $`U`$ is an exact right inverse and $`q(v)`$ is fixed by $`O(h(v))=O(h_0)`$. The domain claim explicitly includes that the entire chosen compact chart-ball is physically legal. A tangent vector alone cannot prove that.
