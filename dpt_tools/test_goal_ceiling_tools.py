@@ -260,6 +260,28 @@ class MarginalDependenceSensorFusionTests(unittest.TestCase):
                                  for j in range(factors.shape[0])])
                          for x in np.ndindex(shape)]).reshape(shape)
 
+    def test_independent_two_binary_sensor_transport_grid_oracle(self):
+        # Independently minimize TV by enumerating each history's free 2x2
+        # coupling cell q(0,0). This oracle never calls the witness builder.
+        rng = np.random.default_rng(416)
+        for _ in range(12):
+            raw = rng.uniform(.05, 1., size=(2,2,2))
+            p = raw / raw.sum(axis=2, keepdims=True)
+            report = audit_marginal_sensor_coupling(p, [0.,4.], 1.)
+            joints = []
+            for h in range(2):
+                a = p[h,0,0]
+                b = p[h,1,0]
+                lo = max(0.,a+b-1.)
+                hi = min(a,b)
+                t = np.linspace(lo,hi,121)
+                joints.append(np.stack([t,a-t,b-t,1.-a-b+t],axis=0))
+            finite_grid = .5*np.abs(
+                joints[0][:,:,None] - joints[1][:,None,:]).sum(axis=0)
+            oracle = float(finite_grid.min())
+            self.assertGreaterEqual(oracle+1e-12,report["worst_case_joint_tv"])
+            self.assertLess(oracle-report["worst_case_joint_tv"], .02)
+
     def test_constructive_worst_case_joint_matches_all_marginals(self):
         rng = np.random.default_rng(9201)
         for n_sensors in (1, 2, 3):
