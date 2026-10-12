@@ -138,6 +138,22 @@ different scalar goals. It is **not** a whole-class stability guarantee.
 Readout-from-archive and genuinely fresh physical acquisitions must be
 identified separately in the scientific record.
 
+### Additional two-history Gaussian repeatability diagnostic
+
+The separate **--gaussian-repeat-goal** option in goal_ambiguity_audit.py is NOT the deterministic Euclidean-ball bank audit above. Its exact inputs describe just **two legally repeatable histories**: pretarget sensor means and known scalar future goals for one fixed command, within-campaign independent Gaussian noise, and one unknown Gaussian calibration offset **shared across all repetitions**. All inputs must refer to the same source/reference and a qualified sensor/noise protocol. Goals, tolerances, sensor means, and sensor noise are different physical quantities and may have different units.
+
+NPZ fields: observed_means(2,), future_goals(2,), scalar goal_tolerance, independent_sigma, shared_sigma, failure_probability in (0,0.5). Run:
+
+```bash
+python goal_ambiguity_audit.py two_legal_histories.npz --gaussian-repeat-goal --output repeat_budget.json
+```
+
+For future goal gap <= twice the goal tolerance, the constant-goal ordinary needs zero acquisitions. For separated goals, repeated measurements with identical pretarget laws cannot help. Under the stated common Gaussian model, the sample mean has variance shared_sigma² + independent_sigma²/m and the **exact minimax** per-history misclassification/error rate is Phi(-sensor_mean_gap/(2*sqrt(variance))). A shared calibration component imposes a nonzero asymptotic error floor, potentially making the requested success probability unattainable for every finite m.
+
+The mathematical synthetic regression has **three sensors with identical one-shot noise variance 1.04** but distinct time-correlation structure: 12 acquisitions, 20 acquisitions, and impossible, respectively, for the same stated pretarget mean gap and future-goal tolerance. This demonstrates why a per-waveform oscilloscope noise specification cannot by itself qualify a repeat-based sensor acquisition. Repeatability of the preparation, sensor bandwidth/skew, physically calibrated noise covariance, complete recorded-command ordinary and held-out future goals are mandatory for native use.
+
+[Complete conditional theorem P23–P26 and source-critical OpenAI F122/F115/F373/F139 audit](../dpt_research/20261012_mixed_nuisance_goal_radius_formal_derivation.md). F122's deletion-channel superpolynomial complete-string reconstruction claim is *not* used to infer DPT sample complexity.
+
 ## `command_word_audit.py` (finite partial command model)
 
 Input JSON structure:

@@ -319,6 +319,95 @@ F365-B's [original PDE uniqueness theorem](https://github.com/openai/math/blob/f
 
 ---
 
+## IX. Goal-specific repeatability and correlated-noise floor from OpenAI F122 (P23–P26)
+
+**Scientific object.** P19–P22 calculate zero-error *deterministic finite-bank memory bits*. This section instead derives a *probabilistic two-history goal-recovery budget*: how many legally repeatable pretarget noisy sensor reads suffice to distinguish histories that produce separated **future** goals? The binary-testing reduction and Gaussian conditioning are classical mathematical ingredients, newly assembled as an explicitly bounded DPT acquisition question. They do not follow from F122's claimed sample-complexity exponent or constitute a new general theorem.
+
+### IX.1. Four OpenAI primary-source comparisons, with exact transfer limits
+
+**F122**, _Quantitative lower bounds for trace reconstruction_: [original theorem and deletion-channel model](https://github.com/openai/math/blob/fd4aeeb2ee4fc729c18d98444fed42fd0529eeeb/preprints/quantitative-lower-bounds-for-trace-reconstruction-September-24-2026/build/sections/introduction.tex); [restoration, Hellinger/TV tensorization, binary testing](https://github.com/openai/math/blob/fd4aeeb2ee4fc729c18d98444fed42fd0529eeeb/preprints/quantitative-lower-bounds-for-trace-reconstruction-September-24-2026/build/sections/transfer.tex); [Lean coverage statement](https://github.com/openai/math/blob/fd4aeeb2ee4fc729c18d98444fed42fd0529eeeb/lean/docs/122.md). The paper claims superpolynomial repeated traces to reconstruct **every bit** of arbitrary strings through iid independent deletion at fixed rate. Its testing-reduction logic applies to any specified goal separation; the source's claimed worst-string rate does not transfer to analog DPT, corrupted timestamps or switching-event targets. Original statements and the final testing proof were inspected; the Lean proof was not rebuilt and all intermediate lemmas were not independently checked.
+
+**F115**, _Exact uniform sampling of contingency tables_: [primary theorem](https://github.com/openai/math/blob/fd4aeeb2ee4fc729c18d98444fed42fd0529eeeb/preprints/Exact-Uniform-Sampling-of-Contingency-Tables-with-Arbitrary-Margins-September-24-2026/build/sections/introduction.tex), [repair graph method](https://github.com/openai/math/blob/fd4aeeb2ee4fc729c18d98444fed42fd0529eeeb/preprints/Exact-Uniform-Sampling-of-Contingency-Tables-with-Arbitrary-Margins-September-24-2026/build/sections/model-and-graph.tex). A uniform prior on integer matrices with exact margins is not justified for correlated sensor or source-model errors. No physical noise law follows without a separately grounded coupling prior.
+
+**F373**, _Nonattainment of the three-marginal Coulomb Monge problem_: [source theorem](https://github.com/openai/math/blob/fd4aeeb2ee4fc729c18d98444fed42fd0529eeeb/preprints/A-counterexample-to-the-Monge-ansatz-for-the-three-marginal-Coulomb-cost-September-25-2026/build/sections/introduction.tex), [five-component supporting-potential certificate](https://github.com/openai/math/blob/fd4aeeb2ee4fc729c18d98444fed42fd0529eeeb/preprints/A-counterexample-to-the-Monge-ansatz-for-the-three-marginal-Coulomb-cost-September-25-2026/build/sections/certificate.tex). This special Coulomb cost can require a nondeterministic optimal three-marginal coupling, even though deterministic Monge infima agree. It is a useful warning against assuming all couplings are deterministic maps; it does not imply a non-Monge optimal coupling for Gaussian DPT measurement error.
+
+**F139**, _Subpolynomial query complexity for strongly log-concave sampling_: [original model and theorem](https://github.com/openai/math/blob/fd4aeeb2ee4fc729c18d98444fed42fd0529eeeb/preprints/Subpolynomial-query-complexity-for-well-conditioned-log-concave-sampling-September-26-2026/build/sections/introduction.tex). It assumes global I≤Hessian(V)≤2I and exact first-order potential/gradient oracle with unrestricted computation between queries. It is not a validated fast sampler or wall-clock guarantee for a switched multimodal SiC inverse problem. No new sampler is justified here.
+
+### IX.2. Goal separation forces observable distribution separation
+
+Fix a legal source reference and one frozen future ordered command. Two histories have scalar future goals g0,g1 with |g1−g0|>2tau, where tau is the goal tolerance. Let P_h^(m) be the **entire predictor-visible pretarget observation law**, including digitally recorded commands, under history h when m legal acquisitions are made. A possibly randomized predictor that succeeds with probability at least 1−alpha *under each history* must satisfy:
+
+**(P23)**
+
+```math
+\mathrm{TV}(P_0^{(m)},P_1^{(m)})
+\ \ge\ 1-2\alpha,\qquad 0<\alpha<1/2.
+```
+
+**Proof.** Successful forecast intervals around the two goals are disjoint. The event that the forecast lies within tau of g0 has probability at least 1−alpha under history 0 and at most alpha under history 1. Thus forecast-law TV is at least 1−2alpha; data processing bounds it above by observation-law TV. For genuinely iid observations only, product coupling gives TV(P0^m,P1^m)≤m TV(P0,P1), a necessary bound on m. Neither this inequality nor F122's iid-deletion arguments may be used after replacing repeated observations by correlated reads unless their joint law is explicitly modeled. A full recorded command that already reveals history must be present in the observation law; omitting it creates a weak ordinary.
+
+### IX.3. Exact two-history Gaussian repeat-count theorem with shared drift
+
+Under each h, assume identical lawful source preparation can be repeated, yielding a scalar *pretarget* sensor observation:
+
+```math
+Y_r=\mu_h+U+\varepsilon_r,\quad
+U\sim N(0,\sigma_c^2),\quad
+\varepsilon_r\overset{\mathrm{iid}}{\sim}N(0,\sigma_w^2).
+```
+
+The unknown U is drawn once per campaign, shared across repeats, and independent of within-run errors. Both hypotheses have the same covariance, and their pretarget sensor means differ by Delta=|mu1−mu0| **in sensor units**, not the future goal gap. No physically varying temperature/trap state, history-dependent variance or nonlinear observation transfer is assumed.
+
+**(P24)**
+
+```math
+p_{\min}(m)=\Phi\left(
+-\frac{\Delta}{2\sqrt{\sigma_c^2+\sigma_w^2/m}}
+\right),\qquad m\ge1.
+```
+
+**Proof.** The m-vector covariance is sigma_w² I + sigma_c² 11^T. All directions orthogonal to the vector of ones have the same law under both histories. Its sufficient sample mean has variance sigma_c²+sigma_w²/m. The midpoint Gaussian likelihood-ratio threshold equalizes both conditional errors and attains the equal-prior Bayes lower bound, so it is minimax. For separated future goal intervals the winning binary decision followed by its known *hypothesis goal* attains the exact minimum failure (P24). If |g1−g0|≤2tau, a constant midpoint goal forecast is correct for both histories with **zero** reads.
+
+Set z_alpha=Phi^(-1)(1−alpha), and Vcrit=Delta²/(4 z_alpha²). With separated goals, Delta>0, sigma_w>0 and Vcrit>sigma_c², the exact count is
+
+**(P25)**
+
+```math
+m_{\min}=\max\left(
+1,\left\lceil\frac{\sigma_w^2}{
+V_{\mathrm{crit}}-\sigma_c^2}\right\rceil\right).
+```
+
+When sigma_w>0 and Vcrit≤sigma_c² **no finite repeat count works**. If sigma_w=0 one read is sufficient iff Vcrit≥sigma_c², and repeated reads cannot improve it. When Delta=0 and the goals are separated, identical observation laws make the goal permanently inaccessible. With sigma_c>0 the asymptotic failure floor is
+
+**(P26)**
+
+```math
+p_\infty=\Phi\left(-\frac{\Delta}{2\sigma_c}\right).
+```
+
+The measurement law has a common stochastic drift, not an iid law in m; its posterior/statistical interpretation is source-conditional and distinct from the deterministic minimax sensor-box model.
+
+### IX.4. Identical single-run distributions, different optimal experiments
+
+In the analytical **synthetic** case g0=0,g1=4,tau=1,mu0=0,mu1=1,alpha=.05, three noise models all have exactly the same single-run distribution N(mu_h,1.04), but differ in cross-repeat covariance:
+
+| Within-run noise variance | Shared calibration variance | Exact repeats for 95% worst-history success |
+| ---: | ---: | ---: |
+| 1.04 | 0 | **12** |
+| 1.00 | 0.04 | **20** |
+| 0.88 | 0.16 | **No finite number** |
+
+Single-trace variance is therefore insufficient to decide whether repeating DPT acquisitions resolves a future-goal history alias. Pro18B's recorded **future** peak difference of 2.586995 V only requires historical discrimination for tolerances below 1.2934975 V; that future quantity is *not* Delta in (P24)–(P25).
+
+### IX.5. Executable evidence and smallest Main input
+
+The existing [goal_ambiguity_audit.py](../dpt_tools/goal_ambiguity_audit.py) offers a separate --gaussian-repeat-goal NPZ mode with observed_means(2,), future_goals(2,), scalar goal_tolerance, independent_sigma, shared_sigma and failure_probability. [Existing tests](../dpt_tools/test_goal_ceiling_tools.py) independently check exact thresholds, the m−1 failure, Monte Carlo errors, same-one-shot-different-correlation cases, shared-noise impossibility and CLI without breaking legacy Euclidean-ball mode. The software is a **two-history conditional Gaussian theorem evaluator** and does not demonstrate a native DPT measurement.
+
+**Main handoff:** one accepted 100 V R1 or 150 V Pro18B/C source chart, truly repeatable legal preparation pair, full digitally recorded commands, named pretarget sensor and chronology, measured within-run versus shared drift covariance, future ordered command with frozen scalar goal/tolerance, and a fresh holdout. Compare full recorded-command ordinary, one different sensor and repeated existing sensor. If correlation-sensitive ranking cannot be qualified, return INCONCLUSIVE; synthetic PASS alone never upgrades MAIN_ACCEPTED.
+
+---
+
 ## Legacy MAP mathematical derivations: recoverability, nuisance, observation and CAL
 
 Original M-numbering and conditions are preserved below. The P-numbered proof above remains the primary derivation. The frozen [historical MAP](https://github.com/Gogoal-L/math/blob/15b3fde162b2f7cb729ec106b847be1ad046d222/DPT_MATH_RESEARCH_MAP.md) fixes the preceding text.
