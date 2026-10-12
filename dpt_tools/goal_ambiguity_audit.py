@@ -268,6 +268,15 @@ def audit_marginal_sensor_coupling(
         # zero separation the subtraction is ill-conditioned, so expose it.
         if residual_mass < 1e-12:
             raise ValueError("marginal TV separation too small to certify float64 witness")
+    best = int(np.argmax(distances))
+    # Classical equal-prior likelihood-ratio decision based solely on
+    # the strongest *available pretarget sensor*. It is a usable rule
+    # without knowing any inter-sensor correlation or hidden history.
+    decision = (p[1,best] > p[0,best]).astype(int)
+    e0 = float(p[0,best,decision == 1].sum())
+    e1 = float(p[1,best,decision == 0].sum())
+    if not np.isclose(.5*(e0+e1), .5*(1.-d), rtol=0., atol=2e-10):
+        raise ArithmeticError("single-sensor likelihood rule disagrees with TV identity")
     far_goals = bool(abs(float(goals[1] - goals[0])) > 2. * tau)
     risk = max(0., .5 * (1. - d)) if far_goals else 0.
     out = {
@@ -279,7 +288,15 @@ def audit_marginal_sensor_coupling(
         "goal_gap": float(abs(goals[1] - goals[0])),
         "goal_tolerance": tau,
         "marginal_tvs": distances.tolist(),
-        "best_single_sensor": names[int(np.argmax(distances))],
+        "best_single_sensor": names[best],
+        "best_single_sensor_rule": {
+            "decision_by_bin": decision.tolist(),
+            "prediction": "declared goal of chosen hypothesis when goals require separation",
+            "conditional_failures_if_goal_separated": [e0,e1],
+            "maximum_conditional_failure_of_this_rule_if_separated": max(e0,e1),
+            "equal_prior_failure_if_separated": .5*(e0+e1),
+            "maximum_conditional_failure_is_not_proven_optimal": True,
+        },
         "worst_case_joint_tv": d,
         "worst_case_equal_prior_goal_failure": risk,
         "attaining_coupling": {
