@@ -21,10 +21,10 @@ and all_s_in_S abs(P_is - P_js) <= 2*sigmaP_s.
 
 Equality is compatibility (closed intervals touch), **not separation**. All histories are self-compatible. The optimum worst-case deterministic scalar-goal prediction error when the decoder knows the command `c` is exactly
 
-\[
+```math
 R_c(S)=\max\left\{\max_i\eta_{ic},\quad
 \frac12\max_{i<j:\,i\sim_S j}(|g_{ic}-g_{jc}|+\eta_{ic}+\eta_{jc})\right\},
-\]
+```
 
 where the second maximum is omitted if no distinct compatible pair exists. The overall command-coordinatewise tolerance requirement is `R_c(S) <= tau_c` for **every** `c`. Each command may use a different decoder, but **the same feature subset** is retained before the target; no future goal is an input. This theorem presumes simultaneous Cartesian worst-case uncertainty across histories and intervals; no stochastic noise law, confidence level, or source correlations are inferred.
 
@@ -36,16 +36,16 @@ where the second maximum is omitted if no distinct compatible pair exists. The o
 
 Suppose all `eta_ic <= tau_c`. First form the **base-ambiguous and goal-conflicting pair universe**
 
-\[
+```math
 \mathcal U=\left\{\{i,j\}: i<j,\;|O_{ir}-O_{jr}|\le2\sigma^O_r\ \forall r,\;
 \exists c\in C:\ |g_{ic}-g_{jc}|+\eta_{ic}+\eta_{jc}>2\tau_c\right\}.
-\]
+```
 
 Candidate feature `s` resolves the conflicts
 
-\[
+```math
 E_s=\{\{i,j\}\in\mathcal U:|P_{is}-P_{js}|>2\sigma_s^P\}.
-\]
+```
 
 Then `R_c(S)<=tau_c` for every command `c` **if and only if** `union_{s in S} E_s = U`. Proof: Proposition A says exactly those conflicting pairs must become incompatible, and a Cartesian coordinate product makes a pair incompatible precisely when at least one selected scalar coordinate is separated. With positive additive declared costs `w_s`, the minimum feasible total cost is the weighted set-cover optimum. When a conflict lies in no `E_s`, the supplied feature library cannot meet the goal contract; output the failing same-law history pair and its command.
 
