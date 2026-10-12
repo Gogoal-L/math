@@ -207,25 +207,41 @@ def gaussian_replicate_goal_pair(
 
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("input", type=Path, help="NPZ containing observations (N,m), goals (N,), optional candidates (N,p) and candidate_names")
-    parser.add_argument("--observation-noise-radius", type=float, required=True)
+    parser.add_argument("input", type=Path, help="NPZ with finite-bank or paired Gaussian history data")
+    parser.add_argument("--observation-noise-radius", type=float,
+                        help="Required for the legacy bounded Euclidean-noise audit")
     parser.add_argument("--candidate-noise-radius", type=float, default=0.0)
+    parser.add_argument("--gaussian-repeat-goal", action="store_true",
+                        help="Separate two-history repeated-noise goal-testing model")
     parser.add_argument("--output", type=Path)
     a = parser.parse_args()
     with np.load(a.input, allow_pickle=False) as data:
-        if "observations" not in data.files or "goals" not in data.files:
-            parser.error("NPZ requires observations and goals")
-        result = audit(data["observations"], data["goals"], a.observation_noise_radius,
-                       candidates=data["candidates"] if "candidates" in data.files else None,
-                       candidate_noise_radius=a.candidate_noise_radius,
-                       candidate_names=[str(z) for z in data["candidate_names"]] if "candidate_names" in data.files else None)
+        if a.gaussian_repeat_goal:
+            fields = ["observed_means", "future_goals", "goal_tolerance",
+                      "independent_sigma", "shared_sigma", "failure_probability"]
+            absent = [k for k in fields if k not in data.files]
+            if absent:
+                parser.error("missing Gaussian-repeat NPZ arrays: " + ", ".join(absent))
+            scalar = {k: float(data[k].item()) for k in fields[2:]}
+            result = gaussian_replicate_goal_pair(
+                data["observed_means"], data["future_goals"], **scalar)
+        else:
+            if a.observation_noise_radius is None:
+                parser.error("--observation-noise-radius is required for the finite-bank audit")
+            if "observations" not in data.files or "goals" not in data.files:
+                parser.error("NPZ requires observations and goals")
+            result = audit(
+                data["observations"], data["goals"], a.observation_noise_radius,
+                candidates=data["candidates"] if "candidates" in data.files else None,
+                candidate_noise_radius=a.candidate_noise_radius,
+                candidate_names=[str(z) for z in data["candidate_names"]]
+                if "candidate_names" in data.files else None)
     body = json.dumps(result, indent=2, sort_keys=True)
     if a.output:
         a.output.write_text(body + "\n", encoding="utf-8")
     else:
         print(body)
     return 0
-
 
 if __name__ == "__main__":
     raise SystemExit(main())
