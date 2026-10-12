@@ -68,7 +68,9 @@ jobs:
           from pathlib import Path
           sys.path.insert(0, 'dpt_tools')
           from markdown_math_audit import extract_math
-          for file in ['DPT_MATH_RESEARCH_MAP.md','dpt_research/20261012_second_order_goal_fiber.md']:
+          files = ['DPT_MATH_RESEARCH_MAP.md','dpt_tools/README.md']
+          files += [str(p) for p in sorted(Path('dpt_research').glob('*.md'))]
+          for file in files:
               source = Path(file).read_text(encoding='utf8')
               expected_math_count = len(extract_math(source))
               payload=json.dumps({'text':source,'mode':'gfm',
