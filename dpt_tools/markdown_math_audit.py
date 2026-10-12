@@ -102,9 +102,21 @@ def _process_text(line: str, no: int):
 
 def extract_math(source: str) -> list[dict]:
     extracted = []
+    lines = source.splitlines()
     for kind, content, no in _split_source(source):
         if kind == 'display':
-            extracted.append({'kind': 'display', 'line': no, 'tex': content})
+            item = {'kind': 'display', 'line': no, 'tex': content}
+            preceding = no - 2  # no is 1-based index of opening math fence
+            while preceding >= 0 and not lines[preceding].strip():
+                preceding -= 1
+            if preceding >= 0:
+                label = re.fullmatch(
+                    r'\*\*\(([A-Za-z]+\d+|\d+)\)\*\*',
+                    lines[preceding].strip(),
+                )
+                if label:
+                    item['label'] = label.group(1)
+            extracted.append(item)
         elif kind == 'text':
             extracted.extend(_process_text(content, no)[0])
     return extracted
@@ -112,6 +124,9 @@ def extract_math(source: str) -> list[dict]:
 
 def audit_markdown(source: str, name='document') -> list[str]:
     errors = []
+    lines = source.splitlines()
+    if lines and lines[0].startswith('# ') and lines.count(lines[0]) != 1:
+        errors.append(f'{name}: DUPLICATED_DOCUMENT_ROOT')
     for kind, content, no in _split_source(source):
         prefix = f'{name}:{no}'
         if kind == 'error':
