@@ -1,6 +1,7 @@
 """Synthetic, independently checkable mathematical test cases."""
 import unittest
 import numpy as np
+from goal_ambiguity_audit import gaussian_replicate_goal_pair
 
 from goal_word_quotient import audit as word_audit
 from implicit_goal_certificate import audit as implicit_audit
@@ -115,6 +116,95 @@ class ImplicitGoalTests(unittest.TestCase):
             implicit_audit([-.2], [[1., 0.]], [1.], **base)
         with self.assertRaises(ValueError):
             implicit_audit([float('nan')], [[1.]], [1.], **base)
+
+
+class NoisyRepeatGoalTests(unittest.TestCase):
+    """Analytically sharp two-history goal testing under repeated Gaussian reads."""
+
+    def test_goal_irrelevance_requires_no_measurement(self):
+        report = gaussian_replicate_goal_pair(
+            observed_means=[0, 0], future_goals=[0, 2],
+            goal_tolerance=1., independent_sigma=1., shared_sigma=1.,
+            failure_probability=.05)
+        self.assertEqual(report["minimum_repeats"], 0)
+        self.assertEqual(report["status"], "GOAL_WITHIN_TOLERANCE_WITHOUT_SENSING")
+
+    def test_independent_repeat_threshold_is_exact(self):
+        report = gaussian_replicate_goal_pair(
+            observed_means=[0, 1], future_goals=[0, 4],
+            goal_tolerance=.5, independent_sigma=1., shared_sigma=0.,
+            failure_probability=.05)
+        self.assertEqual(report["minimum_repeats"], 11)
+        self.assertLessEqual(report["minimax_failure_at_repeats"], .05)
+        self.assertGreater(report["minimax_failure_at_previous_repeats"], .05)
+        self.assertAlmostEqual(report["single_repeat_failure"],
+                               .3085375387259869, places=8)
+
+    def test_shared_calibration_floor_makes_repeat_budget_infinite(self):
+        report = gaussian_replicate_goal_pair(
+            observed_means=[0, 1], future_goals=[0, 4],
+            goal_tolerance=.5, independent_sigma=1., shared_sigma=.4,
+            failure_probability=.05)
+        self.assertEqual(report["status"], "SHARED_NUISANCE_INFORMATION_FLOOR")
+        self.assertIsNone(report["minimum_repeats"])
+        self.assertGreater(report["asymptotic_failure_floor"], .05)
+
+    def test_shared_noise_changes_repeat_budget_with_same_single_run_law(self):
+        a = gaussian_replicate_goal_pair(
+            observed_means=[0, 1], future_goals=[0, 4],
+            goal_tolerance=1., independent_sigma=np.sqrt(1.04),
+            shared_sigma=0., failure_probability=.05)
+        b = gaussian_replicate_goal_pair(
+            observed_means=[0, 1], future_goals=[0, 4],
+            goal_tolerance=1., independent_sigma=1.,
+            shared_sigma=.2, failure_probability=.05)
+        self.assertAlmostEqual(a["single_repeat_failure"], b["single_repeat_failure"])
+        self.assertLess(a["minimum_repeats"], b["minimum_repeats"])
+        self.assertEqual(b["minimum_repeats"], 20)
+
+    def test_equal_sensor_means_cannot_separate_different_goals(self):
+        report = gaussian_replicate_goal_pair(
+            observed_means=[3, 3], future_goals=[0, 4],
+            goal_tolerance=1., independent_sigma=.1, shared_sigma=.0,
+            failure_probability=.05)
+        self.assertEqual(report["status"], "IDENTICAL_SENSOR_LAWS")
+        self.assertIsNone(report["minimum_repeats"])
+
+    def test_exact_sensor_discrimination_requires_one_read(self):
+        report = gaussian_replicate_goal_pair(
+            observed_means=[0, 1], future_goals=[0, 4],
+            goal_tolerance=1., independent_sigma=0., shared_sigma=0.,
+            failure_probability=.05)
+        self.assertEqual(report["minimum_repeats"], 1)
+        self.assertEqual(report["minimax_failure_at_repeats"], 0.)
+
+    def test_gaussian_threshold_equals_simulated_symmetry_test(self):
+        rng = np.random.default_rng(191)
+        mu_gap, sigma_shared, sigma_independent, repeats = 1., .2, 1., 20
+        draws = 120000
+        shared = rng.normal(0,sigma_shared,size=draws)
+        mean_error = rng.normal(0,sigma_independent/np.sqrt(repeats),size=draws)
+        observed = shared + mean_error
+        simulated = np.mean(observed > mu_gap / 2)
+        out = gaussian_replicate_goal_pair(
+            observed_means=[0,mu_gap], future_goals=[0,4],
+            goal_tolerance=1., independent_sigma=sigma_independent,
+            shared_sigma=sigma_shared, failure_probability=.05)
+        self.assertAlmostEqual(simulated,out["minimax_failure_at_repeats"],delta=.008)
+
+    def test_invalid_gaussian_contract_rejected(self):
+        base=dict(observed_means=[0,1],future_goals=[0,4],
+                  goal_tolerance=1.,independent_sigma=1.,
+                  shared_sigma=0.,failure_probability=.05)
+        for key,bad in (
+            ("observed_means",[0]),("future_goals",[0, float('nan')]),
+            ("goal_tolerance",-1),("independent_sigma",-1),
+            ("shared_sigma",-1),("failure_probability",.7)
+        ):
+            with self.subTest(key=key):
+                args=dict(base);args[key]=bad
+                with self.assertRaises(ValueError):
+                    gaussian_replicate_goal_pair(**args)
 
 
 if __name__ == "__main__":
