@@ -323,3 +323,341 @@ The numerical Jacobian/adjoint condition number must be included in error propag
 **Independent verification:** analytic tests for (C19)–(C20), an implicit nonlinear current+previous scalar residual, a two-state quadratic command, and 200 random exactly specified quadratic maps represented through an invertible implicit residual all matched the source-free explicit chain rule. This validates the algebra and program on those fixtures, not the actual Wolfspeed/TRAP/BE vendor source.
 
 **Source-level acquisition required to close the loop:** actual executable F(z,x;u) and correct frozen command; measured source-consistent preparation/state chart; analytic/AD/validated finite-interval F_z,F_x,F_zz,F_zx,F_xx; goal g(z) or full stage work/readout including guard/event terms; and uniform implicit invertibility and third-derivative bounds on one physically legal history fiber. These feed (C5)–(C9) to decide the engineering goal radius *without* claiming recoverability of all parasitic inductances.
+
+---
+
+## Legacy MAP derivations: relative observation-fiber Hessian and implicit source pullback (M40–M54)
+
+This source-aware proof record retains M numbering while the independent C-numbered theorem above remains the central formal derivation. The [original historical MAP](https://github.com/Gogoal-L/math/blob/15b3fde162b2f7cb729ec106b847be1ad046d222/DPT_MATH_RESEARCH_MAP.md) is frozen.
+
+### 0.11 深挖：真正的二阶可辨识对象是 observation fiber 的相对 Hessian
+
+进一步核对 [Neuberger–Alexanderian–van Bloemen Waanders 2024 原文 §3](https://arxiv.org/html/2411.07532) 后，需要与其 **Bayesian-Gaussian quadratic-goal OED** 区分：它使用二次目标展开和后验方差进行传感器设计；我们这里独立推导的是**确定性、固定观测相容类上的最坏 scalar-goal 半径**。[Zhong et al. 2026 SIAM/ASA](https://doi.org/10.1137/24M1649344) 进一步处理非线性观察和未来 QoI 的 Bayesian information gain，但不提供以下硬误差界。完整证明、强反例、来源与物理接口见 [二阶 goal fiber 专题笔记](dpt_research/20261012_second_order_goal_fiber.md)。
+
+**合法前提：** 在一份固定 source reference 的 pretarget preparation 点 $`h_0`$，外部观测 $`O(h)`$ 和冻结合法未来命令后的标量目标 $`G_w(h)`$ 是 $`C^3`$；$`DO(h_0)`$ 对观测空间满行秩。取 $`Z`$ 的列为 $`\ker DO(h_0)`$ 正交基，且最有趣的一阶“看似足够”情形满足
+
+**(M40)**
+
+```math
+DO(h_0)Z=0,\qquad
+DG_w(h_0)Z=0
+\iff DG_w(h_0)=\lambda^\top DO(h_0).
+```
+
+根据正则水平集隐函数定理，若一整个**明确的、source-合法的 chart-ball** 都可达，则存在真正保持同一观测的曲线族 $`h(v)`$：
+
+**(M41)**
+
+```math
+O(h(v))=O(h_0),\quad
+h(0)=h_0,\quad Dh(0)=Z,\quad \|v\|_2\le r.
+```
+
+对观测约束二次微分并消去曲线弯曲的法向加速度，得到真正的目标二阶矩阵：
+
+**(M42)**
+
+```math
+\boxed{
+Q_w=Z^\top\left[
+D^2G_w(h_0)-\sum_j\lambda_jD^2O_j(h_0)
+\right]Z.
+}
+```
+
+**推导：** $`DO\,h''(0)[v,v]+D^2O[Zv,Zv]=0`$，且 $`DG_w=\lambda^\top DO`$，所以 $`D^2(G_w\circ h)(0)=Z^\top(D^2G_w-\lambda^\top D^2O)Z`$。因此**只看 $`D^2G`$ 自身是错的**：非线性 observation 的曲率可以制造、也可以完全抵消未来目标的二阶歧义。
+
+若确有整个合法 chart-ball 上的统一三阶上界 $`M_w`$（它是**真正复合函数 $`G_w\circ h`$** 的三阶导数界，不是单独 goal 的 ambient 三阶导数），Taylor 定理给
+
+**(M43)**
+
+```math
+G_w(h(v))=G_w(h_0)+\tfrac12v^\top Q_wv+R_3(v),
+\qquad |R_3(v)|\le M_wr^3/6.
+```
+
+定义 $`s_+=\max(0,\lambda_{\max}(Q_w))`$、$`s_-=\min(0,\lambda_{\min}(Q_w))`$。球内包括中心 $`v=0`$，二次型的精确最大最小分别是 $`r^2s_+/2,r^2s_-/2`$。固定外部观测时，一个 scalar decoder 必须输出同一数，其 minimax 最优输出是目标范围中点，故
+
+**(M44)**
+
+```math
+\boxed{R_2(r)=\frac{r^2}{4}(s_+-s_-).}
+```
+
+对每个状态的目标统一扰动不超过 $`M_wr^3/6`$ 时，max 和 min 各移动至多该值。因此可得到**真正双侧的局部目标半径资格**：
+
+**(M45)**
+
+```math
+\boxed{
+\bigl[R_2(r)-M_wr^3/6\bigr]_+
+\le R_{\rm fiber}(r)
+\le R_2(r)+M_wr^3/6.
+}
+```
+
+这里正号 $`[x]_+=\max(x,0)`$。若整个 global observation fiber 比这个 chart-ball 大，(M45) **仅有下界**可直接传递到全域，不能把局部上界命名为全域预测充分性。若 third-derivative 常数尚无严格来源，数值 Hessian 只能提供 $`R_2`$ 的主项诊断。
+
+**两个物理直觉相反、但一阶完全相同的精确反例。** 在二维合法局部 chart $`|y|\le r`$，取 $`O=x+y^2`$。若目标 $`G=x`$，虽然 $`DG=DO`$ 于中心，其精确 observation fiber 为 $`x=-y^2`$，故 $`Q=-2`$ 且
+
+**(M46)**
+
+```math
+R_{\rm fiber}(O=x+y^2,G=x)=r^2/2;
+\quad R_{\rm fiber}(O,G=O)=0.
+```
+
+第二个目标 $`G=O`$ 的 ambient Hessian 并非零，但观测本身已经充分，所以相对 Hessian 正确地抵消了它。
+
+**新增信息甚至可能一阶 Jacobian 为零。** 若旧观测为 $`O=x`$、未来目标为 $`G=y^2`$，一个**假设在 future 之前合法取得的非线性 CAL proxy** $`P=y^2+e,\ |e|\le\epsilon`$，在中心有 $`DP=0`$，却给出准确 deterministic minimax 半径
+
+**(M47)**
+
+```math
+\boxed{R_{\rm with\ P}=\min(\epsilon,r^2/2).}
+```
+
+证明是：给定读数 $`p`$，相容目标值落在 $`[0,r^2]\cap[p-\epsilon,p+\epsilon]`$，最大区间长度为 $`\min(r^2,2\epsilon)`$。此 toy 不能被误说成工程上能在开关前直接测量未来 work；需要真实合法 CAL 的对应 proxy 与误差资格。它证明 first-order **rank 不是 nonlinear candidate 的完整 acquisition 价值标准**。
+
+**未来命令的二阶曲率如何向 preparation 传播？** 设一步合法光滑更新 $`x_+=f_u(x)`$，后续 goal 为 $`g_+(x_+)`$，$`J_u=Df_u`$，则（所有量在对应实际 stage point 求值）
+
+**(M48)**
+
+```math
+\begin{aligned}
+D(g_+\circ f_u)&=J_u^\top Dg_+,\\
+D^2(g_+\circ f_u)
+&=J_u^\top D^2g_+J_u\\
+&\quad+\sum_j(Dg_+)_jD^2(f_u)_j.
+\end{aligned}
+```
+
+即使最后一阶段工程目标 $`g_+`$ 是线性的，**非线性 source command 的第二项仍可制造目标曲率**。这提供一种比把所有历史压成 28-state 直接构造更经济的必要信息审计：沿冻结命令词回传 goal gradient/Hessian，再在**同一 pretarget observation fiber** 上计算 $`Q_w`$。在共同合法 chart-ball、所有目标共同的 pretarget observation 和具名工程容差 $`\tau_j`$ 下，任意预测器至少要承担
+
+**(M49)**
+
+```math
+R_{\infty,\mathcal W}\ge
+\max_{w,j}
+\frac{\bigl[\frac{r^2}{4}(s_{+,w,j}-s_{-,w,j})
+-M_{w,j}r^3/6\bigr]_+}{\tau_j}.
+```
+
+**可验证代码**：[regular fiber curvature](dpt_tools/fiber_goal_curvature.py) 的 source Hessian/grad 输入及 backward command pullback；[12 项独立测试](dpt_tools/test_fiber_goal_curvature.py) 包括 120 个 cubic exact-fiber 场景和真实多项式两阶段命令的解析 oracle。它们验证数学实现，不代表自动提取了 LTspice/BE/trapezoidal source 的导数或完成了本构全域余项证书。
+
+**对 18B/C 的可证伪选择：** (i) 150-V 同 reference/source 的完整 recorded-command ordinary 是否已经充分；(ii) 若不足，未见 pair 的未来 work/peak 歧义是否能由 $`Q_w`$ 特征方向定量预测；(iii) 合法 CAL 在不混入自身状态干预效应的条件下能否缩小真实 goal fiber，而不只是提高参数 Hessian 的秩；(iv) peak/event guard 换支导致光滑 chart 失效时，退回前面的 sup-norm peak 和分段 work 界。最强科学出口是**源码同域的条件下界 + 非线性有界上界 + 未参与拟合的未来预测**，而不是将这套微分几何称为已有 SiC 全局证书。
+
+---
+
+### 0.12 直接回接实际隐式 source 残差：不必显式构造整套 nonlinear update
+
+上一段 (M48) 需要每个未来命令的状态更新 Hessian，但真实 DPT source evaluator 通常只提供离散隐式节点残差，例如 coupled backward Euler、梯形积分或带 charge/thermal 的求解器。正确的接口不必先全局求出状态转移 $`f_u`$。固定一个**合法命令** $`u`$，令前态 $`x`$、后态 $`z=f_u(x)`$ 满足整套离散 source 方程 $`F(z,x;u)=0`$，并假设真实点处 $`A=F_z`$ 可逆。于是由隐函数定理：
+
+**(M50)**
+
+```math
+\begin{aligned}
+F(z,x;u)&=0,\qquad A=F_z,\quad B=F_x,\\
+J_u:=Df_u&=-A^{-1}B,\qquad A J_u+B=0.
+\end{aligned}
+```
+
+目标 $`g(z)`$ 若只通过 postcommand 状态计算，则定义当前态 future goal $`G(x)=g(f_u(x))`$，求解 $`A^\top\lambda=\nabla g(z)`$ 得到 adjoint $`\lambda`$。任何前态方向 $`a,b`$ 诱导扩展 source 方向 $`p_a=(J_u a,a)`$、$`p_b=(J_u b,b)`$。连续对源残差**二次微分**并消去 $`D^2f_u`$，给出下式精确 Hessian-vector pairing：
+
+**(M51)**
+
+```math
+\boxed{
+\begin{aligned}
+DG(x)&=J_u^\top\nabla g(z),\\
+D^2G(x)[a,b]
+&=(J_ua)^\top D^2g(z)(J_ub)\\
+&\quad-\lambda^\top D^2F(z,x;u)[p_a,p_b].
+\end{aligned}
+}
+```
+
+**推导：** $`D^2F[(J_ua,a),(J_ub,b)]+A D^2 f_u[a,b]=0`$；代入 $`D^2(g\circ f_u)[a,b]=(J_ua)^\top D^2g(J_ub)+(\nabla g)^\top D^2 f_u[a,b]`$，再用 $`A^\top\lambda=\nabla g`$ 即得第二项的**负号**。实际实现须保留 $`F_{zz},F_{zx},F_{xz},F_{xx}`$ 全部块，尤其**同一步 current/previous charge 的相关性**，不能只对目标和当前态求 Hessian。该式可用求解当前 node Jacobian 与其转置来构造目标二阶方向导数；大规模 source 可采用 Hessian-vector products，而不必显式形成完整三阶存储张量。
+
+**把式子作用到已提供的 V6 二极管 BE 子本构。** 若固定 $`a,I_s,\tau`$，并暂只检查 §4.7 的二极管 charge/conduction 对残差的贡献
+
+**(M52)**
+
+```math
+F_{D,n}=i_{b,n}-I_s(e^{v_n/a}-1)
+-\frac{\tau I_s(e^{v_n/a}-e^{v_{n-1}/a})}{h_n},
+```
+
+则控制电压块的**精确二阶残差导数**为
+
+**(M53)**
+
+```math
+\begin{aligned}
+\frac{\partial^2 F_{D,n}}{\partial v_n^2}
+&=-\frac{I_s e^{v_n/a}}{a^2}
+\left(1+\frac{\tau}{h_n}\right),\\
+\frac{\partial^2 F_{D,n}}{\partial v_{n-1}^2}
+&=+\frac{\tau I_s e^{v_{n-1}/a}}{h_n a^2}.
+\end{aligned}
+```
+
+这两个项符号相反，且 previous charge 通过 $`1/h_n`$ 放大；**这是跨步 charge history 必须进入目标 Hessian 的精确 source 原因之一**。本式对该 scalar BE diode contribution 的交叉 $`v_n,v_{n-1}`$ 导数为零；但整套网络/器件/热残差的 mixed Hessian、隐式状态求解耦合与 guard 并不必为零。若 $`a=a(T)`$、$`I_s=I_s(T)`$，还要加入温度方向和其交叉偏导。本节不是把 diode branch 当作整个 vendor model。
+
+对于一个合法相容 source 状态邻域，定义 $`\|D^2F\|`$ 为从两项归一化 source 方向到残差向量的双线性算子范数。由 (M51) 和 $`\|[J_u;I]\|_2^2=1+\|J_u\|_2^2`$（此处 $`\|[J_u;I]\|_2^2`$ **实际上等于** $`1+\|J_u\|_2^2`$），得条件目标曲率上界：
+
+**(M54)**
+
+```math
+\boxed{
+\|D^2G\|
+\le \|J_u\|^2\|D^2g\|
++\|\lambda\|\,\|D^2F\|
+  \bigl(1+\|J_u\|^2\bigr).
+}
+```
+
+这帮助确定哪个 source 区域更值得重做有限域证书：$`F_z`$ 接近奇异、$`\|J_u\|`$ 大、指数电荷曲率大时，简单 constant/affine ordinary 的余项可能迅速上升；若 adjoint $`\lambda`$ 与曲率 source rows 正交，**某个工程目标**仍可稳定。这是**带目标投影的物理计算压力测试**，不是绝对的 source 器件精度定理。完整多步 work/peak 还需 stage goal/window boundary 与 guard。V6 的 150-V trapezoidal 与 600-V BE 残差不可混接。
+
+[可执行隐式 source Hessian 工具](dpt_tools/implicit_goal_hessian.py) 实现式 (M50–M51)，输入同点完整 $`F_z,F_x,D^2F,\nabla g,D^2g`$；[独立解析测试](dpt_tools/test_implicit_goal_hessian.py) 包括精确含 $`F_{zx}`$ 交叉项的 rational source、含 $`F_{zz},F_{xx}`$ 的 implicit source，以及 200 个随机解析显式律与隐式残差一致性比较。需要在实际 DPT source 中冻结 reference、nodal 变量单位、求解分支和正确的上一时步 state，才可将输出放进 (M42–M49) 的真实 observation-fiber 计算。
+
+**验证账本：** F119/F129/F132 的上述定理式从钉住的 [openai/math source](https://github.com/openai/math/tree/fd4aeeb2ee4fc729c18d98444fed42fd0529eeeb) 抽出；(M5–M6),(M8–M9),(M13–M22),(M24–M25) 是在具名假设下的独立有限维/分析推导。F119 相关噪声反例有精确有限枚举，F129 二状态 relation context 有全枚举，F132 小局部 grouped witness 有合成审计；[proof-level 细节](dpt_research/20261011_F119_F129_F132_proof_level_DPT_bridge.md)。联合半径工具另经独立的 70 组随机受约束 primal/dual 数值交叉检查（最坏绝对差约 $`9.14\cdot10^{-12}`$，其中 6 个严格容差下的 SciPy line-search status 未成功但最终可行迭代满足 $`10^{-8}`$ 约束容差；非形式证书），以及 analytic/CLI regressions。**没有真实 SiC source replay、没有物理参数/测量噪声资格、没有全部非线性 remainder 的统一证书。**
+
+---
+
+---
+
+## Provenance annex: nonlinear fiber and finite-stage tube
+
+The complete original nonlinear fiber / finite-stage box-tube derivations and critiques are preserved here. The finite-stage tube requires independently justified state/guard/remainder envelopes and is not an automatically validated actual SiC reachable domain. [Immutable original source](https://github.com/Gogoal-L/math/blob/15b3fde162b2f7cb729ec106b847be1ad046d222/dpt_research/20261010_nonlinear_fiber_and_stage_tube.md).
+
+### DPT-R1 mathematical frontier IV: nonlinear goal fibers and finite-stage admissible tubes
+
+**Date:** 2026-10-10. **Authority:** independent mathematical research; no native SiC validation, no S09/S10 budget or owner decision. **Upstream OpenAI Math identity:** [`fd4aeeb2`](https://github.com/openai/math/tree/fd4aeeb2ee4fc729c18d98444fed42fd0529eeeb). The preceding [all-word + solver-fidelity note](20261010_goal_information_solver_fidelity.md) and [ordered goal-error note](20261010_goal_stability_compositional_closure.md) remain valid within their stated model classes.
+
+#### 1. Domain brief: what is now missing?
+
+The MAP records: actual-law prospective 150/600 V command predictions; a qualified local Eth consistent chart with moving-event derivative; source-based K/Q and two-command summary tests; the larger-radius failure of the one-row fixed-Q summary; a well-performing one-Newton competitor. The earlier executable bridge covers *linear* all-word observability, *linear* ordered error transport and a *conditional* smooth implicit-solver bound. Two distinct mathematical gaps remain:
+
+1. **Curved observation fiber:** even when `DG = B DO` and the *tangent* goal-visible hidden dimension is zero, can two admissible histories with exactly the same retained observation have different next-command goals at order `r^2`?
+2. **Verified stage domain:** does a qualified Eth tangent and a list of successful trajectories suffice to carry an entire declared preparation neighborhood through subsequent guards/branches? It does not by itself. Can a small but mathematically genuine finite-stage enclosure be constructed?
+
+**Evidence ledger.** Source-backed: the current MAP reports the above *model-level accepted evidence*; F049/F149/F360 and classical nonlinear-observability/DAE results state their own mathematical theorems. Inference: these proof structures suggest concrete tests on DPT `O,G,Eth` and stage intervals. Unknown: actual `D2O,D2G`, physical reachable-fiber tangent, certified BE remainder/guard tubes and real DPT finite-radius sharpness. These unknowns must be supplied by the local controller rather than invented here.
+
+#### 2. Independent proposition A: second-order goal leakage on an observation fiber
+
+Let `U` be an open neighborhood of a physically admissible **history-coordinate** `x0` in `R^n`. Let `O:U -> R^m` and scalar `G:U -> R` be `C^2`, with `1 <= m < n`, and assume `DO(x0)` has full row rank. Here `G` is the *fixed future command and goal*, not an arbitrary post-target readout. Suppose additionally that the first-order factorization **is exact**:
+
+```math
+DG(x_0)=b\,DO(x_0),\qquad b\in\mathbb R^{1\times m}.
+```
+
+Let `K=ker DO(x0)` and define the *observation-fiber goal Hessian* (quadratic form on `K`):
+
+```math
+\boxed{Q_{G\mid O}(v)=v^T\left[D^2G(x_0)-\sum_{i=1}^{m}b_iD^2O_i(x_0)\right]v,\qquad v\in K.}
+```
+
+**Claim (elementary local implicit-function consequence).** For any unit `v` in `K`, there is a local `C^2` curve `x(t)` through `x0` such that `O(x(t))=O(x0)`, `x'(0)=v`, and
+
+```math
+G(x(t))-G(x_0)=\frac12 Q_{G\mid O}(v)t^2+o(t^2).
+```
+
+If `Q(v) != 0`, no exact predictor depending only on the retained `O` can be correct for both `x0` and `x(t)`: the two-point minimax scalar error is at least `|Q(v)|t^2/4+o(t^2)`. Under the *Euclidean metric of the declared scaled history chart*, the greatest absolute second-order coefficient is
+
+```math
+\frac12\rho\bigl(K^T[D^2G-\sum_i b_iD^2O_i]K\bigr),
+```
+
+where columns of `K` form an orthonormal nullspace basis and `rho` means **maximum absolute eigenvalue**, not the stage-state radius. This is an *asymptotic coefficient*, **not** an unconditional finite-radius error bound. It does not prove the new variable needed for repair is minimal or an external sensor.
+
+**Proof.** The constant-rank (submersion) theorem gives a local observation-level manifold. Pick its curve with prescribed tangent `v`. Twice differentiating `O(x(t))=O(x0)` gives `DO x''(0)+D2O[v,v]=0`. By exact factorization, `DG x''(0)=-b D2O[v,v]`. Twice differentiating the scalar goal yields exactly `Q(v)`. The Taylor expansion and two-point indistinguishability bound follow. Maximizing `|v^T M v|` on the unit sphere in `K` gives the spectral radius of the symmetric restriction `M` by the Rayleigh quotient. QED.
+
+**Constructive tests.** (a) `O(x,y)=x`, `G(x,y)=x+y^2`: at `(0,0)` the first-order nullspace audit passes, yet the equal-observation histories `(0,0)` and `(0,t)` differ by `t^2` in goal. (b) `O(x,y)=x+y^2`, `G=x`: exact fiber `(-t^2,t)`, target difference `-t^2`. (c) `G=O` has zero curvature; (d) `G=x+y^3` also has zero *quadratic* curvature but is *not* sufficient—higher order cannot be dismissed. (e) `G=x+10^-9 y+y^2` fails exact first-order factorization even if a loose numerical tolerance would accept it; its linear leakage dominates for sufficiently small `t`.
+
+**Executable:** [fiber_curvature_audit.py](../dpt_tools/fiber_curvature_audit.py) accepts `DO,DG,D2O,D2G`, verifies declared first-order factorization at a numerical tolerance and differentiability data consistency, returns the maximal hidden curvature and a tangent/second-derivative witness satisfying the level-set constraints. `QUADRATIC_WITNESS` is a **conditional mathematical candidate** dependent on exact identities, not a native DPT claim. `NEAR_FIRST_ORDER_FACTOR` prevents a small residual from masquerading as genuine second-order leakage. Full-row-rank/underflow failure refuses the submersion theorem. Mathematically nonzero curvature smaller than an absolute reporting tolerance may be classified as below threshold; that is no proof of its absence.
+
+**Why DPT cares:** the fixed Q second row becoming important at larger preparation radii could come from `Q_{G|O}` along source-reachable directions; the alternative is a *different command-horizon tangent direction* (earlier `goal_word_quotient.py`), an event branch change, or merely increased numerical error. Distinguish them on the same source/command/goal with native-approved data. In particular the physical reachable preparation set may be a lower-dimensional submanifold. Compute derivatives **in a valid chart of that set** rather than using arbitrary 28-coordinate displacements.
+
+#### 3. Independent proposition B: finite-stage box inclusion with certified envelopes as inputs
+
+Let `B_k=[l_k,u_k]` be stage-valid state boxes in one common physical/scaled chart. For one frozen command sequence suppose **throughout** `B_k` the actual state map admits
+
+```math
+x_{k+1}=A_kx_k+b_k+r_k(x_k),\qquad |r_{k,i}(x_k)|\le \epsilon_{k,i}.
+```
+
+For any input box `[p,q] subset B_k`, define the interval image by coordinates
+
+```math
+\begin{aligned}
+L_{k,i}
+&=b_{k,i}+\sum_j\min(A_{k,ij}p_j,A_{k,ij}q_j)
+-\epsilon_{k,i},\\
+U_{k,i}
+&=b_{k,i}+\sum_j\max(A_{k,ij}p_j,A_{k,ij}q_j)
++\epsilon_{k,i}.
+\end{aligned}
+```
+
+**Finite-stage conditional inclusion theorem.** If the initial uncertainty box lies in `B0` and at each step `[L_k,U_k] subset B_{k+1}`, then every physically admissible trajectory satisfying these particular map/remainder contracts remains within the declared stage-valid boxes throughout the specified command sequence. Proof is induction using the exact affine coordinatewise extrema of a box and the separately justified remainder bounds. This is **not** F149 permanence, a uniform infinite-time invariant region, or a complete nonlinear SiC certificate.
+
+**Why a failed check is not a counterexample:** after a stage, a box hull discards correlations. Example `x -> (x_1,x_1)` followed by `z=x_1-x_2` gives true `z=0` but interval hull allows `[-1,1]`. Failure says *the conservative certificate cannot qualify that domain*; it does not prove the physical state escaped.
+
+**Executable:** [stage_box_reachability.py](../dpt_tools/stage_box_reachability.py) accepts ordered affine maps, offsets, initial bounds, stage-valid boxes and **externally certified** componentwise remainder radii. It returns the propagated hull, validated prefix length, first unqualified stage, and the smallest numerical margin to a guard (with a roundoff-level warning). Its `CONDITIONAL_AFFINE_BOX_CHAIN` status means **the exact-algebra containment conditions are met numerically under the supplied contracts**, not that floating-point calculations are verified outward-rounded interval arithmetic. A numerically marginal result requires outward interval evaluation before formal certification. No native evidence is claimed.
+
+**Natural next DPT evidence:** from Sol9 Eth implicit lift, obtain a valid local coordinate continuation; on one frozen preparation tube, derive actual finite-range `A,b` and interval/remainder/guard bounds from the coupled BE equations rather than a single point Jacobian. If the interval hull fails, first preserve physical constraints using a polytope or zonotope before asking for new LTspice; do not react by choosing arbitrary larger boxes.
+
+#### 4. Additional OpenAI Math deep reads and proof transfers
+
+All OpenAI links below are pinned to `fd4aeeb2` and the papers are treated as preprints; selected Lean formalization scopes are recorded individually, not promoted to DPT.
+
+| Family, primary manuscript and exact result | Useful proof idea / challenge | What would make it load-bearing in DPT? |
+|---|---|---|
+| **F049** [stable coordinate counterexample](https://github.com/openai/math/blob/fd4aeeb2ee4fc729c18d98444fed42fd0529eeeb/preprints/A-stable-coordinate-that-is-not-a-coordinate-in-four-variables-October-5-2026/build/source/sections/01-introduction.tex), [explicit stabilization construction](https://github.com/openai/math/blob/fd4aeeb2ee4fc729c18d98444fed42fd0529eeeb/preprints/A-stable-coordinate-that-is-not-a-coordinate-in-four-variables-October-5-2026/build/source/sections/02-construction.tex) | Exhibits a complex polynomial that becomes a coordinate after adding an auxiliary variable but is not one in the original four variables; even affine-space fibers need not be ambiently straightenable. | Evidence that the proposed Eth/storage representation has a legal *physical* near-identity lift, rather than naming an augmented numerical chart a globally valid physical state. Algebraic counterexample is **not** a counterexample to actual DPT. [Lean selected scope](https://github.com/openai/math/blob/fd4aeeb2ee4fc729c18d98444fed42fd0529eeeb/lean/docs/049.md) includes its explicit four-variable polynomial. |
+| **F149** [finite affine trapping proof](https://github.com/openai/math/blob/fd4aeeb2ee4fc729c18d98444fed42fd0529eeeb/preprints/Uniform-Permanence-in-Weakly-Reversible-Mass-Action-Systems-October-5-2026/build/sections/trapping.tex) | Uses finitely many affine barriers/plateaux, sign comparisons and monotonicity to establish trapping and eventual entry in weakly reversible mass-action networks. | Motivates a *different elementary* affine interval-box containment pilot in switching dynamics; F149 network theorems cannot certify it. Its [selected Lean scope](https://github.com/openai/math/blob/fd4aeeb2ee4fc729c18d98444fed42fd0529eeeb/lean/docs/149.md) covers the earlier persistence result, not automatically every stronger October assertion. |
+| **F360** [weak-MTW to convex tangent injectivity domains](https://github.com/openai/math/blob/fd4aeeb2ee4fc729c18d98444fed42fd0529eeeb/preprints/Global-Support-and-Convex-Injectivity-Domains-under-Weak-MTW-September-25-2026/build/sections/introduction.tex) | Proves *specific* transverse cost curvature conditions imply global convexity on a Riemannian manifold; strong global inference requires a verified hypothesis, not scattered local tangents. | Suggests asking whether any actual DPT finite-radius valid domain has proven convex/monotonic geometry. Without an analogous condition, use conservative explicit guard boxes instead. [Lean scope](https://github.com/openai/math/blob/fd4aeeb2ee4fc729c18d98444fed42fd0529eeeb/lean/docs/360.md) covers the specified convex-injectivity result. |
+| **F334** [smooth metric without a local isometric immersion](https://github.com/openai/math/blob/fd4aeeb2ee4fc729c18d98444fed42fd0529eeeb/preprints/A-Smooth-Metric-with-No-Local-Isometric-Immersion-into-Three-Space-September-24-2026/build/main.tex) | A smooth metric can have the same *full* Taylor jet as Euclidean at a point and yet fail local smooth realization into 3D. | A sharp analogy for refusing to turn an Eth pointwise Taylor audit into a neighborhood representation without a continuation theorem. The result is about geometry, not DPT circuit states. |
+| **F093** [log-Sobolev from subgaussian linear marginals](https://github.com/openai/math/blob/fd4aeeb2ee4fc729c18d98444fed42fd0529eeeb/preprints/A-dimension-free-logarithmic-Sobolev-inequality-for-subgaussian-log-concave-measures-September-23-2026/build/sections/01-introduction.tex) | Dimension-free concentration requires a centered **log-concave distribution with all linear marginals subgaussian** as defined in the theorem. | An eventual stochastic noise-certified companion to deterministic radius analysis *only if* the preparation/noise distribution is measured and those hypotheses validated. Not used as an error bar now. No `lean/docs/093.md` was located at the inspected commit. |
+| **F377** [infinity-harmonic interior C1-alpha regularity](https://github.com/openai/math/blob/fd4aeeb2ee4fc729c18d98444fed42fd0529eeeb/preprints/Uniform-Interior-C1alpha-Estimates-for-Infinity-Harmonic-Functions-October-4-2026/build/manuscript/sections/01-introduction.tex) | Provides `C^{1,alpha}` for **bounded infinity-harmonic functions**, not generic nonlinear maps. | Reminder that second derivatives must be explicitly available; generic `C1`/Holder systems do not license the Hessian test. WATCH until a valid differentiability model exists. No `lean/docs/377.md` found in this inspection. |
+
+##### Source-audit and closest-prior subtraction
+
+The OpenAI papers do **not** prove our two mathematical propositions. The fiber argument is classical submersion/implicit-function differential geometry and nonlinear observability; compare [Hermann–Krener 1977](https://doi.org/10.1109/TAC.1977.1101601). Stage box inclusion is elementary robust set propagation; compare [Della Rossa–Egidio–Jungers 2023](https://doi.org/10.1137/22M1482226) and [Cinto et al. 2025](https://doi.org/10.1137/24M1715520), which address harder switched-affine stability/controlled invariance questions. [Trenn 2012](https://doi.org/10.1007/978-1-4471-2885-4_6) describes mode consistency projection for linear switched DAEs. Our proposed DPT contribution is the verified **application and diagnostic role of the specific nonlinear observation-fiber curvature and stage-reachable tubes** using actual preparation and hybrid circuit equations. It is not novelty merely to name a Hessian or a box.
+
+#### 5. Short roundtable stress test (simulated, sourced positions; NOT real quotations)
+
+**Moderator's question:** Under the current S09 resource limit, is it more valuable to add an internal state, refine the full solver, or prove a range where the existing reduced state already works?
+
+**Hermann–Krener lens (nonlinear observability; 1977, inference applied to DPT):** The lack of a goal-visible direction in a first-order matrix is a *local rank observation*, not a whole nonlinear input-output equivalence. Ask whether a curved observation fiber gives distinct future outputs for the same summary. The precise derivative and future command matter. [Source](https://doi.org/10.1109/TAC.1977.1101601).
+
+**Trenn lens (switched-DAE mode consistency; 2012, inference applied to DPT):** Before interpreting a hidden direction as a physical mode, establish which variables are algebraic after Eth, which storage is continuous, and whether an implicit stage update is uniquely defined. A tangent in a forbidden or inconsistent DAE chart is not an admissible history. [Source](https://doi.org/10.1007/978-1-4471-2885-4_6).
+
+**Krause lens (robust observation selection; 2008, inference applied to DPT):** Even a mathematically decisive witness is not automatically an economical sensor. Evaluate available readouts, shared prefix, acquisition costs and robustness across multiple actual goals; greedy selection guarantees require the assumptions of the chosen information objective. [Source](https://www.jmlr.org/papers/v9/krause08b.html).
+
+**Round 1 crux:** *Rank deficiency or radius leakage* cannot be diagnosed before defining the legitimate physically reachable fiber. A no-extra-simulation check is: take the same native-qualified Eth/source chart and construct a candidate observation-equal perturbation. The second-order result is meaningful only when this perturbation remains admissible.
+
+**Round 2 crux:** A physically admissible *point* is not a verified *domain*. The affine-box pilot supplies a conservative failure locator; if interval overapproximation fails because of correlated charge constraints, the next mathematics should be a polytope or manifold chart, not a larger solver budget.
+
+```text
+valid preparation chart + guard/DAE identities
+               |
+           JO, DG, Hessians ------> curved-fiber goal witness (lower information boundary)
+               |
+        qualified stage maps ------> finite-stage box containment (upper domain boundary)
+               |                               |
+      combined source-specific forecast / repair choice (controller only)
+```
+
+**Moderator synthesis:** The strongest two alternative hypotheses are (H1) a genuinely missing, goal-visible preparation direction and (H2) an incorrect/nonuniform stage chart or unqualified approximation region. The two audits discriminate them better than another generic fit refinement. They do not imply that one hypothesis is universally true, and no actual scientist is claimed to have spoken about this SiC project.
+
+#### 6. Controller replay gate and rejection outcomes
+
+1. **Same physical source/branch:** obtain valid preparation-parameter coordinates, recorded fixed commands/goals, and complete `O/G` derivative mapping; exclude future outcome data from prediction inputs.
+2. **Curvature attack:** run `fiber_curvature_audit.py` on physically reachable chart derivatives. Compare its predicted hidden tangent with archived finite perturbation/goal contrasts; explicitly test first-order leakage and event-branch conditions. If the Hessians are unavailable or charts nonsmooth, record the missing math contract, not an inferred result.
+3. **Finite-stage tube attack:** on a *frozen* valid prefix and command sequence, derive `A_k,b_k`, stage boxes, all-coordinate true residual envelopes and guard domains from actual BE storage/constraint law. Run `stage_box_reachability.py`. If the box fails due to correlation, test an exact constrained reachable set/polytope rather than reclassifying native evidence as invalid.
+4. **Decision fork:** a nonzero qualified curvature suggests a **local information repair** candidate. A valid small box and certified small solver residual suggest a **cheaper model/solver** regime. Both failing suggests domain/representation needs repair before any new acquisition. Include full/affine/one-Newton ordinary rivals and the current 600 V path qualification.
+5. **Formal acceptance:** no automatic modification of S09 freeze, native model claim, extra LTspice, or active owner lane. The local controller decides which math deltas are scientifically material.
+
+**Evidence status:** analytical theorem(s) independently reconstructed; original OpenAI sources read at theorem/proof-architecture level; 23 synthetic/analytic tests including randomized vertex cross-check, numerical margin guard and CLI/compile checks passed locally; actual DPT source Hessians and stage-valid remainder boxes remain unknown. These tools are reusable mathematical probes and **not** native validations.
