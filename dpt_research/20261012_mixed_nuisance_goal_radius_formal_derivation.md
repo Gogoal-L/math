@@ -408,6 +408,93 @@ The existing [goal_ambiguity_audit.py](../dpt_tools/goal_ambiguity_audit.py) off
 
 ---
 
+## X. How much multi-sensor information survives unknown dependence? (P27–P30)
+
+**Result identity (2026-10-12).** This section derives a sharp *two-history, finite-categorical, marginal-only* sensor-fusion theorem with an explicit attaining adversarial joint law and a deployable best-single-sensor decision rule. Its mathematical core is the classical total-variation/common-overlap and Fréchet-class coupling principle, NOT a novel property of OpenAI's sampling/transport papers. The new contribution to the DPT research programme is a precisely scoped, falsifiable **source-of-information decision contract**: adding an external sensor can yield huge goal discrimination, but if only each sensor's separate marginal law is qualified, **no improvement over the strongest single sensor is guaranteed for equal-prior average goal failure**. Actual SiC switching sources supply extra physical constraints, which could invalidate the adversarial coupling and unlock positive joint gains; their source-dependent form remains OPEN_RESEARCH.
+
+### X.1. Original-proof exploitation, not just thematic analogies
+
+**F122** ([source hypothesis-testing step](https://github.com/openai/math/blob/fd4aeeb2ee4fc729c18d98444fed42fd0529eeeb/preprints/quantitative-lower-bounds-for-trace-reconstruction-September-24-2026/build/sections/transfer.tex)) gives a model-specific deletion-trace *testing* argument: if two laws are near in total variation, no estimator can reliably distinguish the generating string. Here we retain the **testing inequality**, replace deletion traces by the *complete predictor-visible multi-sensor readout*, and replace complete-string recovery by *two separated future goals*. The claimed F122 superpolynomial sample scaling is not used.
+
+**F115-A** ([source fixed-margin table theorem](https://github.com/openai/math/blob/fd4aeeb2ee4fc729c18d98444fed42fd0529eeeb/preprints/Exact-Uniform-Sampling-of-Contingency-Tables-with-Arbitrary-Margins-September-24-2026/build/sections/introduction.tex), [padded graph/repair construction](https://github.com/openai/math/blob/fd4aeeb2ee4fc729c18d98444fed42fd0529eeeb/preprints/Exact-Uniform-Sampling-of-Contingency-Tables-with-Arbitrary-Margins-September-24-2026/build/sections/model-and-graph.tex)) assumes fixed **integer row/column sums** and samples *uniformly over all feasible tables*. **F115-B** ([original cell-bounded FPRAS](https://github.com/openai/math/blob/fd4aeeb2ee4fc729c18d98444fed42fd0529eeeb/preprints/An-FPRAS-for-Cell-Bounded-Contingency-Tables-September-24-2026/build/sections/introduction.tex), [bounded-flow-to-table bijection](https://github.com/openai/math/blob/fd4aeeb2ee4fc729c18d98444fed42fd0529eeeb/preprints/An-FPRAS-for-Cell-Bounded-Contingency-Tables-September-24-2026/build/sections/flows.tex)) additionally permits structural zeros and integer capacity constraints. This shows how to *enumerate/count/sample a declared discretized feasibility family* once it is physically identified; its uniform counting measure is **not** a sensor noise probability law or posterior without separately justified exchangeability/calibration. This round therefore uses exact marginal constraints while retaining **all** compatible joint couplings; F115's substantial complexity theorem is not needed for the simple sharp TV minimization proved below. An eventual source-qualified Kirchhoff flow/charge-count discretization would be a different, more constrained physical task.
+
+**F373** ([special smooth three-particle Coulomb example](https://github.com/openai/math/blob/fd4aeeb2ee4fc729c18d98444fed42fd0529eeeb/preprints/A-counterexample-to-the-Monge-ansatz-for-the-three-marginal-Coulomb-cost-September-25-2026/build/sections/introduction.tex), [dual support certificate](https://github.com/openai/math/blob/fd4aeeb2ee4fc729c18d98444fed42fd0529eeeb/preprints/A-counterexample-to-the-Monge-ansatz-for-the-three-marginal-Coulomb-cost-September-25-2026/build/sections/certificate.tex), [equality of infima without deterministic attainment](https://github.com/openai/math/blob/fd4aeeb2ee4fc729c18d98444fed42fd0529eeeb/preprints/A-counterexample-to-the-Monge-ansatz-for-the-three-marginal-Coulomb-cost-September-25-2026/build/sections/infima.tex)) exhibits an optimal *nondeterministic* coupling for a special Coulomb transport cost when deterministic Monge maps never attain it. Our finite sensor-TV construction instead **attains** its bound by an explicit mixture of product couplings; the Coulomb nonattainment theorem is not transplanted. The useful warning is that restricting a probabilistic joint law to an unjustified deterministic correction map can delete admissible extremizers.
+
+The classical broader setting is [Bartl, Kupper, Lux, Papapantoleon and Eckstein (2022), _Marginal and Dependence Uncertainty: Bounds, Optimal Transport, and Sharpness_](https://doi.org/10.1137/21M144709X): Fréchet classes distinguish specified marginals from unidentified dependence, and physical structural information can tighten bounds. Our particular finite-TV equality below is established directly, rather than attributed to an unidentified theorem in that article.
+
+### X.2. Sharp worst-case joint-observation information, with constructive witness
+
+Fix just two legal preparation histories h=0,1 under **the same frozen source reference**. There are p pretarget sensor/readout coordinates, each discretized into k labeled bins (zero-probability padding may represent sensors with fewer categories). The full, exact *marginal probability mass function* of sensor j under history h is p_hjb. A hypothesis-dependent joint sensor law Q_h is any probability law on the product alphabet whose j-th marginal equals p_hj. There are **no** conditional independence, Gaussian, covariance, support-mask, common-copula or cross-time constraints. The actual full recorded-command / pretarget digital transcript MUST be included as a predictor-visible feature whenever it is accessible. Let Gamma_h denote the class of all these joint laws.
+
+**(P27)**
+
+```math
+\begin{aligned}
+d_j &= \frac12\sum_{b=1}^{k}|p_{0jb}-p_{1jb}|,\\
+d_*&=\max_{1\le j\le p}d_j,\\
+\inf_{Q_0\in\Gamma_0,\ Q_1\in\Gamma_1}
+\mathrm{TV}(Q_0,Q_1)&=d_*.
+\end{aligned}
+```
+
+**Lower-bound proof.** Projecting any joint sensor law to coordinate j is a measurable map. Total variation cannot increase under projection, so TV(Q0,Q1) is at least d_j for every sensor and at least d_*. This alone does **not** prove equality; the missing piece is a single pair of joint laws achieving the strongest-marginal limit **simultaneously**.
+
+**Attaining mixture construction.** Let s=1−d_* and t=d_*. For each sensor j, choose a nonnegative common subprobability c_j on its alphabet with total mass s and c_j(b) at most both history marginals. For s>0 one explicit choice is to rescale the pointwise overlap, which has total mass at least s:
+
+**(P28)**
+
+```math
+\begin{aligned}
+u_j(b)&=\min(p_{0jb},p_{1jb}),\quad
+M_j=\sum_b u_j(b)\ge s,\\
+c_j(b)&=s\,\frac{u_j(b)}{M_j},\qquad
+r_{hj}(b)=\frac{p_{hjb}-c_j(b)}{t},\\
+Q_h&=s\bigotimes_j(c_j/s)
++t\bigotimes_j r_{hj}.
+\end{aligned}
+```
+
+When s=0 omit the common term; when t=0 omit both residual terms. Every r_hj is a probability mass function when t>0. Marginalizing Q_h in coordinate j gives exactly c_j+t r_hj=p_hj. Both joint laws contain the **same** product probability measure with weight s, giving TV(Q0,Q1)≤1−s=t=d_*. Combined with projection monotonicity, this yields equality in (P27). The construction is a compact factorized *attaining witness*; it never enumerates all k^p joint cells and does not require F115's sophisticated sampler.
+
+### X.3. Exactly what forecasting risk follows, and what does not
+
+For one frozen future command, assume g0 and g1 are distinct fixed scalar future goals and their acceptable prediction intervals [g_h−tau,g_h+tau] are **disjoint** (|g1−g0|>2tau). Consider the prior weighting h=0 and h=1 each with probability 1/2. A randomized decision rule may use all pretarget readings but not the hidden actual history or future goal outcome. For any known Q0,Q1 its optimal average goal-failure probability equals (1−TV(Q0,Q1))/2. The sharp minimax game over **unknown cross-sensor coupling** therefore satisfies
+
+**(P29)**
+
+```math
+\inf_{\delta}\sup_{Q_h\in\Gamma_h}
+\frac12\sum_{h=0}^{1}
+Q_h\{\delta(Y)\ne h\}
+=\frac{1-d_*}{2}.
+```
+
+**Proof/constructive ordinary.** The adversarial joint pair of (P28) makes the Bayes error exactly (1−d_*)/2, so no decoder can uniformly do better in equal-prior *average error*. Choose sensor j* maximizing d_j. Its binary likelihood rule returns history 1 for bins with p_1,j*(b)>p_0,j*(b), and returns 0 otherwise, breaking ties arbitrarily. Its average failure is (1−d_*)/2 **for every possible joint dependence**, since it does not observe other sensors. Hence the robust equality and a practically executable strong ordinary. When |g1−g0|≤2tau, a constant goal forecast in the overlapping intervals gives **zero** failure without reading any sensor.
+
+**Critical per-history caveat.** Equal-prior average Bayes risk is not the same as the minimum maximum conditional error across the two preparations. For a single sensor with P0=(1,0), P1=(1/2,1/2), the marginal TV is 1/2 and equal-prior Bayes failure is 1/4; the obvious likelihood decision has conditional failure (0,1/2). The *randomized minimax worst-history* rule puts probability 1/3 on guessing history 1 at bin 0, and predicts history 1 at bin 1; both conditional errors become 1/3. Thus **1/4 cannot be advertised as a per-history 75%/95% guarantee**. P23's necessary TV test applies to worst-history success, but (P29) optimizes the different explicitly declared equal-prior objective. The new CLI reports the two error components of its single-sensor ordinary and does not invent a globally optimal worst-history classifier.
+
+### X.4. Two opposite calibrated-dependence counterexamples
+
+**Exact joint-only synergy, absent from all marginal probabilities.** Both histories have *identical* Bernoulli(1/2) marginal distributions on two sensors, so d_*=0 and (P29)'s worst-case equal-prior failure is 1/2. But suppose the physically qualified joint law under h=0 is P(Y1=Y2)=1 and under h=1 is P(Y1≠Y2)=1, with all two permitted configurations at probability 1/2. Their supports are disjoint: joint TV=1 and a joint decoder predicts the future goal **perfectly**. If those specific joint-dependence constraints are NOT qualified, a common independent joint law Q0=Q1 gives TV=0, so the perfect inference is not guaranteed by marginals alone.
+
+**Positive independent-sensor ordinary.** Three conditionally independent binary pretarget sensors each have P0(bin 1)=.2 and P1(bin 1)=.8. Each sensor alone has TV=.6 and average optimal failure .2. Their **qualified independent joint product** has TV=.792, giving optimal equal-prior failure .104. Without the independence contract the exact worst joint TV returns to .6. Both are mathematically consistent; the source determines which model applies.
+
+**What physical support would change the verdict?** If legal, source-qualified observation support masks are disjoint across histories, every feasible compatible joint law has TV=1—even with individually identical marginals. But any proposed support constraint requires its own source-law and noise/quantization proof. The present tool checks a supplied complete joint PMF against its marginals; it does **not** prove that empirical PMFs, support masks or noise distributions came from actual SiC experiments.
+
+### X.5. What remains usable from F139: a precise stopping condition
+
+F139's [original first-order-oracle theorem](https://github.com/openai/math/blob/fd4aeeb2ee4fc729c18d98444fed42fd0529eeeb/preprints/Subpolynomial-query-complexity-for-well-conditioned-log-concave-sampling-September-26-2026/build/sections/introduction.tex) assumes a globally strongly convex potential with Hessian bounded between the identity and twice the identity (in chosen normalized coordinates) and permits unrestricted arithmetic between queries. **An elementary nonlinear observation inverse problem violates this:** take Gaussian observation y=1 of f(x)=x², unit observation noise variance and a N(0,1) Gaussian prior. Up to an irrelevant constant, its negative log-posterior potential is V(x)=(x²−1)²/2+x²/2. Then V''(x)=6x²−1 and V''(0)=−1. It has two separated minima at x=±1/sqrt(2), violating global log-concavity and even convexity. Thus a well-conditioned Gaussian prior does not prove F139's likelihood assumptions, and F139's claimed low *oracle query* complexity does not imply cheap switched-source model evaluation. A source-qualified strongly convex chart could reopen that work; this generic goal-auditor does not.
+
+### X.6. Independent numeric pressure, implementation and Main handoff
+
+[goal_ambiguity_audit.py](../dpt_tools/goal_ambiguity_audit.py) gains a separate --marginal-only-fusion mode. Inputs: marginal_probabilities(2,p,k) and future_goals(2,), goal_tolerance, optional sensor_names(p) and *complete* joint_probabilities(2,k,...,k). Exact finite-categorical masses, frozen matching bin definitions and the same source reference are mandatory. It returns per-sensor TVs, **sharp worst joint TV**, an explicit two-mixture factorized adversarial coupling, the achievable equal-prior best-sensor decision and *both* conditional error components. If a full joint PMF is supplied, it checks normalization/marginal consistency and separately reports actual-joint TV and its gain over the strongest marginal. Numerical marginal agreement is NOT physical validation, and small-N empirical frequency tables do not magically become known exact probabilities.
+
+Verification uses: independent product-law reconstruction across 96 random two-history banks (1–3 sensors, 2–3 bins), independent two-binary-sensor grid-search minimization of the coupling TV, the two opposite correlation/ranking counterexamples, per-history Bayes-versus-minimax falsifier, input/PMF checks and NPZ CLI replay. A separate off-repo exact linear-programming oracle using SciPy HiGHS agreed with (P27) on 100 random 2- and 3-binary-sensor banks; the repository regression deliberately requires NumPy only. Neither Python regression nor GitHub formula rendering is a formal verification of the original F115/F373/F139 mathematical statements.
+
+**Smallest native DPT test.** On a single accepted 150 V Pro18B/C or original 100 V R1 chart, choose a legal two-preparation pair with separated prospective work/peak/event goals. Freeze the full digital command/history record, sensor-port timing, quantization bins, error tolerance and scorer. First estimate both *per-history sensor marginals* from truly independent, repeatably prepared calibration runs. Then seek a qualification of joint cross-port dependence or legal support from same-shot paired waveforms, with bandwidth/time skew, sample-size, source discrepancy and calibration drift controlled. Compare complete recorded-command ordinary, strongest single sensor, jointly calibrated two-sensor decision, and the independent-Gaussian repeat model P24 only if that separate Gaussian campaign contract is valid. The verdict delta is **measured joint-TV advantage that persists under source qualification and a fresh goal holdout**; otherwise keep SIDE_VERIFIED/READY_FOR_HANDOFF and label sensor synergy OPEN_RESEARCH.
+
+---
+
 ## Legacy MAP mathematical derivations: recoverability, nuisance, observation and CAL
 
 Original M-numbering and conditions are preserved below. The P-numbered proof above remains the primary derivation. The frozen [historical MAP](https://github.com/Gogoal-L/math/blob/15b3fde162b2f7cb729ec106b847be1ad046d222/DPT_MATH_RESEARCH_MAP.md) fixes the preceding text.
