@@ -8,23 +8,23 @@ The existing Math tools cover finite-bank ambiguity and repair (goal_ambiguity_a
 
 Fix one qualified finite-dimensional state/parameter chart and one future command:
 
-\[
+```math
 x=x_0+Bz,\quad\|z\|_2\le1;\qquad
 y=Hx+Ee,\quad\|e\|_2\le1;\qquad
 G(x)=G(x_0)+g^\top(x-x_0).
-\]
+```
 
 The entire ellipsoid B must be physically admissible, not just its tangent; H contains *pretarget* measurement rows; E specifies a **joint deterministic** error ellipsoid (not automatically the data covariance); g is the same-law gradient of a smooth future goal. E may be rectangular or rank deficient; B may be rank deficient and physical units stay explicit.
 
 Set A=E^{-1}HB and c=B^\top g. Then the **global** scalar minimax risk over all estimators, possible observations and admissible states/noise is
 
-\[
+```math
 \boxed{
 R=\max_{\|z\|\le1,\,\|Az\|\le1}|c^\top z|
 =\min_w(\|c-A^\top w\|_2+\|w\|_2)
 =\sqrt{\min_{0\le q\le1}c^\top[(1-q)I+qA^\top A]^{-1}c}.
 }
-\]
+```
 
 For a singular endpoint the last expression means its finite interior limit, or the pseudoinverse when c lies in the relevant range. R is expressed in the chosen **goal's units** (V, J etc.). The minimax-optimal linear predictor has unwhitened measurement weights a=E^{-T}w and an absolute offset G(x0)-a^\top Hx0.
 
