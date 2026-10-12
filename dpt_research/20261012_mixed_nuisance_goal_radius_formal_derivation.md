@@ -39,10 +39,11 @@ R_*\ge\max_{\substack{\|z\|,\|e\|\le1\\Az+Ee\in\operatorname{im}N}}|c^\top z|
 **(P2)**
 
 ```math
-\sup_{\|z\|\le1,\|e\|\le1,\eta}
-\bigl(c^\top z-a^\top(Az+Ee+N\eta)\bigr)
-=\underbrace{\|c-A^\top a\|_2}_{\text{state uncertainty}}
-+\underbrace{\|E^\top a\|_2}_{\text{joint sensor error}}.
+\begin{aligned}
+&\sup_{\|z\|\le1,\|e\|\le1,\eta}
+\bigl(c^\top z-a^\top(Az+Ee+N\eta)\bigr)\\
+&\qquad=\|c-A^\top a\|_2+\|E^\top a\|_2.
+\end{aligned}
 ```
 
 Hence the optimal-value equality is
