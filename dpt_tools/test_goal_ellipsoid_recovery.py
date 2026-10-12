@@ -8,6 +8,7 @@ from pathlib import Path
 import numpy as np
 
 from goal_ellipsoid_recovery import recover_scalar_goal
+import goal_ellipsoid_recovery as ger
 
 
 class GoalEllipsoidTests(unittest.TestCase):
@@ -126,6 +127,133 @@ class SingularCommonModeRecovery(unittest.TestCase):
         self.assertLess(report["algorithm_upper"],2e-9)
         self.assertLess(report["numerical_gap"],2e-9)
         self.assertLessEqual(report["witness_whitened_observation_norm"],1+1e-8)
+
+
+
+class GaussianQuadraticGoalOEDTests(unittest.TestCase):
+    """Original-Gq Gaussian moment identities + independently constructed falsifiers."""
+
+    def test_quadratic_target_reverses_parameter_info_sensor_ranking(self):
+        H = np.array([[[1., 0.]], [[0., 1.]]])
+        out = ger.rank_quadratic_goal_designs(
+            [0., 0.], np.diag([9., 1.]), [0., 0.],
+            np.diag([0., 2.]), H, np.ones((2, 1, 1)),
+            candidate_names=["A", "B"])
+        self.assertEqual(out["rank_best"]["Gq"], "B")
+        self.assertEqual(out["rank_best"]["A"], "A")
+        self.assertEqual(out["rank_best"]["parameter_MI"], "A")
+        self.assertEqual(out["rank_best"]["Gl"], "A")
+        self.assertAlmostEqual(out["candidates"][0]["Gq"], 2.)
+        self.assertAlmostEqual(out["candidates"][1]["Gq"], 1.5)
+        self.assertEqual([x["Gl"] for x in out["candidates"]], [0., 0.])
+
+    def test_quadratic_data_average_matches_independent_gaussian_mc(self):
+        mu = np.array([.2, -1.])
+        P = np.array([[1.5, .3], [.3, .5]])
+        b = np.array([.4, -.7])
+        Q = np.array([[2., .2], [.2, -1.]])
+        H = np.array([[1., .5], [-.2, 1.]])
+        R = np.array([[.8, .1], [.1, .6]])
+        out = ger.quadratic_goal_design(mu, P, b, Q, H, R,
+                                        expansion_center=[0., 0.])
+        post = np.asarray(out["posterior_cov"])
+        rng = np.random.default_rng(46)
+        posterior_means = rng.multivariate_normal(mu, P - post, size=120000)
+        grad_at_means = b[None, :] + posterior_means @ Q.T
+        mc = np.mean(np.einsum("ni,ij,nj->n", grad_at_means, post, grad_at_means))
+        mc += .5 * np.trace((Q @ post) @ (Q @ post))
+        self.assertAlmostEqual(out["Gq"], mc, delta=.025)
+        self.assertLessEqual(out["Gq"], out["prior_goal_variance"] + 1e-8)
+
+    def test_joint_model_error_cross_covariance_is_crucial(self):
+        # The nominal H=0, but discrepancy d=x; a real observed y=d+noise
+        # carries x, while treating d independent wrongly says no information.
+        opts = dict(discrepancy_cov=[[1.]])
+        right = ger.quadratic_goal_design(
+            [0.], [[1.]], [0.], [[2.]], [[0.]], [[.1]],
+            state_discrepancy_cross_cov=[[1.]], **opts)
+        wrong = ger.quadratic_goal_design(
+            [0.], [[1.]], [0.], [[2.]], [[0.]], [[.1]],
+            state_discrepancy_cross_cov=[[0.]], **opts)
+        self.assertAlmostEqual(right["posterior_cov"][0][0], 1/11)
+        self.assertAlmostEqual(wrong["posterior_cov"][0][0], 1.)
+        self.assertLess(right["Gq"], wrong["Gq"])
+
+    def test_goal_risk_is_coordinate_invariant_but_raw_parameter_trace_is_not(self):
+        T = np.diag([100., .01])
+        inv = np.linalg.inv(T)
+        P = np.array([[1.8, .2], [.2, .6]])
+        H = np.array([[1., 2.]])
+        b = np.array([.4, 1.])
+        Q = np.array([[1.5, .2], [.2, 3.]])
+        first = ger.quadratic_goal_design([0., 0.], P, b, Q, H, [[.2]])
+        second = ger.quadratic_goal_design(
+            [0., 0.], T @ P @ T.T, inv.T @ b, inv.T @ Q @ inv,
+            H @ inv, [[.2]])
+        self.assertAlmostEqual(first["Gq"], second["Gq"], places=10)
+        self.assertAlmostEqual(first["Gl"], second["Gl"], places=10)
+        self.assertGreater(abs(first["A"] - second["A"]), 100.)
+
+    def test_nonlinear_observation_counterexample_exposes_missing_information(self):
+        # Actual y=x**2 (noise=0) determines G=x**2 exactly, yet the
+        # linearized observation at x=0 has H=0 and Gq incorrectly stays 2.
+        linearization = ger.quadratic_goal_design(
+            [0.], [[1.]], [0.], [[2.]], [[0.]], [[.1]])
+        self.assertAlmostEqual(linearization["Gq"], 2.)
+
+    def test_misspecified_discrepancy_can_reverse_candidate_ranking(self):
+        no_error = ger.quadratic_goal_design([0.], [[1.]], [0.], [[2.]],
+                                             [[1.]], [[.01]])
+        alternative = ger.quadratic_goal_design([0.], [[1.]], [0.], [[2.]],
+                                                [[.8]], [[.04]])
+        large_error = ger.quadratic_goal_design(
+            [0.], [[1.]], [0.], [[2.]], [[1.]], [[.01]],
+            discrepancy_cov=[[2.]])
+        self.assertLess(no_error["Gq"], alternative["Gq"])
+        self.assertGreater(large_error["Gq"], alternative["Gq"])
+
+    def test_zero_hessian_reduces_to_goal_gradient_posterior_covariance(self):
+        P = np.array([[1., .4], [.4, 2.]])
+        H = np.array([[1., -1.]])
+        b = np.array([1., 2.])
+        output = ger.quadratic_goal_design([0., 0.], P, b,
+                                            np.zeros((2, 2)), H, [[.25]])
+        expected = P - P @ H.T @ np.linalg.solve(H @ P @ H.T + [[.25]], H @ P)
+        self.assertAlmostEqual(output["Gq"], b @ expected @ b)
+
+    def test_rejects_impossible_prior_noise_and_joint_covariances(self):
+        with self.assertRaises(ValueError):
+            ger.quadratic_goal_design([0.], [[-1.]], [0.], [[2.]], [[1.]], [[1.]])
+        with self.assertRaises(ValueError):
+            ger.quadratic_goal_design([0.], [[1.]], [0.], [[2.]], [[1.]], [[0.]])
+        with self.assertRaises(ValueError):
+            ger.quadratic_goal_design(
+                [0.], [[1.]], [0.], [[2.]], [[0.]], [[.1]],
+                discrepancy_cov=[[1.]], state_discrepancy_cross_cov=[[2.]])
+
+    def test_no_observation_matches_prior_goal_variance(self):
+        P = np.diag([2., 1.])
+        result = ger.quadratic_goal_design(
+            [0., 0.], P, [.3, 2.], np.eye(2),
+            np.empty((0, 2)), np.empty((0, 0)))
+        self.assertAlmostEqual(result["Gq"], result["prior_goal_variance"])
+
+    def test_quadratic_design_cli_is_end_to_end_and_preserves_legacy_cli(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            src, dst = Path(tmp) / "oed.npz", Path(tmp) / "out.json"
+            np.savez(src, prior_mean=np.zeros(2), prior_cov=np.diag([9., 1.]),
+                     goal_gradient=np.zeros(2), goal_hessian=np.diag([0., 2.]),
+                     candidate_observations=np.array([[[1., 0.]], [[0., 1.]]]),
+                     candidate_noise_cov=np.ones((2, 1, 1)),
+                     candidate_names=np.array(["A", "B"]))
+            proc = subprocess.run(
+                [sys.executable, str(Path(__file__).parent / "goal_ellipsoid_recovery.py"),
+                 str(src), "--quadratic-design", "--output", str(dst)],
+                text=True, capture_output=True)
+            self.assertEqual(proc.returncode, 0, proc.stderr)
+            report = json.loads(dst.read_text())
+            self.assertEqual(report["rank_best"]["Gq"], "B")
+            self.assertEqual(report["rank_best"]["A"], "A")
 
 
 if __name__ == "__main__":

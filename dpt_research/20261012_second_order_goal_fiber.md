@@ -2,7 +2,7 @@
 
 **Date:** 2026-10-12. **Status:** independent, source-aware deterministic derivation, analytical falsifiers, executable linear-algebra auditor and synthetic tests. **Not** a new universal mathematical theorem, native SiC replay, proof of hardware noise or post-hoc score promotion.
 
-Companion: [DPT Math main MAP](../DPT_MATH_RESEARCH_MAP.md) equations M40–M49; [fiber_goal_curvature.py](../dpt_tools/fiber_goal_curvature.py); [12 tests](../dpt_tools/test_fiber_goal_curvature.py).
+Companion: [DPT Math transfer MAP](../DPT_MATH_RESEARCH_MAP.md) (legacy M40–M49 below); [fiber_goal_curvature.py](../dpt_tools/fiber_goal_curvature.py); [12 tests](../dpt_tools/test_fiber_goal_curvature.py).
 
 ## A. Prior work and exact conceptual separation
 
@@ -323,6 +323,106 @@ The numerical Jacobian/adjoint condition number must be included in error propag
 **Independent verification:** analytic tests for (C19)–(C20), an implicit nonlinear current+previous scalar residual, a two-state quadratic command, and 200 random exactly specified quadratic maps represented through an invertible implicit residual all matched the source-free explicit chain rule. This validates the algebra and program on those fixtures, not the actual Wolfspeed/TRAP/BE vendor source.
 
 **Source-level acquisition required to close the loop:** actual executable F(z,x;u) and correct frozen command; measured source-consistent preparation/state chart; analytic/AD/validated finite-interval F_z,F_x,F_zz,F_zx,F_xx; goal g(z) or full stage work/readout including guard/event terms; and uniform implicit invertibility and third-derivative bounds on one physically legal history fiber. These feed (C5)–(C9) to decide the engineering goal radius *without* claiming recoverability of all parasitic inductances.
+
+---
+
+## J. Goal-oriented sensor ranking with correlated model error (Q1–Q4)
+
+**Result and priority (2026-10-12).** This section develops a source-*conditional*, computationally cheap **Bayesian** comparison among legal pretarget observation designs for future work/peak/event goals. The quadratic data-averaged goal risk is the finite-dimensional form of **Neuberger, Alexanderian and van Bloemen Waanders (2025)**, [original Theorem 3.2 and proof](https://arxiv.org/html/2411.07532). The correlated approximation-error part follows elementary joint-Gaussian conditioning, motivated by **Koval and Nicholson (2025)**, [full article](https://doi.org/10.1007/s10915-025-03008-7), whose original criterion is *parameter A-optimal*, not this particular goal functional. This combination is an explicit diagnostic synthesis rather than a claim to an unprecedented theorem. It is independent of the deterministic minimax fiber radius proved in Sections C–D, and no native SiC source dataset has yet been scored.
+
+### J.1. Exact stochastic input contract and covariance retention
+
+Fix one source reference, prior $`\mathcal N(\mu,P)`$ for the **scaled** vector $`x`$ representing admissible uncertain preparation/parameters on a *declared* chart. A candidate pretarget observation is
+
+```math
+y=Hx+d+\varepsilon.
+```
+
+Here $`(x,d)`$ is **jointly Gaussian**, with state–discrepancy cross covariance $`C`$, discrepancy covariance $`D`$, and independent measurement noise $`\varepsilon\sim\mathcal N(0,R)`$, where $`R`$ is positive definite. The joint block covariance of $`(x,d)`$ must be positive semidefinite. The mean of $`d`$ can be subtracted as an explicit, **pre-calibrated** offset; it must not be estimated from the unknown target outcome. Dependence between $`x`$ and $`d`$ is NOT ignored. Ordinary parameter covariance trace requires a chosen nondimensionalization/metric, since L in nH and R in ohms cannot be added as an unqualified scalar trace.
+
+The covariance of a candidate's pretarget data, its state–data cross covariance and its Gaussian conditional state covariance are
+
+**(Q1)**
+
+```math
+\begin{aligned}
+S_y&=HPH^\top+HC+C^\top H^\top+D+R,\\
+C_{xy}&=PH^\top+C,\\
+S&=P-C_{xy}S_y^{-1}C_{xy}^\top.
+\end{aligned}
+```
+
+**Proof.** Expand $`\mathrm{Cov}(Hx+d+\varepsilon)`$ bilinearly, keeping both $`HC`$ and $`C^\top H^\top`$. Independence of $`\varepsilon`$ removes its cross terms, but not those of $`x,d`$. Completing the square in the jointly Gaussian density gives the posterior. This is the exact posterior covariance for the *joint Gaussian affine observation model*; even an exact Hessian does not make it correct for an unknown non-Gaussian switched DPT observation law.
+
+### J.2. Nonlinear future goal: exact variance of its quadratic model
+
+For a source-derived future goal $`G`$, choose a Taylor point $`x_*`$ **before** seeing the future target:
+
+```math
+G_2(x)=G(x_*)+b^\top(x-x_*)
++\tfrac12(x-x_*)^\top Q(x-x_*).
+```
+
+The gradient $`b`$ and symmetric Hessian $`Q`$ must be computed for the same **future command, stage law, and goal units** as the eventual held-out score. Let $`a=b+Q(\mu-x_*)`$. The data-averaged posterior variance of the *quadratic* goal is
+
+**(Q2)**
+
+```math
+\begin{aligned}
+\Psi_q
+&=\mathbb E_y[\mathrm{Var}(G_2(x)\mid y)]\\
+&=a^\top S a
++\mathrm{tr}(PQSQ)-\tfrac12\mathrm{tr}[(SQ)^2].
+\end{aligned}
+```
+
+**Proof independent of posterior sampling.** Conditional on $`y`$, the state is Gaussian with mean $`m_y`$ and covariance $`S`$. The quadratic-form Gaussian fourth-moment identity gives
+
+```math
+\mathrm{Var}(G_2\mid y)
+=(b+Q(m_y-x_*))^\top S(b+Q(m_y-x_*))
++\tfrac12\mathrm{tr}[(SQ)^2].
+```
+
+By the law of total variance for the affine observation, $`m_y`$ is Gaussian with mean $`\mu`$ and covariance $`P-S`$. Averaging the first term yields $`a^\top Sa+\mathrm{tr}(Q(P-S)QS)`$; combining with the last trace gives (Q2). This is the precise finite-dimensional analogue of Neuberger et al.'s Gq-optimality. A first-order goal-only criterion retains only $`a^\top Sa`$, while parameter A-optimality uses $`\mathrm{tr}(S)`$, and Gaussian parameter mutual information ranks $`\frac12\log(\det S_y/\det S_{y\mid x})`$ when the relevant covariance is nondegenerate. For correlated discrepancy, $`S_{y\mid x}=R+D-C^\top P^{-1}C`$ when $`P`$ is invertible; dropping $`C`$ changes both the observation law and the information score.
+
+### J.3. Strict analytical sensor-ranking reversal (not a native SiC sample)
+
+Take $`P=\mathrm{diag}(9,1)`$, $`\mu=x_*=0`$, future goal $`G(x)=x_2^2`$ (so $`b=0,Q=\mathrm{diag}(0,2)`$), and two equally noisy scalar sensors $`H_A=(1,0)`$, $`H_B=(0,1)`$, each with variance $`R=1`$. The posterior covariances are $`S_A=\mathrm{diag}(0.9,1)`$ and $`S_B=\mathrm{diag}(9,0.5)`$. The exact choices are:
+
+| Metric (optimization direction) | Sensor A | Sensor B | Winner |
+| --- | ---: | ---: | --- |
+| Parameter variance trace $`\mathrm{tr}(S)`$ (minimize) | 1.9 | 9.5 | A |
+| Parameter mutual information (maximize, nats) | $`\tfrac12\log10`$ | $`\tfrac12\log2`$ | A |
+| Linearized goal variance $`a^\top Sa`$ (minimize) | 0 | 0 | Tie |
+| Quadratic-goal data-averaged posterior variance $`\Psi_q`$ (minimize, squared goal units) | **2** | **1.5** | **B** |
+
+Thus the second-order future-goal rule identifies a **25% reduction** from measuring the relevant curvature direction despite an uninformative first-order gradient. This toy is a genuine finite-dimensional analytic falsifier of choosing a sensor by parameter information, and not evidence that a real VDS probe improves 150 V SiC Eoff.
+
+### J.4. Correlated discrepancy can restore or erase information
+
+A second exact example refutes the simplistic idea that “model discrepancy = extra independent noise”. Let $`x\sim\mathcal N(0,1)`$, a nominal uninformative map $`H=0`$, and let the discrepancy equal $`d=x`$. Then $`P=D=C=1`$, independent measurement variance $`R=0.1`$, so (Q1) yields $`S=1/11`$: the *observed discrepancy* carries genuine signal. If one incorrectly sets $`C=0`$ but leaves $`D=1`$, the same nominal $`H=0`$ becomes uninformative and $`S=1`$. For future $`G=x^2`$, the corresponding $`\Psi_q`$ values are $`42/121`$ and $`2`$. This is a conditional Gaussian mathematical case; shared semiconductor sensor filtering, capacitance and drift need **measured and source-supported cross covariances**, not an assumption that every observed error is useful.
+
+A separate adverse case has $`G=x^2`$, $`P=1`$, $`H_A=1,R_A=0.01`$, and $`H_B=0.8,R_B=0.04`$: A wins if its model is exact. Adding uncorrelated discrepancy variance $`D_A=2`$ makes A worse than B under the same goal. Thus a nominal $`G_q`$ ranking can reverse when the source discrepancy uncertainty is admitted. These are design-stability counterexamples, not quantitative bounds on MOSFET switching losses.
+
+### J.5. Invariance and a hard boundary on nonlinear observation
+
+**Coordinate invariance.** Under an invertible reparametrization $`x'=Tx`$, apply
+$`P'=TPT^\top`$, $`H'=HT^{-1}`$, $`Q'=T^{-\top}QT^{-1}`$,
+$`b'=T^{-\top}b`$, $`C'=TC`$, and $`x_*'=Tx_*`$.
+Then $`S'=TST^\top`$, and every scalar in (Q2) is unchanged by matrix multiplication and trace cyclicity. By contrast $`\mathrm{tr}(S')`$ generally differs from $`\mathrm{tr}(S)`$: a raw multi-unit parameter-A ranking has no comparable physical meaning until a specific metric/normalization is frozen. An actual test scales parameter axes by factors 100 and 0.01 and confirms $`G_q`$ invariance but large parameter-trace change.
+
+**Observation-nonlinearity counterexample.** If $`x\sim\mathcal N(0,1)`$, future goal $`G=x^2`$, and a *noise-free* pretarget sensor returns $`y=x^2`$, this sensor predicts the goal exactly. Yet its observation Jacobian at $`x_*=0`$ is $`H=0`$, so the Gaussian *linearized observation* model predicts no reduction of prior goal variance (2). A quadratic GOAL approximation alone cannot repair a missing nonlinear OBSERVATION model. **Zhong, Shen, Catanach and Huan (2026)** study nonlinear-observation nonlinear-QoI expected-information-gain design using nested Monte Carlo/MCMC, [primary full manuscript](https://arxiv.org/html/2403.18072); their method is a more expensive independent rival, with different posterior/utility semantics. When observation curvature or mode changes decide the ranking, use actual nonlinear goal/measurement simulation or bound the observation approximation error instead of trusting $`H`$ alone.
+
+### J.6. Actual SiC physics, strongest rival and minimum owner action
+
+Two additional physical studies motivate a *possible* frequency/history-specific model discrepancy: Nagel et al., **PCIM 2025**, [Evidence of Frequency-dependent SiC Power MOSFET Capacitances in Fast and Slow Switching Transients](https://doi.org/10.30420/566541011) (original accessible abstract); Race et al., **IEEE Transactions on Electron Devices 2024**, [Frequency-Dependent Internal Gate Resistance of SiC Power MOSFETs](https://doi.org/10.1109/TED.2024.3488684) (repository abstract/metadata). The first reports divergent fast/slow turn-off twin agreement and a possible C–V/interface-trap explanation; the second identifies a frequency-dependent internal gate resistance mechanism. **Their full experimental methods and data have not been independently verified in this research round.** Neither source proves that the DPT-R1 device exhibits the same defect, nor supplies a numerical covariance for (Q1).
+
+**Decision question.** Within one 100 V original R1 *or* 150 V accepted 18B/C chart (never pooled), would one *legal* extra pretarget voltage/current/CAL measurement reduce the expected squared prediction error for **one frozen future command and goal** more than the fully recorded-command ordinary, parameter A/D design, and gradient-only goal design, after source-aligned model discrepancy is considered?
+
+**Main handoff inputs:** (1) frozen reference/ports/preparation/ordered command/goal units and scalar tolerance, (2) physically legal candidate pretarget sensors plus acquisition costs and bandwidth/skew specifications, (3) centered/scaled prior mean/covariance, (4) actual future-goal gradient and Hessian on that source-law/timing chart, (5) sensor noise and cross-channel error model, (6) full-law versus approximate-law paired simulations for empirical $`D,C`$ without target leakage, (7) prospective holdout goals and strong complete-command and full-source baselines. Use [goal_ellipsoid_recovery.py](../dpt_tools/goal_ellipsoid_recovery.py) in `--quadratic-design` mode only as a **cheap pre-screen**. If the best candidate flips under plausible $`D,C`$, if the observation is too nonlinear to justify $`H`$, or if the full recorded-command ordinary wins, recommend the lower-cost ordinary or an actual nonlinear acquisition study—not a premature sensor deployment claim.
+
+**Executable evidence.** Existing [goal_ellipsoid_recovery.py](../dpt_tools/goal_ellipsoid_recovery.py) adds exact finite-dimensional joint-Gaussian quadratic-risk calculation and candidate ranking; [test_goal_ellipsoid_recovery.py](../dpt_tools/test_goal_ellipsoid_recovery.py) supplies known-answer rank reversal, independent Monte Carlo conditional-variance verification, cross-covariance necessity, reparametrization invariance, nonlinearity false-negative, discrepancy ranking flip, PSD rejection and CLI replay. A green Actions run establishes implementation behavior and formula rendering within these test cases. This remains **SIDE_VERIFIED / READY_FOR_HANDOFF for a qualified Gaussian chart** and **OPEN_RESEARCH for source-native SiC prediction**, without changing the Main acceptance record.
 
 ---
 
