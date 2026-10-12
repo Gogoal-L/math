@@ -119,23 +119,37 @@ def audit_markdown(source: str, name='document') -> list[str]:
         elif kind == 'display':
             if not content.strip():
                 errors.append(f'{prefix}: EMPTY_DISPLAY_MATH')
+            if re.search(r'\\tag\{[^{}]+\}', content):
+                errors.append(f'{prefix}: IN_MATH_TAG - move equation number outside MathJax block')
             errors += _tex_errors(content, prefix)
         else:
             fragments, source_errors = _process_text(content, no)
             errors += [f'{name}:{e}' for e in source_errors]
             for x in fragments:
                 errors += _tex_errors(x['tex'], prefix)
-    # Protect against an accidental text replacement that duplicates equation sections.
-    labels = [
-        tag for item in extract_math(source) if item["kind"] == "display"
-        for tag in re.findall(r'\\tag\{([A-Za-z]+[0-9]+)\}', item["tex"])
-    ]
+    # Equation labels are ordinary Markdown, not MathJax tagged equations.
+    labels = re.findall(r'(?m)^\*\*\(([A-Za-z]+\d+|\d+)\)\*\*\s*$', source)
     if len(labels) != len(set(labels)):
-        errors.append(f'{name}: DUPLICATE_TAG detected in display mathematics')
-    if Path(name).name == 'DPT_MATH_RESEARCH_MAP.md':
-        ids = [int(t[1:]) for t in labels if re.fullmatch(r'M[0-9]+', t)]
-        if not ids or ids != list(range(1, len(ids) + 1)):
-            errors.append(f'{name}: NONSEQUENTIAL_TAG in M-equation series')
+        errors.append(f'{name}: DUPLICATE_TAG in external equation labels')
+    expected_prefixes = {
+        'DPT_MATH_RESEARCH_MAP.md': 'M',
+        '20261012_mixed_nuisance_goal_radius_formal_derivation.md': 'P',
+        '20261012_second_order_goal_fiber.md': 'C',
+    }
+    prefix = expected_prefixes.get(Path(name).name)
+    if prefix:
+        numbered = [int(t[len(prefix):]) for t in labels if re.fullmatch(prefix + r'\d+', t)]
+        if not numbered or numbered != list(range(1, len(numbered) + 1)):
+            errors.append(f'{name}: NONSEQUENTIAL_TAG in external {prefix}-equation labels')
+    # External labels must sit directly above a standalone math display.
+    lines = source.splitlines()
+    for number, line in enumerate(lines):
+        if re.fullmatch(r'\*\*\([A-Za-z]+\d+|\d+\)\*\*', line.strip()):
+            nxt = number + 1
+            while nxt < len(lines) and not lines[nxt].strip():
+                nxt += 1
+            if nxt >= len(lines) or lines[nxt].strip() != '```math':
+                errors.append(f'{name}:{number+1}: EXTERNAL_EQUATION_LABEL_NOT_FOLLOWED_BY_MATH_FENCE')
 
     return errors
 
