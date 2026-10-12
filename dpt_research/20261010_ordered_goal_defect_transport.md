@@ -24,8 +24,12 @@ Fix one known command word of length H and one **common, dimensionless/physicall
 The admissible uncertainty set is explicitly the Cartesian product of Euclidean balls:
 
 ```math
-O\,\delta x_0=0,\quad \|\delta x_0\|_2\le \rho,\qquad
-\|\xi_j\|_2\le\epsilon_j \quad\text{independently for }j=0,\ldots,H-1.
+\begin{aligned}
+O\,\delta x_0&=0,\qquad
+\|\delta x_0\|_2\le\rho,\\
+\|\xi_j\|_2&\le\epsilon_j
+\quad (j=0,\ldots,H-1).
+\end{aligned}
 ```
 
 The first condition is **exact observation equality**, not a claim about noisy sensors or a nonlinear reachable family. Let K=ker(O) and P_K be its orthogonal projector (in the declared physically scaled metric). Define backward goal rows
