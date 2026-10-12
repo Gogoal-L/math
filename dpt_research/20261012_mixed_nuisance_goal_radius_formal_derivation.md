@@ -475,6 +475,18 @@ Q_h\{\delta(Y)\ne h\}
 
 ### X.4. Two opposite calibrated-dependence counterexamples
 
+**(P30)**
+
+```math
+\begin{aligned}
+P_{0j}=P_{1j}&=(1/2,1/2)\quad(j=1,2),\\
+Q_0&=\begin{pmatrix}1/2&0\\0&1/2\end{pmatrix},\\
+Q_1&=\begin{pmatrix}0&1/2\\1/2&0\end{pmatrix},\\
+\max_j\mathrm{TV}(P_{0j},P_{1j})&=0,\\
+\mathrm{TV}(Q_0,Q_1)&=1.
+\end{aligned}
+```
+
 **Exact joint-only synergy, absent from all marginal probabilities.** Both histories have *identical* Bernoulli(1/2) marginal distributions on two sensors, so d_*=0 and (P29)'s worst-case equal-prior failure is 1/2. But suppose the physically qualified joint law under h=0 is P(Y1=Y2)=1 and under h=1 is P(Y1≠Y2)=1, with all two permitted configurations at probability 1/2. Their supports are disjoint: joint TV=1 and a joint decoder predicts the future goal **perfectly**. If those specific joint-dependence constraints are NOT qualified, a common independent joint law Q0=Q1 gives TV=0, so the perfect inference is not guaranteed by marginals alone.
 
 **Positive independent-sensor ordinary.** Three conditionally independent binary pretarget sensors each have P0(bin 1)=.2 and P1(bin 1)=.8. Each sensor alone has TV=.6 and average optimal failure .2. Their **qualified independent joint product** has TV=.792, giving optimal equal-prior failure .104. Without the independence contract the exact worst joint TV returns to .6. Both are mathematically consistent; the source determines which model applies.
