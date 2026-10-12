@@ -369,6 +369,17 @@ class MarginalDependenceSensorFusionTests(unittest.TestCase):
         with self.assertRaises(ValueError):
             audit_marginal_sensor_coupling(p,[0.,4.],-1.)
 
+    def test_single_sensor_decision_rule_exactly_attains_equal_prior_risk(self):
+        r = audit_marginal_sensor_coupling(
+            np.array([[[.8,.2],[.6,.4]], [[.2,.8],[.55,.45]]]),
+            [0.,4.], 1., sensor_names=["A","B"])
+        rule = r["best_single_sensor_rule"]
+        self.assertEqual(r["best_single_sensor"], "A")
+        self.assertEqual(rule["decision_by_bin"], [0,1])
+        self.assertAlmostEqual(rule["equal_prior_failure_if_separated"],
+                               r["worst_case_equal_prior_goal_failure"])
+        self.assertAlmostEqual(rule["maximum_conditional_failure_of_this_rule_if_separated"],.2)
+
     def test_worst_history_risk_is_not_reported_as_equal_prior_optimum(self):
         # Bayes error 0.25, but randomized minimax maximum conditional error
         # is 1/3 for P0=(1,0), P1=(.5,.5).
@@ -376,6 +387,8 @@ class MarginalDependenceSensorFusionTests(unittest.TestCase):
         r=audit_marginal_sensor_coupling(p,[0.,4.],1.)
         self.assertAlmostEqual(r["worst_case_equal_prior_goal_failure"], .25)
         self.assertNotIn("exact_minimax_worst_history_error", r)
+        self.assertAlmostEqual(r["best_single_sensor_rule"]["equal_prior_failure_if_separated"],.25)
+        self.assertAlmostEqual(r["best_single_sensor_rule"]["maximum_conditional_failure_of_this_rule_if_separated"],.5)
         self.assertIn("not the worst-history", r["scope"])
 
     def test_finite_marginal_fusion_cli_npz_round_trip(self):
