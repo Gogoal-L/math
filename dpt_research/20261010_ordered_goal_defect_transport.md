@@ -16,27 +16,27 @@ The new research object is a **goal- and command-word-specific transport of inde
 
 Fix one known command word of length H and one **common, dimensionless/physically scaled state chart**, with known matrices A_0,...,A_{H-1} and scalar goal rows c_k:
 
-\[
+```math
 \delta x_{j+1}=A_j\delta x_j+\xi_j,\qquad
 \delta g_k=c_k\delta x_k,\quad k=0,\ldots,H.
-\]
+```
 
 The admissible uncertainty set is explicitly the Cartesian product of Euclidean balls:
 
-\[
+```math
 O\,\delta x_0=0,\quad \|\delta x_0\|_2\le \rho,\qquad
 \|\xi_j\|_2\le\epsilon_j \quad\text{independently for }j=0,\ldots,H-1.
-\]
+```
 
 The first condition is **exact observation equality**, not a claim about noisy sensors or a nonlinear reachable family. Let K=ker(O) and P_K be its orthogonal projector (in the declared physically scaled metric). Define backward goal rows
 
-\[
+```math
 q_{k,k}=c_k,\qquad q_{k,j}=q_{k,j+1}A_j \quad (j=k-1,\ldots,0).
-\]
+```
 
 **Proposition (elementary, independently derived).** For every endpoint k, under exactly the conditions above,
 
-\[
+```math
 \boxed{
 \sup_{\delta x_0,\xi_0,\ldots,\xi_{k-1}} |\delta g_k|
 =
@@ -44,38 +44,38 @@ q_{k,k}=c_k,\qquad q_{k,j}=q_{k,j+1}A_j \quad (j=k-1,\ldots,0).
 +
 \underbrace{\sum_{j=0}^{k-1}\epsilon_j\,\|q_{k,j+1}\|_2}_{\mathcal E_k:\;\text{stage defects}}.
 }
-\]
+```
 
-For the worst endpoint in this **finite sampled stage set**, the sharp result is \(\max_{0\le k\le H}(\mathcal I_k+\mathcal E_k)\).
+For the worst endpoint in this **finite sampled stage set**, the sharp result is $`\max_{0\le k\le H}(\mathcal I_k+\mathcal E_k)`$.
 
 **Proof.** Substitute the linear recurrence into the scalar readout:
 
-\[
+```math
 \delta g_k=q_{k,0}\delta x_0+\sum_{j<k}q_{k,j+1}\xi_j.
-\]
+```
 
-Since \(\delta x_0\in K\), the initial term is bounded by \(\rho\|q_{k,0}P_K\|\). Each independent Euclidean disturbance ball contributes its dual-norm support function \(\epsilon_j\|q_{k,j+1}\|\). The sum is attained *simultaneously* by aligning each admissible vector with its corresponding backward row (and reversing all signs for the negative extreme). Thus the sum is **exact for the stated product-ball model**, not merely a triangle-inequality upper bound. The finite maximum commutes with the supremum over disturbances. QED.
+Since $`\delta x_0\in K`$, the initial term is bounded by $`\rho\|q_{k,0}P_K\|`$. Each independent Euclidean disturbance ball contributes its dual-norm support function $`\epsilon_j\|q_{k,j+1}\|`$. The sum is attained *simultaneously* by aligning each admissible vector with its corresponding backward row (and reversing all signs for the negative extreme). Thus the sum is **exact for the stated product-ball model**, not merely a triangle-inequality upper bound. The finite maximum commutes with the supremum over disturbances. QED.
 
 This equality is generally **not sharp for actual DPT** if physical reachability, current-temperature coupling, KCL/KVL, source residuals, or event constraints couple/distort these uncertainty balls. If each actual disturbance belongs to the assumed ball, the calculated value is still an upper bound within the linear model; it is not a guarantee when A_k themselves are unvalidated local approximations.
 
 ### Numerical witness and nonnormal counterexample
 
-Set \(A=\begin{psmallmatrix}0.5&6\\0&0.5\end{psmallmatrix}\), \(O=c=(1,0)\), \(\rho=0.01\), \(\epsilon_0=0\). Both eigenvalues are 0.5, yet the initial hidden direction \(e_2\) is invisible at k=0 and produces goal deviation 0.06 at k=1. Therefore the spectral-radius test misses a goal-visible transient gain. The new auditor constructs and replays this exact worst-case perturbation.
+Set $`A=\begin{psmallmatrix}0.5&6\\0&0.5\end{psmallmatrix}`$, $`O=c=(1,0)`$, $`\rho=0.01`$, $`\epsilon_0=0`$. Both eigenvalues are 0.5, yet the initial hidden direction $`e_2`$ is invisible at k=0 and produces goal deviation 0.06 at k=1. Therefore the spectral-radius test misses a goal-visible transient gain. The new auditor constructs and replays this exact worst-case perturbation.
 
 A second synthetic counterexample uses two noncommuting command matrices and gives a nonzero hidden-goal radius after A then B but zero after B then A. This is not an explanation of existing native AB/BA results; it establishes why order must remain literal in a valid goal-error calculation.
 
 ## 3. New executable tool and relation to existing code
 
-- [goal_defect_transport.py](../dpt_tools/goal_defect_transport.py): ordered matrix sequence, exact-observation nullspace, initial hidden radius, per-stage additive error radii and one scalar goal at each stage; computes \(\mathcal I_k\), \(\mathcal E_k\), total radius, worst stage, spectral/operator-norm context, and an explicit maximizing witness.
+- [goal_defect_transport.py](../dpt_tools/goal_defect_transport.py): ordered matrix sequence, exact-observation nullspace, initial hidden radius, per-stage additive error radii and one scalar goal at each stage; computes $`\mathcal I_k`$, $`\mathcal E_k`$, total radius, worst stage, spectral/operator-norm context, and an explicit maximizing witness.
 - [test_goal_defect_transport.py](../dpt_tools/test_goal_defect_transport.py): 11 synthetic/analytic tests, including independently enumerated scalar disturbances, nonnormal hidden leakage, command order, exact observation removal, stage-dependent readouts, invalid inputs and constructive witness validation.
 
-The auditor **does not** infer \(\epsilon_j\) from RAW, trust a local derivative outside its regime, infer instrument noise, or certify a nonlinear physical state. Input stages are stored in an NPZ with five arrays: updates (H,n,n), observation (m,n), goal (n,) or (H+1,n), initial_radius (scalar), defect_radii (H,). Its output status is a conditional model diagnostic. It is complementary to the all-word row-span quotient: the previous algorithm measures *how many hidden directions exist*, while this one measures *how strongly they matter for a given finite command word and goal*.
+The auditor **does not** infer $`\epsilon_j`$ from RAW, trust a local derivative outside its regime, infer instrument noise, or certify a nonlinear physical state. Input stages are stored in an NPZ with five arrays: updates (H,n,n), observation (m,n), goal (n,) or (H+1,n), initial_radius (scalar), defect_radii (H,). Its output status is a conditional model diagnostic. It is complementary to the all-word row-span quotient: the previous algorithm measures *how many hidden directions exist*, while this one measures *how strongly they matter for a given finite command word and goal*.
 
 ## 4. OpenAI Math original-proof inspection: retained and rejected transfers
 
 | Family and source | Exact paper object / proof feature examined | New DPT value | Transfer ceiling |
 |---|---|---|---|
-| **F325** [complete Crouzeix direct proof](https://github.com/openai/math/blob/fd4aeeb2ee4fc729c18d98444fed42fd0529eeeb/preprints/A-direct-proof-of-the-complete-Crouzeix-inequality-September-26-2026/build/main.tex) | Numerical range and matrix-coefficient polynomial functional calculus; \(\|P[A]\|\le2\max_{z\in W(A)}\|P(z)\|\), with fixed base operator A | Reinforces nonnormal growth and output-specific operator norm rather than eigenvalues; the new tool computes **literal ordered products and dual rows** | F325's constant 2 is **not** asserted for arbitrary products \(A_{k-1}\cdots A_0\); our finite-word formula follows from elementary duality, not F325 |
+| **F325** [complete Crouzeix direct proof](https://github.com/openai/math/blob/fd4aeeb2ee4fc729c18d98444fed42fd0529eeeb/preprints/A-direct-proof-of-the-complete-Crouzeix-inequality-September-26-2026/build/main.tex) | Numerical range and matrix-coefficient polynomial functional calculus; $`\|P[A]\|\le2\max_{z\in W(A)}\|P(z)\|`$, with fixed base operator A | Reinforces nonnormal growth and output-specific operator norm rather than eigenvalues; the new tool computes **literal ordered products and dual rows** | F325's constant 2 is **not** asserted for arbitrary products $`A_{k-1}\cdots A_0`$; our finite-word formula follows from elementary duality, not F325 |
 | **F251** [October Strong Ulam stability](https://github.com/openai/math/blob/fd4aeeb2ee4fc729c18d98444fed42fd0529eeeb/preprints/Strong-Ulam-Stability-Characterizes-Amenability-October-5-2026/build/strong-ulam-stability.tex) | Main theorem characterizes when uniformly small composition defect of unitary maps on a **countable group**, in all Hilbert dimensions, can be corrected uniformly to an exact representation; nonamenable counterconstruction | Forces us to distinguish local composition error from global exact reduced command algebra | Physical DPT commands form a constrained partial switching semigroup, not the unitary group; do **not** transfer its amenability criterion or theorem |
 | **F289** [near-inclusion obstruction](https://github.com/openai/math/blob/fd4aeeb2ee4fc729c18d98444fed42fd0529eeeb/preprints/Near-Inclusions-of-von-Neumann-Algebras-Without-Small-Spatial-Embeddings-October-5-2026/build/sections/obstruction.tex) | Clock/shift matrices almost commute but a trace-log winding invariant prevents nearby commuting unitaries; one-sided near inclusion need not yield near-identity spatial implementation | Warns against promoting near-zero observed closure residual to existence of a globally exact lift; provides a useful **structural counterexample template**, not a circuit mechanism | No identified unitary/topological obstruction in Eth has been shown |
 | **F129** [one-way liveness state bound](https://github.com/openai/math/blob/fd4aeeb2ee4fc729c18d98444fed42fd0529eeeb/preprints/An-exponential-two-way-deterministic-state-lower-bound-for-one-way-liveness-September-25-2026/build/sections/introduction.tex) | Context-separation through the relation monoid gives exponential deterministic-state costs for a *growing command alphabet* | Reinforces the idea that representational complexity depends on future contexts; check whether an apparently invisible DPT direction becomes visible in a later command | The exponential exponent and automata complexity do not apply to fixed finite DPT commands |
@@ -98,8 +98,8 @@ One useful, source-backed unit from the local controller would supply:
 6. **Prospective discriminator:** first compare the real archived stage errors against transport sensitivities and check if goal errors localize to the predicted stage/readout. Then, if material separation survives ordinary competitor predictions and source budgets, ask the controller about an authorized future native query.
 
 The most decision-relevant outputs are:
-- \(\mathcal I_k\) large, \(\mathcal E_k\) small: candidate need for legal extra information (e.g., a distinguishable goal-visible preparation direction). It does **not** prove which physical sensor is minimal.
-- \(\mathcal I_k\) small, \(\mathcal E_k\) large: candidate need for tighter stage solver/finite law. Calculate real residual-based bounds before changing solver.
+- $`\mathcal I_k`$ large, $`\mathcal E_k`$ small: candidate need for legal extra information (e.g., a distinguishable goal-visible preparation direction). It does **not** prove which physical sensor is minimal.
+- $`\mathcal I_k`$ small, $`\mathcal E_k`$ large: candidate need for tighter stage solver/finite law. Calculate real residual-based bounds before changing solver.
 - Both small but observed native discrepancy large: wrong model class, unqualified transport, goal/event readout mismatch, or underestimated error budgets; reject the proposed certificate rather than claiming success.
 - A command with nearly identical full/affine forecast yet small model differences is not a high-value discriminator merely because the stage matrices are nonnormal.
 
