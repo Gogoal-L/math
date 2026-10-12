@@ -210,12 +210,11 @@ Kz=0,\quad K=U_\perp^\top A_0;
 **(M16)**
 
 ```math
-\boxed{
-R=\max_{\|v\|\le1,\ \|Mv\|\le1}|c_r^\top v|,
-\qquad
-R^2=\min_{0\le q\le1}
- c_r^\top\big[(1-q)I+qM^\top M\big]^{-1}c_r.
-}
+\begin{aligned}
+R&=\max_{\|v\|\le1,\ \|Mv\|\le1}|c_r^\top v|,\\
+R^2&=\min_{0\le q\le1}
+c_r^\top\bigl[(1-q)I+qM^\top M\bigr]^{-1}c_r.
+\end{aligned}
 ```
 
 端点奇异时沿 $`q\to0^+,1^-`$ 取兼容极限，不以盲目 Moore–Penrose 代替无穷方向。**推导而非仅引用优化器：** 对 $`D_q=(1-q)I+qM^\top M`$，Cauchy–Schwarz 给
@@ -328,9 +327,12 @@ Dt_\ast[\delta z]=-\frac{D_z\phi[\delta z]}{\partial_t\phi}.
 **(M24)**
 
 ```math
-u(t):=V_{DS}(t)-V_{\rm DC}
-\approx L_{\rm eff}s(t)+R_{\rm loop}I_D(t)+b(t),
-\qquad s(t)=-\frac{dI_D}{dt}.
+\begin{aligned}
+u(t)&:=V_{DS}(t)-V_{\rm DC},\\
+u(t)&\approx L_{\rm eff}s(t)
++R_{\rm loop}I_D(t)+b(t),\\
+s(t)&=-\frac{dI_D}{dt}.
+\end{aligned}
 ```
 
 若将允许的 offset/电阻/传感器偏差基函数离散堆成 $`N_s`$，令 $`P_\perp`$ 是加权 $`W`$-内积对 $`\operatorname{col}N_s`$ 的正交投影，则在线性、已知 $`s`$ 情形
@@ -520,10 +522,11 @@ R^{\rm full}_{D,n}-R^{\rm aff}_{D,n}
 **(M38)**
 
 ```math
-\|I-HJ_F(x)\|_{\rho,\infty}\le\kappa<1
-\quad(x\in B_\rho(c)),
-\qquad
-\|HF(c)\|_{\rho,\infty}\le(1-\kappa)\,;
+\begin{aligned}
+\|I-HJ_F(x)\|_{\rho,\infty}
+&\le\kappa<1\quad(x\in B_\rho(c)),\\
+\|HF(c)\|_{\rho,\infty}&\le1-\kappa.
+\end{aligned}
 ```
 
 最后一个条件这里的规范化盒半径定义为 $`\|x-c\|_{\rho,\infty}\le1`$。则 $`T(x)=x-HF(x)`$ 把该盒映入自身且收缩，有唯一合法 root $`x^\star`$，并且
@@ -531,11 +534,12 @@ R^{\rm full}_{D,n}-R^{\rm aff}_{D,n}
 **(M39)**
 
 ```math
+\begin{aligned}
 \|x^\star-c\|_{\rho,\infty}
-\le\frac{\|HF(c)\|_{\rho,\infty}}{1-\kappa},
-\qquad
+&\le\frac{\|HF(c)\|_{\rho,\infty}}{1-\kappa},\\
 |G(x^\star)-G(c)|
-\le L_G\frac{\|HF(c)\|_{\rho,\infty}}{1-\kappa}.
+&\le L_G\frac{\|HF(c)\|_{\rho,\infty}}{1-\kappa}.
+\end{aligned}
 ```
 
 第二式假设在同盒内 $`G`$ 对相同加权范数有统一 Lipschitz 常数 $`L_G`$，其 guard、事件与积分窗口都已合格。**证明结构**是 Banach 自映射与收缩，加上 $`G`$ 的统一一阶增益；不是当前 600-V vendor 源已通过该完整 box 的宣告。把 (M37) 传入 $`\|HF(c)\|`$ 时还需其余 nodal/charge/network/thermal residual rows、共享 previous-state 相关性与完整伴随/goal 传播，不能只对一个 diode scalar 宣称全波形误差。
