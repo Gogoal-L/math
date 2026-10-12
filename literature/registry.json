@@ -457,13 +457,13 @@
       "upstream_path": "preprints/quantitative-lower-bounds-for-trace-reconstruction-September-24-2026/paper.pdf",
       "version_notes": "preprints/quantitative-lower-bounds-for-trace-reconstruction-September-24-2026/README.md",
       "map_locator": "F122-B",
-      "theorem_transfer": "Independent DPT derivation or proof-pattern use; see MAP, not a native claim.",
+      "theorem_transfer": "Primary F122-B lower-bound source inspected: only total-variation/Hellinger product testing reduction is transferred to DPT. Original deletion-trace superpolynomial complete-string sample exponent is NOT transferred. Conditional P23/P24-P26 in mixed-nuisance living proof, combined with Fréchet P27-P32 and separate F115/F373 original-paper scope audit.",
       "lean_scope": "literature_archive/lean/F122_scope.md",
       "lean_coverage": "覆盖 selected deletion-trace lower bound。",
       "reading_tier": "archive",
       "controller_absorption": "Unconfirmed; no controller acknowledgement supplied.",
-      "dpt_implementation": "Existing MAP analysis / synthetic tool support where recorded; native transfer not established by this migration.",
-      "pending_task": "按原 MAP 的 reopen condition 调用；不在当前默认落实队列。"
+      "dpt_implementation": "SIDE_VERIFIED: goal_ambiguity_audit.py --gaussian-repeat-goal (shared drift / exact two-hypothesis Gaussian repeats), --marginal-only-fusion (sharp finite categorical dependence and optional Hall support leakage), test_goal_ceiling_tools.py, conditional mathematical only. Native SiC hardware/source calibration and absorption pending.",
+      "pending_task": "Provide same-reference legal history pair, complete predictor-visible digital commands, physically justified pretarget sensor/noise correlation or joint categorical PMF/support/tail bounds, goal tolerance, source-scored holdout; compare best single sensor and full command ordinary before any Main acceptance."
     },
     {
       "id": "F355",
