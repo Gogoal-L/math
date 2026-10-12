@@ -58,8 +58,14 @@ x_{k+1}=A_kx_k+b_k+r_k(x_k),\qquad |r_{k,i}(x_k)|\le \epsilon_{k,i}.
 For any input box `[p,q] subset B_k`, define the interval image by coordinates
 
 ```math
-L_{k,i}=b_{k,i}+\sum_j\min(A_{k,ij}p_j,A_{k,ij}q_j)-\epsilon_{k,i},
-\quad U_{k,i}=b_{k,i}+\sum_j\max(A_{k,ij}p_j,A_{k,ij}q_j)+\epsilon_{k,i}.
+\begin{aligned}
+L_{k,i}
+&=b_{k,i}+\sum_j\min(A_{k,ij}p_j,A_{k,ij}q_j)
+-\epsilon_{k,i},\\
+U_{k,i}
+&=b_{k,i}+\sum_j\max(A_{k,ij}p_j,A_{k,ij}q_j)
++\epsilon_{k,i}.
+\end{aligned}
 ```
 
 **Finite-stage conditional inclusion theorem.** If the initial uncertainty box lies in `B0` and at each step `[L_k,U_k] subset B_{k+1}`, then every physically admissible trajectory satisfying these particular map/remainder contracts remains within the declared stage-valid boxes throughout the specified command sequence. Proof is induction using the exact affine coordinatewise extrema of a box and the separately justified remainder bounds. This is **not** F149 permanence, a uniform infinite-time invariant region, or a complete nonlinear SiC certificate.
