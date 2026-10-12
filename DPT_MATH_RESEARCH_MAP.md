@@ -39,7 +39,7 @@ OpenAI Math 对 DPT 的主要贡献，已经从“提示如何检查信息不足
 
 原文：[F132 construction](https://github.com/openai/math/blob/fd4aeeb2ee4fc729c18d98444fed42fd0529eeeb/preprints/A-superquadratic-separation-between-sensitivity-and-block-sensitivity-September-25-2026/build/sections/01-construction.tex)、[recurrences](https://github.com/openai/math/blob/fd4aeeb2ee4fc729c18d98444fed42fd0529eeeb/preprints/A-superquadratic-separation-between-sensitivity-and-block-sensitivity-September-25-2026/build/sections/02-recurrences.tex)、[separation](https://github.com/openai/math/blob/fd4aeeb2ee4fc729c18d98444fed42fd0529eeeb/preprints/A-superquadratic-separation-between-sensitivity-and-block-sensitivity-September-25-2026/build/sections/03-separation.tex)。
 
-对 total Boolean $`f`$，$`s(f,x)`$ 统计单 bit 翻转的变化数，$`\operatorname{bs}(f,x)`$ 是可同时选出的**互不相交敏感输入块**数。F132 构造深度 $`d`$、目标数 $`M`$、门控数 $`k=2M^2+1`$、$`r=\lceil\sqrt M\rceil`$ 的嵌套 predicate。其承重处是必须同时维护普通敏感度 $`S_{\ell,b}`$ 与共同翻转两种 predicate 的 $`J_{\ell,b}`$，其典型递推为
+对 total Boolean $`f`$，$`s(f,x)`$ 统计单 bit 翻转的变化数，$`\mathop{\mathrm{bs}}(f,x)`$ 是可同时选出的**互不相交敏感输入块**数。F132 构造深度 $`d`$、目标数 $`M`$、门控数 $`k=2M^2+1`$、$`r=\lceil\sqrt M\rceil`$ 的嵌套 predicate。其承重处是必须同时维护普通敏感度 $`S_{\ell,b}`$ 与共同翻转两种 predicate 的 $`J_{\ell,b}`$，其典型递推为
 
 **(M3)**
 
@@ -59,8 +59,8 @@ OpenAI Math 对 DPT 的主要贡献，已经从“提示如何检查信息不足
 ```math
 \begin{aligned}
 s(f)&\le 2(d+2)M^{d+1},\\
-\operatorname{bs}(f,0)&\ge M^2(2M^2+1)^d,\\
-\frac{\operatorname{bs}(f)}{s(f)^2}
+\mathop{\mathrm{bs}}(f,0)&\ge M^2(2M^2+1)^d,\\
+\frac{\mathop{\mathrm{bs}}(f)}{s(f)^2}
 &\ge \frac{2^d}{4(d+2)^2}.
 \end{aligned}
 ```
@@ -105,15 +105,15 @@ L(h)=2^{\lfloor(h-2)/31\rfloor}.
 
 ```math
 \begin{aligned}
-\mathcal V_0&=\operatorname{row}(C),\\
+\mathcal V_0&=\mathop{\mathrm{row}}(C),\\
 \mathcal V_{k+1}
 &=\mathcal V_k+\sum_{u\in\mathcal A}\mathcal V_kA_u,\\
 \mathcal V_\infty
-&=\operatorname{span}_{w\in\mathcal A^*}\operatorname{row}(CA_w).
+&=\mathop{\mathrm{span}}\nolimits_{w\in\mathcal A^*}\mathop{\mathrm{row}}(CA_w).
 \end{aligned}
 ```
 
-若 $`\dim x=n`$，该升链最多发生 $`n-\dim\mathcal V_0`$ 次严格增维；稳定后 $`\mathcal V_\infty A_u\subseteq\mathcal V_\infty`$，所以以此 row basis $`T`$ 定义 $`z=Tx`$，存在准确 reduced update $`T A_u=\bar A_u T`$。任何线性**自主演化且覆盖所有词目标**的商状态，其 row space 必须含 $`\mathcal V_\infty`$；最小维数为 $`\dim\mathcal V_\infty`$。[goal_word_quotient](dpt_tools/goal_word_quotient.py) 计算这一命题。**有限指定** $`\mathcal W`$ 则只要求 $`\operatorname{row}(CA_w:w\in\mathcal W)`$，不是 all-word autonomous closure。
+若 $`\dim x=n`$，该升链最多发生 $`n-\dim\mathcal V_0`$ 次严格增维；稳定后 $`\mathcal V_\infty A_u\subseteq\mathcal V_\infty`$，所以以此 row basis $`T`$ 定义 $`z=Tx`$，存在准确 reduced update $`T A_u=\bar A_u T`$。任何线性**自主演化且覆盖所有词目标**的商状态，其 row space 必须含 $`\mathcal V_\infty`$；最小维数为 $`\dim\mathcal V_\infty`$。[goal_word_quotient](dpt_tools/goal_word_quotient.py) 计算这一命题。**有限指定** $`\mathcal W`$ 则只要求 $`\mathop{\mathrm{row}}(CA_w:w\in\mathcal W)`$，不是 all-word autonomous closure。
 
 另一个可以直接测试的结果是**顺序交换缺陷**：
 
@@ -138,7 +138,7 @@ G_{A\to B}(x)-G_{B\to A}(x)
 \begin{aligned}
 \psi(r)&=\tfrac12\bigl[(1+r)\ln(1+r)+(1-r)\ln(1-r)\bigr],\\
 I(u)&=H(\mathbb E u)-\mathbb E H(u),\\
-F(\psi(r))&=r\,\operatorname{atanh}r.
+F(\psi(r))&=r\,\mathop{\mathrm{atanh}}r.
 \end{aligned}
 ```
 
@@ -148,11 +148,11 @@ F(\psi(r))&=r\,\operatorname{atanh}r.
 
 ```math
 \frac{dI(P_tu)}{dt}
-=-\mathbb E[\operatorname{atanh}(P_tu)\,N_0P_tu]
+=-\mathbb E[\mathop{\mathrm{atanh}}(P_tu)\,N_0P_tu]
 =-D(P_tu).
 ```
 
-论文经 three-point entropy-budget optimizer、convex-perspective reserve、common-output thinning 和维数归纳证明 $`D(g)\ge F(I(g))`$。置 $`r_t=\psi^{-1}(I(P_tu))`$，由 $`\psi'(r)=\operatorname{atanh}r`$ 得 $`r_t'\le-r_t`$，积分即
+论文经 three-point entropy-budget optimizer、convex-perspective reserve、common-output thinning 和维数归纳证明 $`D(g)\ge F(I(g))`$。置 $`r_t=\psi^{-1}(I(P_tu))`$，由 $`\psi'(r)=\mathop{\mathrm{atanh}}r`$ 得 $`r_t'\le-r_t`$，积分即
 
 **(M12)**
 
@@ -187,7 +187,7 @@ y-y_0&=HBz+N\eta+Ee,\\
 R(c;A,N,E)
 &=\inf_{\widehat g}\sup_{\|z\|,\|e\|\le1,\eta}
  |c^\top z-\widehat g(Az+N\eta+Ee)|\\
-&=\max_{\substack{\|z\|\le1,\ \|e\|\le1\\Az+Ee\in\operatorname{im}N}}
+&=\max_{\substack{\|z\|\le1,\ \|e\|\le1\\Az+Ee\in\mathop{\mathrm{im}}N}}
  |c^\top z|\\
 &=\min_{\substack{a\in\mathbb R^m\\N^\top a=0}}
  \left(\|c-A^\top a\|_2+\|E^\top a\|_2\right).
@@ -202,7 +202,7 @@ R(c;A,N,E)
 
 ```math
 Kz=0,\quad K=U_\perp^\top A_0;
-\qquad z=Zv,\quad Z^\top Z=I,\quad\operatorname{im}Z=\ker K.
+\qquad z=Zv,\quad Z^\top Z=I,\quad\mathop{\mathrm{im}}Z=\ker K.
 ```
 
 再定义 $`M=\Sigma_r^{-1}U_r^\top A_0Z`$、$`c_r=Z^\top c`$，则
@@ -231,14 +231,14 @@ R_{\infty,\mathcal W}=
 
 因此 $`R_{\infty,\mathcal W}\le1`$ 是声明模型/传感器/有限 word 下的**达到工程容差的充分且必要条件**；不是全 command language 或 nonlinear source 的证书。[contextual_goal_recovery.py](dpt_tools/contextual_goal_recovery.py) 实际计算此式，调用 [goal_ellipsoid_recovery.py](dpt_tools/goal_ellipsoid_recovery.py) 的一维 $`q`$ 求解器；[8 项解析＋CLI 测试](dpt_tools/test_contextual_goal_recovery.py) 覆盖命令先后、rank-one shared noise、independent noise、预测前 CAL 和非法输入。
 
-**由 (M16) 退化出的无噪声 rank 定理：** 当 $`E=0`$，$`R(c)=0`$ 当且仅当 $`c\in\operatorname{row}(U_0^\top HB)`$。若一组未来目标在 $`z`$ 坐标堆为 $`\Gamma_{\mathcal W}`$，允许免费设计任意理想、无新增 nuisance 的标量测量，则最少还缺的独立读数为
+**由 (M16) 退化出的无噪声 rank 定理：** 当 $`E=0`$，$`R(c)=0`$ 当且仅当 $`c\in\mathop{\mathrm{row}}(U_0^\top HB)`$。若一组未来目标在 $`z`$ 坐标堆为 $`\Gamma_{\mathcal W}`$，允许免费设计任意理想、无新增 nuisance 的标量测量，则最少还缺的独立读数为
 
 **(M18)**
 
 ```math
 k_{\rm ideal}=
-\operatorname{rank}\begin{pmatrix}U_0^\top HB\\\Gamma_{\mathcal W}\end{pmatrix}
--\operatorname{rank}(U_0^\top HB).
+\mathop{\mathrm{rank}}\begin{pmatrix}U_0^\top HB\\\Gamma_{\mathcal W}\end{pmatrix}
+-\mathop{\mathrm{rank}}(U_0^\top HB).
 ```
 
 这与已有 [contextual_goal_quotient.py](dpt_tools/contextual_goal_quotient.py) 一致；$`B`$ 非满秩时必须先写在可达 $`z`$ chart 中，不能把整个 ambient parameter space 当作真实 reachable space。真实 CAL/传感器只能从**有限合法候选库**购买，所需 channel 数可能大于理想 $`k_{\rm ideal}`$。
@@ -335,7 +335,7 @@ s(t)&=-\frac{dI_D}{dt}.
 \end{aligned}
 ```
 
-若将允许的 offset/电阻/传感器偏差基函数离散堆成 $`N_s`$，令 $`P_\perp`$ 是加权 $`W`$-内积对 $`\operatorname{col}N_s`$ 的正交投影，则在线性、已知 $`s`$ 情形
+若将允许的 offset/电阻/传感器偏差基函数离散堆成 $`N_s`$，令 $`P_\perp`$ 是加权 $`W`$-内积对 $`\mathop{\mathrm{col}}N_s`$ 的正交投影，则在线性、已知 $`s`$ 情形
 
 **(M25)**
 
@@ -911,9 +911,9 @@ DPT 本地复算 locator（以下路径属于 DPT 工作区，不是本 Math 仓
 
 
 
-**新的三篇交叉联合结果：future-word goal / shared-nuisance quotient（2026-10-11）。** [代码](dpt_tools/contextual_goal_quotient.py)、[单测](dpt_tools/test_contextual_goal_quotient.py)已进入 main，[CI run 38178960392](https://github.com/Gogoal-L/math/actions/runs/38178960392) 实测 **129 tests / OK**（上面 124 加 5 项有限 word/观测/校准 rank tests）。声明共同的**线性初态 chart**和有限命令集 $`\mathcal W`$：按物理顺序定义 $`F_w=A_{w_\ell}\cdots A_{w_1}`$，允许预测前观测 $`y=Hx+N\eta`$，其中 $`\eta`$ 是**不受界限制的共享 nuisance**。令 $`U_0`$ 张成 $`\ker N^\top`$，现有不受 nuisance 影响的观测行空间 $`R=\operatorname{row}(U_0^\top H)`$；将具名未来目标 $`C F_w`$ 的行按 $`\mathcal W`$ 堆成 $`G_{\mathcal W}`$。在可任意增加**理想无 nuisance 的线性状态标量观测**的特殊信息库中，恰好需要
+**新的三篇交叉联合结果：future-word goal / shared-nuisance quotient（2026-10-11）。** [代码](dpt_tools/contextual_goal_quotient.py)、[单测](dpt_tools/test_contextual_goal_quotient.py)已进入 main，[CI run 38178960392](https://github.com/Gogoal-L/math/actions/runs/38178960392) 实测 **129 tests / OK**（上面 124 加 5 项有限 word/观测/校准 rank tests）。声明共同的**线性初态 chart**和有限命令集 $`\mathcal W`$：按物理顺序定义 $`F_w=A_{w_\ell}\cdots A_{w_1}`$，允许预测前观测 $`y=Hx+N\eta`$，其中 $`\eta`$ 是**不受界限制的共享 nuisance**。令 $`U_0`$ 张成 $`\ker N^\top`$，现有不受 nuisance 影响的观测行空间 $`R=\mathop{\mathrm{row}}(U_0^\top H)`$；将具名未来目标 $`C F_w`$ 的行按 $`\mathcal W`$ 堆成 $`G_{\mathcal W}`$。在可任意增加**理想无 nuisance 的线性状态标量观测**的特殊信息库中，恰好需要
 ```math
-k_{\min}^{\rm ideal}=\operatorname{rank}\begin{pmatrix}R\\G_{\mathcal W}\end{pmatrix}-\operatorname{rank}(R)
+k_{\min}^{\rm ideal}=\mathop{\mathrm{rank}}\begin{pmatrix}R\\G_{\mathcal W}\end{pmatrix}-\mathop{\mathrm{rank}}(R)
 ```
 个额外独立行，才能一次覆盖所有**指定**未来命令的线性目标。证明由 nuisance 可抵消的观测相容方向 $`\{\delta x:H\delta x\in\mathrm{im}N\}=\ker(U_0^\top H)`$ 与 row/null 正交补及 quotient dimension 直接给出。**这是有限线性代数结论，不是 F119/F129 原定理或 nonlinear SiC 最小状态/传感器数定理。** 两态例：$`H=I_2,N=(1,1)^\top,C=(1,-1),A=\mathrm{diag}(1,-1)`$。当前目标完全可恢复，但未来命令 A 后目标成为 (1,1)，出现一个维度的信息缺口；合法预测前 CAL 额外测量 $`\eta`$ 则填补缺口。在额外理想噪声自由源状态观测的抽象库下 $`k_{\min}=1`$，但实际 CAL 可以改变 nuisance knowledge，二者信息成本不同。160 组独立 integer-rational SymPy oracle 与 SVD 诊断吻合；物理状态合法域、有限 noisy sensor、nonlinear remainder 与 held-out scoring **仍待本地主控消费实际 18B/C 数据**。见 [F119/F129/F132 原文 proof-level 研究](dpt_research/20261011_F119_F129_F132_proof_level_DPT_bridge.md)。
 
