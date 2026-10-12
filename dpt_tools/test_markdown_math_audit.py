@@ -16,19 +16,32 @@ class MarkdownMathAuditTests(unittest.TestCase):
 
     def test_math_fences_and_display_blocks(self):
         src = r'''Intro
-$$
+**(M33)**
+
+```math
 \begin{aligned}
 a &= b \\
 c &= d
-\end{aligned}\tag{M33}
-$$
+\end{aligned}
+```
+
+**(M34)**
 
 ```math
-\boxed{x^2+y^2}\tag{M34}
+\boxed{x^2+y^2}
 ```
 '''
         self.assertEqual(audit_markdown(src, 'map.md'), [])
         self.assertEqual([q['kind'] for q in extract_math(src)], ['display','display'])
+
+    def test_mathjax_tag_is_rejected_even_if_tex_parser_accepts_it(self):
+        src = r'**(M33)**' + '\n\n' + '```math\na=b\\tag{M33}\n```'
+        errors = audit_markdown(src, 'DPT_MATH_RESEARCH_MAP.md')
+        self.assertTrue(any('IN_MATH_TAG' in e for e in errors), errors)
+
+    def test_external_label_must_have_formula_following_it(self):
+        errors = audit_markdown('**(M1)**\n\nNot a formula', 'map.md')
+        self.assertTrue(any('EXTERNAL_EQUATION_LABEL' in e for e in errors), errors)
 
     def test_bad_brackets_and_unclosed_display_fail(self):
         src = '\n'.join(['$$', r'\frac{1{2}', r'\tag{M33}'])
@@ -40,12 +53,12 @@ $$
         self.assertEqual(audit_markdown(src, 'map.md'), [])
 
     def test_duplicate_equation_tags_rejected(self):
-        src='$$\na=1\\tag{M1}\n$$\n$$\nb=2\\tag{M1}\n$$'
+        src='**(M1)**\n\n```math\na=1\n```\n**(M1)**\n\n```math\nb=2\n```'
         errors=audit_markdown(src,'map.md')
         self.assertTrue(any('DUPLICATE_TAG' in e for e in errors),errors)
 
     def test_repository_map_numbering_gaps_rejected(self):
-        src='$$\na=1\\tag{M1}\n$$\n$$\nb=2\\tag{M3}\n$$'
+        src='**(M1)**\n\n```math\na=1\n```\n**(M3)**\n\n```math\nb=2\n```'
         errors=audit_markdown(src,'DPT_MATH_RESEARCH_MAP.md')
         self.assertTrue(any('NONSEQUENTIAL_TAG' in e for e in errors),errors)
 
