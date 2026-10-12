@@ -61,9 +61,14 @@ The extension step is elementary **real-valued McShane–Whitney envelope algebr
 **(4)**
 
 ```math
-K_{\min,c}(S;\tau_c)=\max_{i<j:\,D_{ij}(S)>0}
- \frac{\bigl[|g_{ic}-g_{jc}|+\eta_{ic}+\eta_{jc}-2\tau_c\bigr]_+}{D_{ij}(S)},
- \quad D_{ij}(S)=\operatorname{dist}(B_i^S,B_j^S),
+\begin{aligned}
+b_{ijc}&=\bigl[|g_{ic}-g_{jc}|
++\eta_{ic}+\eta_{jc}-2\tau_c\bigr]_+,\\
+K_{\min,c}(S;\tau_c)
+&=\max_{i<j:\,D_{ij}(S)>0}
+\frac{b_{ijc}}{D_{ij}(S)},\\
+D_{ij}(S)&=\operatorname{dist}(B_i^S,B_j^S).
+\end{aligned}
 ```
 
 with $`K_{\min}=\infty`$ if a positive numerator has $`D=0`$, or if any $`\eta_{ic}>\tau_c`$. Otherwise the empty max is 0. This is the **exact lower requirement for a bank-fitting gain-constrained decoder**; it is *not* a claim that the physically true goal map has that global Lipschitz constant.
