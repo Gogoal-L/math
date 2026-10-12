@@ -34,6 +34,17 @@ c &= d
         self.assertEqual(audit_markdown(src, 'map.md'), [])
         self.assertEqual([q['kind'] for q in extract_math(src)], ['display','display'])
 
+    def test_display_fragment_recovers_external_label_for_layout_audit(self):
+        src = '**(M33)**\n\n```math\nx=y\n```\n'
+        fragments = extract_math(src)
+        self.assertEqual(fragments[0]['label'], 'M33')
+        self.assertEqual(fragments[0]['tex'], 'x=y')
+
+    def test_duplicate_document_header_detected(self):
+        src = '# Mathematical proof\n\nA proof.\n\n# Mathematical proof\n'
+        errors = audit_markdown(src, 'proof.md')
+        self.assertTrue(any('DUPLICATED_DOCUMENT_ROOT' in e for e in errors), errors)
+
     def test_mathjax_tag_is_rejected_even_if_tex_parser_accepts_it(self):
         src = r'**(M33)**' + '\n\n' + '```math\na=b\\tag{M33}\n```'
         errors = audit_markdown(src, 'DPT_MATH_RESEARCH_MAP.md')
