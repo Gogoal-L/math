@@ -144,7 +144,7 @@ def audit_markdown(source: str, name='document') -> list[str]:
     # External labels must sit directly above a standalone math display.
     lines = source.splitlines()
     for number, line in enumerate(lines):
-        if re.fullmatch(r'\*\*\([A-Za-z]+\d+|\d+\)\*\*', line.strip()):
+        if re.fullmatch(r'\*\*\((?:[A-Za-z]+\d+|\d+)\)\*\*', line.strip()):
             nxt = number + 1
             while nxt < len(lines) and not lines[nxt].strip():
                 nxt += 1
