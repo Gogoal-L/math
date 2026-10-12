@@ -85,16 +85,16 @@ Independently, **all authored body/appendix LaTeX files were retrieved** at the 
 | F360 | Four included sections plus optional \`appendices/degree.tex\` | 1,721 | 63 / 51 | 0 | 0 |
 
 **F049 visual-source check:** its sole figure is the Cartesian square
-\[
+```math
 \begin{CD}
 V(v) @>>> \operatorname{Spec}C\\
 @VVV @VVV\\
 V(I) @>>> Y=\operatorname{Spec}B
 \end{CD}
-\]
-encoding principalization of the pulled-back ideal \(IC=(v)\). It is **a scheme-theoretic pullback**, not a change-of-state or switched-system flowchart. The source drawing was reproduced by TeX and its rendered pixels were visually checked.
+```
+encoding principalization of the pulled-back ideal $`IC=(v)`$. It is **a scheme-theoretic pullback**, not a change-of-state or switched-system flowchart. The source drawing was reproduced by TeX and its rendered pixels were visually checked.
 
-**F149 visual-source check:** the single TikZ figure has open validity intervals \(I_{t_j}\) and thicker closed assigned regions \([q_{j-1},q_j]\subset I_{t_j}\), with overlapping neighborhoods and cut points. Its geometric role is proof of finite local-patch coverage for the affine-minimum lemma under even discontinuous error tolerances; it is **not** an invariant-set numerical simulation. TeX-rendered pixels were checked.
+**F149 visual-source check:** the single TikZ figure has open validity intervals $`I_{t_j}`$ and thicker closed assigned regions $`[q_{j-1},q_j]\subset I_{t_j}`$, with overlapping neighborhoods and cut points. Its geometric role is proof of finite local-patch coverage for the affine-minimum lemma under even discontinuous error tolerances; it is **not** an invariant-set numerical simulation. TeX-rendered pixels were checked.
 
 **F360 figure check:** there are zero authored figure environments in the full body+appendix. The essential geometry is encoded by displayed Jacobi-field, index-form and Hessian inequalities. Without official PDF raster access, these displayed formulas were checked from LaTeX source and logical dependency, not image pixels on every original page.
 
