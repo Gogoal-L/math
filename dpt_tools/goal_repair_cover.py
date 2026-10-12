@@ -215,6 +215,215 @@ def audit(observations, goals, candidates, *, observation_radii,
             }
 
 
+
+def _greedy_history_coloring(neighbors):
+    """A feasible deterministic DSATUR coloring; not necessarily minimum."""
+    n = len(neighbors)
+    colors = [-1] * n
+    for _ in range(n):
+        uncolored = [i for i in range(n) if colors[i] < 0]
+        v = max(uncolored, key=lambda i:
+                (len({colors[j] for j in neighbors[i] if colors[j] >= 0}),
+                 len(neighbors[i]), -i))
+        used = {colors[j] for j in neighbors[v] if colors[j] >= 0}
+        colors[v] = next(k for k in range(n) if k not in used)
+    return colors, max(colors, default=-1) + 1
+
+
+def _greedy_clique_bound(neighbors):
+    """Construct an actual clique: its size is a valid chromatic lower bound."""
+    if not neighbors:
+        return 0
+    best = 1
+    for start in sorted(range(len(neighbors)),
+                        key=lambda i: (-len(neighbors[i]), i)):
+        clique = [start]
+        for candidate in sorted(neighbors[start],
+                                key=lambda i: (-len(neighbors[i]), i)):
+            if all(candidate in neighbors[v] for v in clique):
+                clique.append(candidate)
+        best = max(best, len(clique))
+    return best
+
+
+def _exact_k_colorable(neighbors, k):
+    """Decision search with color-label symmetry eliminated; returns witness."""
+    n = len(neighbors)
+    colors = [-1] * n
+
+    def search(used_colors):
+        if all(c >= 0 for c in colors):
+            return colors.copy()
+        uncolored = [v for v in range(n) if colors[v] < 0]
+        v = max(uncolored, key=lambda i:
+                (len({colors[j] for j in neighbors[i] if colors[j] >= 0}),
+                 len(neighbors[i]), -i))
+        forbidden = {colors[j] for j in neighbors[v] if colors[j] >= 0}
+        for choice in range(min(k, used_colors + 1)):
+            if choice in forbidden:
+                continue
+            colors[v] = choice
+            answer = search(max(used_colors, choice + 1))
+            if answer is not None:
+                return answer
+            colors[v] = -1
+        return None
+
+    return search(0)
+
+
+def audit_retained_goal_bits(
+    observations, goals, transcript_ids, *,
+    observation_radii, goal_tolerances, goal_uncertainty=None,
+    exact_transcript_cap=17,
+):
+    """Exact or bounded fixed-length memory for a FINITE source-history bank.
+
+    A pretarget, EXACT archived transcript category is mapped to one fixed
+    message. After that message is retained, the predictor receives a later
+    side-observation y lying in a per-history coordinatewise interval box.
+    The decoder sees (message, y), NOT the future true goals or forgotten
+    transcript. Prediction must cover each specified scalar future-command
+    goal and its deterministic interval uncertainty within its own tolerance.
+
+    This is one-shot deterministic finite-bank zero-error FUNCTION coding
+    with side information. It is NOT a Gaussian-streaming sample theorem,
+    a raw-waveform memory lower bound, or physical SiC sensor validation.
+    """
+    o = np.asarray(observations, dtype=float)
+    g = np.asarray(goals, dtype=float)
+    if o.ndim != 2 or g.ndim != 2 or o.shape[0] < 1 or g.shape[0] != o.shape[0]:
+        raise ValueError("observations and goals must be 2D with identical positive history count")
+    n, m = o.shape
+    q = g.shape[1]
+    if q < 1 or not np.all(np.isfinite(o)) or not np.all(np.isfinite(g)):
+        raise ValueError("goals must have positive column count and all arrays must be finite")
+    radii = _array(observation_radii, (m,), "observation_radii", nonnegative=True)
+    tau = _array(goal_tolerances, (q,), "goal_tolerances", nonnegative=True)
+    eta = (np.zeros((n, q)) if goal_uncertainty is None
+           else _array(goal_uncertainty, (n, q), "goal_uncertainty", nonnegative=True))
+    if not isinstance(exact_transcript_cap, int) or exact_transcript_cap < 1:
+        raise ValueError("exact_transcript_cap must be a positive integer")
+    ids = np.asarray(transcript_ids, dtype=object)
+    if ids.shape != (n,) or any(not isinstance(x, str) or not x.strip()
+                                for x in ids.tolist()):
+        raise ValueError("transcript_ids must contain one nonempty exact string per history")
+
+    group_index = {}
+    groups = []
+    by_history = []
+    for h, label in enumerate(ids.tolist()):
+        if label not in group_index:
+            group_index[label] = len(groups)
+            groups.append(label)
+        by_history.append(group_index[label])
+    gcount = len(groups)
+
+    intrinsic = np.argwhere(eta > tau[None, :])
+    if intrinsic.size:
+        return {
+            "status": "INTRINSIC_GOAL_INTERVAL",
+            "unresolvable_history": int(intrinsic[0, 0]),
+            "unresolvable_goal": int(intrinsic[0, 1]),
+            "minimum_messages": None, "minimum_retained_bits": None,
+            "history_count": n, "transcript_group_count": gcount,
+        }
+
+    neighbors = [set() for _ in groups]
+    conflict_pairs = []
+    for i in range(n):
+        for j in range(i + 1, n):
+            if not np.all(np.abs(o[i] - o[j]) <= 2 * radii):
+                continue
+            if not np.any(np.abs(g[i] - g[j]) + eta[i] + eta[j] > 2 * tau):
+                continue
+            conflict_pairs.append((i, j))
+            x, y = by_history[i], by_history[j]
+            if x == y:
+                return {
+                    "status": "INTRINSIC_TRANSCRIPT_ALIAS",
+                    "unresolvable_history_pair": [i, j],
+                    "minimum_messages": None, "minimum_retained_bits": None,
+                    "history_count": n, "transcript_group_count": gcount,
+                }
+            neighbors[x].add(y)
+            neighbors[y].add(x)
+
+    greedy, upper = _greedy_history_coloring(neighbors)
+    lower = _greedy_clique_bound(neighbors)
+    colors = greedy
+    exact = lower == upper
+    if not exact and gcount <= exact_transcript_cap:
+        for k in range(lower, upper):
+            winner = _exact_k_colorable(neighbors, k)
+            if winner is not None:
+                colors, upper, exact = winner, k, True
+                break
+        else:
+            exact = True
+
+    bits = lambda k: (k - 1).bit_length()
+    report = {
+        "status": ("EXACT_FINITE_BANK_MESSAGE_MINIMUM" if exact
+                   else "FEASIBLE_COLORING_NOT_PROVEN_MINIMUM"),
+        "history_count": n,
+        "transcript_group_count": gcount,
+        "exact_transcript_ids": groups,
+        "messages_by_history": [colors[c] for c in by_history],
+        "messages_by_transcript": colors,
+        "conflicting_history_pair_count": len(conflict_pairs),
+        "edge_count": sum(len(x) for x in neighbors) // 2,
+        "max_clique_lower_bound": lower,
+        "message_lower_bound": lower,
+        "message_upper_bound": upper,
+        "bit_lower_bound": bits(lower),
+        "bit_upper_bound": bits(upper),
+        "minimum_messages": upper if exact else None,
+        "minimum_retained_bits": bits(upper) if exact else None,
+        "exact_optimum_proven": exact,
+        "scope": ("Finite predeclared legal histories/goals, exact archived transcript "
+                  "categories, independent side-observation interval coordinates, "
+                  "deterministic per-goal tolerance and fixed-length messages; "
+                  "float comparisons, no native DPT or Gaussian streaming theorem."),
+    }
+    return report
+
+
+def decode_retained_goal(
+    side_observation, retained_message, report, observations, goals, *,
+    observation_radii, goal_tolerances, goal_uncertainty=None,
+):
+    """Construct an admissible interval-center goal readout for a valid coloring."""
+    o = np.asarray(observations, dtype=float)
+    g = np.asarray(goals, dtype=float)
+    if o.ndim != 2 or g.ndim != 2 or o.shape[0] != g.shape[0] or g.shape[1] < 1:
+        raise ValueError("invalid observation/goal matrices")
+    n, m = o.shape
+    q = g.shape[1]
+    if report.get("status") not in {
+        "EXACT_FINITE_BANK_MESSAGE_MINIMUM", "FEASIBLE_COLORING_NOT_PROVEN_MINIMUM"
+    }:
+        raise ValueError("no feasible retained-message encoder in report")
+    y = _array(side_observation, (m,), "side_observation")
+    rad = _array(observation_radii, (m,), "observation_radii", nonnegative=True)
+    tau = _array(goal_tolerances, (q,), "goal_tolerances", nonnegative=True)
+    eta = (np.zeros((n, q)) if goal_uncertainty is None
+           else _array(goal_uncertainty, (n, q), "goal_uncertainty", nonnegative=True))
+    codes = report["messages_by_history"]
+    if len(codes) != n or not isinstance(retained_message, (int, np.integer)):
+        raise ValueError("invalid codeword or incompatible report")
+    indices = [i for i in range(n)
+               if codes[i] == retained_message and np.all(abs(o[i] - y) <= rad)]
+    if not indices:
+        raise ValueError("no declared source history compatible with message and live observation")
+    low = np.max(g[indices] + eta[indices] - tau[None, :], axis=0)
+    high = np.min(g[indices] - eta[indices] + tau[None, :], axis=0)
+    if np.any(low > high):
+        raise RuntimeError("decoded interval empty: invalid coloring or altered input contract")
+    return (low + high) / 2
+
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("input", type=Path, help="NPZ with bank, candidate features and bounds")
