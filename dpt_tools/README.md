@@ -429,6 +429,23 @@ The full singular SVD projection, one-parameter q formula and proof are in [mixe
 
 Output includes mathematical radius estimate, a separately evaluated linear decoder **dual upper**, reduced-coordinate feasible witness lower, their floating numerical gap, rank thresholds and external measurement weights. A second least-squares decoder candidate prevents catastrophic dual inflation when sensor error scales near 1e-10, and tolerance acceptance must use the actual upper bound—not a fixed 1e-9 additive slack. Small SVD singular values are not physical evidence of exact common errors.
 
+### Separate stochastic quadratic-goal design mode (Gq and joint approximation error)
+
+**Not the deterministic ellipsoid minimax model above.** The new `--quadratic-design` mode assumes a scaled Gaussian state prior `x~N(mu,P)`, an **affine** pretarget candidate observation `y=Hx+d+eps`, joint-Gaussian state/model discrepancy with covariance `D` and cross covariance `C=Cov(x,d)`, and independent positive-definite Gaussian sensor noise `R`. Every candidate sensor must be physically legal for the same source/preparation. The future goal is represented by its declared quadratic Taylor approximation about `goal_expansion_center` (default prior mean) with `goal_gradient` and `goal_hessian`; those derivatives are **goal-sensitive, not universal device parameters**.
+
+This mode scores the data-averaged posterior variance **Gq**, the first-order goal-only variance **Gl**, the raw parameter posterior trace **A**, and parameter mutual information where prior covariance is invertible. Gq and Gl have *squared goal units*, A depends on parameter coordinate scaling, mutual information is in nats. It maintains the full joint covariance of state and model discrepancy. Omitting that cross covariance is a **different statistical model** and can change the best sensor.
+
+Input NPZ arrays (same k candidates and m observation channels each): `prior_mean (n,)`, `prior_cov (n,n)`, `goal_gradient (n,)`, `goal_hessian (n,n)`, `candidate_observations (k,m,n)`, `candidate_noise_cov (k,m,m)`. Optional: `candidate_names (k,)` (Unicode), `goal_expansion_center (n,)`, `candidate_discrepancy_cov (k,m,m)`, `candidate_state_discrepancy_cross_cov (k,n,m)`. The joint state/discrepancy covariance must be positive semidefinite. Do not supply a nonzero C without physically justified D. All sensor values, uncertainty and source Hessians must have compatible physical scales.
+
+```bash
+python goal_ellipsoid_recovery.py qualified_oed.npz --quadratic-design --output oed.json
+python -m unittest -v test_goal_ellipsoid_recovery.py
+```
+
+The report includes each candidate's posterior covariance, squared goal risk, risk without observation, curvature contribution and parameter ranking, plus the predicted best candidate under each criterion. The **same** recorded-command ordinary, acquisition/time cost and independent goal scorer must be used for assessment. A zero-gradient goal can have Gq benefit while Gl sees none; a nonlinear observation such as `y=x**2` at `x=0` can have zero Jacobian but carry the entire future quadratic goal, so the *linear observation assumption must be tested*. For genuinely nonlinear sensor likelihoods, compare an actual nonlinear forward/GO-EIG or controlled surrogate rather than promoting the Gq diagnostic.
+
+[Full finite-Gaussian proof, analytical ranking reversals, correlated-BAE counterexample and original-literature source audit](../dpt_research/20261012_second_order_goal_fiber.md). Original Gq: [Neuberger et al. (2025)](https://doi.org/10.1007/s10915-025-03073-y). Correlated Bayesian approximation error: [Koval and Nicholson (2025)](https://doi.org/10.1007/s10915-025-03008-7). Nonlinear observation/goal rival: [Zhong et al. (2026)](https://arxiv.org/abs/2403.18072).
+
 ## Finite future-command robust recovery: contextual_goal_recovery.py
 
 For one centered global source-state chart and all pretarget measurements, assume
