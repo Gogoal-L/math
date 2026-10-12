@@ -264,10 +264,11 @@ Two histories are mutually inconsistent with one decoder message if their allowe
 **(P19)**
 
 ```math
-(i,j)\in E\ \Longleftrightarrow\
-B_i\cap B_j\ne\varnothing
-\quad\text{and}\quad
-\exists c:\ |g_{ic}-g_{jc}|+\eta_{ic}+\eta_{jc}>2\tau_c.
+\begin{aligned}
+(i,j)\in E\quad\Longleftrightarrow\quad
+& B_i\cap B_j\ne\varnothing,\\
+& \exists c:\ |g_{ic}-g_{jc}|+\eta_{ic}+\eta_{jc}>2\tau_c.
+\end{aligned}
 ```
 
 Partition histories into exact encoder-visible transcript classes T_alpha={i:t_i=alpha}. If an edge in E joins histories inside the *same* transcript class, no finite-memory function of that transcript can separate them; even infinitely many retained bits would not fix the missing information. Otherwise build the quotient graph H with one vertex per transcript class and an edge between two classes if **any** history pair across them belongs to E.
