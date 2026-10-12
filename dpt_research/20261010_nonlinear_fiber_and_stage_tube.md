@@ -15,27 +15,27 @@ The MAP records: actual-law prospective 150/600 V command predictions; a qualifi
 
 Let `U` be an open neighborhood of a physically admissible **history-coordinate** `x0` in `R^n`. Let `O:U -> R^m` and scalar `G:U -> R` be `C^2`, with `1 <= m < n`, and assume `DO(x0)` has full row rank. Here `G` is the *fixed future command and goal*, not an arbitrary post-target readout. Suppose additionally that the first-order factorization **is exact**:
 
-\[
+```math
 DG(x_0)=b\,DO(x_0),\qquad b\in\mathbb R^{1\times m}.
-\]
+```
 
 Let `K=ker DO(x0)` and define the *observation-fiber goal Hessian* (quadratic form on `K`):
 
-\[
+```math
 \boxed{Q_{G\mid O}(v)=v^T\left[D^2G(x_0)-\sum_{i=1}^{m}b_iD^2O_i(x_0)\right]v,\qquad v\in K.}
-\]
+```
 
 **Claim (elementary local implicit-function consequence).** For any unit `v` in `K`, there is a local `C^2` curve `x(t)` through `x0` such that `O(x(t))=O(x0)`, `x'(0)=v`, and
 
-\[
+```math
 G(x(t))-G(x_0)=\frac12 Q_{G\mid O}(v)t^2+o(t^2).
-\]
+```
 
 If `Q(v) != 0`, no exact predictor depending only on the retained `O` can be correct for both `x0` and `x(t)`: the two-point minimax scalar error is at least `|Q(v)|t^2/4+o(t^2)`. Under the *Euclidean metric of the declared scaled history chart*, the greatest absolute second-order coefficient is
 
-\[
+```math
 \frac12\rho\bigl(K^T[D^2G-\sum_i b_iD^2O_i]K\bigr),
-\]
+```
 
 where columns of `K` form an orthonormal nullspace basis and `rho` means **maximum absolute eigenvalue**, not the stage-state radius. This is an *asymptotic coefficient*, **not** an unconditional finite-radius error bound. It does not prove the new variable needed for repair is minimal or an external sensor.
 
@@ -51,16 +51,16 @@ where columns of `K` form an orthonormal nullspace basis and `rho` means **maxim
 
 Let `B_k=[l_k,u_k]` be stage-valid state boxes in one common physical/scaled chart. For one frozen command sequence suppose **throughout** `B_k` the actual state map admits
 
-\[
+```math
 x_{k+1}=A_kx_k+b_k+r_k(x_k),\qquad |r_{k,i}(x_k)|\le \epsilon_{k,i}.
-\]
+```
 
 For any input box `[p,q] subset B_k`, define the interval image by coordinates
 
-\[
+```math
 L_{k,i}=b_{k,i}+\sum_j\min(A_{k,ij}p_j,A_{k,ij}q_j)-\epsilon_{k,i},
 \quad U_{k,i}=b_{k,i}+\sum_j\max(A_{k,ij}p_j,A_{k,ij}q_j)+\epsilon_{k,i}.
-\]
+```
 
 **Finite-stage conditional inclusion theorem.** If the initial uncertainty box lies in `B0` and at each step `[L_k,U_k] subset B_{k+1}`, then every physically admissible trajectory satisfying these particular map/remainder contracts remains within the declared stage-valid boxes throughout the specified command sequence. Proof is induction using the exact affine coordinatewise extrema of a box and the separately justified remainder bounds. This is **not** F149 permanence, a uniform infinite-time invariant region, or a complete nonlinear SiC certificate.
 
