@@ -350,6 +350,8 @@ class MarginalDependenceSensorFusionTests(unittest.TestCase):
         self.assertTrue(support["source_supports_disjoint"])
         self.assertTrue(support["exact_feasibility_checked"])
         self.assertEqual(support["conditional_goal_failure_upper_bounds"],[0.,0.])
+        self.assertTrue(support["unrestricted_marginal_only_baseline_not_post_support_optimum"])
+        self.assertEqual(support["best_certified_worst_history_failure_upper_bound"],0.)
         self.assertEqual(support["support_inferred_joint_tv_lower_bound"],1.)
 
     def test_hall_row_cut_rejects_infeasible_zero_pattern(self):
@@ -387,6 +389,8 @@ class MarginalDependenceSensorFusionTests(unittest.TestCase):
                          [.03,.06])
         self.assertAlmostEqual(
             support["equal_prior_goal_failure_upper_bound"],.045)
+        self.assertAlmostEqual(support["best_certified_equal_prior_failure_upper_bound"],.045)
+        self.assertAlmostEqual(support["best_certified_worst_history_failure_upper_bound"],.06)
         self.assertAlmostEqual(r["worst_case_equal_prior_goal_failure"],.5)
 
     def test_supplied_joint_must_obey_declared_leakage(self):
