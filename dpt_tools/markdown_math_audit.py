@@ -36,6 +36,10 @@ def _tex_errors(expr: str, label: str) -> list[str]:
         out.append(f'{label}: LEFT_RIGHT_DELIMITER_MISMATCH')
     if TEX_BEGIN.findall(expr) != TEX_END.findall(expr):
         out.append(f'{label}: BEGIN_END_ENV_MISMATCH')
+    # GitHub rejects this macro although generic MathJax permits it.
+    if re.search(r'\\operatorname\b', expr):
+        out.append(f'{label}: GITHUB_DISALLOWED_MACRO operatorname')
+
     return out
 
 
@@ -154,7 +158,7 @@ def audit_markdown(source: str, name='document') -> list[str]:
     prefix = expected_prefixes.get(Path(name).name)
     if prefix:
         numbered = [int(t[len(prefix):]) for t in labels if re.fullmatch(prefix + r'\d+', t)]
-        if not numbered or numbered != list(range(1, len(numbered) + 1)):
+        if numbered != list(range(1, len(numbered) + 1)) or (not numbered and Path(name).name != 'DPT_MATH_RESEARCH_MAP.md'):
             errors.append(f'{name}: NONSEQUENTIAL_TAG in external {prefix}-equation labels')
     # External labels must sit directly above a standalone math display.
     lines = source.splitlines()
