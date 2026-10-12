@@ -30,7 +30,7 @@ R_*=\inf_\delta\sup_{\mathcal U}|c^\top z-\delta(Az+Ee+N\eta)|.
 **(P1)**
 
 ```math
-R_*\ge\max_{\substack{\|z\|,\|e\|\le1\\Az+Ee\in\operatorname{im}N}}|c^\top z|
+R_*\ge\max_{\substack{\|z\|,\|e\|\le1\\Az+Ee\in\mathop{\mathrm{im}}N}}|c^\top z|
 =:\rho.
 ```
 
@@ -136,14 +136,14 @@ R_{\mathcal W,\infty}=\max_{w\in\mathcal W,j}
 
 Because max over finite j and supremum over uncertainties commute, independent optimizations of separate scalar decoder rows attain the collection optimum. **All goals share the same *available pretarget observation*, not the same decoder weights.** The method does not assert that one reduced state recursively evolves correctly under command switching, and no theorem extends it beyond the predeclared finite word library.
 
-For pure noiseless observations E=0, $`\rho(c)=0`$ iff $`c\in\operatorname{row}(U_0^\top A)`$. Given finite future-goal row stack Γ, a freely chosen extra *ideal noiseless source-state* row increases rank by at most one, so the exact abstract minimum is
+For pure noiseless observations E=0, $`\rho(c)=0`$ iff $`c\in\mathop{\mathrm{row}}(U_0^\top A)`$. Given finite future-goal row stack Γ, a freely chosen extra *ideal noiseless source-state* row increases rank by at most one, so the exact abstract minimum is
 
 **(P10)**
 
 ```math
 k^{\rm ideal}_{\min}
-=\operatorname{rank}\!\begin{bmatrix}U_0^\top A\\\Gamma\end{bmatrix}
--\operatorname{rank}(U_0^\top A).
+=\mathop{\mathrm{rank}}\!\begin{bmatrix}U_0^\top A\\\Gamma\end{bmatrix}
+-\mathop{\mathrm{rank}}(U_0^\top A).
 ```
 
 Real DPT sensor candidates have restricted units, ports, timing, impedance, calibration interventions and noise; P10 is **not** a physical minimum number of sensors.
@@ -250,3 +250,547 @@ If the previous-step charge is not approximated, drop $`\epsilon_{q,n-1}`$. If T
 where $`L_G`$ includes the actual guarded goal/event/window map on the same box. V6 already describes a related componentwise certificate architecture in its nonlinear charge subclass, but the full vendor conduction/network/thermal/event certificate is **not** inherited by this derivation. The 600-V BE and the separate 150-V trapezoidal analysis remain distinct physical and numerical references.
 
 This is the direct physical/scientific gain from original-paper frontier exploration: it makes the *missing source evidence* specific and calculable (voltage-domain bound d, conditioning H/κ, whole-system residual, goal Lipschitz) instead of merely saying “need a nonlinear remainder”. It also shows precisely why a low-cost one-Newton source solve and a surrogate affine-storage law have different error chains, as required by V6.
+
+---
+
+## Legacy MAP mathematical derivations: recoverability, nuisance, observation and CAL
+
+Original M-numbering and conditions are preserved below. The P-numbered proof above remains the primary derivation. The frozen [historical MAP](https://github.com/Gogoal-L/math/blob/15b3fde162b2f7cb729ec106b847be1ad046d222/DPT_MATH_RESEARCH_MAP.md) fixes the preceding text.
+
+### 0.1 科学目标不是恢复 θ，而是恢复规定命令下的 G
+
+令 $`h\in\mathcal H_{\mathcal R}`$ 是由合法 preparation 在参考系统 $`\mathcal R`$ 中生成的 source-reachable 历史；$`O(h)`$ 是**目标计算之前允许取得的外部观测**；$`T_w(h)`$ 是按实际顺序执行合法有限命令字 $`w`$ 后的 source state；$`G_j(T_w(h))`$ 是具名 work/peak/event-time。参数 $`\theta=(L_g,L_s,L_d,L_{\rm loop},R_g,\ldots)`$ 及未测电荷/热态并不默认可由 $`O`$ 唯一恢复。正确的决策对象是：
+
+**(M1)**
+
+```math
+\boxed{
+\mathcal R_{j,w}(O,\mathcal H_{\mathcal R})=
+\inf_{\widehat G:\,O\mapsto\mathbb R}\ 
+\sup_{h\in\mathcal H_{\mathcal R},\ \text{合法误差}}
+|\widehat G(O(h))-G_j(T_w(h))|.
+}
+```
+
+若两个合法 $`h_+,h_-`$ 在误差合同下可生成同一观测 $`y`$，则任何观测型预测器在 $`y`$ 只能输出同一个数，三角不等式立即给
+
+**(M2)**
+
+```math
+\mathcal R_{j,w}\ge\tfrac12|G_j(T_w(h_+))-G_j(T_w(h_-))|.
+```
+
+这解释 18B 的未来 peak 差是**不可避免误差的下界见证**，不是整个可达类的上界；18C 的 L 不唯一与目标 work 稳定可同时成立。有限 bank 的小 goal spread **不是**全域小 $`\mathcal R`$ 的证明。该统一对象既可作用于工程目标，也容纳 18A 的严格噪声/证书结果。
+
+---
+
+### 0.5 三篇真正联合的严格结果：future-goal minimax radius with mixed nuisance
+
+这是本 Math 仓库的新**独立线性模型推导与实现**，不是宣称 F119/F129/F132 直接推出 SiC 定理。假设有限 source chart 由
+
+**(M13)**
+
+```math
+\begin{aligned}
+x&=x_0+Bz,\qquad \|z\|_2\le1,\\
+y-y_0&=HBz+N\eta+Ee,\\
+&\|e\|_2\le1,\qquad \eta\in\mathbb R^p.
+\end{aligned}
+```
+
+这里 $`N\eta`$ 是**可任意大的同一个未知线性 nuisance**，$`Ee`$ 是**联合、可相关、确定性有界**的传感器误差；$`z,e`$ 是**彼此独立的两个单位球预算**，不能由普通样本 covariance 自动获得。命令 $`w=(u_1,\ldots,u_\ell)`$ 的 linear update 为 $`F_w=A_{u_\ell}\cdots A_{u_1}`$，第 $`j`$ 个未来目标的线性部分是 $`c_{w,j}^\top z`$，其中 $`c_{w,j}=B^\top F_w^\top C_j^\top`$。令 $`A=HB`$。
+
+**定理（标量、有限维、整个声明线性 chart 的 minimax radius）：**
+
+**(M14)**
+
+```math
+\begin{aligned}
+R(c;A,N,E)
+&=\inf_{\widehat g}\sup_{\|z\|,\|e\|\le1,\eta}
+ |c^\top z-\widehat g(Az+N\eta+Ee)|\\
+&=\max_{\substack{\|z\|\le1,\ \|e\|\le1\\Az+Ee\in\mathop{\mathrm{im}}N}}
+ |c^\top z|\\
+&=\min_{\substack{a\in\mathbb R^m\\N^\top a=0}}
+ \left(\|c-A^\top a\|_2+\|E^\top a\|_2\right).
+\end{aligned}
+```
+
+证明的三步：① 对可由反号 $`(z,e,\eta)`$ 形成同一 $`y=0`$ 的两条历史，所有 decoder 至少承担 $`|c^\top z|`$；② 对任意 $`N^\top a=0`$，线性预测器 $`a^\top(y-y_0)`$ 的误差由两个单位球的 support function 上界给出式 (M14) 最后一行；③ 将 $`(z,e)`$ 的紧凸对称积球与观测线性等式作 Lagrange/Fenchel dual（原点满足严格球内点），上下界相合。因此**存在最优线性外部 readout**，不需要先估计全部 $`x,\theta,\eta`$。该结论属于已有 optimal-recovery 范畴，相关标准来源：[Foucart–Liao, Journal of Complexity 83 (2024), 101841](https://doi.org/10.1016/j.jco.2024.101841)；这里只作具名 mixed-nuisance 归约与 DPT 使用合同。
+
+**把无界 nuisance 与零噪声 contrast 分两次剔除：** 取 $`U_0`$ 张成 $`\ker N^\top`$，设 $`A_0=U_0^\top A,E_0=U_0^\top E`$。$`E_0`$ 的 compact/full-left SVD 写成 $`E_0=U_r\Sigma_rV_r^\top`$，其正交余方向为 $`U_\perp`$。由于 $`U_\perp^\top E_0=0`$，任何兼容状态差 $`z`$ 必须满足
+
+**(M15)**
+
+```math
+Kz=0,\quad K=U_\perp^\top A_0;
+\qquad z=Zv,\quad Z^\top Z=I,\quad\mathop{\mathrm{im}}Z=\ker K.
+```
+
+再定义 $`M=\Sigma_r^{-1}U_r^\top A_0Z`$、$`c_r=Z^\top c`$，则
+
+**(M16)**
+
+```math
+\begin{aligned}
+R&=\max_{\|v\|\le1,\ \|Mv\|\le1}|c_r^\top v|,\\
+R^2&=\min_{0\le q\le1}
+c_r^\top\bigl[(1-q)I+qM^\top M\bigr]^{-1}c_r.
+\end{aligned}
+```
+
+端点奇异时沿 $`q\to0^+,1^-`$ 取兼容极限，不以盲目 Moore–Penrose 代替无穷方向。**推导而非仅引用优化器：** 对 $`D_q=(1-q)I+qM^\top M`$，Cauchy–Schwarz 给
+$`(c_r^\top v)^2\le(c_r^\top D_q^{-1}c_r)(v^\top D_qv)\le c_r^\top D_q^{-1}c_r`$；在最小化的内点 $`q^\star`$，令 $`v_\star=D_{q^\star}^{-1}c_r`$，一阶导数为 $`\|v_\star\|^2-\|Mv_\star\|^2=0`$，规范化即可同时触及两个约束并达到上界。端点最优时对应单个活跃约束；若有奇异方向先依 (M15) 消去。故式 (M16) 是全局可计算结果，而不仅是局部 SVD heuristic。实际代码仍有 floating-rank 门槛，其“半径 0”只有在物理证明 exact common mode 时才可以作为物理零误差。
+
+多个未来词、多个工程目标各有容许误差 $`\tau_j>0`$。对所有目标使用同一预测前观测、分别构造最优线性 decoder，**归一化 worst-case 最大误差**准确等于
+
+**(M17)**
+
+```math
+R_{\infty,\mathcal W}=
+\max_{w\in\mathcal W,\ j}\frac{R(c_{w,j};A,N,E)}{\tau_j}.
+```
+
+因此 $`R_{\infty,\mathcal W}\le1`$ 是声明模型/传感器/有限 word 下的**达到工程容差的充分且必要条件**；不是全 command language 或 nonlinear source 的证书。[contextual_goal_recovery.py](dpt_tools/contextual_goal_recovery.py) 实际计算此式，调用 [goal_ellipsoid_recovery.py](dpt_tools/goal_ellipsoid_recovery.py) 的一维 $`q`$ 求解器；[8 项解析＋CLI 测试](dpt_tools/test_contextual_goal_recovery.py) 覆盖命令先后、rank-one shared noise、independent noise、预测前 CAL 和非法输入。
+
+**由 (M16) 退化出的无噪声 rank 定理：** 当 $`E=0`$，$`R(c)=0`$ 当且仅当 $`c\in\mathop{\mathrm{row}}(U_0^\top HB)`$。若一组未来目标在 $`z`$ 坐标堆为 $`\Gamma_{\mathcal W}`$，允许免费设计任意理想、无新增 nuisance 的标量测量，则最少还缺的独立读数为
+
+**(M18)**
+
+```math
+k_{\rm ideal}=
+\mathop{\mathrm{rank}}\begin{pmatrix}U_0^\top HB\\\Gamma_{\mathcal W}\end{pmatrix}
+-\mathop{\mathrm{rank}}(U_0^\top HB).
+```
+
+这与已有 [contextual_goal_quotient.py](dpt_tools/contextual_goal_quotient.py) 一致；$`B`$ 非满秩时必须先写在可达 $`z`$ chart 中，不能把整个 ambient parameter space 当作真实 reachable space。真实 CAL/传感器只能从**有限合法候选库**购买，所需 channel 数可能大于理想 $`k_{\rm ideal}`$。
+
+**精确小例子：** $`B=H=I_2,\ N=(1,1)^\top,\ E=0,\ C=(1,-1),\ A_{\rm future}=\mathrm{diag}(1,-1)`$。当前 goal 为 $`x_1-x_2`$，可用 $`y_1-y_2`$ 精确计算，$`R_{\rm now}=0`$；未来 goal 变成 $`x_1+x_2`$，却与无界共同 offset 混淆，$`R_{\rm future}=\sqrt2`$（状态先验是 $`\|z\|_2\le1`$，不是两个独立区间）。若合法预测前 CAL 另读 $`y_3=\eta`$，则 $`y_1+y_2-2y_3=x_1+x_2`$，future 半径归零。若原两通道分别有联合球 $`\|e\|\le1`$ 的 **0.1 倍独立误差**，CAL 后 $`R_{\rm future}=0.1\sqrt2`$；共享的 0.2 倍噪声 $`E=0.2(1,1)^\top`$ 则在差分方向仍完全消去。**这个小例子的单位是归一化状态/目标，不是 V、nH 或 nJ。**
+
+---
+
+### 0.6 非线性 DPT 恰好还缺的东西：余项、work 事件、peak 守卫
+
+源器件电荷本构、Coss/Crss、body diode 与模式/事件切换一般使 (M13) 只是局部近似。在同一**具名合法非零域**，若观测与某个 future scalar goal 有
+
+**(M19)**
+
+```math
+\begin{aligned}
+O(z)&=y_0+Az+N\eta+Ee+r_O(z),\\
+G_w(z)&=G_{w,0}+c_w^\top z+r_{G,w}(z),\\
+\|r_O\|&\le\beta_O,\qquad |r_{G,w}|\le\beta_{G,w}.
+\end{aligned}
+```
+
+则对任何 $`N^\top a=0`$，有可复算的**非线性条件上界**
+
+**(M20)**
+
+```math
+\begin{aligned}
+\sup|\widehat G_a-G_w|
+&\le\|c_w-A^\top a\|+\|E^\top a\|\\
+&\quad+\beta_{G,w}+\|a\|\beta_O,\\
+\widehat G_a&=G_{w,0}+a^\top(y-y_0).
+\end{aligned}
+```
+
+证明是展开残差、消去 $`N\eta`$、逐项取范数。最小化右侧时**应当把 $`\|a\|\beta_O`$ 一起计入**；先以 (M14) 选出放大系数很高的 decoder 再忽略 remainder，会虚报修复。关键不足是从 actual coupled source 给出 $`\beta_O,\beta_G`$ 在准备/未来共同合法域的统一上界，而不是把 finite-bank 最大残差称为证书。式 (M14) 的精确 minimax 下界不能在非线性 remainder 未控制时照搬。
+
+对于真正的 DPT signed stage work（需固定端口、电流方向与窗口），设
+
+```math
+W(z)=\int_{t_a(z)}^{t_b(z)} V_{DS}(t,z)I_D(t,z)\,dt.
+```
+
+Leibniz rule 给出真实目标导数：
+
+**(M21)**
+
+```math
+\begin{aligned}
+DW[\delta z]
+&=\int_{t_a}^{t_b}
+\bigl(I_D\,DV_{DS}[\delta z]+V_{DS}\,DI_D[\delta z]\bigr)\,dt\\
+&\quad+[V_{DS}I_D]_{t_b}Dt_b[\delta z]\\
+&\quad-[V_{DS}I_D]_{t_a}Dt_a[\delta z].
+\end{aligned}
+```
+
+若事件由 $`\phi(t,z)=0`$ 定义且 **transversal**，$`|\partial_t\phi|\ge\gamma>0`$，隐函数定理给
+
+**(M22)**
+
+```math
+Dt_\ast[\delta z]=-\frac{D_z\phi[\delta z]}{\partial_t\phi}.
+```
+
+当 crossing 斜率接近 0、峰值多重或 guard 换支时，$`DG`$ 及 $`\beta_G`$ 可能剧增甚至失去该光滑表示。对于唯一内部光滑非退化 peak，包络定理的一阶 peak-value 导数是 $`D_z V_{DS}(t_\ast,z)`$，但 **peak time** 仍需另行求导；有多个几乎相等的 ringing peaks 时不能随意选择其中一个导数。
+
+18B 的配对实值例子表明目标种类本身很重要：
+
+**(M23)**
+
+```math
+\begin{aligned}
+\Delta W_1&\approx+1.628664~\mu{\rm J},\\
+\Delta W_2&\approx-1.686273~\mu{\rm J},\\
+\Delta W_{\rm total}&\approx-57.609755~{\rm nJ},\\
+1-\frac{|\Delta W_{\rm total}|}{|\Delta W_1|+|\Delta W_2|}
+&\approx 98.26\%.
+\end{aligned}
+```
+
+这解释了为什么单个 total-work goal 可以比两阶段 work、peak/event 更稳定。它**不是** total Eon/Eoff 的全局稳定定理；目标必须与正式窗口、积分符号及 source 端口一致。
+
+---
+
+### 0.7 回接原始 R1 的可辨识方向，而非把数学停在抽象 chart
+
+在**声明 KVL 符号、实际 source 电流导数与明确 discrepancy**的低阶 turn-off 诊断中，可将外部 overshoot 近似写作
+
+**(M24)**
+
+```math
+\begin{aligned}
+u(t)&:=V_{DS}(t)-V_{\rm DC},\\
+u(t)&\approx L_{\rm eff}s(t)
++R_{\rm loop}I_D(t)+b(t),\\
+s(t)&=-\frac{dI_D}{dt}.
+\end{aligned}
+```
+
+若将允许的 offset/电阻/传感器偏差基函数离散堆成 $`N_s`$，令 $`P_\perp`$ 是加权 $`W`$-内积对 $`\mathop{\mathrm{col}}N_s`$ 的正交投影，则在线性、已知 $`s`$ 情形
+
+**(M25)**
+
+```math
+\widehat L_{\rm eff}
+=\frac{\langle P_\perp s,P_\perp u\rangle_W}{\|P_\perp s\|_W^2},
+\qquad
+|\widehat L_{\rm eff}-L_{\rm eff}|
+\le\frac{\|\epsilon\|_W}{\|P_\perp s\|_W}.
+```
+
+若 $`P_\perp s=0`$，该实验无法区分有效 L 和允许 nuisance；若它很小，即使 waveform 拟合完美，参数也会不稳定。注意 **s 的数值微分误差、gate-charge/Coss 非线性、internal Kelvin source 与 external cut port 不一致**均可破坏 (M24) 的条件；它不是 LTspice/硬件的已核验器件方程。更重要的是，某个未来 overshoot/work 的导数 $`DG`$ 可能在这个不可辨识方向上很小，于是 (M1)/(M14) 允许目标稳定而 L 不唯一。下一步该拿真实 R1 reference 的同源 $`O,DO,DG,s,N_s`$ 与设备外部 cut record 来检验，而不是借用 150 V CAL 的 chart 替 100 V R1 作证。
+
+#### 传感器关联误差真正进入 stage-work：common time shift 与 relative deskew 的定量分解
+
+这是一条来自 DPT 积分定义、独立于 F119 随机通道定理的**物理测量方程**。在固定窗口 $`[t_a,t_b]`$ 上，若探头读到 $`V_m(t)=V(t+\delta_v)`$、$`I_m(t)=I(t+\delta_i)`$，且两波形在声明窗口中 $`C^2`$、偏移足够小，Taylor 展开给
+
+**(M26)**
+
+```math
+W_m-W
+=\delta_v\!\int_{t_a}^{t_b}\dot V I\,dt
++\delta_i\!\int_{t_a}^{t_b}V\dot I\,dt+O(\|\delta\|^2).
+```
+
+设共同偏移 $`\delta_c=(\delta_v+\delta_i)/2`$、相对偏移 $`\delta_r=(\delta_v-\delta_i)/2`$，由分部积分 $`\int(\dot VI+V\dot I)=[VI]_{t_a}^{t_b}`$ 可得
+
+**(M27)**
+
+```math
+\begin{aligned}
+W_m-W
+&=\delta_c[VI]_{t_a}^{t_b}\\
+&\quad+\delta_r\int_{t_a}^{t_b}
+(\dot V I-V\dot I)\,dt\\
+&\quad+O(\|\delta\|^2).
+\end{aligned}
+```
+
+**可检查的解析负控：** $`V(t)=2+3t,\ I(t)=5-2t,\ [t_a,t_b]=[0,1]`$，符号积分精确给 $`W=13.5`$，并且 $`W_m-W=5\delta_c+19\delta_r-6\delta_c^2+6\delta_r^2`$。两项的系数 5、19 与 (M27) 严格一致。若积分窗口也随两条波形**共同平移**而移动，完整时间平移可由换元消去；(M27) 的共同边界项是针对**固定物理积分窗口**，不可混到自动事件窗口中。若两探头带宽/滤波不同，其误差不等价于单一 timing skew，还必须纳入频率响应 discrepancy。DPT 原始测量指导：[Wolfspeed Dynamic Characterization](https://www.wolfspeed.com/knowledge-center/article/dynamic-characterization-and-measurement-methods/)；[Hardware Testing Methodologies for Wide Bandgap High-Power Converters, Electronics 13 (2024), 3918](https://www.mdpi.com/2079-9292/13/19/3918)。这才是 F119“信息依赖噪声相关结构”的**可执行物理启发**：实际 source 需要同一波形时标、校准手段和误差相关性证据才能兑现；公式本身不测量任何探头偏差。
+
+---
+
+### 0.8 真正的 acquisition 判别：CAL 是干预，不只是增加一行 sensor
+
+对于允许购买的预测前观测集合 $`\mathcal S\subseteq\mathcal M_{\rm legal}`$，每一个 candidate 都要有实物端口、获取时间、共同 nuisance/误差关联列和成本 $`c_s`$。在**同一个 source reference 与未来目标**上，有限预算下的目标相关设计问题为
+
+**(M28)**
+
+```math
+\boxed{
+\min_{\mathcal S\subseteq\mathcal M_{\rm legal}}
+\sum_{s\in\mathcal S}c_s
+\quad\mathrm{s.t.}\quad
+\max_{w,j}R_{w,j}(\mathcal S)/\tau_j\le1.
+}
+```
+
+这里 $`R_{w,j}(\mathcal S)`$ 来自具名 observation/N/E/goal chart 的 (M14–M17)；并非以单个参数 Jacobian condition number 或“测量越多越好”来替代目标误差。**若增加一个纯观测而不改变 preparation/物理状态，且旧误差合同仍作为新合同的正确 marginal**，最优 minimax radius 不会变大：新预测器可以忽略新读数，直接复用旧预测器。若 CAL 同时改变了物理状态，单纯套这个单调性是错误的实验比较。
+
+尤其对于 18C 的**主动** CAL，设 $`K:\mathcal H\to\mathcal H`$ 是实际 CAL 操作，$`O_K`$ 是 CAL 后得到的外部读数。CAL 后未来目标是 $`G_w^K(h)=G(T_wK(h))`$，而非原来的 $`G(T_wh)`$。要只估计 **CAL 带来的信息价值**，需要同样执行 $`K`$、同样的后续未来，但在 predictor 输入中分别**隐藏或开放 CAL 数据**：
+
+**(M29)**
+
+```math
+\begin{aligned}
+R_{\rm withheld}^{K}
+&=\inf_\delta\sup_h
+ |\delta(O_{\rm pre}(h))-G(T_wK(h))|,\\
+R_{\rm measured}^{K}
+&=\inf_\delta\sup_h
+ |\delta(O_{\rm pre}(h),O_K(K(h)))-G(T_wK(h))|.
+\end{aligned}
+```
+
+这两个对象固定 **同一 CAL-induced physical history**，所以 $`R_{\rm measured}^K\le R_{\rm withheld}^K`$；若把 $`R_{\rm measured}^K`$ 与 no-CAL future $`G(T_wh)`$ 直接比较，观测的信息增益和操作 $`K`$ 的物理效应已混在一起。必须单列 CAL-versus-NO-CAL **干预/状态转移效应**，才能科学地解释 Pro18C 结果。
+
+**最低成本可取得信息**还必须打败强 ordinary：完整记录 command、固定波形/斜率估计、合格 deskew、已知 CAL 执行日志、基于原 source 的低阶近似。优先的下一项证据是 150 V 同 reference 的 CAL-executed-and-withheld 对照或真实 B/history pair 的 source chart，冻结未来 word 和目标后再算 (M28)；不是扩大 PDF 数目或把理想 rank 直接命名为真实 sensor minimum。
+
+---
+
+## Provenance annex: 20261011_continuous_goal_information_bridge
+
+Complete prior proof and research record, retained with its hypotheses, negative evidence, source references and uncertainty semantics. [Original immutable version](https://github.com/Gogoal-L/math/blob/15b3fde162b2f7cb729ec106b847be1ad046d222/dpt_research/20261011_continuous_goal_information_bridge.md). The original finite-bank interval geometry is distinct from the continuous Euclidean/joint-noise model above.
+
+### Continuous goal-information radius under correlated bounded observation error
+
+**Date:** 2026-10-11. **Scientific state:** exact finite-dimensional centered-ellipsoid **linear** model and numerically checked synthetic implementation. **Not** an accepted DPT source result, certified nonlinear reachability, calibrated metrology, hardware sensor minimum, or new universal optimal-recovery theorem. The DPT controller retains scientific authority.
+
+#### Missing bridge and definitions
+
+The existing Math tools cover finite-bank ambiguity and repair (goal_ambiguity_audit, goal_repair_cover, goal_lipschitz_stability) and supplied linear ordered-stage dynamics (goal_defect_transport). None of them directly evaluates a continuous, deterministic, *correlated-noise* goal-information radius. This module fills only that gap; it does not replace the DPT native constitutive-law forward model.
+
+Fix one qualified finite-dimensional state/parameter chart and one future command:
+
+```math
+\begin{aligned}
+x&=x_0+Bz,\qquad\|z\|_2\le1,\\
+y&=Hx+Ee,\qquad\|e\|_2\le1,\\
+G(x)&=G(x_0)+g^\top(x-x_0).
+\end{aligned}
+```
+
+The entire ellipsoid B must be physically admissible, not just its tangent; H contains *pretarget* measurement rows; E specifies a **joint deterministic** error ellipsoid (not automatically the data covariance); g is the same-law gradient of a smooth future goal. E may be rectangular or rank deficient; B may be rank deficient and physical units stay explicit.
+
+Set A=E^{-1}HB and $`c=B^\top g`$. Then the **global** scalar minimax risk over all estimators, possible observations and admissible states/noise is
+
+```math
+\begin{aligned}
+R&=\max_{\|z\|\le1,\,\|Az\|\le1}|c^\top z|\\
+&=\min_w\bigl(\|c-A^\top w\|_2+\|w\|_2\bigr)\\
+&=\biggl[\min_{0\le q\le1}
+c^\top\bigl[(1-q)I+qA^\top A\bigr]^{-1}c
+\biggr]^{1/2}.
+\end{aligned}
+```
+
+For a singular endpoint the last expression means its finite interior limit, or the pseudoinverse when c lies in the relevant range. R is expressed in the chosen **goal's units** (V, J etc.). The minimax-optimal linear predictor has unwhitened measurement weights a=E^{-T}w and an absolute offset G(x0)-$`a^\top Hx_0`$.
+
+**Proof capsule.** Opposite admissible states z and -z produce an identical possible observation when $`\|Az\|_2\le1`$, with appropriate opposite errors; their goal gap $`2|c^\top z|`$ yields a lower bound for every estimator. For any whitened linear decoder w, the error is bounded by $`\|c-A^\top w\|`$+$`\|w\|_2`$. Convex support-function duality equates these extrema, establishing linear minimax optimality in this bounded symmetric *linear* model. Dualizing the two squared Euclidean constraints and eliminating the positive common Lagrange-multiplier scale gives the single parameter q. In an SVD basis of A its squared objective is f(q)=sum(c_i^2/(1-q+q s_i^2)), which is convex on the domain where finite. Its derivative admits globally convergent bisection, no SciPy dependency. At minimizing q, $`v=[(1-q)I+qA^\top A]^{-1}c`$, w=qAv. Numerical implementation reports the achieved decoder upper bound and a feasible z-witness lower bound, **floating diagnostics only**, not an outward-rounded interval certificate.
+
+**Exact mathematical prior (not OpenAI Math):** Simon Foucart and Chunyang Liao, *Radius of Information for Two Intersected Centered Hyperellipsoids and Implications in Optimal Recovery from Inaccurate Data*, Journal of Complexity 83 (2024), 101841, DOI https://doi.org/10.1016/j.jco.2024.101841, preprint https://arxiv.org/abs/2401.11112; compare Theorems 1 and 8. These mathematical facts predate our implementation. What may be new in DPT is a source-grounded application combining legal reachable sets, correlated probes and prospective target scoring.
+
+#### Synthetic verification and false claims excluded
+
+Run from dpt_tools/:
+
+    python -m unittest -v test_goal_ellipsoid_recovery.py
+
+For B=I, H=[1,0], E=[0.2], the observed x1-goal has radius 0.2, while the unobserved x2-goal has radius 1. The complete state remains unidentified even though the first goal is robust. For target x1+x2, the radius is 0.2+sqrt(1-0.2^2), exercising an interior bottleneck; elliptical prior B=diag(2,1) has a separate analytic case. With H=I and E=[[0.1,0],[0.08,0.06]], the target x1+x2 radius when B=10I is ||E.T[1,1]||, preserving joint measurement-error geometry. An additional independent measurement reduces or preserves the information radius if the same original uncertainty budget remains available. Tests also cover m=0, shapes, singular E and actual NPZ-to-JSON CLI replay.
+
+These numerical tests are **not** source-native DPT evidence. The code's algorithm_upper, feasible_witness_lower and numerical_gap fields diagnose optimizer arithmetic under its **assumed** linear chart, not the chart's physical validity.
+
+#### Additional primary OpenAI Math reading
+
+Inspected the listed original LaTeX statements and selected proof sections at openai/math main on 2026-10-11. This is targeted source inspection, **not** a full-proof or Lean audit. The new optimal-recovery formula does not come from these papers.
+
+| Family | Original source / inspected locator | What transfers and what does not |
+| --- | --- | --- |
+| **F132** | [Sensitivity and block sensitivity introduction](https://github.com/openai/math/blob/main/preprints/A-superquadratic-separation-between-sensitivity-and-block-sensitivity-September-25-2026/build/sections/00-introduction.tex), [Proposition prop:recurrences](https://github.com/openai/math/blob/main/preprints/A-superquadratic-separation-between-sensitivity-and-block-sensitivity-September-25-2026/build/sections/02-recurrences.tex), [quantitative separation](https://github.com/openai/math/blob/main/preprints/A-superquadratic-separation-between-sensitivity-and-block-sensitivity-September-25-2026/build/sections/03-separation.tex) | **Design analogy**: grouped legal interventions can reveal a response missed by one-coordinate perturbations; existing DPT mixed_interaction_audit is the relevant test. Boolean exponent and sensitivity theorem do **not** transfer to analog SiC. |
+| **F129** | [Two-way deterministic state lower bound introduction](https://github.com/openai/math/blob/main/preprints/An-exponential-two-way-deterministic-state-lower-bound-for-one-way-liveness-September-25-2026/build/sections/introduction.tex), [rank-loss theorem](https://github.com/openai/math/blob/main/preprints/An-exponential-two-way-deterministic-state-lower-bound-for-one-way-liveness-September-25-2026/build/sections/rank.tex) | **PARK**: finite control must distinguish context words in that special *full relation monoid/growing alphabet* model. This does not prove minimum physical memory for nonlinear SiC. Existing DPT command_word_audit/goal_word_quotient cover restricted, relevant meanings. |
+| **F119** | [Binary information-contraction theorem](https://github.com/openai/math/blob/main/preprints/Sharp-binary-information-contraction-on-the-discrete-cube-September-24-2026/build/main.tex), [entropy joining proof](https://github.com/openai/math/blob/main/preprints/Sharp-binary-information-contraction-on-the-discrete-cube-September-24-2026/build/sections/canonical.tex) | **REJECT for the present gate**: independent Bernoulli corruption of uniform binary inputs and mutual-information objective are not correlated bounded oscilloscope noise and voltage/work minimax accuracy. Reopen only if a separate calibrated stochastic measurement model becomes authoritative. |
+
+**Research judgment revision:** the strongest new route is not transferring any of those top-line theorems. It is using an existing sharp optimal-recovery result to design a falsifiable DPT legal-observation comparator. Paper counts and thematic analogies must not become evidence of native identifiability.
+
+#### Source-to-controller admission contract
+
+1. **Select one reference.** Never combine 100-V scalar R1, 150-V active CAL/goal and 600-V native finite-command branches as if sharing a single B/H/E/g chart. Freeze model/topology, exact preparation and future command, ports/reference/window, target scorer and nuisance range.
+2. **Prove joint eligibility.** Entire x0+B B2 must satisfy source constitutive law, implicit-solver branch/guard, Eth lift, valid state and parameter bounds. Calibrate a physically justified deterministic joint E including skew/gain correlations. A sample covariance without coverage evidence is insufficient.
+3. **Take gradients on the same law.** H must use only truly obtainable pretarget information. g comes from same-law tangent/adjoint on the future goal; moving/tied peaks require an event-regularity analysis or a nonsmooth goal bound. Ordinary finite differences at one center are not a whole-domain certificate.
+4. **Keep ordinary comparator and cost.** Compare NO_CAL against a genuinely legal active CAL row or already archived source/preparation information with identical prior and target, correctly adjusted joint E and sensor/command costs. Report R in goal units and engineering tolerance; don't rank by parameter sensitivity rank alone.
+5. **Hold-out falsification.** If two actually legal histories satisfy the same observed-error budget but their future goal gap exceeds 2R plus independently qualified nonlinear/evaluation allowances, the proposed continuous chart is falsified. Passing finite source members does not prove a global continuous bound.
+
+**First input to request from the local controller:** one actual-law **150-V Pro18C** B/H/E/g packet with units, legal-region identity, full correlated deterministic error budget, goal-gradient check, source-complete ordinary predictor and one predeclared holdout active-CAL query. Compare NO_CAL against CAL while respecting access time. The Pro18C seven-member near-observation work diameter (0.335303 nJ) becomes a consistency challenge **only if** these are the same observation and goal contracts. Pro18B's dynamic failure requires a separate recursive-state/update analysis and is not repaired by this static one-command result.
+
+**Strongest counterexamples.** G(x)=x^2 on [-1,1] centered at 0 has derivative g=0 and therefore zero linearized radius but nonzero true goal variation: a linear chart cannot certify a nonlinear DPT goal without an independent remainder. Correlated measurement error cannot be reinterpreted as unrelated axis-aligned boxes without changing the uncertainty set. A source-complete ordinary native predictor may already satisfy the declared work/peak tolerance without added information; this is a valid NO_NEW_MEASUREMENT outcome.
+
+**Terminal:** Math-only conditional construction and synthetic numerical validation. Do not promote, freeze S09, or claim a native performance improvement until the local scientific owner supplies and scores a legal same-reference prospective packet.
+
+
+#### Extension: rank-deficient/common-mode deterministic observation uncertainty (2026-10-11)
+
+**Motivation from a deliberately invalid F119 transfer.** The OpenAI Math F119 binary-coordinate optimum requires *independently* corrupted channels. With perfectly correlated sensor noise, a goal-aligned contrast can be exact although neither individual sensor is noiseless. The original E^{-1} implementation silently excludes this physically important regime. The extension allows E in R^{m x p} of any rank (including 0), with a **joint hard error ball** ||e||_2<=1; it does not assume independent sensor errors.
+
+**Reduction and proof.** Start with the same centered prior ||z||<=1, observations H B z+E e, and goal c.T z. Take a full left SVD E=U_r Sigma_r V_r.T and complement U_0. Two opposite states z and -z are observation-indistinguishable exactly when H B z belongs to E(B2), equivalent to the pair of conditions
+
+    C z=0,                        C=U_0.T @ H @ B;
+    ||Sigma_r^-1 U_r.T H B z|| <=1.
+
+Choose orthonormal columns Z spanning ker C. Then the information radius reduces without approximation (for **mathematically exact ranks**) to
+
+    R = max_{||v||<=1, ||A v||<=1} |c_red.T v|,
+    A=Sigma_r^-1 U_r.T H B Z,  c_red=Z.T c.
+
+It is the same convex two-ellipsoid problem **after** enforcing exact noiseless observations. An optimal full linear decoder a is obtained by (i) solving the dual in noisy U_r directions, (ii) adding U_0 components to match the goal response in row(C), which costs zero measurement error because E.T U_0=0. The code returns the achieved upper ||c-(HB).T a||+||E.T a||, a feasible opposite-state lower, and their floating gap. No pseudo-inverse of the full E is used for inversion on its nullspace.
+
+**Independent analytic fixtures and numerically checkable consequences.**
+
+- H=B=I_2, E=[0.2,0.2].T, target g=(1,-1): observation difference exactly cancels the common factor, R=0, a=(1,-1).
+- Same prior/measurement, g=(1,1): common source uncertainty remains, R=0.4.
+- Add an *independent* uncertainty factor (0,0.05).T to E: target g=(1,-1) now has R=0.05.
+- Make E a two-column rank-one matrix; the same R=0 holds.
+- E shape (2,0) represents ideal noiseless recording; full H=I removes all uncertainty for a linear goal.
+- Legacy full-rank correlated-noise, elliptical prior, no-observation and independent-measurement fixtures remain in the test suite.
+
+This feature was developed with a failing-test-first record (old model rejected valid E), then corrected the older test that still expected such rejection; 13 focused tests and 350 seeded heterogeneous random matrix diagnostics were executed locally. **GitHub Actions run** [38178623705](https://github.com/Gogoal-L/math/actions/runs/38178623705) after source+test update ran all 128 current branch tests and passed. Conditional mathematical validity and floating arithmetic are separate from a physically qualified SiC instrument.
+
+**Critical numerical/scientific qualification.** This computation branches on floating SVD thresholds. If a tiny *nonzero* unshared noise mode is truncated, it can spuriously label a noisy contrast exact and understate physical risk. Noise covariance alone is neither an absolute error ball nor a certificate that a small singular value is zero. Set and justify signal units, correlation drift, common gain/offset/skew origin, acquisition timing, and a reliable bound on all unshared components. In particular, the ideal R=0 in the synthetic rank-one model is **not** a prediction of 0-V or 0-nJ physical uncertainty in an actual DPT waveform. Nonlinear remainder and legally reachable ellipsoid still require separate certificates.
+
+**Closest original mathematical foundation:** Foucart--Liao (2024) remains the general optimal-recovery prior. This is a structured reduction for singular sensor uncertainty, not a claimed new theorem. The F119/F129/F132 deep proof audit and three-mechanism DPT test are maintained on main at [20261011_F119_F129_F132_proof_level_DPT_bridge.md](../dpt_research/20261011_F119_F129_F132_proof_level_DPT_bridge.md).
+
+---
+
+## Provenance annex: 20261010_goal_tolerance_repair_cover
+
+Complete prior proof and research record, retained with its hypotheses, negative evidence, source references and uncertainty semantics. [Original immutable version](https://github.com/Gogoal-L/math/blob/15b3fde162b2f7cb729ec106b847be1ad046d222/dpt_research/20261010_goal_tolerance_repair_cover.md). The original finite-bank interval geometry is distinct from the continuous Euclidean/joint-noise model above.
+
+### Frontier V: finite-bank goal-tolerance repair, source-inspired but independently derived
+
+**Date:** 2026-10-10. **Upstream version:** `openai/math` [`fd4aeeb2`](https://github.com/openai/math/tree/fd4aeeb2ee4fc729c18d98444fed42fd0529eeeb). **Scientific authority:** independent algebraic result and synthetic executable, not a claim that S09 native dynamics satisfy any new hypothesis. The DPT controller remains owner of the legitimate preparation set, known command conditions, scorer, model identity and acquisition decisions.
+
+#### The sharper question
+
+Existing DPT-R1 results distinguish a source tangent nullspace, fixed-Q one/two-row behavior at different preparation radii, one-Newton versus full/affine goal adequacy, a valid local Eth lift and command-order contrasts. The unresolved practical question is not just *whether* a missing direction exists. It is **which collection of actual affordable pretarget readouts would remove every materially goal-distinct but observation-indistinguishable pair across a declared command family**. No differentiability is required for a finite, possibly nonsmooth bank.
+
+This is a mathematically exact *finite-bank, fixed-candidate-library* question. It does **not** establish a globally minimal physical state, an autonomous update, or an upper bound on the entire reachable preparation family. A known-answer bank contains only the specified same-law, physically legal histories if the controller establishes that fact; the tool does not.
+
+#### Proposition A: interval minimax equals the largest compatible goal-interval diameter
+
+Let `H={h_1,...,h_N}` be a finite set of legal histories in a **single model/source and matched reference**, and let `C` be a finite family of fixed, available future commands or command words. Existing retained observations are `O_i in R^m`; candidate scalar features are `P_ij`, `j=1,...,p`. The true readout of each component may lie in **the independent coordinate interval** `[O_ir-sigmaO_r,O_ir+sigmaO_r]` or `[P_ij-sigmaP_j,P_ij+sigmaP_j]`. Here 'independent coordinate interval' is a Cartesian-product uncertainty set, **not a probability/independence claim**. Per history and command, the true scalar future goal may lie in `[g_ic-eta_ic,g_ic+eta_ic]`. All radii are nonnegative and the same declared goal units apply within each command.
+
+For a fixed nonadaptive feature subset `S`, call `i,j` *compatible* if their retained observation intervals and all chosen feature intervals overlap componentwise. For `i != j`, this is equivalent to
+
+```
+all_r abs(O_ir - O_jr) <= 2*sigmaO_r
+and all_s_in_S abs(P_is - P_js) <= 2*sigmaP_s.
+```
+
+Equality is compatibility (closed intervals touch), **not separation**. All histories are self-compatible. The optimum worst-case deterministic scalar-goal prediction error when the decoder knows the command `c` is exactly
+
+```math
+R_c(S)=\max\left\{\max_i\eta_{ic},\quad
+\frac12\max_{i<j:\,i\sim_S j}(|g_{ic}-g_{jc}|+\eta_{ic}+\eta_{jc})\right\},
+```
+
+where the second maximum is omitted if no distinct compatible pair exists. The overall command-coordinatewise tolerance requirement is `R_c(S) <= tau_c` for **every** `c`. Each command may use a different decoder, but **the same feature subset** is retained before the target; no future goal is an input. This theorem presumes simultaneous Cartesian worst-case uncertainty across histories and intervals; no stochastic noise law, confidence level, or source correlations are inferred.
+
+**Proof.** Every possible readout `y` determines a set `H_y` of compatible histories. For that `y` and command `c`, all feasible true goals form a union of intervals; the midpoint between its smallest possible value and largest possible value minimizes worst-case absolute error with radius half their span. Across all `y`, any pair of compatible histories has a common readout `y`, giving the lower bound. Conversely the maximal span of any `H_y` is bounded by the largest pairwise upper-endpoint/lower-endpoint difference among its histories, with self intervals included. Taking maxima across `y` gives the formula. A single history with `eta_ic > tau_c` cannot be repaired by *any* more precise measurement of its identity.
+
+**Important quantifier.** This is a minimax over **arbitrary deterministic decoders** on the finite bank, stronger than checking a particular linear or neural decoder fit. It is **not** an achieved error of the current DPT decoder and cannot rescue poor approximation architecture by itself.
+
+#### Proposition B: minimum-cost robust measurement repair is an exact hitting-set problem
+
+Suppose all `eta_ic <= tau_c`. First form the **base-ambiguous and goal-conflicting pair universe**
+
+```math
+\begin{aligned}
+\mathcal U=\bigl\{\{i,j\}:\
+&i<j,\\
+&|O_{ir}-O_{jr}|\le2\sigma_r^O\quad(\forall r),\\
+&\exists c\in C:\ 
+|g_{ic}-g_{jc}|+\eta_{ic}+\eta_{jc}>2\tau_c
+\bigr\}.
+\end{aligned}
+```
+
+Candidate feature `s` resolves the conflicts
+
+```math
+E_s=\{\{i,j\}\in\mathcal U:|P_{is}-P_{js}|>2\sigma_s^P\}.
+```
+
+Then `R_c(S)<=tau_c` for every command `c` **if and only if** `union_{s in S} E_s = U`. Proof: Proposition A says exactly those conflicting pairs must become incompatible, and a Cartesian coordinate product makes a pair incompatible precisely when at least one selected scalar coordinate is separated. With positive additive declared costs `w_s`, the minimum feasible total cost is the weighted set-cover optimum. When a conflict lies in no `E_s`, the supplied feature library cannot meet the goal contract; output the failing same-law history pair and its command.
+
+For `p<=18` by default, [`goal_repair_cover.py`](../dpt_tools/goal_repair_cover.py) finds the exact minimum-cost subset using branch-and-bound; larger libraries use weighted-greedy and label the minimum cost **unproven**. For M nonempty conflicts, ordinary weighted greedy has the classical harmonic approximation factor `H_M`, conditional on cost additivity, fixed cover sets, and feasibility. This is not an application of F175's special constant-factor expectation-threshold comparison theorem.
+
+##### A hand-checkable obstruction and a relaxation gap
+
+Construct six histories forming three isolated matched base-observation pairs: `(0,1)`, `(2,3)`, `(4,5)`. The members of each pair have fixed future goal values 0 and 4, so each pair is a conflict at `tau=1`. Three candidate features have separation sets
+
+```
+A covers pairs 0 and 1;
+B covers pairs 1 and 2;
+C covers pairs 0 and 2.
+```
+
+All three unit-cost integer sensor choices require at least two features, and any two work. A **fractional** relaxation assigning `x_A=x_B=x_C=1/2` satisfies all constraints at cost `3/2`; summing the three pair constraints shows this is the fractional optimum. The integral optimum is 2; **integrality gap 4/3**. F175 does not erase this gap: its setting is a monotone family of subsets, random Bernoulli event-costs `p^|S|`, and a threshold rescaling, not arbitrary acquisition-price hitting set.
+
+**Noise counterexample.** For two candidate readings whose pairwise gaps are both 0.8 and interval radii both 0.5, neither alone nor both together separates the pair in our coordinatewise-box model. A *different* model with a joint Euclidean-radius-0.5 ball would separate them jointly because `sqrt(0.8^2+0.8^2)>1`; the set-cover reduction **does not apply without modification** under Euclidean joint noise. Do not silently reuse the old `goal_ambiguity_audit.py` Euclidean observation-radius formula.
+
+**Sub-picocost numeric counterexample.** A pruning rule with an arbitrary `1e-12` cost tolerance can falsely claim cost optimality for candidate prices on the order of `1e-15`. The tool uses strict positive-price comparisons and reports a *numerical exact search on supplied float costs*, not a symbolic real-arithmetic proof.
+
+#### Source-critical OpenAI Math research: new families, real and failed transfers
+
+The original source manuscripts below are pinned to `fd4aeeb2`. The examined surface is named; no claim of exhaustive PDF page-by-page visual verification or independent proof of the source headline is made. The cited Lean descriptions are *selected statement scopes*, not separate transfer proofs.
+
+| Family and inspected primary sections | Strongest source-grounded contribution | Constructive transfer, strongest obstruction, and decision |
+|---|---|---|
+| **F175**, [Integral and fractional expectation thresholds](https://github.com/openai/math/tree/fd4aeeb2ee4fc729c18d98444fed42fd0529eeeb/preprints/Integral-and-fractional-expectation-thresholds-are-equivalent-September-23-2026/build/source/sections), inspected all four included section files' theorem/proof mechanisms including multiscale selector and rounding (see `selector.tex` and `rounding.tex`) | For a nonempty proper increasing finite set family, defines integral and fractional **Bernoulli-price expectation thresholds** and shows `q_f <=25*512^4*q`. The rounding constructs a multiscale mass capture and uses a random-color expectation contradiction. [Lean selected scope](https://github.com/openai/math/blob/fd4aeeb2ee4fc729c18d98444fed42fd0529eeeb/lean/docs/175.md). | **TRANSFER AS PROOF DISCIPLINE ONLY.** First define exact cover semantics and price; a fractional surrogate may be cheaper and require honest integrality analysis. Its numeric theorem **does not** give a universal fixed-cost DPT sensor-rounding factor. |
+| **F125**, [Single-exponential k-median recovery](https://github.com/openai/math/tree/fd4aeeb2ee4fc729c18d98444fed42fd0529eeeb/preprints/Single-Exponential-Recovery-and-Bounded-Price-Strictness-for-Metric-k-Median-September-24-2026/build/sections), inspected introduction/recovery theorem and stability-dichotomy/final assembly proof | Supplied anchor with accurate *distinct* proxies for all but `O(log N)` comparison clusters allows exact-budget recovery in normalized integral metrics. A dichotomy distinguishes a flat `opt_k` curve from a cardinality sensitivity jump. [Lean scope](https://github.com/openai/math/blob/fd4aeeb2ee4fc729c18d98444fed42fd0529eeeb/lean/docs/125.md). | **WATCH, high pilot value.** Inspect whether most reachable history fibers share one low-information decoder and a small *predeclared* exceptional domain needs a different feature. Selecting excluded histories after seeing failure is invalid. Neither metric k-median's `1+2/e` nor its cluster-complexity guarantee transfers to DPT. |
+| **F139**, [Subpolynomial query complexity for log-concave sampling](https://github.com/openai/math/tree/fd4aeeb2ee4fc729c18d98444fed42fd0529eeeb/preprints/Subpolynomial-query-complexity-for-well-conditioned-log-concave-sampling-September-26-2026/build/sections), inspected main theorem/model, proof overview, Gaussian block-Krylov lower construction | Exact value+gradient oracle, minimizer known, `I<=D2V<=2I`, arbitrary computation between calls: `Q(d)<=C_eps*d^eps` and `Q(d)>=c log d` for fixed total-variation accuracy. The lower bound uses hidden random rotations and a Gaussian statistic. [Lean scope](https://github.com/openai/math/blob/fd4aeeb2ee4fc729c18d98444fed42fd0529eeeb/lean/docs/139.md). | **PARK** for immediate DPT. Crucial lesson is *oracle-call count is not total compute, physical data acquisition, or measurement count*. Do not use this headline to claim two native LTspice runs suffice or GPU cost vanishes. |
+| **F327**, [Nontrivial Markov type forces superreflexivity](https://github.com/openai/math/blob/fd4aeeb2ee4fc729c18d98444fed42fd0529eeeb/preprints/Nontrivial-Markov-Type-Forces-Superreflexivity-September-23-2026/build/main.tex), inspected stationary/reversible finite-Markov definition and main theorem; [Lean scope](https://github.com/openai/math/blob/fd4aeeb2ee4fc729c18d98444fed42fd0529eeeb/lean/docs/327.md) | Under stationary reversible finite-Markov walks, Markov-type bounds control expected powered displacement in a Banach target; the paper characterizes superreflexivity via nontrivial Markov type. | **PARK** until genuinely stochastic stage uncertainty is measured. Deterministic LTspice discretization/branch bias is not an unbiased reversible Markov error. A separate martingale RMS identity may be useful with measured zero-mean/orthogonality conditions, independently of F327's theorem. |
+| **F110**, [squared-log randomized k-server](https://github.com/openai/math/blob/fd4aeeb2ee4fc729c18d98444fed42fd0529eeeb/preprints/Squared-logarithmic-randomized-k-server-on-arbitrary-metrics-September-24-2026/build/source/main.tex), inspected model statement and complete manuscript chapter map; [Lean scope](https://github.com/openai/math/blob/fd4aeeb2ee4fc729c18d98444fed42fd0529eeeb/lean/docs/110.md) | One policy obtains an online movement-cost guarantee against all *oblivious* request sequences, given a k-server metric and initial configuration. | **PARK**: request servicing/movement cost and online adversary are not equal to adaptive choice of LTspice switching command, whose value is discrimination rather than servicing a metric request. |
+| **F331**, [reflexive midpoint / diamond distortion](https://github.com/openai/math/blob/fd4aeeb2ee4fc729c18d98444fed42fd0529eeeb/preprints/Asymptotic-midpoint-uniform-convexity-and-unbounded-diamond-distortion-in-a-reflexive-tree-space-September-27-2026/build/main.tex), inspected statement and formalization scope; [Lean scope](https://github.com/openai/math/blob/fd4aeeb2ee4fc729c18d98444fed42fd0529eeeb/lean/docs/331.md) | Reflexive Banach example with asymptotic midpoint uniform convexity but diamond-depth `k` distortion at least `sqrt(1+k/12)`. | **WATCH** as a warning against extrapolating local midpoint or tangent regularity into globally stable multi-word charts. No claim that the actual DPT preparation metric is the constructed Banach metric. |
+
+##### Closest-prior subtraction (not an originality claim about set cover)
+
+- [Healy and Leo (2026), *Which experiments test a model?*](https://doi.org/10.1016/j.jet.2026.106191) explicitly uses pairwise separation and integer set cover to select minimal classification/testing experiments in a deterministic preference-model setting. Our pair-cover reduction is not a novel abstract algorithm or generic combinatorial theorem.
+- [Krause, McMahan, Guestrin, Gupta (2008), *Robust Submodular Observation Selection*](https://www.jmlr.org/papers/v9/krause08b.html) studies robust observation choice under specific submodularity assumptions. The present goal-diameter design is not automatically the same objective or a Gaussian/Bayesian information gain.
+- [Willems (1986), *From time series to linear system*](https://doi.org/10.1016/0005-1098(86)90066-X) places trajectory families and state equivalence before representation. Even if the finite feature set predicts a designated list of goals, autonomous state updates must satisfy a stronger **future-word closure**. The current tool does not claim behavioral realization.
+
+**Potential DPT residual contribution:** not hitting set itself. Rather: same-law physical reachable history selection, pulse/command-specific true goal-tolerance boundaries, correct interval/numeric/model error accounting, pretarget feature availability and acquisition-versus-retention cost, and prospective discrimination versus strong ordinary/one-Newton. A successful native generalization across fresh histories is needed before treating it as a scientific method result.
+
+#### Adversarial simulated roundtable (public ideas reconstructed; NOT actual statements)
+
+**Question:** Does cheap predictive sufficiency mean low-dimensional physical dynamics, few actual sensors, or a low-cost finite-table decoder?
+
+**Willems lens (behavioral system):** The equivalence relation must persist under future concatenation, or a current-goal code will fail after an unseen command. Response: specify the command language and horizon; distinguish bank goal prediction from right-congruence and autonomous `T_a`.
+
+**Talagrand/F175 lens (covering certificates):** A fractional feasibility certificate is not automatically an implementable integer collection of sensors; check the underlying probabilistic cost. Response: our criterion uses fixed-price hitting set with an observed `4/3` gap in a three-conflict example, not the F175 constant-factor theorem.
+
+**Krause lens (sensor utility):** A small feature count is not the same as minimized measurement cost or robust utility. Response: costs and goal-coordinatewise radii are explicit; *joint correlated noise* and physical sensor qualification remain outside the mathematical oracle.
+
+**Moderator's live crux:** the scientifically decisive information is **which admissible history pairs remain inseparable under a legitimately obtainable pretarget feature**, not the number of parameters in a simulator or how many PDFs were read. An apparent cheap state is meaningless if its features are only posttarget outputs or hidden internal states at deployment.
+
+#### Material candidate portfolio, after hostile pruning
+
+| Hypothesis / move | Observable discriminator | Disposition |
+|---|---|---|
+| H1. A small pretarget feature set controls goal ambiguity for all currently relevant commands | Construct same-law, source-reachable bank; run minimal cover against fixed tau; recheck on new legal histories | **PURSUE: executable independent candidate** |
+| H2. One fixed-Q row fails only on a few physically definable preparation regimes | Compare a domain-qualified exception set selected **before** goal scoring with both ordinary full state and low-Q decoder on same-law examples | **CONDITIONAL pilot**, inspired by F125's few bad clusters but not guaranteed by it |
+| H3. Low feature count implies low autonomous state dimension | Compare single-command goals versus same histories after `AB`/`BA` future words and legitimate Eth lift | **REJECT as stated**: can predict immediate goals yet fail future-update closure |
+| H4. An LP fractional sensor weighting certifies that many fewer actual sensors suffice | On three conflict pairs, fractional cost=1.5 versus discrete=2 | **REJECT** in generic fixed-cost cover; no transfer of F175 constant loss |
+| H5. Stochastic aggregation can improve linear-stage defect budget from sum to RMS | Verify martingale differences and stage covariance rather than infer from numerical tolerance | **PARK** until actual noise process exists |
+| H6. Few exact solver calls imply cheap physical measurement | Compare F139 oracle assumptions with actual input/circuit/CPU costs | **REJECT**: exact value-gradient oracle / unbounded between-call work is not LTspice cost |
+
+##### Stronger next questions, not new simulator authorization
+
+1. **Existing-data pilot:** on one *physically legal* bank of 150/600 V histories, construct aligned `[histories x commands]` scalar goal matrix for full, affine and one-Newton under the same declared scoring operator, but do **not** mix rival goal predictions into a single ground-truth bank. Separately construct `O`, the available candidate `P`, measurement uncertainty and per-command tolerance. Does the two-row fixed-Q feature set eliminate conflicts one row misses? What is the actual extra RAW/storage/acquisition cost?
+2. **Command extension:** does the winning subset remain sufficient on a predeclared new future command word (including event readout and target normalization)? If not, record the shortest and largest material pair witness; upgrade the library only with legitimate pretarget features.
+3. **Continuous-domain check:** check whether finite witness direction agrees with source-null and nonlinear fiber-curvature auditors. A bank positive gives no all-reachable upper bound; a bank failure gives a valid lower bound only when histories themselves are accepted as physically reachable.
+4. **Stage update test:** if feature set predicts endpoint goals but fails a stage-right-congruence check, do not call it an autonomous predictive state. Check Sol9 Eth transition with real guard and lift, then estimate added information or resort to direct command-to-goal decoders.
+
+#### Reproducible contract and results (synthetic only)
+
+CLI: `python goal_repair_cover.py matched_history_bank.npz --output repair_report.json`. Required NPZ keys: `observations (N,m)`, `goals (N,K)`, `candidates (N,p)`, `observation_radii (m,)`, `candidate_radii (p,)`, `goal_tolerances (K,)`, `candidate_costs (p,)`; optional `goal_uncertainty (N,K)`, `candidate_names (p,)`, `command_names (K,)`. All numeric inputs finite; radii/tolerances nonnegative and costs strictly positive. `N>=1`, `K>=1`; columns may be zero. With equal goal rows the same bank may support several matched fixed commands. No assumption about normalized relative RMS versus absolute goal units is made by the software.
+
+Outputs include baseline and selected exact finite-bank minimax errors per command, chosen feature indices/labels and price, source conflict count, or an unrepairable-pair witness. `NO_REPAIR_NEEDED`, `INTRINSIC_GOAL_UNCERTAINTY`, `NO_LIBRARY_REPAIR`, `EXACT_MIN_COST_REPAIR`, and `GREEDY_FEASIBLE_NOT_PROVEN_MINIMUM` are separate statuses. An exact cost solver is enabled up to 18 candidate features by default; larger inputs return a feasible weighted-greedy upper bound and the classical `H_M` set-cover factor, not a proven optimal price.
+
+Direct focused test evidence: 14 tests, including 80 random independent weighted-set-cover brute-force checks, 65 general random noise/goal-interval full-subset checks, analytic hand cases, impossible regimes, exact-touching thresholds, Euclidean-versus-box counterexample, sub-picocost guard, and end-to-end NPZ CLI. **These tests are mathematical/synthetic only**. The library doesn't access private S09 data, update frozen predictions or trigger LTspice.
+
+**Exit condition:** deliver to the controller only after input ancestry and pretarget provenance are known; if source history bank cannot be aligned without outcome leakage, classify this as an OPEN data contract, not a model failure. A negative finding can rationally favor direct command-to-goal prediction over adding hidden state.
