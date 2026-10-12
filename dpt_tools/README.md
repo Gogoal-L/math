@@ -489,9 +489,12 @@ This auditor connects the regular nonlinear observation-fiber Hessian to one **i
 For previous-state perturbations a,b, extend the source perturbations to (Ja,a),(Jb,b) in the concatenated coordinates [next z, previous x]. The exact Hessian is:
 
 ```math
+\begin{aligned}
 D^2(g\circ f_u)[a,b]
-=(Ja)^\top D^2g(z)(Jb)
--\lambda^\top D^2F(z,x;u)[(Ja,a),(Jb,b)].
+&=(Ja)^\top D^2g(z)(Jb)\\
+&\quad-\lambda^\top D^2F(z,x;u)
+[(Ja,a),(Jb,b)].
+\end{aligned}
 ```
 
 Every current/previous source Hessian cross-block must be retained. JSON schema: current_jacobian (n,n), previous_jacobian (n,n), residual_hessians (n,2n,2n) with axes ordered [z,x], next_goal_gradient (n,), next_goal_hessian (n,n). Output: Jacobian update, source adjoint, goal gradient/Hessian in previous-state coordinates, solve residuals and Jacobian condition number.
