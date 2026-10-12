@@ -64,10 +64,14 @@ jobs:
           GH_TOKEN: ${{ github.token }}
         run: |
           python - <<'PY'
-          import json,os,re,urllib.request
+          import json,os,re,sys,urllib.request
           from pathlib import Path
+          sys.path.insert(0, 'dpt_tools')
+          from markdown_math_audit import extract_math
           for file in ['DPT_MATH_RESEARCH_MAP.md','dpt_research/20261012_second_order_goal_fiber.md']:
-              payload=json.dumps({'text':Path(file).read_text(encoding='utf8'),'mode':'gfm',
+              source = Path(file).read_text(encoding='utf8')
+              expected_math_count = len(extract_math(source))
+              payload=json.dumps({'text':source,'mode':'gfm',
                                   'context':'Gogoal-L/math'}).encode('utf8')
               req=urllib.request.Request('https://api.github.com/markdown',data=payload,
                   headers={'Accept':'text/html','Content-Type':'application/json',
@@ -75,6 +79,13 @@ jobs:
                            'X-GitHub-Api-Version':'2022-11-28'},method='POST')
               with urllib.request.urlopen(req,timeout=40) as response:
                   html=response.read().decode('utf8')
+              actual_math_count = html.count('<math-renderer ')
+              assert actual_math_count == expected_math_count, (
+                  f'GitHub GFM rendered {actual_math_count}/{expected_math_count} '
+                  f'math nodes in {file}; code/preprocessed formula regression')
+              print('GITHUB_GFM_VERIFIED', file,
+                    actual_math_count, '/', expected_math_count,
+                    'recognized MathJax nodes')
               print('GITHUB_GFM_RENDER',file,'html_bytes',len(html),
                     'math_renderer',html.count('math-renderer'),
                     'language_math',html.count('language-math'),
