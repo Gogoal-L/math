@@ -201,6 +201,21 @@ class RetainedGoalBitsTests(unittest.TestCase):
                 if np.all(abs(obs[i] - obs[j]) <= 1.2):
                     self.assertNotEqual(r["messages_by_history"][i], r["messages_by_history"][j])
 
+    def test_exact_class_cap_does_not_overclaim_chromatic_minimum(self):
+        i = np.arange(5)
+        obs = np.c_[np.cos(2*np.pi*i/5), np.sin(2*np.pi*i/5)]
+        result = grc.audit_retained_goal_bits(
+            obs, (4*i)[:, None], [str(j) for j in i],
+            observation_radii=[0.6, 0.6], goal_tolerances=[1.],
+            exact_transcript_cap=2)
+        self.assertEqual(result['status'], 'FEASIBLE_COLORING_NOT_PROVEN_MINIMUM')
+        self.assertFalse(result['exact_optimum_proven'])
+        self.assertEqual(result['message_lower_bound'], 2)
+        self.assertEqual(result['message_upper_bound'], 3)
+        self.assertEqual(result['bit_upper_bound'], 2)
+        self.assertIsNone(result['minimum_messages'])
+        self.assertIsNone(result['minimum_retained_bits'])
+
     def test_unresolvable_identical_transcript_with_overlapping_live_sensor(self):
         r = grc.audit_retained_goal_bits(
             [[0.0], [0.0]], [[0.0], [4.0]], ["same", "same"],
