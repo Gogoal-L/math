@@ -16,7 +16,25 @@ G(x)=G(x_0)+g^\top(x-x_0).
 
 The entire ellipsoid B must be physically admissible, not just its tangent; H contains *pretarget* measurement rows; E specifies a **joint deterministic** error ellipsoid (not automatically the data covariance); g is the same-law gradient of a smooth future goal. E may be rectangular or rank deficient; B may be rank deficient and physical units stay explicit.
 
-Set A=E^{-1}HB and c=B^\top g. Then the **global** scalar minimax risk over all estimators, possible observations and admissible states/noise is
+Set A=E^{-1}HB and # Continuous goal-information radius under correlated bounded observation error
+
+**Date:** 2026-10-11. **Scientific state:** exact finite-dimensional centered-ellipsoid **linear** model and numerically checked synthetic implementation. **Not** an accepted DPT source result, certified nonlinear reachability, calibrated metrology, hardware sensor minimum, or new universal optimal-recovery theorem. The DPT controller retains scientific authority.
+
+## Missing bridge and definitions
+
+The existing Math tools cover finite-bank ambiguity and repair (goal_ambiguity_audit, goal_repair_cover, goal_lipschitz_stability) and supplied linear ordered-stage dynamics (goal_defect_transport). None of them directly evaluates a continuous, deterministic, *correlated-noise* goal-information radius. This module fills only that gap; it does not replace the DPT native constitutive-law forward model.
+
+Fix one qualified finite-dimensional state/parameter chart and one future command:
+
+```math
+x=x_0+Bz,\quad\|z\|_2\le1;\qquad
+y=Hx+Ee,\quad\|e\|_2\le1;\qquad
+G(x)=G(x_0)+g^\top(x-x_0).
+```
+
+The entire ellipsoid B must be physically admissible, not just its tangent; H contains *pretarget* measurement rows; E specifies a **joint deterministic** error ellipsoid (not automatically the data covariance); g is the same-law gradient of a smooth future goal. E may be rectangular or rank deficient; B may be rank deficient and physical units stay explicit.
+
+Set A=E^{-1}HB and c=B^\top g`$. Then the **global** scalar minimax risk over all estimators, possible observations and admissible states/noise is
 
 ```math
 \boxed{
@@ -26,9 +44,149 @@ R=\max_{\|z\|\le1,\,\|Az\|\le1}|c^\top z|
 }
 ```
 
-For a singular endpoint the last expression means its finite interior limit, or the pseudoinverse when c lies in the relevant range. R is expressed in the chosen **goal's units** (V, J etc.). The minimax-optimal linear predictor has unwhitened measurement weights a=E^{-T}w and an absolute offset G(x0)-a^\top Hx0.
+For a singular endpoint the last expression means its finite interior limit, or the pseudoinverse when c lies in the relevant range. R is expressed in the chosen **goal's units** (V, J etc.). The minimax-optimal linear predictor has unwhitened measurement weights a=E^{-T}w and an absolute offset G(x0)-# Continuous goal-information radius under correlated bounded observation error
 
-**Proof capsule.** Opposite admissible states z and -z produce an identical possible observation when ||Az||<=1, with appropriate opposite errors; their goal gap 2|c^\top z| yields a lower bound for every estimator. For any whitened linear decoder w, the error is bounded by ||c-A^\top w||+||w||. Convex support-function duality equates these extrema, establishing linear minimax optimality in this bounded symmetric *linear* model. Dualizing the two squared Euclidean constraints and eliminating the positive common Lagrange-multiplier scale gives the single parameter q. In an SVD basis of A its squared objective is f(q)=sum(c_i^2/(1-q+q s_i^2)), which is convex on the domain where finite. Its derivative admits globally convergent bisection, no SciPy dependency. At minimizing q, v=[(1-q)I+qA^\top A]^{-1}c, w=qAv. Numerical implementation reports the achieved decoder upper bound and a feasible z-witness lower bound, **floating diagnostics only**, not an outward-rounded interval certificate.
+**Date:** 2026-10-11. **Scientific state:** exact finite-dimensional centered-ellipsoid **linear** model and numerically checked synthetic implementation. **Not** an accepted DPT source result, certified nonlinear reachability, calibrated metrology, hardware sensor minimum, or new universal optimal-recovery theorem. The DPT controller retains scientific authority.
+
+## Missing bridge and definitions
+
+The existing Math tools cover finite-bank ambiguity and repair (goal_ambiguity_audit, goal_repair_cover, goal_lipschitz_stability) and supplied linear ordered-stage dynamics (goal_defect_transport). None of them directly evaluates a continuous, deterministic, *correlated-noise* goal-information radius. This module fills only that gap; it does not replace the DPT native constitutive-law forward model.
+
+Fix one qualified finite-dimensional state/parameter chart and one future command:
+
+```math
+x=x_0+Bz,\quad\|z\|_2\le1;\qquad
+y=Hx+Ee,\quad\|e\|_2\le1;\qquad
+G(x)=G(x_0)+g^\top(x-x_0).
+```
+
+The entire ellipsoid B must be physically admissible, not just its tangent; H contains *pretarget* measurement rows; E specifies a **joint deterministic** error ellipsoid (not automatically the data covariance); g is the same-law gradient of a smooth future goal. E may be rectangular or rank deficient; B may be rank deficient and physical units stay explicit.
+
+Set A=E^{-1}HB and # Continuous goal-information radius under correlated bounded observation error
+
+**Date:** 2026-10-11. **Scientific state:** exact finite-dimensional centered-ellipsoid **linear** model and numerically checked synthetic implementation. **Not** an accepted DPT source result, certified nonlinear reachability, calibrated metrology, hardware sensor minimum, or new universal optimal-recovery theorem. The DPT controller retains scientific authority.
+
+## Missing bridge and definitions
+
+The existing Math tools cover finite-bank ambiguity and repair (goal_ambiguity_audit, goal_repair_cover, goal_lipschitz_stability) and supplied linear ordered-stage dynamics (goal_defect_transport). None of them directly evaluates a continuous, deterministic, *correlated-noise* goal-information radius. This module fills only that gap; it does not replace the DPT native constitutive-law forward model.
+
+Fix one qualified finite-dimensional state/parameter chart and one future command:
+
+```math
+x=x_0+Bz,\quad\|z\|_2\le1;\qquad
+y=Hx+Ee,\quad\|e\|_2\le1;\qquad
+G(x)=G(x_0)+g^\top(x-x_0).
+```
+
+The entire ellipsoid B must be physically admissible, not just its tangent; H contains *pretarget* measurement rows; E specifies a **joint deterministic** error ellipsoid (not automatically the data covariance); g is the same-law gradient of a smooth future goal. E may be rectangular or rank deficient; B may be rank deficient and physical units stay explicit.
+
+Set A=E^{-1}HB and c=B^\top g`$. Then the **global** scalar minimax risk over all estimators, possible observations and admissible states/noise is
+
+```math
+\boxed{
+R=\max_{\|z\|\le1,\,\|Az\|\le1}|c^\top z|
+=\min_w(\|c-A^\top w\|_2+\|w\|_2)
+=\sqrt{\min_{0\le q\le1}c^\top[(1-q)I+qA^\top A]^{-1}c}.
+}
+```
+
+For a singular endpoint the last expression means its finite interior limit, or the pseudoinverse when c lies in the relevant range. R is expressed in the chosen **goal's units** (V, J etc.). The minimax-optimal linear predictor has unwhitened measurement weights a=E^{-T}w and an absolute offset G(x0)-a^\top Hx_0`$.
+
+**Proof capsule.** Opposite admissible states z and -z produce an identical possible observation when ||Az||<=1, with appropriate opposite errors; their goal gap 2|c^\top z| yields a lower bound for every estimator. For any whitened linear decoder w, the error is bounded by # Continuous goal-information radius under correlated bounded observation error
+
+**Date:** 2026-10-11. **Scientific state:** exact finite-dimensional centered-ellipsoid **linear** model and numerically checked synthetic implementation. **Not** an accepted DPT source result, certified nonlinear reachability, calibrated metrology, hardware sensor minimum, or new universal optimal-recovery theorem. The DPT controller retains scientific authority.
+
+## Missing bridge and definitions
+
+The existing Math tools cover finite-bank ambiguity and repair (goal_ambiguity_audit, goal_repair_cover, goal_lipschitz_stability) and supplied linear ordered-stage dynamics (goal_defect_transport). None of them directly evaluates a continuous, deterministic, *correlated-noise* goal-information radius. This module fills only that gap; it does not replace the DPT native constitutive-law forward model.
+
+Fix one qualified finite-dimensional state/parameter chart and one future command:
+
+```math
+x=x_0+Bz,\quad\|z\|_2\le1;\qquad
+y=Hx+Ee,\quad\|e\|_2\le1;\qquad
+G(x)=G(x_0)+g^\top(x-x_0).
+```
+
+The entire ellipsoid B must be physically admissible, not just its tangent; H contains *pretarget* measurement rows; E specifies a **joint deterministic** error ellipsoid (not automatically the data covariance); g is the same-law gradient of a smooth future goal. E may be rectangular or rank deficient; B may be rank deficient and physical units stay explicit.
+
+Set A=E^{-1}HB and # Continuous goal-information radius under correlated bounded observation error
+
+**Date:** 2026-10-11. **Scientific state:** exact finite-dimensional centered-ellipsoid **linear** model and numerically checked synthetic implementation. **Not** an accepted DPT source result, certified nonlinear reachability, calibrated metrology, hardware sensor minimum, or new universal optimal-recovery theorem. The DPT controller retains scientific authority.
+
+## Missing bridge and definitions
+
+The existing Math tools cover finite-bank ambiguity and repair (goal_ambiguity_audit, goal_repair_cover, goal_lipschitz_stability) and supplied linear ordered-stage dynamics (goal_defect_transport). None of them directly evaluates a continuous, deterministic, *correlated-noise* goal-information radius. This module fills only that gap; it does not replace the DPT native constitutive-law forward model.
+
+Fix one qualified finite-dimensional state/parameter chart and one future command:
+
+```math
+x=x_0+Bz,\quad\|z\|_2\le1;\qquad
+y=Hx+Ee,\quad\|e\|_2\le1;\qquad
+G(x)=G(x_0)+g^\top(x-x_0).
+```
+
+The entire ellipsoid B must be physically admissible, not just its tangent; H contains *pretarget* measurement rows; E specifies a **joint deterministic** error ellipsoid (not automatically the data covariance); g is the same-law gradient of a smooth future goal. E may be rectangular or rank deficient; B may be rank deficient and physical units stay explicit.
+
+Set A=E^{-1}HB and c=B^\top g`$. Then the **global** scalar minimax risk over all estimators, possible observations and admissible states/noise is
+
+```math
+\boxed{
+R=\max_{\|z\|\le1,\,\|Az\|\le1}|c^\top z|
+=\min_w(\|c-A^\top w\|_2+\|w\|_2)
+=\sqrt{\min_{0\le q\le1}c^\top[(1-q)I+qA^\top A]^{-1}c}.
+}
+```
+
+For a singular endpoint the last expression means its finite interior limit, or the pseudoinverse when c lies in the relevant range. R is expressed in the chosen **goal's units** (V, J etc.). The minimax-optimal linear predictor has unwhitened measurement weights a=E^{-T}w and an absolute offset G(x0)-# Continuous goal-information radius under correlated bounded observation error
+
+**Date:** 2026-10-11. **Scientific state:** exact finite-dimensional centered-ellipsoid **linear** model and numerically checked synthetic implementation. **Not** an accepted DPT source result, certified nonlinear reachability, calibrated metrology, hardware sensor minimum, or new universal optimal-recovery theorem. The DPT controller retains scientific authority.
+
+## Missing bridge and definitions
+
+The existing Math tools cover finite-bank ambiguity and repair (goal_ambiguity_audit, goal_repair_cover, goal_lipschitz_stability) and supplied linear ordered-stage dynamics (goal_defect_transport). None of them directly evaluates a continuous, deterministic, *correlated-noise* goal-information radius. This module fills only that gap; it does not replace the DPT native constitutive-law forward model.
+
+Fix one qualified finite-dimensional state/parameter chart and one future command:
+
+```math
+x=x_0+Bz,\quad\|z\|_2\le1;\qquad
+y=Hx+Ee,\quad\|e\|_2\le1;\qquad
+G(x)=G(x_0)+g^\top(x-x_0).
+```
+
+The entire ellipsoid B must be physically admissible, not just its tangent; H contains *pretarget* measurement rows; E specifies a **joint deterministic** error ellipsoid (not automatically the data covariance); g is the same-law gradient of a smooth future goal. E may be rectangular or rank deficient; B may be rank deficient and physical units stay explicit.
+
+Set A=E^{-1}HB and # Continuous goal-information radius under correlated bounded observation error
+
+**Date:** 2026-10-11. **Scientific state:** exact finite-dimensional centered-ellipsoid **linear** model and numerically checked synthetic implementation. **Not** an accepted DPT source result, certified nonlinear reachability, calibrated metrology, hardware sensor minimum, or new universal optimal-recovery theorem. The DPT controller retains scientific authority.
+
+## Missing bridge and definitions
+
+The existing Math tools cover finite-bank ambiguity and repair (goal_ambiguity_audit, goal_repair_cover, goal_lipschitz_stability) and supplied linear ordered-stage dynamics (goal_defect_transport). None of them directly evaluates a continuous, deterministic, *correlated-noise* goal-information radius. This module fills only that gap; it does not replace the DPT native constitutive-law forward model.
+
+Fix one qualified finite-dimensional state/parameter chart and one future command:
+
+```math
+x=x_0+Bz,\quad\|z\|_2\le1;\qquad
+y=Hx+Ee,\quad\|e\|_2\le1;\qquad
+G(x)=G(x_0)+g^\top(x-x_0).
+```
+
+The entire ellipsoid B must be physically admissible, not just its tangent; H contains *pretarget* measurement rows; E specifies a **joint deterministic** error ellipsoid (not automatically the data covariance); g is the same-law gradient of a smooth future goal. E may be rectangular or rank deficient; B may be rank deficient and physical units stay explicit.
+
+Set A=E^{-1}HB and c=B^\top g`$. Then the **global** scalar minimax risk over all estimators, possible observations and admissible states/noise is
+
+```math
+\boxed{
+R=\max_{\|z\|\le1,\,\|Az\|\le1}|c^\top z|
+=\min_w(\|c-A^\top w\|_2+\|w\|_2)
+=\sqrt{\min_{0\le q\le1}c^\top[(1-q)I+qA^\top A]^{-1}c}.
+}
+```
+
+For a singular endpoint the last expression means its finite interior limit, or the pseudoinverse when c lies in the relevant range. R is expressed in the chosen **goal's units** (V, J etc.). The minimax-optimal linear predictor has unwhitened measurement weights a=E^{-T}w and an absolute offset G(x0)-a^\top Hx_0`$.
+
+**Proof capsule.** Opposite admissible states z and -z produce an identical possible observation when ||Az||<=1, with appropriate opposite errors; their goal gap 2|c^\top z| yields a lower bound for every estimator. For any whitened linear decoder w, the error is bounded by \|c-A^\top w\|`$+||w||. Convex support-function duality equates these extrema, establishing linear minimax optimality in this bounded symmetric *linear* model. Dualizing the two squared Euclidean constraints and eliminating the positive common Lagrange-multiplier scale gives the single parameter q. In an SVD basis of A its squared objective is f(q)=sum(c_i^2/(1-q+q s_i^2)), which is convex on the domain where finite. Its derivative admits globally convergent bisection, no SciPy dependency. At minimizing q, v=[(1-q)I+qA^\top A]^{-1}c, w=qAv. Numerical implementation reports the achieved decoder upper bound and a feasible z-witness lower bound, **floating diagnostics only**, not an outward-rounded interval certificate.
 
 **Exact mathematical prior (not OpenAI Math):** Simon Foucart and Chunyang Liao, *Radius of Information for Two Intersected Centered Hyperellipsoids and Implications in Optimal Recovery from Inaccurate Data*, Journal of Complexity 83 (2024), 101841, DOI https://doi.org/10.1016/j.jco.2024.101841, preprint https://arxiv.org/abs/2401.11112; compare Theorems 1 and 8. These mathematical facts predate our implementation. What may be new in DPT is a source-grounded application combining legal reachable sets, correlated probes and prospective target scoring.
 
