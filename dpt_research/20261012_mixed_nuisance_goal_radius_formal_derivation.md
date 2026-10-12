@@ -493,11 +493,53 @@ Q_1(0,1)=Q_1(1,0)&=1/2,\\
 
 **What physical support would change the verdict?** If legal, source-qualified observation support masks are disjoint across histories, every feasible compatible joint law has TV=1—even with individually identical marginals. But any proposed support constraint requires its own source-law and noise/quantization proof. The present tool checks a supplied complete joint PMF against its marginals; it does **not** prove that empirical PMFs, support masks or noise distributions came from actual SiC experiments.
 
-### X.5. What remains usable from F139: a precise stopping condition
+### X.5. A positive *support-qualified* repair from F115's flow viewpoint (P31–P32)
+
+The unrestricted Fréchet class in (P27) is deliberately conservative. The smallest *new* source information that can overturn the bound need not be a fully estimated 2-dimensional joint PMF: a **hard physically legal joint support set** or **credible upper bound on mass outside it** can already suffice. This observation is genuinely compatible with the exact *bounded-flow feasibility* viewpoint of F115-B, though its expensive counting/sampling result is NOT invoked.
+
+Consider precisely **two** categorical pretarget sensors, with row and column marginals a_h and b_h under history h, each over k bins. A declared history-conditional joint support mask E_h is a set of permitted pairs (row bin, column bin). Let N_h(I) be the set of all column bins joined by an allowed edge to any row bin in subset I. The *sharp minimum possible probability leakage outside E_h* among all joint distributions with those marginals is the classical weighted Hall/max-flow deficiency:
+
+**(P31)**
+
+```math
+\begin{aligned}
+\ell_h^{\star}
+&=\min_{Q_h:\,\text{marginals }(a_h,b_h)}
+Q_h(E_h^{\,c})\\
+&=\max_{I\subseteq\{1,\ldots,k\}}
+\left[
+\sum_{i\in I}a_h(i)
+-\sum_{j\in N_h(I)}b_h(j)
+\right]_+.
+\end{aligned}
+```
+
+**Proof.** Any mass arising from a row subset I must go either to its allowed neighbor columns, whose total demand is at most b_h(N_h(I)), or outside the declared support. Every I therefore gives a necessary leakage lower bound. Conversely, solve the finite bipartite maximum-flow problem with row capacities a_h(i), column capacities b_h(j), and admissible internal arcs E_h of capacity one. The max-flow/min-cut theorem makes the maximal mass routed through E_h equal to 1−max_I[a_h(I)−b_h(N_h(I))]_+. Complete the residual row/column demand by a joint probability on the whole product alphabet. Because maximal flow has no remaining allowed row-to-column augmenting path between residual positive nodes, residual mass may be routed outside E_h, attaining the bound. This is a classical finite transport/cut duality, not a novel DPT theorem.
+
+In particular, a **hard** allowed support (leakage=0) is compatible with the known marginals *if and only if* every Hall cut has nonpositive deficiency. The CLI enumerates nonempty row subsets (at most 2^14−1 per history) and returns a violating row subset if a claimed support/tail contract is incompatible with the supplied marginal masses. For the synthetic row masses a=(.9,.1), column masses b=(.1,.9) and a diagonal-only support, I={first row} yields exactly 0.9−0.1=**0.8** required leakage. A feasible table with off-support probability .8 attains it.
+
+A positive *goal* claim follows when E_0 and E_1 are disjoint and are each correct with probability at least 1−epsilon_h. For the decision rule that predicts history 0 when the paired sensor bin lies in E_0 and predicts history 1 otherwise:
+
+**(P32)**
+
+```math
+\begin{aligned}
+Q_0(\delta(Y)\ne0)&\le\epsilon_0,\\
+Q_1(\delta(Y)\ne1)&\le\epsilon_1,\\
+\mathrm{TV}(Q_0,Q_1)&\ge
+\max(d_*,\,1-\epsilon_0-\epsilon_1).
+\end{aligned}
+```
+
+**Proof.** Under history 0, every correct-support readout is recognized, so failures live in E_0^c with mass at most epsilon_0. Since E_0 and E_1 do not overlap, every history-1 observation assigned history 0 belongs to E_1^c, with probability at most epsilon_1. On the event E_0, the difference Q_0(E_0)−Q_1(E_0) is at least 1−epsilon_0−epsilon_1, providing the TV lower bound; projection supplies d_* independently. For *future goal intervals separated by more than twice their tolerance*, outputting the declared hypothesis goal gives **two separate conditional prediction-error upper bounds**, which is stronger in decision meaning than the equal-prior-average statement (P29). If epsilon_0=epsilon_1=0, source-qualified disjoint supports yield perfect discrimination even though both marginal TVs may be zero (P30).
+
+**Physical limitation and key falsifier.** A switched/guarded model might establish that two port-bin combinations are impossible inside a certified approximation/error tube. Oscilloscope Gaussian noise, timing skew, unmodeled capacitive memory or shared calibration can invalidate exact structural zeros. Therefore **soft, empirically qualified leakage bounds** are preferable when support is not truly hard. The checker validates arithmetic feasibility against exact supplied histograms; it cannot prove that a candidate support or its tail bound is physically true. If the masks overlap, it does not infer a strict TV improvement from those masks alone. Counts/sample uncertainty and source legality remain open, so no native MAIN_ACCEPTED promotion follows.
+
+### X.6. What remains usable from F139: a precise stopping condition
 
 F139's [original first-order-oracle theorem](https://github.com/openai/math/blob/fd4aeeb2ee4fc729c18d98444fed42fd0529eeeb/preprints/Subpolynomial-query-complexity-for-well-conditioned-log-concave-sampling-September-26-2026/build/sections/introduction.tex) assumes a globally strongly convex potential with Hessian bounded between the identity and twice the identity (in chosen normalized coordinates) and permits unrestricted arithmetic between queries. **An elementary nonlinear observation inverse problem violates this:** take Gaussian observation y=1 of f(x)=x², unit observation noise variance and a N(0,1) Gaussian prior. Up to an irrelevant constant, its negative log-posterior potential is V(x)=(x²−1)²/2+x²/2. Then V''(x)=6x²−1 and V''(0)=−1. It has two separated minima at x=±1/sqrt(2), violating global log-concavity and even convexity. Thus a well-conditioned Gaussian prior does not prove F139's likelihood assumptions, and F139's claimed low *oracle query* complexity does not imply cheap switched-source model evaluation. A source-qualified strongly convex chart could reopen that work; this generic goal-auditor does not.
 
-### X.6. Independent numeric pressure, implementation and Main handoff
+### X.7. Independent numeric pressure, implementation and Main handoff
 
 [goal_ambiguity_audit.py](../dpt_tools/goal_ambiguity_audit.py) gains a separate --marginal-only-fusion mode. Inputs: marginal_probabilities(2,p,k) and future_goals(2,), goal_tolerance, optional sensor_names(p) and *complete* joint_probabilities(2,k,...,k). Exact finite-categorical masses, frozen matching bin definitions and the same source reference are mandatory. It returns per-sensor TVs, **sharp worst joint TV**, an explicit two-mixture factorized adversarial coupling, the achievable equal-prior best-sensor decision and *both* conditional error components. If a full joint PMF is supplied, it checks normalization/marginal consistency and separately reports actual-joint TV and its gain over the strongest marginal. Numerical marginal agreement is NOT physical validation, and small-N empirical frequency tables do not magically become known exact probabilities.
 
