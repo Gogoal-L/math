@@ -192,6 +192,32 @@ class NoisyRepeatGoalTests(unittest.TestCase):
             shared_sigma=sigma_shared, failure_probability=.05)
         self.assertAlmostEqual(simulated,out["minimax_failure_at_repeats"],delta=.008)
 
+    def test_repeat_goal_cli_npz_round_trip_without_legacy_noise_flag(self):
+        import subprocess
+        import tempfile
+        import json
+        import sys
+        from pathlib import Path
+        from goal_ambiguity_audit import __file__ as cli_path
+        with tempfile.TemporaryDirectory() as tmp:
+            p = Path(tmp) / "paired.npz"
+            out = Path(tmp) / "report.json"
+            np.savez(p, observed_means=np.array([0., 1.]),
+                     future_goals=np.array([0., 4.]),
+                     goal_tolerance=np.array(1.),
+                     independent_sigma=np.array(1.),
+                     shared_sigma=np.array(.2),
+                     failure_probability=np.array(.05))
+            proc = subprocess.run(
+                [sys.executable, cli_path, str(p),
+                 "--gaussian-repeat-goal", "--output", str(out)],
+                capture_output=True, text=True)
+            self.assertEqual(proc.returncode, 0, proc.stderr)
+            result = json.loads(out.read_text())
+            self.assertEqual(result["minimum_repeats"], 20)
+            self.assertEqual(result["source_law_status"],
+                             "CONDITIONAL_MATHEMATICAL_ONLY")
+
     def test_invalid_gaussian_contract_rejected(self):
         base=dict(observed_means=[0,1],future_goals=[0,4],
                   goal_tolerance=1.,independent_sigma=1.,
