@@ -361,6 +361,22 @@ python -m unittest -v test_goal_repair_cover.py
 
 `EXACT_MIN_COST_REPAIR` proves the cheapest feature subset only within the **supplied finite candidate library and finite bank**. `NO_LIBRARY_REPAIR` gives an unseparated goal-conflicting history pair; `INTRINSIC_GOAL_UNCERTAINTY` means a single history already exceeds the requested goal tolerance; `GREEDY_FEASIBLE_NOT_PROVEN_MINIMUM` is a feasible nonoptimality-qualified result. Neither finite-bank success nor an accepted native model prediction proves whole-reachable sufficiency, hardware noise, continuous-domain guarantees or autonomous future-command updating. [Derivation, source audit and adversarial cases](../dpt_research/20261012_mixed_nuisance_goal_radius_formal_derivation.md).
 
+### Retained-history bit minimum with later side information (separate finite-bank mode)
+
+The option **--retained-goal-bits** asks how many fixed-length bits are needed to retain information from an **exact already available archived command/transcript category**, given a separate later external observation available *before* the future goal. It does not optimize new sensors; raw waveform bits, analog quantization, acquisition cost, continuous source-state guarantees and runtime decoder storage are outside the model. Sensor error sets are coordinatewise closed boxes.
+
+Input NPZ: observations(N,m), goals(N,K), transcript_ids(N,) as nonempty **Unicode** exact category labels, observation_radii(m), goal_tolerances(K). Optional goal_uncertainty(N,K) provides absolute uncertainty intervals around each evaluated goal (default zero). Each history, command and goal must use the same declared physical reference, and goal tolerances have the units of their corresponding goals.
+
+```bash
+python goal_repair_cover.py finite_history.npz --retained-goal-bits --output retained_bits.json
+python goal_repair_cover.py finite_history.npz --retained-goal-bits --exact-transcript-cap 14
+python -m unittest -v test_goal_repair_cover.py
+```
+
+Two histories conflict when their later observation boxes overlap yet some future-goal separation plus evaluation uncertainty exceeds twice that goal tolerance. Histories with the same archived transcript cannot be given different retained messages. An internal conflict returns **INTRINSIC_TRANSCRIPT_ALIAS**; intrinsic goal interval wider than allowed returns **INTRINSIC_GOAL_INTERVAL**. Otherwise the quotient graph on exact transcript classes is colored. **EXACT_FINITE_BANK_MESSAGE_MINIMUM** gives the verified chromatic number and ceiling binary logarithm when exact search succeeds. **FEASIBLE_COLORING_NOT_PROVEN_MINIMUM** gives an actual-clique lower bound and greedy feasible upper bound when search exceeds its declared class cap. Both statuses preserve a constructive encoding; the function decode_retained_goal computes valid interval-midpoint predictions for later compatible observations.
+
+A five-cycle bank needs three messages/two bits even with clique size two: counting only a maximum conflicting pair underestimates retained history memory. This implements established [Witsenhausen one-shot zero-error side-information coding](https://doi.org/10.1109/TIT.1976.1055607), **not** the Gaussian-streaming lower bound of F140-A. Actual source legality, physical sensor/noise qualification, strong fully archived command ordinary and independent held-out command scores remain necessary. [Complete proof and DPT transfer contract](../dpt_research/20261012_mixed_nuisance_goal_radius_formal_derivation.md).
+
 ## `goal_lipschitz_stability.py` — stable scalar goal recovery and transition-pair floor
 
 The preceding `goal_repair_cover.py` optimizes an **unrestricted decoder**. This companion tool enforces per-command *scalar* decoder gain `lipschitz_limits (K,)` under the same independently bounded **coordinatewise box** input uncertainty. It computes the **exact finite-bank minimax radius**
