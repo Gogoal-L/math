@@ -37,8 +37,14 @@ where the second maximum is omitted if no distinct compatible pair exists. The o
 Suppose all `eta_ic <= tau_c`. First form the **base-ambiguous and goal-conflicting pair universe**
 
 ```math
-\mathcal U=\left\{\{i,j\}: i<j,\;|O_{ir}-O_{jr}|\le2\sigma^O_r\ \forall r,\;
-\exists c\in C:\ |g_{ic}-g_{jc}|+\eta_{ic}+\eta_{jc}>2\tau_c\right\}.
+\begin{aligned}
+\mathcal U=\bigl\{\{i,j\}:\
+&i<j,\\
+&|O_{ir}-O_{jr}|\le2\sigma_r^O\quad(\forall r),\\
+&\exists c\in C:\ 
+|g_{ic}-g_{jc}|+\eta_{ic}+\eta_{jc}>2\tau_c
+\bigr\}.
+\end{aligned}
 ```
 
 Candidate feature `s` resolves the conflicts
