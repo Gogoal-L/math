@@ -360,6 +360,21 @@ class MarginalDependenceSensorFusionTests(unittest.TestCase):
             audit_marginal_sensor_coupling(p,[0.,4.],1.,
                                            allowed_joint_supports=masks)
 
+    def test_sharp_hall_minimum_soft_leakage_is_eight_tenths(self):
+        # With row marginal (0.9,0.1), col marginal (0.1,0.9),
+        # support restricted to the diagonal, at least 0.8 probability
+        # must leak outside diagonal. A table attains exactly 0.8.
+        p=np.array([[[.9,.1],[.1,.9]], [[.5,.5],[.5,.5]]])
+        masks=np.array([[[1,0],[0,1]], [[1,1],[1,1]]])
+        out=audit_marginal_sensor_coupling(
+            p,[0.,4.],1.,allowed_joint_supports=masks,
+            support_leakage_bounds=[.8,0.])
+        certificate=out["support_certificate"]
+        self.assertAlmostEqual(
+            certificate["minimum_required_support_leakage"][0],.8)
+        self.assertEqual(certificate["hall_worst_row_cuts"][0],[0])
+        self.assertFalse(certificate["source_supports_disjoint"])
+
     def test_soft_disjoint_support_certifies_conditional_not_average_only(self):
         p=np.full((2,2,2),.5)
         masks=np.array([[[1,0],[0,1]], [[0,1],[1,0]]])
