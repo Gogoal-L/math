@@ -283,10 +283,10 @@ finite-horizon worst-case scalar goal deviation when the initial state is
 unobservable under an *exact* preparation observation and independent
 Euclidean-bounded defects can enter at each stage:
 
-$$
+```math
 \delta x_{j+1}=A_j\delta x_j+\xi_j,\quad
 O\delta x_0=0,\quad \|\delta x_0\|_2\le\rho,\quad \|\xi_j\|_2\le\epsilon_j.
-$$
+```
 
 The backward goal row for each endpoint supplies an **information radius**
 (initial observation nullspace), a **defect radius** (sum of stage disturbance
@@ -365,9 +365,9 @@ python -m unittest -v test_goal_repair_cover.py
 
 The preceding `goal_repair_cover.py` optimizes an **unrestricted decoder**. This companion tool enforces per-command *scalar* decoder gain `lipschitz_limits (K,)` under the same independently bounded **coordinatewise box** input uncertainty. It computes the **exact finite-bank minimax radius**
 
-$$
+```math
 R_{K_c}(S;c)=\tfrac12\max_{i,j}\bigl(|g_{ic}-g_{jc}|+\eta_{ic}+\eta_{jc}-K_c\,\mathrm{dist}(B_i^S,B_j^S)\bigr).
-$$
+```
 
 This is different from an empirical derivative and different from a global native Lipschitz certificate. A constructive scalar decoder is available as `decoder_value(...)`. With finite $`K_c`$, the minimum-price feature subset satisfies additive **squared-separation** margins, not the binary hitting-set condition; two individually insufficient features can jointly be sufficient. The separate `transition_pair_floor(current_states,next_states,update_lipschitz)` gives a **necessary** per-command lower bound on any uniform approximate autonomous update defect, not a sufficient vector-valued extension theorem.
 
@@ -401,10 +401,10 @@ An analytic two-state fixture has nuisance N=[1,1].T, current goal (1,-1), and f
 
 Source chart: $`x=x_0+Bz,\ \|z\|_2\le1`$; observation $`y-y_0=HBz+Ee,\ \|e\|_2\le1`$; scalar goal $`G-G_0=g^\top Bz`$. The rectangular/rank-deficient matrix E is a **joint deterministic hard sensor-error factor**, not unqualified covariance. The exact linear-model minimax risk, after eliminating any noise-free observation constraints, is
 
-$$
+```math
 R=\max_{\|v\|\le1,\|Av\|\le1}|c^\top v|
 =\min_{a}\bigl(\|B^\top g-(HB)^\top a\|+\|E^\top a\|\bigr).
-$$
+```
 
 The full singular SVD projection, one-parameter q formula and proof are in [MAP M13–M16](../DPT_MATH_RESEARCH_MAP.md). NPZ input: state_factor (n,n), observation (m,n), noise_factor (m,p), goal (n,). Run:
 
@@ -417,10 +417,10 @@ Output includes mathematical radius estimate, a separately evaluated linear deco
 
 For one centered global source-state chart and all pretarget measurements, assume
 
-$$
+```math
 x=x_0+Bz,\quad\|z\|\le1,\qquad
 y-y_0=HBz+N\eta+Ee,\quad\eta\in\mathbb R^p,\quad\|e\|\le1.
-$$
+```
 
 N is an **unbounded shared nuisance vector**; E is a separate **jointly bounded, possibly correlated measurement error**. The program projects onto $`\ker N^\top`$, then evaluates the scalar radius for every **explicitly listed finite future command word** and each goal row $`C F_w`$, preserving actual command multiplication order. The row-specific radius divided by its specified goal-unit tolerance yields a minimax risk ratio. One conservative external linear decoder is returned per word and goal. No nonlinear/global native DPT closure is claimed.
 
@@ -447,30 +447,30 @@ Under this **dimensionless** two-state prior, the immediate goal x1-x2 has R=0, 
 
 This is a **conditional finite-dimensional math audit**, not a nonlinear SiC circuit solver. Inputs must use a single source reference and source-qualified future command.
 
-Let $O(h)$ be the pretarget observation and $G_w(h)$ the future scalar goal. Assume $DO(h_0)$ has full row rank, $Z$ spans its null space and $DG_w(h_0)Z=0$. The **relative observation-fiber Hessian** is:
+Let $`O(h)`$ be the pretarget observation and $`G_w(h)`$ the future scalar goal. Assume $`DO(h_0)`$ has full row rank, $`Z`$ spans its null space and $`DG_w(h_0)Z=0`$. The **relative observation-fiber Hessian** is:
 
-$$
+```math
 Q_w=Z^\top\left(
 D^2G_w(h_0)-\sum_j\lambda_jD^2O_j(h_0)
 \right)Z,\quad DG_w(h_0)=\lambda^\top DO(h_0).
-$$
+```
 
-On a true **source-legal exact fiber chart** with orthonormal tangent coordinates $\|v\|\le r$, a certified third derivative bound $M$ for the *composite fiber goal* controls its exact minimax scalar radius to within $Mr^3/6$ of
+On a true **source-legal exact fiber chart** with orthonormal tangent coordinates $`\|v\|\le r`$, a certified third derivative bound $`M`$ for the *composite fiber goal* controls its exact minimax scalar radius to within $`Mr^3/6`$ of
 
-$$
+```math
 R_2=\frac{r^2}{4}\left[
 \max(0,\lambda_{\max}(Q_w))-
 \min(0,\lambda_{\min}(Q_w))\right].
-$$
+```
 
 JSON input: observation_jacobian (m,n), goal_gradient (n,), observation_hessians (m,n,n), goal_hessian (n,n), radius (positive); optional fiber_third_derivative_bound (nonnegative and **externally source-certified**), rank_rtol.
 
     python fiber_goal_curvature.py chart.json --output fiber_goal.json
     python -m unittest -v test_fiber_goal_curvature.py
 
-The report gives the relative Hessian, its eigenvalues and inertia, a local $r^2$ leading risk, plus rigorous lower/upper **only when** the actual third-derivative certificate is provided. No physical reality or source reachability is inferred from compatible array shapes.
+The report gives the relative Hessian, its eigenvalues and inertia, a local $`r^2`$ leading risk, plus rigorous lower/upper **only when** the actual third-derivative certificate is provided. No physical reality or source reachability is inferred from compatible array shapes.
 
-The accompanying function pullback_goal_derivatives(J,H_f,g_next,H_next) implements a reverse command derivative transport: $g_{\rm prev}=J^\top g_{\rm next}$ and $H_{\rm prev}=J^\top H_{\rm next}J+\sum_j (g_{\rm next})_j H_{f,j}$. Each command-stage Jacobian and Hessian must be evaluated at its *legally reached state*. Twelve tests cover exact/curved observation fibers, a two-stage polynomial command oracle and 120 independent cubic-fiber cases.
+The accompanying function pullback_goal_derivatives(J,H_f,g_next,H_next) implements a reverse command derivative transport: $`g_{\rm prev}=J^\top g_{\rm next}`$ and $`H_{\rm prev}=J^\top H_{\rm next}J+\sum_j (g_{\rm next})_j H_{f,j}`$. Each command-stage Jacobian and Hessian must be evaluated at its *legally reached state*. Twelve tests cover exact/curved observation fibers, a two-stage polynomial command oracle and 120 independent cubic-fiber cases.
 
 [Full second-order fiber derivation](../dpt_research/20261012_second_order_goal_fiber.md), [main MAP M40–M49](../DPT_MATH_RESEARCH_MAP.md). Moving peak/events require further guard and timing qualification; local Hessians do not automatically certify source-native DPT targets.
 
@@ -481,11 +481,11 @@ This auditor connects the regular nonlinear observation-fiber Hessian to one **i
 
 For previous-state perturbations a,b, extend the source perturbations to (Ja,a),(Jb,b) in the concatenated coordinates [next z, previous x]. The exact Hessian is:
 
-$$
+```math
 D^2(g\circ f_u)[a,b]
 =(Ja)^\top D^2g(z)(Jb)
 -\lambda^\top D^2F(z,x;u)[(Ja,a),(Jb,b)].
-$$
+```
 
 Every current/previous source Hessian cross-block must be retained. JSON schema: current_jacobian (n,n), previous_jacobian (n,n), residual_hessians (n,2n,2n) with axes ordered [z,x], next_goal_gradient (n,), next_goal_hessian (n,n). Output: Jacobian update, source adjoint, goal gradient/Hessian in previous-state coordinates, solve residuals and Jacobian condition number.
 
