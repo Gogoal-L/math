@@ -171,6 +171,22 @@ When joint_probabilities are supplied, the tool checks they match the stated mar
 
 **Primary-source discipline:** OpenAI F115-A samples integer tables uniformly at fixed margins; companion F115-B handles bounded cells and structural zeros. Neither automatically specifies a semiconductor sensor noise prior. F373 supplies a special Coulomb non-Monge counterexample, not a Gaussian/SiC transport theorem. F122 supplies the general statistical testing logic. The sharp Fréchet sensor-TV theorem and witness are proved **independently** in [P27–P30](../dpt_research/20261012_mixed_nuisance_goal_radius_formal_derivation.md). A real positive result needs same-shot paired port calibration and a frozen held-out future-goal scorer, compared against **complete recorded-command** and strongest-one-sensor ordinaries.
 
+#### Optional source-qualified joint-support / bounded-leakage repair (two sensors)
+
+Without changing --marginal-only-fusion, add the **optional** NPZ arrays allowed_joint_supports(2,k,k) (0/1 mask for each history, with 1 indicating a possible joint bin) and support_leakage_bounds(2,) (each in [0,1], default **zero**). This optional submode accepts exactly **two** sensor channels, at most **14 bins** each; the general marginal-only TV result works for more sensors without these masks.
+
+A bounded exhaustive **weighted Hall/min-cut** calculation checks, for *each history independently*, the minimum possible mass outside the declared support while satisfying both categorical sensor marginals:
+
+```math
+\ell_h^{\min}=\max_{I}
+\left[\sum_{i\in I}P_h(Y_1=i)-
+\sum_{j\in N_h(I)}P_h(Y_2=j)\right]_+.
+```
+
+If a claimed support-leakage upper bound is below this mathematical minimum, the tool rejects the input with a violating row subset: the **joint support contract is inconsistent with its own marginals**. A hard-zero mask is therefore checked for feasibility, not blindly assumed. If two history-specific high-probability support masks are disjoint, a simple joint-bin membership decision has **per-history** error no greater than that history's declared support-leakage bound; joint-TV is at least the maximum of best-single-sensor TV and 1−(sum of leakage bounds). This is a positive **conditional** repair even when all single-sensor marginals match.
+
+These masks and leakage bounds must come from a legal same-shot physical source/noise model or independent hardware qualification. The code cannot infer physically impossible port-bin pairs, accept Gaussian noise as bounded without justification, or turn binned empirical measurements into error-free PMFs. A supplied joint_probabilities input is checked against the stated masks/leakage, but a numerically consistent table is not hardware evidence. The bounded-flow viewpoint is related to the **F115-B** original table/flow construction, while the sharp two-dimensional Hall deficiency is classical network-flow duality, independently proved in [P31–P32](../dpt_research/20261012_mixed_nuisance_goal_radius_formal_derivation.md).
+
 ## `command_word_audit.py` (finite partial command model)
 
 Input JSON structure:
