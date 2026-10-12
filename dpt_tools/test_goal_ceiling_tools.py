@@ -162,6 +162,22 @@ class NoisyRepeatGoalTests(unittest.TestCase):
         self.assertLess(a["minimum_repeats"], b["minimum_repeats"])
         self.assertEqual(b["minimum_repeats"], 20)
 
+    def test_identical_single_run_laws_can_have_three_different_repeat_limits(self):
+        expected = []
+        for independent, shared in ((np.sqrt(1.04), 0.), (1., .2), (np.sqrt(.88), .4)):
+            r = gaussian_replicate_goal_pair(
+                observed_means=[0,1], future_goals=[0,4],
+                goal_tolerance=1., independent_sigma=independent,
+                shared_sigma=shared, failure_probability=.05)
+            expected.append(r)
+        for r in expected[1:]:
+            self.assertAlmostEqual(r["single_repeat_failure"],
+                                   expected[0]["single_repeat_failure"], places=12)
+        self.assertEqual(expected[0]["minimum_repeats"], 12)
+        self.assertEqual(expected[1]["minimum_repeats"], 20)
+        self.assertEqual(expected[2]["status"], "SHARED_NUISANCE_INFORMATION_FLOOR")
+        self.assertIsNone(expected[2]["minimum_repeats"])
+
     def test_equal_sensor_means_cannot_separate_different_goals(self):
         report = gaussian_replicate_goal_pair(
             observed_means=[3, 3], future_goals=[0, 4],
