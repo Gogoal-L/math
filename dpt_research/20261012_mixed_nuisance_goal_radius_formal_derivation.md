@@ -495,6 +495,8 @@ Q_1(0,1)=Q_1(1,0)&=1/2,\\
 
 ### X.5. A positive *support-qualified* repair from F115's flow viewpoint (P31–P32)
 
+The weighted Hall feasibility criterion is classical and is explicitly distinguished from *full support* (positive mass on every declared allowed cell) in [Coscia, Tassy and Winkler (2026), _Sets that Support a Joint Distribution_, Theorems 1 and 4](https://arxiv.org/html/2608.04135v1). Our allowed masks mean **the true support is contained within the mask**, not equal to it, and the checker does **not** certify every allowed combination has positive probability. This source is a direct prior-art comparator independent of the OpenAI F115 counting/sampling paper.
+
 The unrestricted Fréchet class in (P27) is deliberately conservative. The smallest *new* source information that can overturn the bound need not be a fully estimated 2-dimensional joint PMF: a **hard physically legal joint support set** or **credible upper bound on mass outside it** can already suffice. This observation is genuinely compatible with the exact *bounded-flow feasibility* viewpoint of F115-B, though its expensive counting/sampling result is NOT invoked.
 
 Consider precisely **two** categorical pretarget sensors, with row and column marginals a_h and b_h under history h, each over k bins. A declared history-conditional joint support mask E_h is a set of permitted pairs (row bin, column bin). Let N_h(I) be the set of all column bins joined by an allowed edge to any row bin in subset I. The *sharp minimum possible probability leakage outside E_h* among all joint distributions with those marginals is the classical weighted Hall/max-flow deficiency:
