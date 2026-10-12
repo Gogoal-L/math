@@ -426,31 +426,49 @@ def decode_retained_goal(
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("input", type=Path, help="NPZ with bank, candidate features and bounds")
+    parser.add_argument("input", type=Path, help="NPZ bank and declared observation/error contracts")
     parser.add_argument("--output", type=Path)
     parser.add_argument("--exact-candidate-cap", type=int, default=18)
+    parser.add_argument("--retained-goal-bits", action="store_true",
+                        help="Exact/qualified finite-bank memory bits with later side observation")
+    parser.add_argument("--exact-transcript-cap", type=int, default=17)
     args = parser.parse_args()
     with np.load(args.input, allow_pickle=False) as data:
-        fields = ["observations", "goals", "candidates", "observation_radii",
-                  "candidate_radii", "goal_tolerances", "candidate_costs"]
-        absent = [f for f in fields if f not in data.files]
-        if absent:
-            parser.error("missing NPZ fields: " + ", ".join(absent))
-        optional = {field: data[field] if field in data.files else None
-                    for field in ["goal_uncertainty", "candidate_names", "command_names"]}
-        report = audit(data["observations"], data["goals"], data["candidates"],
-                       observation_radii=data["observation_radii"],
-                       candidate_radii=data["candidate_radii"],
-                       goal_tolerances=data["goal_tolerances"],
-                       candidate_costs=data["candidate_costs"],
-                       exact_candidate_cap=args.exact_candidate_cap, **optional)
+        if args.retained_goal_bits:
+            required = ["observations", "goals", "transcript_ids",
+                        "observation_radii", "goal_tolerances"]
+            missing = [x for x in required if x not in data.files]
+            if missing:
+                parser.error("missing retained-goal-bits NPZ fields: " + ", ".join(missing))
+            report = audit_retained_goal_bits(
+                data["observations"], data["goals"],
+                [str(x) for x in data["transcript_ids"]],
+                observation_radii=data["observation_radii"],
+                goal_tolerances=data["goal_tolerances"],
+                goal_uncertainty=(data["goal_uncertainty"]
+                                  if "goal_uncertainty" in data.files else None),
+                exact_transcript_cap=args.exact_transcript_cap)
+        else:
+            fields = ["observations", "goals", "candidates", "observation_radii",
+                      "candidate_radii", "goal_tolerances", "candidate_costs"]
+            missing = [x for x in fields if x not in data.files]
+            if missing:
+                parser.error("missing NPZ fields: " + ", ".join(missing))
+            optional = {field: data[field] if field in data.files else None
+                        for field in ["goal_uncertainty", "candidate_names", "command_names"]}
+            report = audit(
+                data["observations"], data["goals"], data["candidates"],
+                observation_radii=data["observation_radii"],
+                candidate_radii=data["candidate_radii"],
+                goal_tolerances=data["goal_tolerances"],
+                candidate_costs=data["candidate_costs"],
+                exact_candidate_cap=args.exact_candidate_cap, **optional)
     body = json.dumps(report, indent=2, sort_keys=True) + "\n"
     if args.output:
         args.output.write_text(body, encoding="utf-8")
     else:
         print(body, end="")
     return 0
-
 
 if __name__ == "__main__":
     raise SystemExit(main())
