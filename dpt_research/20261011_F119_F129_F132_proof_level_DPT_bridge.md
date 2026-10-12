@@ -143,9 +143,9 @@ This result is **elementary independent linear algebra**, not a direct corollary
 
 1. Every listed future goal is uniquely determined by y for *all possible x,η* if and only if row(G_W)⊆row(R).
 2. If arbitrary ideal new scalar measurements of x without new nuisance may be added, the minimum number needed for simultaneous exact recovery of the listed future goals equals
-   \[
-   k_{\min}=\operatorname{rank}\begin{bmatrix}R\\G_W\end{bmatrix}-\operatorname{rank}R.
-   \]
+```math
+k_{\min}=\operatorname{rank}\begin{bmatrix}R\\G_W\end{bmatrix}-\operatorname{rank}R.
+```
 3. For any single goal row g outside row(R), let v be the orthogonal projection of g.T onto ker(R), normalized. Then two histories x=±v are observationally compatible for some (possibly different) nuisance assignments and have future goal gap 2|gv|>0. If ||x||<=1 is the accepted symmetric prior and all such states and nuisance offsets are admissible, every decoder has worst-case error ≥|gv|; for unbounded x the ambiguity can be scaled without limit.
 
 **Proof.** Two x states have observationally compatible images precisely when Hδx∈range(N), equivalent to U_0.T H δx=Rδx=0. A goal is constant on these observation fibers iff ker(R)⊆ker(G_W), equivalent by finite-dimensional row/null duality to row(G_W)⊆row(R). Arbitrary appended noiseless linear rows can expand R by at most one independent dimension per feature, giving the lower bound. A basis of a complement of row(R) in row(R)+row(G_W) attains it, giving sufficiency. A witness along the projected g component gives the opposite-state lower bound, with equal recorded y obtained by adjusting η. These are identities for an **unconstrained common linear chart**, not for arbitrary DPT-reachable trajectories.
