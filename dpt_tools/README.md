@@ -320,7 +320,7 @@ each require further modeling. A stable per-stage eigenvalue does **not**
 exclude transient goal error amplification. The maximizing witness is for the
 mathematical uncertainty balls and may be physically unreachable.
 
-**Source and proof audit:** [2026-10-10 ordered goal-defect frontier](../dpt_research/20261010_ordered_goal_defect_transport.md)
+**Source and proof audit:** [2026-10-10 ordered goal-defect frontier](../dpt_research/20261010_goal_stability_compositional_closure.md)
 (deep reads of OpenAI Math F325/F251/F289/F129/F363/F151, exact linear
 support-function proof, counterexamples, transfer ceiling and DPT replay gate).
 
@@ -346,7 +346,7 @@ python -m unittest -v test_stage_box_reachability.py
 
 `CONDITIONAL_AFFINE_BOX_CHAIN` is conditional on all supplied map/guard/remainder assumptions, not a native or hardware certificate. A failed box check can be caused by neglected physical correlations; it is `INCONCLUSIVE_BOX_CONTAINMENT`, not a falsified SiC law. The `roundoff_margin_warning` field identifies stage guards too close to the computed hull for casual floating-point assurance; formal certification requires outward interval arithmetic. Existing files/CLIs are unchanged.
 
-Full derivations and source/Lean scope: [2026-10-10 nonlinear-fiber and stage-tube research note](../dpt_research/20261010_nonlinear_fiber_and_stage_tube.md).
+Full derivations and source/Lean scope: [2026-10-10 nonlinear-fiber and stage-tube research note](../dpt_research/20261012_second_order_goal_fiber.md).
 
 ## `goal_repair_cover.py` (robust finite-bank goal-tolerance feature cover)
 
@@ -359,7 +359,7 @@ python goal_repair_cover.py finite_bank.npz --output feature_cover.json
 python -m unittest -v test_goal_repair_cover.py
 ```
 
-`EXACT_MIN_COST_REPAIR` proves the cheapest feature subset only within the **supplied finite candidate library and finite bank**. `NO_LIBRARY_REPAIR` gives an unseparated goal-conflicting history pair; `INTRINSIC_GOAL_UNCERTAINTY` means a single history already exceeds the requested goal tolerance; `GREEDY_FEASIBLE_NOT_PROVEN_MINIMUM` is a feasible nonoptimality-qualified result. Neither finite-bank success nor an accepted native model prediction proves whole-reachable sufficiency, hardware noise, continuous-domain guarantees or autonomous future-command updating. [Derivation, source audit and adversarial cases](../dpt_research/20261010_goal_tolerance_repair_cover.md).
+`EXACT_MIN_COST_REPAIR` proves the cheapest feature subset only within the **supplied finite candidate library and finite bank**. `NO_LIBRARY_REPAIR` gives an unseparated goal-conflicting history pair; `INTRINSIC_GOAL_UNCERTAINTY` means a single history already exceeds the requested goal tolerance; `GREEDY_FEASIBLE_NOT_PROVEN_MINIMUM` is a feasible nonoptimality-qualified result. Neither finite-bank success nor an accepted native model prediction proves whole-reachable sufficiency, hardware noise, continuous-domain guarantees or autonomous future-command updating. [Derivation, source audit and adversarial cases](../dpt_research/20261012_mixed_nuisance_goal_radius_formal_derivation.md).
 
 ## `goal_lipschitz_stability.py` — stable scalar goal recovery and transition-pair floor
 
@@ -406,7 +406,7 @@ R=\max_{\|v\|\le1,\|Av\|\le1}|c^\top v|
 =\min_{a}\bigl(\|B^\top g-(HB)^\top a\|+\|E^\top a\|\bigr).
 ```
 
-The full singular SVD projection, one-parameter q formula and proof are in [MAP M13–M16](../DPT_MATH_RESEARCH_MAP.md). NPZ input: state_factor (n,n), observation (m,n), noise_factor (m,p), goal (n,). Run:
+The full singular SVD projection, one-parameter q formula and proof are in [mixed-nuisance P1–P18 proof](../dpt_research/20261012_mixed_nuisance_goal_radius_formal_derivation.md). NPZ input: state_factor (n,n), observation (m,n), noise_factor (m,p), goal (n,). Run:
 
     python goal_ellipsoid_recovery.py linear_chart.npz --output goal_radius.json
     python -m unittest -v test_goal_ellipsoid_recovery.py
