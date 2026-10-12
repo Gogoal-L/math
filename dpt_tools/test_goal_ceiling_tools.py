@@ -340,6 +340,68 @@ class MarginalDependenceSensorFusionTests(unittest.TestCase):
         self.assertAlmostEqual(
             r["qualified_joint"]["equal_prior_goal_failure"], .104)
 
+    def test_hall_feasible_disjoint_source_support_restores_per_history_prediction(self):
+        p=np.full((2,2,2),.5)
+        masks=np.array([[[1,0],[0,1]], [[0,1],[1,0]]])
+        r=audit_marginal_sensor_coupling(p,[0.,4.],1.,
+                                          allowed_joint_supports=masks)
+        self.assertAlmostEqual(r["worst_case_joint_tv"],0.)
+        support=r["support_certificate"]
+        self.assertTrue(support["source_supports_disjoint"])
+        self.assertTrue(support["exact_feasibility_checked"])
+        self.assertEqual(support["conditional_goal_failure_upper_bounds"],[0.,0.])
+        self.assertEqual(support["support_inferred_joint_tv_lower_bound"],1.)
+
+    def test_hall_row_cut_rejects_infeasible_zero_pattern(self):
+        p=np.array([[[.9,.1],[.1,.9]],
+                    [[.5,.5],[.5,.5]]])
+        masks=np.array([[[1,0],[0,1]], [[1,1],[1,1]]])
+        with self.assertRaisesRegex(ValueError,"Hall"):
+            audit_marginal_sensor_coupling(p,[0.,4.],1.,
+                                           allowed_joint_supports=masks)
+
+    def test_soft_disjoint_support_certifies_conditional_not_average_only(self):
+        p=np.full((2,2,2),.5)
+        masks=np.array([[[1,0],[0,1]], [[0,1],[1,0]]])
+        r=audit_marginal_sensor_coupling(
+            p,[0.,4.],1., allowed_joint_supports=masks,
+            support_leakage_bounds=[.03,.06])
+        support=r["support_certificate"]
+        self.assertFalse(support["exact_feasibility_checked"])
+        self.assertEqual(support["conditional_goal_failure_upper_bounds"],
+                         [.03,.06])
+        self.assertAlmostEqual(
+            support["equal_prior_goal_failure_upper_bound"],.045)
+        self.assertAlmostEqual(r["worst_case_equal_prior_goal_failure"],.5)
+
+    def test_supplied_joint_must_obey_declared_leakage(self):
+        p=np.full((2,2,2),.5)
+        joint=np.full((2,2,2),.25)
+        masks=np.array([[[1,0],[0,1]], [[0,1],[1,0]]])
+        with self.assertRaisesRegex(ValueError,"support"):
+            audit_marginal_sensor_coupling(
+                p,[0.,4.],1.,joint_probabilities=joint,
+                allowed_joint_supports=masks)
+        # A source-qualified 50% tail in each state is consistent, but
+        # it cannot establish the strong perfect-separation conclusion.
+        r=audit_marginal_sensor_coupling(
+            p,[0.,4.],1.,joint_probabilities=joint,
+            allowed_joint_supports=masks,
+            support_leakage_bounds=[.5,.5])
+        self.assertEqual(r["support_certificate"]["conditional_goal_failure_upper_bounds"],[.5,.5])
+
+    def test_overlapping_supports_and_more_than_two_sensors_not_overpromoted(self):
+        p=np.full((2,2,2),.5)
+        masks=np.ones((2,2,2),dtype=bool)
+        r=audit_marginal_sensor_coupling(p,[0.,4.],1.,
+                                          allowed_joint_supports=masks)
+        self.assertFalse(r["support_certificate"]["source_supports_disjoint"])
+        self.assertIsNone(r["support_certificate"]["conditional_goal_failure_upper_bounds"])
+        with self.assertRaisesRegex(ValueError,"two sensor"):
+            audit_marginal_sensor_coupling(
+                np.full((2,3,2),.5),[0.,4.],1.,
+                allowed_joint_supports=masks)
+
     def test_goal_intervals_overlap_then_prediction_needs_no_sensor(self):
         p = np.array([[[1.,0.]], [[0.,1.]]])
         r = audit_marginal_sensor_coupling(p, [0.,2.], 1.)
