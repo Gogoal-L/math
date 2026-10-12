@@ -32,8 +32,7 @@ for (const item of equations) {
     if (item.kind === 'display') {
       const m = html.match(/min-width:\s*([0-9.]+)ex/);
       if (m) {
-        const tag = item.tex.match(/\\tag\{([^}]+)\}/);
-        widths.push({ex: Number(m[1]), label: tag ? tag[1] : 'unnumbered',
+        widths.push({ex: Number(m[1]), label: item.label || 'unnumbered',
                      file: item.file, line: item.line});
       }
     }
@@ -45,5 +44,14 @@ widths.sort((a, b) => b.ex - a.ex);
 console.log('MathJax compiled ' + equations.length + ' equations, '
             + failures.length + ' parser errors');
 console.log('Widest display equations (ex units): ' + JSON.stringify(widths.slice(0, 15)));
+// MathJax 3 does not reliably wrap wide display equations. An SVG min-width
+// above the declared conservative 75ex cap is a layout regression even when
+// TeX parses without errors. This is not a substitute for mobile screenshots.
+const MAX_DISPLAY_WIDTH_EX = 75;
+const overwide = widths.filter(w => w.ex > MAX_DISPLAY_WIDTH_EX);
+for (const w of overwide) {
+  failures.push(w.file + ':' + w.line + ' ' + w.label +
+      ' display width ' + w.ex + 'ex exceeds ' + MAX_DISPLAY_WIDTH_EX + 'ex');
+}
 for (const e of failures) console.error('MATHJAX_ERROR ' + e);
 if (failures.length) process.exit(1);
