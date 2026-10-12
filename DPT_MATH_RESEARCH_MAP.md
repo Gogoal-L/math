@@ -2,7 +2,7 @@
 
 **更新：2026-10-12。** 本页是 DPT 主控和 Math Side 的双向科研接口。它回答：**Main 已吸收什么，Side 又推进了什么新的可吸收结果，下一项实际证据怎样改变判断。** 完整证明在 [dpt_research](dpt_research/)，代码/输入合同在 [dpt_tools](dpt_tools/README.md)，此处保留科研决策必需的结果、状态、界限与可执行接入路径。
 
-**当前判断。** Main 已记录 Pro18A 的可达信息证书与观测修复、Pro18B 的主动两阶段历史反例及外推失败、Pro18C 的 active CAL 与目标预测。Side 进一步形成目标相关 minimax recovery、shared-nuisance quotient、非线性 observation-fiber Hessian、source-law Hessian/charge bounds 的独立数学结构。**这批 Math 仓库模块在真实 DPT 输入上直接 replay 尚未确认；不能凭 synthetic tests 把它们自动标为 Main 已接受。**
+**当前判断。** Main 已记录 Pro18A 的可达信息证书与观测修复、Pro18B 的主动两阶段历史反例及外推失败、Pro18C 的 active CAL 与目标预测。Side 进一步形成目标相关 minimax recovery、shared-nuisance quotient、有限历史消息比特预算、非线性 observation-fiber Hessian、source-law Hessian/charge bounds 的独立数学结构。**这批 Math 仓库模块在真实 DPT 输入上直接 replay 尚未确认；不能凭 synthetic tests 把它们自动标为 Main 已接受。**
 
 ## 0. 两条证据账本与更新规则
 
@@ -38,6 +38,7 @@
 | **Nonlinear observation-fiber recovery** — SIDE_VERIFIED（局部条件定理）；OPEN_RESEARCH（native） | 同观测 fiber 的二阶目标漂移由 **goal Hessian − observation Hessian multiplier** 决定；局部 minimax 半径须加受控三阶 remainder，零一阶信息缺口不足以证明目标充分 | 同一 pretarget legal chart、DO/DG/D²O/D²G、branch guards、third-order bound 和 future goal → [fiber curvature](dpt_tools/fiber_goal_curvature.py)、[implicit source Hessian](dpt_tools/implicit_goal_hessian.py)；[C 系列证明](dpt_research/20261012_second_order_goal_fiber.md) |
 | **Grouping, information contraction and correlated noise** — SIDE_VERIFIED（数学/合成） | 从 F132 提炼合法四角 mixed contrast 及加性 ordinary 的 sharp lower bound；F129 的 future context 概念与 F119 的 iid noise 定理只在明确转换后适用。**没有**向 SiC 迁移 Boolean exponent、二元 MI 或独立噪声假设 | 构造 Rg×L / history×CAL 的**同一合法 preparation**四角，冻结端口与 goal；同强二阶 ordinary 比较；[proof-critical audit](dpt_research/20261011_F119_F129_F132_proof_level_DPT_bridge.md)、[mixed contrast](dpt_tools/mixed_interaction_audit.py) |
 | **Actual-law source residual / goal projection** — SIDE_VERIFIED（条件本构推导）；OPEN_RESEARCH（统一域） | V6 600 V coupled BE 二极管 exponential charge 的 sharp affine remainder、previous-step residual 与隐式 Jacobian/Hessian/adjoint 组合；可解释 full、affine 与便宜 Newton 为何按 goal 改变排序。单支路误差不是全 source 上界 | 一份全耦合 source/branch 的同域 residual、current/previous derivatives、uniform inverse/remainder 常数、peak/event guard → [implicit certificate](dpt_tools/implicit_goal_certificate.py)；[solver fidelity 证明](dpt_research/20261010_goal_information_solver_fidelity.md) |
+| **有限历史信息比特预算（F140-A 触发的 Side 增量）** — SIDE_VERIFIED（finite-bank 定理＋代码）；READY_FOR_HANDOFF（具名输入） | 对合法有限 history bank，精确 archived transcript 类在未来目标前被压缩、decoder 再收到带误差盒的 pretarget 外部观测；所需最少定长消息数等于 transcript 冲突图染色数 χ，bits=⌈log₂χ⌉（经典 Witsenhausen zero-error side-information 定理的 DPT 目标容差版本）。五成员 C₅ 反例：最大冲突 clique=2，但 χ=3，至少 **2 bits**；若同一 transcript 内存在冲突，额外编码该 transcript **无法修复**。F140-A 的高斯 streaming 下界、F365-B PDE 唯一性均没有直接迁移 | 主控提供同 reference 的 legal history+真实可提前获取的完整数字 command/transcript、后续 pretarget 观测与误差盒、每个 future command 的 goal/error/tolerance；运行 [retained-goal-bits](dpt_tools/goal_repair_cover.py) 与 **完整 recorded-command ordinary** 比较，独立 holdout 后才讨论吸收；[P19–P22 严格证明](dpt_research/20261012_mixed_nuisance_goal_radius_formal_derivation.md) |
 | **Finite-bank minimum-cost feature repair** — SIDE_VERIFIED（finite bank、finite candidate library） | 有目标误差区间和 coordinatewise sensor noise 的有限相容对，得到 optimal finite-bank interval radius、hitting-set/cover 与 Lipschitz-gain acquisition；不能宣称物理 continuous-domain sensor optimality | 固定 legal candidate library、每个预目标可取得 feature、correlated/noise model、per-goal tolerance 和成本 → [cover](dpt_tools/goal_repair_cover.py)；[proof annex](dpt_research/20261012_mixed_nuisance_goal_radius_formal_derivation.md) |
 
 **上游论文如何真正作用于 DPT。** F266 的 center/tangent/remainder 证书组织实际帮助 18A 的联合链；F229/F376 区分静态目标摘要、动态更新及历史控制；F357/F374 提示方向相关界和 goal-functional 直接约束，但其 RCD/OT 定理未迁移为 SiC 保证；F125 的异常例外选择必须有预测前识别能力；F116 的 universal hitting 前提不适用于含 exp/clip 的 actual source。F119/F129/F132 的严谨证明与不适用条件在 [专门 proof audit](dpt_research/20261011_F119_F129_F132_proof_level_DPT_bridge.md)；F049/F149/F360 仍主要是 [来源与边界审阅](dpt_research/20261010_F049_F149_F360_fulltext_proof_audit.md)。文献状态以 [registry](literature/registry.json) 为准。
@@ -50,7 +51,7 @@
 
 ### B. 150 V future-goal dynamic closure / 最小可取得的历史修复
 
-**已有基础：** 18B near-alias pair、re-shooting、stage/peak/event/total-work 差及新的 7/9 falsifier；C 的 κ 与 active CAL。**Main 最小输入：** 同 reference 的 measured pretarget history/recorded-command、合法 finite word、future scoring、units 和冻结 holdout。**合格交付：** 信息不够的目标下界 → 真正可取得的 repair → 同预算强 ordinary → 目标上界或 fresh falsifier；不能把重新拟合生成的预测称为 out-of-sample 成功。
+**已有基础：** 18B near-alias pair、re-shooting、stage/peak/event/total-work 差及新的 7/9 falsifier；C 的 κ 与 active CAL。**Main 最小输入：** 同 reference 的 measured pretarget history/recorded-command（注明哪些 digital transcript 已存且何时可用）、后续 pretarget sensor/noise、合法 finite word、future scoring、units 和冻结 holdout。可先用 [有限历史信息比特工具](dpt_tools/goal_repair_cover.py) 给出目标容差下可存消息上/下界，与 full-record ordinary 对照。**合格交付：** 信息不够的目标下界 → 真正可取得的 repair → 同预算强 ordinary → 目标上界或 fresh falsifier；不能把重新拟合生成的预测称为 out-of-sample 成功。
 
 ### C. 100 V 原 R1 的外部端口相容集合与目标可恢复性
 

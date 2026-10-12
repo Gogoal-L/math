@@ -179,5 +179,152 @@ class RepairCoverTests(unittest.TestCase):
             self.assertEqual(r['selected_indices'], [0])
 
 
+
+class RetainedGoalBitsTests(unittest.TestCase):
+    """Exact one-shot finite-bank memory budget with later side observation."""
+
+    def test_five_cycle_requires_three_messages_despite_clique_size_two(self):
+        # Congruent 2D sensor boxes realize an induced C5:
+        # neighboring history boxes overlap; diagonals do not.
+        k = np.arange(5)
+        obs = np.c_[np.cos(2 * np.pi * k / 5), np.sin(2 * np.pi * k / 5)]
+        r = grc.audit_retained_goal_bits(
+            obs, (4 * k)[:, None], [f"prepared_{i}" for i in k],
+            observation_radii=[0.6, 0.6], goal_tolerances=[1.0])
+        self.assertEqual(r["status"], "EXACT_FINITE_BANK_MESSAGE_MINIMUM")
+        self.assertEqual(r["max_clique_lower_bound"], 2)
+        self.assertEqual(r["minimum_messages"], 3)
+        self.assertEqual(r["minimum_retained_bits"], 2)
+        self.assertEqual(r["edge_count"], 5)
+        for i in range(5):
+            for j in range(i + 1, 5):
+                if np.all(abs(obs[i] - obs[j]) <= 1.2):
+                    self.assertNotEqual(r["messages_by_history"][i], r["messages_by_history"][j])
+
+    def test_exact_class_cap_does_not_overclaim_chromatic_minimum(self):
+        i = np.arange(5)
+        obs = np.c_[np.cos(2*np.pi*i/5), np.sin(2*np.pi*i/5)]
+        result = grc.audit_retained_goal_bits(
+            obs, (4*i)[:, None], [str(j) for j in i],
+            observation_radii=[0.6, 0.6], goal_tolerances=[1.],
+            exact_transcript_cap=2)
+        self.assertEqual(result['status'], 'FEASIBLE_COLORING_NOT_PROVEN_MINIMUM')
+        self.assertFalse(result['exact_optimum_proven'])
+        self.assertEqual(result['message_lower_bound'], 2)
+        self.assertEqual(result['message_upper_bound'], 3)
+        self.assertEqual(result['bit_upper_bound'], 2)
+        self.assertIsNone(result['minimum_messages'])
+        self.assertIsNone(result['minimum_retained_bits'])
+
+    def test_unresolvable_identical_transcript_with_overlapping_live_sensor(self):
+        r = grc.audit_retained_goal_bits(
+            [[0.0], [0.0]], [[0.0], [4.0]], ["same", "same"],
+            observation_radii=[0.0], goal_tolerances=[1.0])
+        self.assertEqual(r["status"], "INTRINSIC_TRANSCRIPT_ALIAS")
+        self.assertEqual(r["unresolvable_history_pair"], [0, 1])
+        self.assertIsNone(r["minimum_retained_bits"])
+
+    def test_shared_transcript_is_permitted_if_live_sensor_separates(self):
+        r = grc.audit_retained_goal_bits(
+            [[0.0], [10.0]], [[0.0], [4.0]], ["same", "same"],
+            observation_radii=[0.1], goal_tolerances=[1.0])
+        self.assertEqual(r["minimum_messages"], 1)
+        self.assertEqual(r["minimum_retained_bits"], 0)
+        self.assertAlmostEqual(grc.decode_retained_goal(
+            [0.0], 0, r, [[0.0], [10.0]], [[0.0], [4.0]],
+            observation_radii=[0.1], goal_tolerances=[1.0])[0], 0.0)
+
+    def test_an_identical_goal_needs_no_history_bits(self):
+        r = grc.audit_retained_goal_bits(
+            [[0.0], [0.0], [0.0]], [[3.0], [3.0], [3.0]],
+            ["a", "b", "c"], observation_radii=[0.0], goal_tolerances=[0.01])
+        self.assertEqual(r["minimum_retained_bits"], 0)
+
+    def test_goal_intervals_and_exact_threshold(self):
+        r = grc.audit_retained_goal_bits(
+            [[0.0], [0.0]], [[0.0], [2.0]], ["a", "b"],
+            observation_radii=[0.0], goal_tolerances=[1.0],
+            goal_uncertainty=[[0.0], [0.0]])
+        self.assertEqual(r["minimum_retained_bits"], 0)
+        z = grc.audit_retained_goal_bits(
+            [[0.0], [0.0]], [[0.0], [2.0]], ["a", "b"],
+            observation_radii=[0.0], goal_tolerances=[1.0],
+            goal_uncertainty=[[0.1], [0.1]])
+        self.assertEqual(z["minimum_retained_bits"], 1)
+        inf = grc.audit_retained_goal_bits(
+            [[0.0]], [[0.0]], ["a"],
+            observation_radii=[0.0], goal_tolerances=[1.0],
+            goal_uncertainty=[[1.1]])
+        self.assertEqual(inf["status"], "INTRINSIC_GOAL_INTERVAL")
+        
+    def test_decoder_worst_case_on_exact_coloring(self):
+        obs = [[0], [0], [0]]
+        goals = [[0, 2], [4, 2], [8, 2]]
+        r = grc.audit_retained_goal_bits(
+            obs, goals, ["a", "b", "c"],
+            observation_radii=[0.25], goal_tolerances=[1.0, 0.0])
+        self.assertEqual(r["minimum_messages"], 3)
+        for i, message in enumerate(r["messages_by_history"]):
+            pred = grc.decode_retained_goal(
+                [0.0], message, r, obs, goals,
+                observation_radii=[0.25], goal_tolerances=[1.0, 0.0])
+            np.testing.assert_array_less(np.abs(pred - np.asarray(goals[i])),
+                                         np.array([1.0 + 1e-12, 1e-12]))
+
+    def test_random_small_graph_vs_independent_exhaustive_code_enumeration(self):
+        rng = np.random.default_rng(527)
+        for n in range(2, 7):
+            for _ in range(12):
+                obs = rng.integers(0, 5, size=(n, 2)).astype(float)
+                goal = rng.integers(-3, 6, size=(n, 2)).astype(float)
+                rad = np.array([0.5, 0.5])
+                tau = np.array([1.0, 2.0])
+                conflict = {(i, j) for i in range(n) for j in range(i + 1, n)
+                            if np.all(abs(obs[i] - obs[j]) <= 2 * rad)
+                            and np.any(abs(goal[i] - goal[j]) > 2 * tau)}
+                oracle = next(k for k in range(1, n + 1)
+                              if any(all(bits[i] != bits[j] for i, j in conflict)
+                                     for bits in itertools.product(range(k), repeat=n)))
+                r = grc.audit_retained_goal_bits(
+                    obs, goal, [f"h{i}" for i in range(n)],
+                    observation_radii=rad, goal_tolerances=tau)
+                self.assertEqual(r["minimum_messages"], oracle)
+                self.assertEqual(r["minimum_retained_bits"], (oracle - 1).bit_length())
+
+    def test_retained_bits_cli_reads_exact_transcript_categories(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            source = Path(tmp) / "history.npz"
+            output = Path(tmp) / "bits.json"
+            np.savez(
+                source,
+                observations=np.zeros((3, 1)),
+                goals=np.array([[0.], [4.], [8.]]),
+                transcript_ids=np.array(["first", "second", "third"]),
+                observation_radii=np.array([0.0]),
+                goal_tolerances=np.array([1.0]),
+            )
+            cp = subprocess.run(
+                [sys.executable, str(Path(grc.__file__)), str(source),
+                 "--retained-goal-bits", "--output", str(output)],
+                check=False, capture_output=True, text=True,
+            )
+            self.assertEqual(cp.returncode, 0, cp.stderr)
+            report = json.loads(output.read_text())
+            self.assertEqual(report["minimum_retained_bits"], 2)
+            self.assertEqual(report["minimum_messages"], 3)
+
+    def test_invalid_data_rejected(self):
+        for kwargs in (
+            {"observations": [[0.0]], "goals": [[2.0]], "transcript_ids": []},
+            {"observations": [[0.0]], "goals": [[2.0]], "transcript_ids": [""]},
+            {"observations": [[float("nan")]], "goals": [[2.0]], "transcript_ids": ["h"]},
+        ):
+            with self.assertRaises(ValueError):
+                grc.audit_retained_goal_bits(
+                    kwargs["observations"], kwargs["goals"], kwargs["transcript_ids"],
+                    observation_radii=[0.0], goal_tolerances=[1.0])
+
+
+
 if __name__ == '__main__':
     unittest.main()

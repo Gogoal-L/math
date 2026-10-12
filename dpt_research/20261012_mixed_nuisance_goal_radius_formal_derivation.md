@@ -1,6 +1,6 @@
 # Proof notebook: finite-word scalar goal recovery with mixed nuisance, and physical DPT boundaries
 
-**Status (2026-10-12):** independent conditional optimal-recovery derivations, analytical examples, source links, numerical regression tests. **No new SiC source-law result or new fundamental optimal-recovery theorem is claimed.** Intended companion to the formula-driven [Math main map M1–M33](../DPT_MATH_RESEARCH_MAP.md).
+**Status (2026-10-12):** independent conditional optimal-recovery derivations, analytical examples, source links, numerical regression tests. **No new SiC source-law result or new fundamental optimal-recovery theorem is claimed.** Companion to the [controller-side research transfer MAP](../DPT_MATH_RESEARCH_MAP.md); legacy M equations are preserved further below.
 
 ## I. The exact data contract
 
@@ -250,6 +250,72 @@ If the previous-step charge is not approximated, drop $`\epsilon_{q,n-1}`$. If T
 where $`L_G`$ includes the actual guarded goal/event/window map on the same box. V6 already describes a related componentwise certificate architecture in its nonlinear charge subclass, but the full vendor conduction/network/thermal/event certificate is **not** inherited by this derivation. The 600-V BE and the separate 150-V trapezoidal analysis remain distinct physical and numerical references.
 
 This is the direct physical/scientific gain from original-paper frontier exploration: it makes the *missing source evidence* specific and calculable (voltage-domain bound d, conditioning H/κ, whole-system residual, goal Lipschitz) instead of merely saying “need a nonlinear remainder”. It also shows precisely why a low-cost one-Newton source solve and a surrogate affine-storage law have different error chains, as required by V6.
+
+---
+
+## VIII. Retained-history bit budget for finite future-goal prediction (P19–P22)
+
+**Scientific question and prior art.** Given exact legal preparation/command transcript categories available at encoding time, how many fixed-length persistent bits must be retained to predict declared future goals after a later pretarget sensor readout? This is a finite-bank deterministic instance of the **classical zero-error side-information graph-coloring theorem** (Witsenhausen 1976), extended here in its explicit data contract to *vector-valued future goals with per-goal interval tolerances and exact archived transcript classes*. Neither the chromatic-number identity nor the coloring algorithm is claimed as a new fundamental mathematical discovery.
+
+**Contract.** Fix one reference/source-law and n legally prepared histories. History i has an **exact encoder-visible transcript** t_i (the encoder cannot observe its hidden source state), a later available pretarget side reading in an m-dimensional coordinatewise box B_i, and q prespecified future-command goals with interval uncertainty. The decoder receives the retained message z and later y in B_i, but no other information about the hidden history and no future target values. For scalar goal c let g_ic be its nominal value, eta_ic its absolute evaluation bound and tau_c its required prediction tolerance. Each side box is B_i = product over sensor channel l of [o_il-epsilon_l, o_il+epsilon_l]. The assumptions are finite-bank legality, a frozen future command/scorer for every goal, and a justified common box-noise observation model; Gaussian noise, stochastic priors, correlated ellipsoids, and continuous-domain guarantees are **not** assumed.
+
+Two histories are mutually inconsistent with one decoder message if their allowed **later** sensor observations overlap yet one target cannot be approximated to its own tolerance for both:
+
+**(P19)**
+
+```math
+\begin{aligned}
+(i,j)\in E\quad\Longleftrightarrow\quad
+& B_i\cap B_j\ne\varnothing,\\
+& \exists c:\ |g_{ic}-g_{jc}|+\eta_{ic}+\eta_{jc}>2\tau_c.
+\end{aligned}
+```
+
+Partition histories into exact encoder-visible transcript classes T_alpha={i:t_i=alpha}. If an edge in E joins histories inside the *same* transcript class, no finite-memory function of that transcript can separate them; even infinitely many retained bits would not fix the missing information. Otherwise build the quotient graph H with one vertex per transcript class and an edge between two classes if **any** history pair across them belongs to E.
+
+**Proposition (exact finite-bank one-shot retained-history message minimum).** Suppose every eta_ic <= tau_c. Among arbitrary deterministic encoders of the exact transcript category into a fixed-length bitstring, allowing any offline source-bank-aware decoder from the bitstring and later side readout, the minimum number of codewords and bits are
+
+**(P20)**
+
+```math
+K_{\min}=\chi(H),\qquad
+b_{\min}=\left\lceil\log_2\chi(H)\right\rceil.
+```
+
+**Proof, lower bound.** If adjacent transcript vertices receive the same codeword, select a witnessing pair of underlying histories (i,j), a common side observation y in their two boxes, and a goal c with the strict inequality in (P19). Under both histories the decoder receives identical (codeword,y); at least one allowed goal endpoint exceeds its tau_c error. Thus every feasible encoder is a proper coloring of H. If i and j share the exact transcript, every encoder maps them to the same word and the task is infeasible.
+
+**Proof, upper bound and decoder construction.** Choose a proper K-coloring of H. Given received (z,y), let S(z,y) comprise all histories whose transcript color is z and whose side box contains y. For each goal c, every compatible history i permits the closed interval of forecasts [g_ic+eta_ic-tau_c, g_ic-eta_ic+tau_c]. Their common intersection is
+
+**(P21)**
+
+```math
+I_c(z,y)=
+\bigcap_{i\in S(z,y)}
+[g_{ic}+\eta_{ic}-\tau_c,\ 
+ g_{ic}-\eta_{ic}+\tau_c].
+```
+
+Any two members of S(z,y) have overlapping side boxes (at least at y) and identical colors, hence they cannot be a conflict edge. For each coordinate c the corresponding forecast intervals therefore intersect pairwise. Closed intervals on the real line have the **pairwise-Helly property**, implying I_c(z,y) is nonempty. Its midpoint is an explicit tolerance-feasible decoder. Choose coordinates independently because the declared goal uncertainty is a Cartesian product of intervals. Decoder behavior when S is empty is irrelevant outside the declared model domain. The proper coloring supplies K feasible messages, proving equality. The same proof shows that if eta_ic>tau_c for some single history, no decoder can cover even that history's goal interval.
+
+**Sharp warning against naive pairwise memory counting.** Five histories have distinct exact transcripts; let their later side sensor centers be o_i=(cos(2 pi i/5),sin(2 pi i/5)), with common coordinate half-widths (0.6,0.6). Declare one future goal g_i=4i, eta_i=0 and tau=1. Exactly adjacent pentagon boxes intersect; nonadjacent boxes do not. All overlapping history pairs have goal gaps exceeding two. Thus the conflict graph is the chordless odd cycle C5. A largest all-conflicting compatible subset contains only two histories, but two retained messages cannot properly color this cycle:
+
+**(P22)**
+
+```math
+\omega(C_5)=2<\chi(C_5)=3,\qquad
+\left\lceil\log_2 2\right\rceil=1
+<\left\lceil\log_2 3\right\rceil=2.
+```
+
+The exact budget is **2 bits**, exceeding the 1-bit bound inferred from the maximum clique. Uncompressed storage of all five transcript IDs would require 3 bits, an honest strong ordinary. This counterexample is synthetic geometry, **not a SiC or DPT measured case**.
+
+**Executable verification and limits.** The existing [goal_repair_cover.py](../dpt_tools/goal_repair_cover.py) now exposes a separate command mode with option --retained-goal-bits. Required NPZ arrays: observations(n,m), goals(n,q), transcript_ids(n,) encoded as Unicode strings, observation_radii(m), goal_tolerances(q); optional goal_uncertainty(n,q). The output carries an explicit encoding, an exact chromatic minimum only when verified (default exhaustive search up to 17 distinct transcript classes), or a **feasible coloring upper bound and actual-clique lower bound**, never a false exact minimum. The independent tests include exhaustive small-graph color enumeration (2–6 histories), C5, transcript aliasing, interval edge cases, decoder interval feasibility and CLI input/output. GitHub Actions validates code and MathJax syntax, not native SiC physics.
+
+**Deep reading: what was and was not transferred.** In upstream F140-A [original model and theorem](https://github.com/openai/math/blob/fd4aeeb2ee4fc729c18d98444fed42fd0529eeeb/preprints/Memory-and-precision-in-noiseless-Gaussian-regression-September-27-2026/build/sections/introduction.tex), a learner observes fresh independent Gaussian row/label pairs and retains at most 2^M persistent states, without rereading discarded observations. Its conclusion T >= c_A d log(1/epsilon) concerns **full-vector angular recovery**, not future scalar DPT goal prediction. Its [one-block proof](https://github.com/openai/math/blob/fd4aeeb2ee4fc729c18d98444fed42fd0529eeeb/preprints/Memory-and-precision-in-noiseless-Gaussian-regression-September-27-2026/build/sections/blocks.tex) combines an exact projected density factor r^[a-m(1-1/q)] with a common projected support-volume factor r^[m(1-1/q)] by Holder, recovering r^a and charging N^(1/q) for N destinations. The actual [TikZ block-scaling proof diagram](https://github.com/openai/math/blob/fd4aeeb2ee4fc729c18d98444fed42fd0529eeeb/preprints/Memory-and-precision-in-noiseless-Gaussian-regression-September-27-2026/build/figures/block-scaling.tex) makes that cancellation explicit. The [streaming continuation lemma](https://github.com/openai/math/blob/fd4aeeb2ee4fc729c18d98444fed42fd0529eeeb/preprints/Memory-and-precision-in-noiseless-Gaussian-regression-September-27-2026/build/sections/streaming.tex) counts at most (m+2)2^M destinations; the [endpoint reflection argument](https://github.com/openai/math/blob/fd4aeeb2ee4fc729c18d98444fed42fd0529eeeb/preprints/Memory-and-precision-in-noiseless-Gaussian-regression-September-27-2026/build/sections/endpoint.tex) proves a full-data signal recovery limit without a finite-bit restriction. No such Gaussian theorem applies to arbitrary SiC preparation histories.
+
+F365-B's [original PDE uniqueness theorem](https://github.com/openai/math/blob/fd4aeeb2ee4fc729c18d98444fed42fd0529eeeb/preprints/Smooth-Anisotropic-Uniqueness-in-the-Calderon-Problem-from-One-Boundary-Patch-September-24-2026/build/sections/01-introduction.tex) assumes a complete density-valued local energy Dirichlet-to-Neumann operator on an open boundary patch for smooth metrics in dimension n>=3 and identifies only an interior-diffeomorphism **gauge class**. Its [product-cross continuation figure](https://github.com/openai/math/blob/fd4aeeb2ee4fc729c18d98444fed42fd0529eeeb/preprints/Smooth-Anisotropic-Uniqueness-in-the-Calderon-Problem-from-One-Boundary-Patch-September-24-2026/build/figures/product-cross.tex) uses conditional continuation on a product cross, including exponents gamma_1+gamma_2>1; shrinking-sphere estimates and global continuation require genuine PDE control. No finite DPT port identifiability or finite stability estimate is inherited from that theorem. The one-shot graph-coding mechanism instead has clear classical priority: [H. Witsenhausen, IEEE Trans. Information Theory 22(5), 592–593 (1976), DOI 10.1109/TIT.1976.1055607](https://doi.org/10.1109/TIT.1976.1055607).
+
+**Actual DPT contract.** V6 Figure 4 identifies effective commutation L, nonlinear Q/C, driver/Kelvin feedback and observation-chain skew/bandwidth as interacting influences on ringing, peak and apparent work. For one named 100 V R1 or 150 V history/CAL source chart, the Main must supply: legitimate preparation states and complete command records; exactly which transcript categories are digitally available **before** the goal; later pretarget sensor ports and defensible joint error sets (Cartesian boxes only when justified); frozen ordered future words and work/peak/event-time windows; actual source goal uncertainty, tolerance and strong full-record ordinary. A conflict within a transcript class signals missing history information that extra **encoding of that same transcript** cannot restore. Positive 1–2-bit bank results do not imply a hardware minimum, a continuous-domain guarantee, or native adequacy. Source replay and a prospective holdout would be necessary to change MAIN_ACCEPTED.
 
 ---
 
