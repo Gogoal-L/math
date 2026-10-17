@@ -538,5 +538,43 @@ class ContinuousCommandGoalCounterexample(unittest.TestCase):
         dwell=L/R*math.log(gap/(2*tau))
         self.assertLessEqual(gap*math.exp(-R*dwell/L)/2,tau+1e-11)
 
+class FullCalConditionalExperiment(unittest.TestCase):
+    """P39 same-action full-CAL quotient and finite-domain source-free controls."""
+
+    def test_existing_extra_timestamp_defeats_five_sample_ambiguity(self):
+        from fractions import Fraction as Q
+        first5=(Q(0),Q(2),Q(4),Q(6),Q(10))
+        a=first5+(Q(8),)
+        b=first5+(Q(9),)
+        q3=lambda v:tuple((v[k]-v[0])/(v[4]-v[0]) for k in (1,2,3))
+        self.assertEqual(q3(a),q3(b))
+        self.assertEqual((a[5]-a[0])/(a[4]-a[0]),Q(4,5))
+        self.assertEqual((b[5]-b[0])/(b[4]-b[0]),Q(9,10))
+        self.assertEqual(max((Q(1)+Q(i,10) for i in range(-5,6))),Q(3,2))
+
+    def test_full_trace_correlated_noise_ratio_identity(self):
+        from fractions import Fraction as Q
+        currents=(Q(0),Q(2),Q(4),Q(6),Q(10),Q(8))
+        err=(Q(1,1000),Q(0),Q(-1,1000),Q(1,2000),Q(0),Q(-1,3000))
+        gamma,beta=Q(11,10),Q(-1,3)
+        y=tuple(gamma*x+beta+e for x,e in zip(currents,err))
+        D=currents[4]-currents[0]
+        q=(currents[5]-currents[0])/D
+        observed=(y[5]-y[0])/(y[4]-y[0])
+        rhs=(err[5]+(q-1)*err[0]-q*err[4])/(gamma*D+err[4]-err[0])
+        self.assertEqual(observed-q,rhs)
+
+    def test_curvature_grid_halfwidth_bound_exact_parabolas(self):
+        from fractions import Fraction as Q
+        M=Q(2)
+        h=Q(1,2)
+        worlds=(lambda x: Q(1)+x*x, lambda x:-Q(1)-x*x)
+        grid=(Q(-1,2),Q(0),Q(1,2))
+        halfwidth=lambda x:(max(f(x) for f in worlds)-min(f(x) for f in worlds))/2
+        cap=max(halfwidth(x) for x in grid)+M*h*h/8
+        for k in range(-50,51):
+            self.assertLessEqual(halfwidth(Q(k,100)),cap)
+        self.assertLess(cap,Q(2))
+
 if __name__ == "__main__":
     unittest.main()
