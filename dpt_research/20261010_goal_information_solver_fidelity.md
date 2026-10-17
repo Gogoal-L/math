@@ -508,7 +508,7 @@ The nonnegative charge-remnant and square then cannot by themselves destroy the 
 $$
 -d\,i_b=v_j i_b+E_{\rm th}i_b+r_{\rm eff} i_b^2.
 $$
-Define \(\Psi(z)=a_V[z\log(z/I_s)-z+I_s]\) [J per appropriate electrical-unit normalization; voltage×charge-rate units are handled by \(\tau/h\)]. Since \(\Psi'(z)=v_j\), \(\Psi''(z)=a_V/z>0\), and \(v_j(z-I_s)\ge0\), the convex supporting-hyperplane inequality yields
+Define \(\Psi(z)=a_V[z\log(z/I_s)-z+I_s]\), whose physical units are \(\mathrm{V\,A}=\mathrm W\); the actual diffusion *stored energy* is \(\tau\Psi(z)\) in J, so \((\tau/h)\Delta\Psi\) is W. Since \(\Psi'(z)=v_j\), \(\Psi''(z)=a_V/z>0\), and \(v_j(z-I_s)\ge0\), the convex supporting-hyperplane inequality yields
 $$
 v_j i_b\ge(\tau/h)[\Psi(z)-\Psi(z_{\rm old})].
 $$
