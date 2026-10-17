@@ -640,5 +640,38 @@ class CoupledElectrothermalBackwardEuler(unittest.TestCase):
         derivative=(r*tau/h)/(Vt/z+r*(1+tau/h))
         self.assertTrue(0<derivative<tau/(tau+h))
 
+class ActualSourceStageRowDissipation(unittest.TestCase):
+    """S-L10 actual-law-inspired G12 shunt/body algebra; no native/source solve."""
+
+    def test_g12_literal_lowvoltage_branch_two_be_stages(self):
+        from fractions import Fraction as Q
+        c=Q(1.0156922324976233e-9)
+        R=Q(1,10000)
+        alpha=Q(1,2)
+        h=Q(12.5e-12)
+        du=Q(.02)
+        a=-R*c*du/(2*alpha*h)
+        hstar=R*c/(2*alpha)
+        self.assertLess(hstar,Q(.102e-12))
+        self.assertLess(hstar,h)
+        for uold in (Q(0),Q(.02)):
+            u=uold+du
+            deltaQ=c*du
+            lhs=alpha*a*a/R+(u+a)*deltaQ/h
+            primitive_step=c*(u*u-uold*uold)/(2*h)
+            nonnegative=(c/(2*h)-R*c*c/(4*alpha*h*h))*du*du
+            square=alpha/R*(a+R*c*du/(2*alpha*h))**2
+            self.assertEqual(lhs,primitive_step+nonnegative+square)
+            self.assertEqual(square,0)
+            self.assertGreater(nonnegative,0)
+
+    def test_exponential_diode_convex_potential_retains_charge_sign(self):
+        Is, aV = 1e-9, 0.05
+        psi=lambda z:aV*(z*math.log(z/Is)-z+Is)  # watts
+        for zold,z in ((Is,2*Is),(2*Is,3*Is),(3*Is,Is)):
+            vj=aV*math.log(z/Is)
+            self.assertGreaterEqual(vj*(z-zold)+1e-21,psi(z)-psi(zold))
+            self.assertGreaterEqual(vj*(z-Is),-1e-21)
+
 if __name__ == "__main__":
     unittest.main()
