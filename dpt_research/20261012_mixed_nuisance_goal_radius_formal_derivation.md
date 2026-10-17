@@ -1330,30 +1330,39 @@ T(u)=\frac{u+w_u}{1+w_0}.
 $$
 A *second* independently qualified actual denominator \(D_{\rm src}>0\) is required; \(1+w_0>0\) is **not** equivalent to this physical positive-anchor gate. When both hold, \(q_{\rm src}(u)=q_{\rm aff}(T(u))\) and the full-rank P36 homogeneous map maps equal normalized observations to equal \(T\).
 
-**(P41) Conditional global source-output recovery.** Suppose verified source-root/guard/parameter continuation and outward interval automatic differentiation show, for every \(u\) on that entire branch, with induced \(\ell_\infty\) norms in A and the normalized parameter cube,
+**(P41) Conditional global source-output recovery, strengthened after adversarial two-world proof.** Assume outward interval source-root/guard/parameter continuation proves on the entire same-command, smooth, convex parameter branch that \(\|r(a,u)\|_\infty\le R\) A and \(\|D_u r(a,u)\|_\infty\le J\) A per normalized parameter. The original P36 \(H(a)\) depends on the **fixed recorded a**, not on \(u\). Split its exact eight-PREP-corner inverse norm into homogeneous first row and remaining three rows:
 $$
-\|r(a,u)\|_\infty\le R,\qquad
-\|\partial_u r(a,u)\|_\infty\le J .
+k_0=\sup_a\|[H(a)^{-1}]_{0,:}\|_1
+=0.208253718136\ldots\ \mathrm{A}^{-1}<0.21\ \mathrm{A}^{-1},
 $$
-Let \(K=\sup_{a\in[-1,1]^3}\|H(a)^{-1}\|_\infty\ [\mathrm A^{-1}]\), \(\rho=KR\) and \(s=KJ\). Then \(w\) and its derivative satisfy \(\|w\|\le\rho\), \(\|Dw\|\le s\). Direct differentiation of \(T\) and \(\|u\|_\infty\le1\) gives the *sharp elementary sufficient envelope*
 $$
-\|DT-I\|_\infty
-\le\kappa_T:=\frac{\rho(1-\rho)+2s}{(1-\rho)^2}.
+k_v=\sup_a\max_{i=1,2,3}\|[H(a)^{-1}]_{i,:}\|_1
+=36.0458273992841\ldots\ \mathrm{A}^{-1}<36.1\ \mathrm{A}^{-1}.
 $$
-If \(\rho<1/2\) and \(2s<(1-\rho)(1-2\rho)\) (equivalently \(\kappa_T<1\)), integrate \(DT-I\) along any segment in the convex cube to obtain
+The supremum on the WHOLE original recorded-PREP cube occurs among its 8 corners because each signed inverse-row support is a linear-fractional function of \(a\) with a certified fixed-sign affine denominator. Set \(\rho_0=k_0R\), \(\rho_v=k_vR\), \(s_0=k_0J\), \(s_v=k_vJ\) and \(M_T=(1+\rho_v)/(1-\rho_0)\). For \(\rho_0<1\), all actual homogeneous scales satisfy \(1+w_0>0\), and \(\|T\|_\infty\le M_T\). The **exact two-world identity**, which directly bounds globally separated worlds rather than checking merely a Jacobian, is
 $$
-(1-\kappa_T)\|u-v\|_\infty\le
-\|T(u)-T(v)\|_\infty\le
-(1+\kappa_T)\|u-v\|_\infty .
+(1+w_0(u))[T(u)-T(v)]
+=(u-v)+[w_v(u)-w_v(v)]-T(v)[w_0(u)-w_0(v)].
 $$
-Thus \(T\), and consequently source \(q_{\rm src}\), are **globally injective on this one declared physical source branch** even if its nonlinear outputs are not the frozen affine proxy. For multiple roots/guard branches, the criterion must cover **all branch pairs** or the source must exclude competing branches; one point's full-rank Jacobian proves none of this. The simpler but conservative \(K(3R+2J)<1\) suffices. **WARNING:** the much weaker condition \(2K(R+J)<1\) checks a local augmented Jacobian perturbation, but is **NOT sufficient for global univalence**; do not import that false shortcut from source geometry. No actual 50-state source-wide \(R,J,D\) has yet been qualified.
+Hence, by the whole-domain Lipschitz bounds on \(w\) from the verified source derivatives,
+$$
+\boxed{
+\|T(u)-T(v)\|_\infty\ge
+\frac{1-s_v-M_T s_0}{1+\rho_0}\,\|u-v\|_\infty .
+}
+$$
+Therefore a **strictly positive right-hand multiplier** is a sufficient *global* source-output univalence gate. Equivalently the independently qualified source derivative must satisfy
+$$
+k_0 R<1,\qquad
+J<\left[k_v+
+\frac{k_0(1+k_v R)}{1-k_0R}
+\right]^{-1}.
+$$
+For example, using safe **outward proxy constants** \(k_0<0.21,\ k_v<36.1\ \mathrm{A}^{-1}\) and hypothetical **whole-source** \(R=0.010\) A, this permits \(J<0.02748278711\) A/normalized parameter. The old near-identity Jacobian gate \(\|DT-I\|_\infty\le [\rho(1-\rho)+2s]/(1-\rho)^2<1\), \(\rho=\max(k_0,k_v)R,\ s=\max(k_0,k_v)J\), is also valid, but can be **strictly weaker** than this source-output two-world gate. A separate conservative \(K(3R+2J)<1\) is sufficient, but not economical.
 
-**Exact practical frozen-PREP constant.** Since only the first column of \(H(a)\) changes affinely with \(a\), each *signed row support* of \(H(a)^{-1}\) is a linear-fractional function with a fixed-sign affine denominator. It takes its extrema on the eight PREP command corners. Independent exact rational inversion of the saved binary64 coefficients gives
-$$
-K=36.0458273992841\ldots\ \mathrm{A}^{-1}
-<36.046\ \mathrm{A}^{-1}.
-$$
-The eight-corner calculation is a **full PREP command cube bound for this frozen stored proxy**, not a point Jacobian evaluation of actual source. Its computable sufficient gate is \(36.046(3R+2J)<1\), where \(R,J\) are independently validated whole-source A-valued residual and derivative bounds. As a diagnostic only, seven archived real-source points gave max \( \|r(a_i,u_i)\|_\infty\simeq6.6988783\times10^{-5}\) A, but their \(a_i\) differ and these point values do not bound continuous \(R\), let alone \(J\) or alternate roots. The new [exact-rational qualified-input gate](../dpt_tools/projective_command_proxy.py) source_deviation_univalence_gate fails closed as INCONCLUSIVE without sufficiently small **externally supplied** bounds; [tests](../dpt_tools/test_projective_command_proxy.py) check exact K, passing/abstaining and zero-deviation controls.
+**Explicit correction after independent adversarial review:** An earlier draft incorrectly stated that \(2K(R+J)<1\) established only local Jacobian invertibility. Because \(w\) is a **single-valued globally Lipschitz function on the convex parameter cube** (a crucial extra hypothesis!), the same two-world identity in fact shows \(K(R+2J)<1\) is sufficient for global injection; \(2K(R+J)<1\) is still a valid but conservative sufficient rule. A pointwise augmented-Jacobian nonsingularity WITHOUT a joint cross-world derivative/branch-domain bound is insufficient. Never transfer the global conclusion between distinct guard branches or disconnected PREP components without an all-branch pair certificate. Moreover actual \(D_{\rm src}>0\) remains a **separate mandatory condition**: even global \(T\) injection and \(1+w_0>0\) do not rule out a source observation denominator zero.
+
+**Exact practical check and true-source scope.** The new [exact-rational source-Jet gate](../dpt_tools/projective_command_proxy.py) source_deviation_univalence_gate uses these separated inverse-row constants and returns a certified two-world lower Lipschitz multiplier or INCONCLUSIVE; [regressions](../dpt_tools/test_projective_command_proxy.py) show an \(R=0.010\) A, \(J=0.025\) A case where the older near-identity \(\kappa_T\ge1\) fails but the valid global pair-bound succeeds. The historical seven actual numeric source records only show \(\max_i\|r(a_i,u_i)\|_\infty\simeq6.6988783\times10^{-5}\) A at seven **different** PREP commands; these finite residuals are NOT upper bounds on the continuous \(R\), on \(J\), on all 50-state roots or on the physical sensor. For present Goal27, actual filter-state/GL32/thermal source-wide \(J\) and true D-positive guard remain OPEN. P36 proxy invertibility and this conditional source theorem do not beat the strongest complete-CAL ordinary by information alone.
 
 **Why local rank is inadequate (analytic fold).** Let the actual-source-like output abstraction on a fixed \(a\) be \(t_{\rm fake}(u)=H(a)(1,T_{\rm fold}(u))^\top\), with
 $$
