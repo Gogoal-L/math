@@ -413,3 +413,49 @@ t_p\ge(L/R)\max\{0,\log(|\Delta W_0|/(2\tau))\},
 provided the changed preparation remains legal and its time cost is included. Any independent residual work bound must reduce the remaining $\tau$ budget first. Alternative genuine branch current/flux measurement costs are separate; an N100 third observed voltage is not silently such a sensor.
 
 **Primary literature, correctly limited.** Willems, “Dissipative Dynamical Systems Part I” (1972), §2 pp.323–327, motivates equivalence by **all future behavior**; van der Schaft, “Bisimulation of Dynamical Systems,” HSCC (2004), Definition 1 p.4 and Definition 4 p.12 require matching inputs/outputs and hybrid event occurrence, not merely a common point Jacobian. Pola, Girard & Tabuada, “Approximately Bisimilar Symbolic Models for Nonlinear Control Systems,” [arXiv:0706.0246](https://arxiv.org/abs/0706.0246), Theorems 4.1 (PDF p.6) and 5.1 (p.9), assume smooth δ-GAS/δ-ISS systems with explicit incremental bounds and quantized inputs; they do not establish switched electrothermal DAE root/guard or persistent-noise qualification. Hermann–Krener (1977) Theorem 3.1 is a local smooth observability-rank result, not global external-inverse sufficiency; F229/F376 finite-tree/real-flow construction assumptions are different. D2 is a **project-owned** sufficient construction plus passive-law comparator, not a literature theorem transplanted to SiC. The smallest Main decision-changing observation remains source-qualified **same digital PREP + full raw CAL/joint noise** hidden pair or certified same-source goal tube under a frozen lawful finite $\Delta L$ word, alongside the strongest full-record ordinary. **Status SIDE_VERIFIED mathematics / actual physical new-word closure OPEN.**
+
+## 2026-10-18 D3: actual-type electrothermal feedback invalidates a tempting scalar BE-memory shortcut
+
+**Specific active S150 source question, not a reproof of D2.** Local controller derivations README (2026-10-17, lines 133–137) accepts strict positive diode charge \(z=I_s\exp(v_j/V_T)\) and a *fixed electrical and thermal forcing* scalar BE response with old-charge gain below \(\tau/(\tau+h)\). This is a legitimate partial one-dimensional fact for fixed \(g,d,T\), not a bound on the fully coupled 50-state electrothermal response when electrical current and heat change together. Original S-L8 all-root energy envelopes do not imply incremental contraction of the DAE update.
+
+**D3 source-type passive electrothermal counterexample (fully analytic synthetic circuit, not S150).** Consider a driven positive-current diode with state \(x=(i,v,z,T)\), supply \(V_s\), series \(L,R_s>0\), shunt \(C>0\), stored diffusion charge \(\tau z\), diode series resistance \(r>0\), and thermal \(C_{\rm th},H>0\):
+$$
+\begin{aligned}
+L\dot i&=V_s-R_s i-v,& C\dot v&=i-j,\\
+\tau\dot z&=j-z,&
+C_{\rm th}\dot T&=v_j z+rj^2-H(T-T_a),\\
+j&=(v-v_j)/r,&
+v_j&=V_T\log(z/I_s)-\alpha V_T(T-T_a).
+\end{aligned}
+$$
+In the forward guard \(i,j,z>0\) and \(v_j>0\), heat production \(v_j z+rj^2\ge0\). For **fixed \(v,T\)** implicit BE gives
+$$
+v_j(z_+,T)+r[(1+\tau/h)z_+-(\tau/h)z_{\rm old}]=v,
+$$
+whose monotone-root old-charge derivative is
+$$
+\frac{\partial z_+}{\partial z_{\rm old}}
+=\frac{r\tau/h}{V_T/z_++r(1+\tau/h)}
+\in(0,\tau/(\tau+h)).
+$$
+Nevertheless choose \(z_\ast=i_\ast=j_\ast=10\mathrm A,\ v_\ast=1.5\mathrm V,\ T_\ast=225^\circ\mathrm C,\ T_a=25^\circ\mathrm C,\ V_T=0.05\mathrm V,\ \alpha=0.08/\mathrm K,\ r=0.06\Omega,\ R_s=0.001\Omega,\ H=0.075\mathrm{W/K},\ I_s=10e^{-34}\mathrm A,\ V_s=1.51\mathrm V\). Then \(v_j=0.9\mathrm V\), recombination heat \(9\mathrm W\), resistor heat \(6\mathrm W\) and cooling \(15\mathrm W\): a physically sign-consistent equilibrium. Define \(q=V_T/z_\ast=0.005\Omega\), \(a=\alpha V_T=0.004\mathrm{V/K}\), let \(F=M f\) denote the four unscaled right-hand sides and \(M=\mathrm{diag}(L,C,\tau,C_{\rm th})>0\). Direct differentiation and elimination give
+$$
+\det D_xF=\frac{H(R_s+r+q)-a(v_\ast-R_s z_\ast)}{r}
+=\frac{0.00495-0.00596}{0.06}=-0.0168333333\ldots<0 .
+$$
+As \(\det Df=\det DF/\det M<0\) in **even dimension 4**, the characteristic polynomial \(\det(\lambda I-Df)\) is negative at \(\lambda=0\) and positive for sufficiently large positive \(\lambda\); it has a real \(\lambda_+>0\). For any sufficiently small positive BE step \(h<1/\lambda_+\) with local implicit solvability, \(D\Phi_h=(I-hDf)^{-1}\) has eigenvalue \(1/(1-h\lambda_+)>1\). A positive local diode scalar storage-memory derivative therefore coexists with a growing **full coupled** mode; no source-wide \(\kappa<1\) or stable signed future work follows from the one-dimensional inequality. This is a valid **negative inference test**, not a finding that the real S150 source is unstable, and it does not prove any actual full-CAL observation alias.
+
+**(D3) Constructive alternative that tests the full source rather than scalar z.** On one convex, guard-invariant, completely source-consistent smooth BE region with *all* algebraic constraints eliminated via a separately verified regular index-one Schur map, suppose one common \(P\succ0\) and \(\mu>0\) satisfy
+$$
+J(x,u,\theta)^\top P+P\,J(x,u,\theta)\preceq-2\mu P
+$$
+for the **FULL electrical, charge, thermal and memory-coupled** vector field Jacobian \(J=D_xf\) along every segment, and source parameter perturbations obey \(\|f(x,u,\theta)-f(x,u,\theta')\|_P\le b\|\theta-\theta'\|\). Subtract two same-input BE equations, pair with \(\Delta x_+\) in the \(P\)-inner product and use the secant Jacobian: 
+$$
+\|\Delta x_+\|_P\le
+\frac{\|\Delta x_{\rm old}\|_P+h b\|\Delta\theta\|}{1+h\mu}.
+$$
+This may support an ordered finite signed-work goal tube after separately bounding \(|D_x(VI)|\), actual charge/GL32 quadrature, shared PREP and filter states, jump consistency and transversality. A passive energy storage, diagonal partial diode memory, *point* Jacobian eigenvalues, or a generic barrier does NOT substitute for the full \(P\)-inequality. If the future command is a **feedback policy** \(u=\pi(H(x,\xi))\) rather than a precommitted identical open-loop word, the required full Jacobian is \(J_{\rm closed}=f_x+f_u D\pi\,H_x\) with the persistent joint sensor nuisance \(\xi\) carried as a single *unchanging latent*; never assign \(\xi\) fictitious strict contraction or fresh iid error. Threshold feedback requires mode/saltation checks; if worlds take different future legal command branches, same-input estimate does not compare them automatically.
+
+**Original theorem/proof boundaries.** Lohmiller & Slotine, “On Contraction Analysis for Non-linear Systems” (Automatica 1998), [author manuscript](https://www.mit.edu/~nsl/preprints/contraction.pdf) Definition 1/Theorem 1, original PDF p4, requires uniformly negative full symmetric Jacobian part on a source-invariant region. Forni & Sepulchre, “A Differential Lyapunov Framework for Contraction Analysis” [arXiv:1208.2943v4](https://arxiv.org/abs/1208.2943), Theorem 1 PDF p4 and quadratic full \(P\)-LMI (29)–(30) p8, assumes smooth forward-complete incremental tangent dynamics; not a switched 50-state DAE theorem. Forni, Sepulchre & van der Schaft, “On Differential Passivity of Physical Systems” [arXiv:1309.2558](https://arxiv.org/abs/1309.2558), Theorems 1–2 PDF p3 require both connected subsystems to be differentially passive for negative-feedback preservation. Maghenem & Sanfelice (2021) Theorem 1 PDF p5 proves conditional hybrid forward pre-invariance, not contraction; Kong et al. [arXiv:2306.06862](https://arxiv.org/abs/2306.06862), Definition 2/Eq.(9) PDF p6, requires transverse guards and proper saltation derivative. D3's discrete inequality and electrothermal toy are **independently derived** here, not transplanted SiC confirmations.
+
+**Controller decision:** The correct smallest zero-new-native discriminator is the archived same-source **full** electrical/thermal source Schur Jacobian over a legal PREP+CAL+unseen future stage, with qualified root/guard/mode domain and coupled signed terminal-work derivative, not another fixed-forcing scalar z test. If a full incremental \(P\) or source-validated goal-only contraction exists, use it to narrow compatible future signed-work; if not, retain S-L7/P38 actual-source interval alternatives. S150 actual all-root/closed-loop/J bounds remain OPEN, historic whole-fork q>1 remains PARK, and a positive eigenvalue in this SYNTHETIC example is not a native-run authorization.
