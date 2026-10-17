@@ -421,5 +421,46 @@ class HomogeneousProjectiveRootWitness(unittest.TestCase):
             self.assertGreaterEqual(x*x/2, 0)
             self.assertGreaterEqual((x-2)**2/2, 0)
 
+class AllRootDiscreteStageEnergy(unittest.TestCase):
+    """Synthetic BE all-root energy and rational-prefix controls for S-L8."""
+
+    def test_rl_two_step_exact_positive_anchor_and_energy_identity(self):
+        from fractions import Fraction as Q
+        for k in range(101):
+            L=Q(1)+Q(k,100)
+            h=R=u=Q(1)
+            iold=Q(0)
+            i1=1/(L+1)
+            i2=(2*L+1)/(L+1)**2
+            for i in (i1,i2):
+                lhs=L*(i*i-iold*iold)/2 + L*(i-iold)**2/2 + h*R*i*i
+                self.assertEqual(lhs,h*u*i)
+                iold=i
+            self.assertTrue(Q(1,3)<=i1<=Q(1,2))
+            self.assertTrue(Q(5,9)<=i2<=Q(3,4))
+            self.assertTrue(Q(2,9)<=i2-i1<=Q(1,4))
+            self.assertTrue(Q(8,9)<=i1+i2<=Q(5,4))
+
+    def test_passive_dc_equilibrium_is_zero_anchor_counterexample(self):
+        from fractions import Fraction as Q
+        R=u=L=h=Q(1)
+        iold=u/R
+        inew=(h*u+L*iold)/(L+h*R)
+        self.assertEqual(inew,iold)
+        self.assertEqual(inew-iold,0)
+
+    def test_continuous_energy_loss_does_not_bound_all_BE_roots(self):
+        from math import sqrt
+        energy=lambda x:(x*x-1)**2/4
+        roots=(1,(-5+sqrt(5))/10,(-5-sqrt(5))/10)
+        self.assertEqual(energy(1),0)
+        for x in roots:
+            self.assertAlmostEqual((x-1)*(5*x*x+5*x+1),0,places=12)
+            self.assertAlmostEqual(5*x*x*x-4*x-1,0,places=12)
+            next_root=math.copysign(abs(x)**(1/3),x)
+            self.assertAlmostEqual(next_root**3,x,places=12)
+        self.assertGreater(energy(roots[1]),0)
+        self.assertGreater(energy(roots[2]),0)
+
 if __name__ == "__main__":
     unittest.main()
