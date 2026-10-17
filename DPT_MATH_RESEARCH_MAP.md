@@ -77,9 +77,9 @@
 ### D. 2026-10-17 source-to-goal conditional mathematics and controller bridge
 
 **多步 PREP 及有限 L 的承重建设（Side conditional, actual-source OPEN_RESEARCH）。** 对同一合法 PREP/source/guard/固定命令及 signed work，若 P(z,L)=0、F(X,z,L)=0、W=G(X,z,L) 在共同分支可微，P_z、F_X 可逆，F_X^T λ=G_X^T，则
-$
+```math
 W_L=(G_L-\lambda^TF_L)-(G_z-\lambda^TF_z)P_z^{-1}P_L.
-$
+```
 这是包含入口状态传导的**条件精确恒等式**，不自动给 preparation/window 因果比例。二步 BE 合法 PREP 解析 oracle 的 W=(5L²+6L+2)/(L+1)³，在 L=1→2 的窗口和 PREP 积分贡献分别为 −137/648、−25/162，总和 −79/216；中心曲率值不能替代完整有限 L 的余项常数。 [完整 S-L1–S-L6 推导与独立负控](dpt_research/20261010_goal_information_solver_fidelity.md) 以 F266 center–tangent–remainder 为证书组织借鉴，原 MUB theorem、root existence、Lean 结论均不自动迁移。
 
 **新的 goal-relevant 预测对象。** 对同完整 pretarget CAL/recorded-command 相容的历史集合 H_y，联合保留 w_h=W_h(L0) 与 s_h=W_h'(L0)，在全部合法有限 ΔL 路径上独立证明 M≥sup |W_h''|。令 a(δ)=inf_(h∈H_y)(w_h+δs_h), b(δ)=sup_(h∈H_y)(w_h+δs_h)。则冻结未来 signed work 处于 [a(δ)−Mδ²/2,b(δ)+Mδ²/2]；若半宽 (b−a)/2+Mδ²/2≤τ，中点是条件式 τ-adequate decoder。存在合法同信息双世界且未来差>2τ 则任何点预测均不能达到 τ。务必保留 (w,s) **联合支持**，不能以分别建盒声称最优。L、W、s、M 的单位分别为 H、J、J/H、J/H²；source-wide M、guard、previous/current Jacobian、合法 prep 与 frozen goal 缺失时只报告 OPEN_RESEARCH。F266 的原论文证明模式不提供这些 source constants。
