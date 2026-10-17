@@ -60,6 +60,22 @@
 
 **已有基础：** L/Rser/gain 相容方向、original sensor/path definition 与 observed profile movement。**Main 最小输入：** external cut-voltage/current、端口/方向、sensor correlation、model discrepancy、同一 bounded nuisance family 以及目标容差。**合格交付：** 一项可复算的 compatible-set/goal-range 缩减和最小合法干预，而非先验强求 Lg/Ls/Ld/Lloop/Rg 全部唯一恢复。100/150/600 V 的方法可迁移，实际量和证明不能混接。
 
+### D. 2026-10-17 source-to-goal conditional mathematics and controller bridge
+
+**多步 PREP 及有限 L 的承重建设（Side conditional, actual-source OPEN_RESEARCH）。** 对同一合法 PREP/source/guard/固定命令及 signed work，若 P(z,L)=0、F(X,z,L)=0、W=G(X,z,L) 在共同分支可微，P_z、F_X 可逆，F_X^T λ=G_X^T，则
+$
+W_L=(G_L-\lambda^TF_L)-(G_z-\lambda^TF_z)P_z^{-1}P_L.
+$
+这是包含入口状态传导的**条件精确恒等式**，不自动给 preparation/window 因果比例。二步 BE 合法 PREP 解析 oracle 的 W=(5L²+6L+2)/(L+1)³，在 L=1→2 的窗口和 PREP 积分贡献分别为 −137/648、−25/162，总和 −79/216；中心曲率值不能替代完整有限 L 的余项常数。 [完整 S-L1–S-L4 推导与独立负控](dpt_research/20261010_goal_information_solver_fidelity.md) 以 F266 center–tangent–remainder 为证书组织借鉴，原 MUB theorem、root existence、Lean 结论均不自动迁移。
+
+**新的 goal-relevant 预测对象。** 对同完整 pretarget CAL/recorded-command 相容的历史集合 H_y，联合保留 w_h=W_h(L0) 与 s_h=W_h'(L0)，在全部合法有限 ΔL 路径上独立证明 M≥sup |W_h''|。令 a(δ)=inf_(h∈H_y)(w_h+δs_h), b(δ)=sup_(h∈H_y)(w_h+δs_h)。则冻结未来 signed work 处于 [a(δ)−Mδ²/2,b(δ)+Mδ²/2]；若半宽 (b−a)/2+Mδ²/2≤τ，中点是条件式 τ-adequate decoder。存在合法同信息双世界且未来差>2τ 则任何点预测均不能达到 τ。务必保留 (w,s) **联合支持**，不能以分别建盒声称最优。L、W、s、M 的单位分别为 H、J、J/H、J/H²；source-wide M、guard、previous/current Jacobian、合法 prep 与 frozen goal 缺失时只报告 OPEN_RESEARCH。F266 的原论文证明模式不提供这些 source constants。
+
+**F329 启发的独立连续 fiber 正向界（P33）。** 同实际 source-legal compact Θ 上若已认证覆盖半径 ρ 的网格、完整预目标观测 O 和未来目标 G 的 uniform Lipschitz L_O/L_G，以及同一 joint error 集 E，定义 B(y)={i:dist(y−O_i,E)≤L_Oρ}。所有连续合法相容世界的 future goal 都落于 [min_B G_i−L_Gρ,max_B G_i+L_Gρ]；半宽≤τ 才预测，否则 ABSTAIN。证明和 Θ=[0,1], O=0, G=4θ(1−θ) 端点 bank 假稳定反例见 [P33](dpt_research/20261012_mixed_nuisance_goal_radius_formal_derivation.md)。F329 polar metric entropy counterexample 和 F140-A Gaussian streaming bit bound 均不直接成为 DPT lower bound；history compression 还需完整 digital transcript、joint noise 与合法 future 更新相容。finite bank 最大差只能构成必要 lower witness，未认证 ρ/Lipschitz 不能宣称连续充分。
+
+**F357/F325 条件阅读。** F357 的 RCD bi-Lipschitz 构造无法为既有 N100 I2/I3 sensor 自动证明逆稳定。独立局部引理：合法凸域半径 r 内去 nuisance 的 f=PO 若 m=σ_min Df(q0)>0、sup||Df−Df(q0)||≤Hr<m，则 ||f(q)−f(q')||≥(m−Hr)||q−q'||；仍需要 qualified joint sensor noise、goal gain 和 actual chart。仅逐点 rank>0 不够，(cos t,sin t) 首尾可以同观测。F325 的 fixed-operator Crouzeix 可形式应用于冻结多步 DAE block-shift 算子，但已有 exact ordered adjoint/triangular inverse 是更强 ordinary；二步非正规 toy 的 Crouzeix bound 约 50.005，而实际乘积为 1，没有理由据此提升 archive。原 I2 两通道和新增 I3 的 sl 电压必须分开信息成本，KVL 邻接电压恒等式不能直接推物理 branch current 或 signed work 因果份额。
+
+**Main closure 接口与决定性比较。** 本地主控 [docs/derivations/README.md]（只读检查 2026-10-17）已记录 S02 有接受的参数曲率有限弦数学；Goal27 的五电流 fractional-linear **代理域**全 bank 有条件 uniform goal 上界、raw5/calibrated-D ordinary，而 actual S150 全非线性 G−p(O) source-wide 认证仍 OPEN，原 whole-fork root/bank-beta 充分证书路线 PARK。这两种 reference 和证据身份均不得混接。优先接入同一 150 V source 的真实合法 PREP、完整预目标数字命令与 CAL、source current/previous derivatives、原 H/scorer、joint nuisance、source/guard tube、冻结 unseen finite ΔL signed work，比较最强同信息 full-record ordinary；先尝试 G−p(O) source-qualified uniform upper 或合法同 full-CAL 双世界分离>2τ。q>1 的已有 Banach 充分检验失败不是物理解不存在证明。不得读取 protected truth、自动启动 native 或自行晋级 MAIN_ACCEPTED。现有六份证明笔记、7 core / 26 archive 文献与 dpt_tools 入口继续复用。
+
 ## 4. 完整数学知识位置与工具
 
 目前维持 **6 份长期更新的证明笔记**，每份应自含 definition、legal domain、theorem、proof、strong ordinary/counterexample、executable test、actual DPT interface 与未闭合处。旧版相似笔记以全文 provenance annex 并入，保留有价值的失败与来源，不再根据 Pro 运行日期无限创建新文件。
