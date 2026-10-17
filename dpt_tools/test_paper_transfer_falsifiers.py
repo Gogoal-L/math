@@ -215,5 +215,63 @@ class GoalSourceTransferCertificates(unittest.TestCase):
         self.assertAlmostEqual(math.cos(0),math.cos(2*math.pi))
         self.assertAlmostEqual(math.sin(0),math.sin(2*math.pi))
 
+class GoalCorrectedResidualCellFixture(unittest.TestCase):
+    """Exact independent same-source goal-minus-readout oracle; no SiC inputs."""
+
+    def test_direct_goal_adjoint_cancels_shared_state_response(self):
+        from fractions import Fraction as Q
+
+        def x(t):
+            return 1000*t + t*t
+
+        def R(t):
+            return x(t) + t*t - Q(999, 1000)*x(t)
+
+        def adjoint_R_prime(t):
+            # F(x,t)=x-1000t-t^2. Q_x=1/1000, F_x=1.
+            lam=Q(1, 1000)
+            return 2*t - lam*(-1000-2*t)
+
+        for t in (Q(0),Q(1,5),Q(1,2),Q(1)):
+            self.assertEqual(R(t),t+Q(1001,1000)*t*t)
+            self.assertEqual(adjoint_R_prime(t),1+Q(2002,1000)*t)
+            h=Q(1,10000)
+            self.assertEqual((R(t+h)-R(t-h))/(2*h),adjoint_R_prime(t))
+
+    def test_certified_cell_remainder_covers_all_exact_goals(self):
+        from fractions import Fraction as Q
+        center,h,M=Q(1,2),Q(1,2),Q(2002,1000)
+        R=lambda t:t+Q(1001,1000)*t*t
+        Rprime=lambda t:1+M*t
+        bound=abs(R(center))+abs(Rprime(center))*h+M*h*h/2
+        self.assertEqual(bound,R(Q(1)))
+        for k in range(101):
+            self.assertLessEqual(abs(R(Q(k,100))),bound)
+        # Separately controlling two order-1000 source outputs loses this bound.
+        self.assertGreater(Q(1999),500*bound)
+
+    def test_joint_sensor_error_adds_exact_affine_support(self):
+        from fractions import Fraction as Q
+        eps,beta=Q(1,10),Q(2001,1000)
+        for k in range(51):
+            t=Q(k,50)
+            x=1000*t+t*t
+            G=x+t*t
+            O=Q(999,1000)*x
+            for e in (-eps,eps):
+                self.assertLessEqual(abs(G-(O+e)),beta+eps)
+
+    def test_nonlinear_readout_curvature_is_not_optional(self):
+        from fractions import Fraction as Q
+        # F=x-t=0, G=0, O=x, p(O)=O^2.
+        # F'' vanishes, while Q''=-2 from the nonlinear readout.
+        for t in (Q(0),Q(1,2),Q(1)):
+            lam=-2*t
+            d2Q_directional=-2
+            d2F_directional=0
+            self.assertEqual(d2Q_directional-lam*d2F_directional,-2)
+            h=Q(1,10)
+            self.assertEqual(-((t+h)**2)+2*t*(t+h)-t*t,-h*h)
+
 if __name__ == "__main__":
     unittest.main()
