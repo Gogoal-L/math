@@ -481,3 +481,44 @@ Its qualified root is $u=1,\tau=0.6$, yielding $G_\ast=1.700$ J. At approximate 
 With a verified root ball $B_r$, a qualified matrix preconditioner $K$ and $q=\sup_{B_r}\|I-KDF\|<1$, $\eta=\|KF(\widehat Y)\|$, $\eta+q r\le r$, the usual contraction yields a root distance $\rho\le\eta/(1-q)$ on this one qualified branch. Taking $Q=G-p(O)$, $\lambda$ from the **complete** event-aware ordered adjoint, $L=Q-\lambda^\top F$, $\sup_{B_r}\|D^2L\|\le M$, gives the already-known conditional goal interval $|Q(Y_\ast)-L(\widehat Y)|\le\|DL(\widehat Y)\|\,\rho+M\rho^2/2$. This is **subsumed by S-L6**, and does NOT beat the exact same-information ordered adjoint or permit a global S150 source certificate. It is useful only as a concrete **missing-guard negative test** before deploying a residual certificate across event switches.
 
 **Primary-source assumptions.** Serban & Recuero (2019) source event sensitivity identities (original §§2–3, event Eq.4/6/8 and jump Eq.12–13, pp.6–9) require consistent DAE branches and transversal event. Chen & Trenn (2023) switched DAE common-Lyapunov/dwell results require authorized jump/consistency maps, not simply adjacent continuous-flow matrices. Chaudhry, Lewis & Molla (2025), [arXiv:2507.03712](https://arxiv.org/abs/2507.03712), Theorems 3.2–3.4 use semi-explicit index-one/Hessenberg-index-two regularity and **linear QoI** for the original averaged-J residual representation; an independent nonlinear signed $VI$ Hessian/guard remainder must still be proved for DPT. Use [analytic no-guard regression](../dpt_tools/test_paper_transfer_falsifiers.py) as a falsifier; this is not another completion claim. Status SIDE_VERIFIED on synthetic DAE, actual S150/N100 source guard and root cover OPEN.
+
+## 2026-10-18 S-L10: two ACTUAL 150V source-specific one-step dissipativity identities, not a whole-root energy certificate
+
+**Why this materially narrows the S-L8 missing proof.** A read-only 2026-10-18 audit of the *nonprotected accepted* Rev6 source in original_submission.zip::analysis/actual_law.py (original controller acceptance locator: pro_runs/20261010_pro18_goal_adequacy_frontier/artifacts/run_C), not a simulated source run, checks two real physical subblocks and their stage signs. Unlike generic passivity or the older fixed-forcing diode monotonicity, these identities use the true G12 charge-row orientation, x–d shunt and the actual diffusion-current/body residual. They are **rowwise** algebraic gates only: global 50D thermal/algebraic coercivity, modes and all roots remain OPEN.
+
+**(S-L10a) Source G12-GL32 stepwise shunt allocation, exact completion of square.** The source nodal residual includes the genuine G12 branch of *quadrature-computed charge* \(Q_{12}(u)\), \(u=v_d-v_s\), sampled at each implicit step with \(\Delta Q=Q_{12}(u_n)-Q_{12}(u_{n-1})\). The associated incidence vector is the x–s edge, so pairing all nodal rows with the potentials leaves a cross term \((u+a)\Delta Q/h\), where \(a=v_x-v_d\). The source x–d shunt has \(R_{xd}=10^{-4}\Omega\); allocate a **nonnegative fraction** \(0<\alpha\le1\) of its conductance dissipation \(\alpha a^2/R_{xd}\) to this one charge branch, leaving \(1-\alpha\) for other residual contributions. Where actual source charge is increasing, its **real secant** \(c=\Delta Q/(u_n-u_{n-1})\) has units F and is nonnegative. The following identity is exact for every BE step \(h>0\) and every \(u_n,u_{n-1},a\), without a root unique inverse:
+$$
+\begin{aligned}
+\frac{\alpha a^2}{R_{xd}}+
+(u_n+a)\frac{\Delta Q}{h}
+&=\frac{c}{2h}(u_n^2-u_{n-1}^2)
++\left[\frac{c}{2h}-\frac{R_{xd}c^2}{4\alpha h^2}\right]
+(u_n-u_{n-1})^2\\
+&\quad+\frac{\alpha}{R_{xd}}
+\left[a+\frac{R_{xd}c(u_n-u_{n-1})}{2\alpha h}\right]^2 .
+\end{aligned}
+$$
+**Proof:** expand both squares, use \(u_n^2-u_{n-1}^2=2u_n\Delta u-(\Delta u)^2\), and cancel the \(a\,c\Delta u/h\) cross term. If the **literal** source GL32 integrated charge is monotone and \(0\le c\le C_{\max}\) on the entire declared guard and parameter interval, a sufficient **sharp for this allocated square** timestep condition is
+$$
+h\ge \frac{R_{xd}C_{\max}}{2\alpha}.
+$$
+The nonnegative charge-remnant and square then cannot by themselves destroy the stage energy inequality. The controller's actual G12 clipped branch has archived \(C_{\max}=1.0156922324976233\times10^{-9}\mathrm F\) (source low-voltage \(C(0.1\,\mathrm V)\) maximum); with \(\alpha=1/2\), the allocation threshold is **\(h_\ast=0.1015692232497623\) ps**. The saved legitimate grids have min PREP step about 63.492ps and CAL/target step 12.5ps, so **this one G12 subblock passes its exact source-specific timestep gate at every original stage**. This is a scoped source-row sign check, NOT a whole-fork root certification; α must be shared consistently with all other rows. Critically \(c\) depends on endpoints, so \(c(u_n^2-u_{n-1}^2)/(2h)\) does **not automatically telescope** across stages, and quadrature weights stored as binary64 must be interpreted and enclosed as the actual implemented 32-point rule, not as an ideal primitive to silently assert an exact global energy.
+
+**(S-L10b) Source diode diffusion/body positive-storage inequality with a mandatory signed term.** The actual saved-law diffusion/body residuals use \(z=I_s\exp(v_j/a_V)>0,\ \tau=2\)ns, \(i_b=(z-I_s)+(\tau/h)(z-z_{\rm old})\) and \(d=-v_j-E_{\rm th}-r_{\rm eff}i_b\), with \(r_{\rm eff}>0\) in the qualified source guard. **Do not assume \(i_b\ge0\)**: a charge decay may make it negative. The exact body power identity is
+$$
+-d\,i_b=v_j i_b+E_{\rm th}i_b+r_{\rm eff} i_b^2.
+$$
+Define \(\Psi(z)=a_V[z\log(z/I_s)-z+I_s]\) [J per appropriate electrical-unit normalization; voltage×charge-rate units are handled by \(\tau/h\)]. Since \(\Psi'(z)=v_j\), \(\Psi''(z)=a_V/z>0\), and \(v_j(z-I_s)\ge0\), the convex supporting-hyperplane inequality yields
+$$
+v_j i_b\ge(\tau/h)[\Psi(z)-\Psi(z_{\rm old})].
+$$
+For an independently verified \(|E_{\rm th}|\le E_{\max}\) and \(r_{\rm eff}\ge r_{\min}>0\), Young's inequality proves the exact **rowwise** lower bound
+$$
+-d\,i_b\ge\frac{\tau}{h}\Delta\Psi+
+\frac{r_{\min}}2 i_b^2-\frac{E_{\max}^2}{2r_{\min}}.
+$$
+This retention of the signed \(E_{\rm th}i_b\) is essential; setting \(v_j i_b\ge0\) without the diffusion term is generally false. The original source clips some channel/thermal-dependent terms but does NOT globally clip the thermal **state** \(T\), and the heat row includes a *different* \(|d\,i_{\rm sense}|\) term; therefore these inequalities neither prove thermal boundedness nor permit double counting the diode resistor as heat. They do, however, give concrete source-row constraints for a future validated all-root interval pruning and show why a generic continuous pH storage cannot substitute for the discrete BE law.
+
+**Minimal exact two-step controls (no source flow).** On the source clipped constant-slope G12 branch take \(u_0=0,\ u_1=0.02,\ u_2=0.04\) V, \(h=12.5\)ps, \(c=C(0.1\mathrm V)\), \(\alpha=1/2\), and \(a_n=-R_{xd}c\Delta u/(2\alpha h)\): for both steps the completed square vanishes and the remaining coefficient is strictly positive; analytic rational substitution verifies the source row orientation, half-charge term, physical units and timestep gate. Separately choose positive diode \(z_0=I_s,z_1=2I_s,z_2=3I_s,\ h=\tau\), \(v_{j,n}=a_V\log(z_n/I_s)\), \(E_{\rm th}=0,r_{\rm eff}=1\Omega\), \(d_n=-v_{j,n}-r_{\rm eff}i_{b,n}\); both diode and body BE residuals vanish exactly and satisfy the convex \(\Psi\) inequality. These controls are physically patterned test equations, not proof that an S150 legitimate full prepared history realizes them. [Explicit regression](../dpt_tools/test_paper_transfer_falsifiers.py).
+
+**Exact remaining root obstruction.** Even if S-L10a and S-L10b hold for every source step, one must prove the other actual KCL/network, threshold/clipped channel, thermal absolute-value and guard rows can jointly absorb these signed sources, and provide a uniform bound for all algebraic/thermal 50D states before S-L8's exhaustive interval root outer exists. Neither the accepted recenter center nor the seven exposed nonlinear source points proves those quantified bounds. Local historical partial F derivative used FD and source GL32 charge derivative differs from ideal primitive: only the literal value/derivative and directed interval forcing may enter any strict actual goal-adjoint remainder. Evidence level **SIDE_VERIFIED true-source one-step algebra**, actual source-wide root/goal denominator / future signed work **OPEN_RESEARCH**, whole-fork bank beta **PARK**.
