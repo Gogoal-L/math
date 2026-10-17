@@ -193,3 +193,80 @@ def audit_source_gap(data, a, u, actual_currents, actual_goal_J):
             "goal_model_gap_J":gap,
             "joint_numerator_J":numerator,
             "goal_error_J":output}
+
+def known_source_point_noise_gate(data, a, actual_currents_A, actual_goal_J,
+                                  *, gain_lower, noise_abs_A, goal_tolerance_J):
+    """Exact retrospective five-sample noise budget for ONE exposed source world.
+
+    This method consumes the FUTURE TRUE signed work as input. It MUST NOT be
+    used for a prospective predictor, heldout fitting, calibrated instrument
+    claim, all-source interval, or a substitute for root/guard qualification.
+    The joint five-coordinate noise box and common postfilter positive gain
+    are HYPOTHETICAL contracts, not evidence of physical sensor performance.
+
+    On the declared stored affine decoder H(a), each additive error corner e_i
+    produces a linear-fractional goal error
+      [A + eps*B_s] / [C + eps*D_s].
+    Positivity permits 32 exact corners; increasing common gamma can be
+    rescaled to a smaller member of the SAME additive error box at gamma_min.
+    The threshold is the first closed goal or open pole boundary across the
+    32 corners, not an empirical epsilon search.
+    """
+    _, _, c, G0 = _coefs(data)
+    aa = tuple(F(x) for x in a)
+    obs = tuple(F(x) for x in actual_currents_A)
+    if len(obs) != 5:
+        raise ValueError("five saved source readout currents required")
+    gain, eps, tau = map(F, (gain_lower, noise_abs_A, goal_tolerance_J))
+    if not (gain > 0 and eps >= 0 and tau > 0):
+        raise ValueError("positive gain/tolerance, nonnegative sensor noise required")
+    h_inv = _inverse4(matrix(data, aa))
+    def mapped(t):
+        return tuple(_dot(row, t) for row in h_inv)
+    def anchored(t):
+        return tuple(t[i] - t[0] for i in (4, 1, 2, 3))
+    v = mapped(anchored(obs))
+    if v[0] <= 0:
+        raise ValueError("saved source readout has invalid projective orientation")
+    base = G0 + _dot(c[:3], aa) - F(actual_goal_J)
+    A = gain * (base * v[0] + _dot(c[3:], v[1:]))
+    C = gain * v[0]
+    limit, limiting = (F(0), None) if abs(A) > tau*C else (None, None)
+    corners = []
+    min_gain = None
+    for signs in product((-1, 1), repeat=5):
+        z = mapped(anchored(signs))
+        B = base*z[0] + _dot(c[3:], z[1:])
+        D = z[0]
+        effective_gain = C + eps*D
+        if effective_gain <= 0:
+            raise ValueError("hypothetical noise box includes a denominator pole")
+        min_gain = effective_gain if min_gain is None else min(min_gain, effective_gain)
+        signed_error = (A + eps*B) / effective_gain
+        corners.append((signed_error, signs))
+        if limit != 0:
+            crossings = []
+            if D < 0:
+                crossings.append((C/(-D), "strict_pole"))
+            if B-tau*D > 0:
+                crossings.append(((tau*C-A)/(B-tau*D), "goal_upper"))
+            if -B-tau*D > 0:
+                crossings.append(((tau*C+A)/(-B-tau*D), "goal_lower"))
+            for threshold, reason in crossings:
+                if threshold >= 0 and (limit is None or threshold < limit):
+                    limit, limiting = threshold, (signs, reason)
+    if limit is None:
+        raise ValueError("no finite noise threshold: state a separate proof")
+    lower, upper = min(corners), max(corners)
+    return {
+        "status": "POSTHOC_EXPOSED_SOURCE_POINT_ONLY",
+        "joint_noise_corners": len(corners),
+        "minimum_effective_gain": min_gain,
+        "worst_error_nJ": max(abs(lower[0]), abs(upper[0]))*F(10**9),
+        "lower_error_J": lower[0],
+        "upper_error_J": upper[0],
+        "max_noise_for_goal_tolerance_A": limit,
+        "limiting_signs": limiting[0] if limiting else None,
+        "limiting_constraint": limiting[1] if limiting else None,
+        "claim_ceiling": "One saved source point, exposed future work, hypothetical joint sensor box; NOT source-wide or prospective",
+    }
