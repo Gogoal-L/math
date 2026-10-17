@@ -576,5 +576,29 @@ class FullCalConditionalExperiment(unittest.TestCase):
             self.assertLessEqual(halfwidth(Q(k,100)),cap)
         self.assertLess(cap,Q(2))
 
+class SwitchedDAEGoalGuard(unittest.TestCase):
+    """S-L9 exact moving-event source goal regression."""
+
+    def test_full_event_residual_matters_when_flow_residual_vanishes(self):
+        from fractions import Fraction as Q
+        F=lambda u,t:(u-1,u*t-Q(3,5))
+        G=lambda u,t:u*(1+u/2)*t+2*u*(1-t)
+        self.assertEqual(F(Q(1),Q(3,5)),(0,0))
+        self.assertEqual(G(Q(1),Q(3,5)),Q(17,10))
+        self.assertEqual(F(Q(1),Q(1,2))[0],0)
+        self.assertEqual(G(Q(1),Q(1,2)),Q(7,4))
+        self.assertEqual(G(Q(1),Q(1,2))-G(Q(1),Q(3,5)),Q(1,20))
+
+    def test_exact_event_aware_adjoint_correction(self):
+        from fractions import Fraction as Q
+        u,t=Q(9,10),Q(3,5)
+        F=(u-1,u*t-Q(3,5))
+        G=u*(1+u/2)*t+2*u*(1-t)
+        lam=(Q(227,100),Q(-11,20))
+        self.assertEqual(F,(Q(-1,10),Q(-3,50)))
+        self.assertEqual(G,Q(1503,1000))
+        self.assertEqual(G-lam[0]*F[0]-lam[1]*F[1],Q(1697,1000))
+        self.assertEqual(Q(17,10)-(G-lam[0]*F[0]-lam[1]*F[1]),Q(3,1000))
+
 if __name__ == "__main__":
     unittest.main()
