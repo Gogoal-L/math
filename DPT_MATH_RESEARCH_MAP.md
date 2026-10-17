@@ -29,6 +29,20 @@
 
 **Main 接受的含义。** 上述 MAIN_ACCEPTED 是现有本地 absorption 记录的状态转述，不表示本次 GitHub Math 重演了原始 DPT 仿真；来源、时间、owner 都在第 5 节。18A 的完整 recorded-command 替代方案、18B 未见成员失败、18C 非唯一 L 是 Side 后续研究必须正面接受的证据。**100 V R1、150 V CAL/history、600 V native 是三套不同 evidence chart，不能拼接成一条硬件测量证明。**
 
+### 2026-10-17 本地主控只读回填：新证据如何改变 Side 问题
+
+以下是 Math Side 对 `Power Semiconductor/docs/derivations/README.md`（2026-10-17 阅读版）与 `pro_runs/20261014_pro19_physical_recovery_response_frontier/absorption.md` 的**只读记录**；精确公式另见本地 `docs/derivations/dpt_r1_02_switching_physics.tex`、`dpt_r1_04_objective_recoverability.tex` 的 INV-FRB01–10、`dpt_r1_05_differential_transport.tex`。这些是本地主控的 scoped acceptance / source-replay 记录，**本 GitHub Math 本轮并未读取 protected truth、独立运行其 native/flow，也不改变其 owner 决定**。本地文件可能存在未提交版本，Math 只登记读取时的科学状态，不提供镜像原始 source 的权威副本。
+
+| 新来源与本地报告身份 | 改变的科学判断 | 仍需 Math Side 闭合的条件 |
+| --- | --- | --- |
+| **Pro19D（2026-10-17 本地主控限定接受；有限 flow witness 尚未独立全量重放）** | 同 S150 own-PREP、完整 raw CAL 下，压缩 χ+ψ 的合法近等观测见证距离 `9.4980621e-7≤1e-6`，但 full CAL 距离 `2.7589800e-5`，对应 doublet signed-work 差 `0.000321128494 nJ`；只证明该**压缩摘要**丢失了完整记录可辨别的方向。stored linear full-CAL tangent 的 `ker A⊆ker g` 可读出目标，27 支持中 18 项为盒内 sharp、9 项为 unboxed outer；实际连续非线性 `C_eta` 范围仍 OPEN | 与 Full 同信息对照，取得完整合法 source/guard/联合 noise 下的 `G-p(O)` uniform remainder，或具名且 **Full 同样相容** 的 future-work 双世界反例；不能把 compressed alias 外推为 Full 也失败 |
+| **Pro19B（本地主控已接受 fixed-law source algebra）** | 当前同 law 有每步 **10 nonlinear solved variables / 28 sufficient carry-history coordinates** 的可执行消元构造；这不是 10-state 模型、最小动态状态，也没有证明 28-history 能由原 I2 外部记录初始化。保留 gate/charge/diode/load/thermal feedback | 检查低维表示在合法 PREP、guard、future command 作用下的 update consistency、external initialization 与 goal invariance；先比同信息 Full50 |
+| **Goal27 / 150 V Pro18C（2026-10-12 controller-accepted conditional proxy，旧 whole-fork beta PARK）** | normalized five-current 分式**代理**的 fixed affine-q 全 bank noise-free error upper `0.876578434279 nJ`，中心之外有 exact 同-q 双点 lower `0.343587503255 nJ`；calibrated-D 与 known-absolute raw5 的相应同角色 proxy minimax 半径约 `0.0115878648465 / 0.003780563 nJ`。这些来自不同测量信息与标定合同，不能互报赢家 | 给 actual nonlinear coupled source、full pretarget CAL、真实 joint sensor error 和同一 frozen work 取得有效 `G-p(O)` 上界；不能把 proxy certificate 或 77 点最大值称 continuous source guarantee |
+| **INV-FRB / N100、S02（2026-10-17 推导阅读版；作用域限定已接纳记录）** | 固定有限弦投影读数与真实 signed work 是不同泛函；**`W_H(a)-W_H(b)≠W_H(a-b)`** 因 `VI` 双线性。S02 匹配 PREP 的一组 Rg 变化 fine/coarse work 差约 `+13.611560/+13.593594 nJ`，错误的差波形自乘只约 `+0.722291/+0.713992 nJ`。N100 新 PREP 的 time-shape 在同一 tail-work 评分比 Full/profile 好，且两者的 ΔL 恢复排序不能直接移植到未来 work；R1 联合 L/Rg 新命令亦出现 recovered L 准但 work 不够准 | 冻结 goal scorer 的端口、电流身份、时间窗口与两条路径；始终与 full-record/time-shape/ordinary 同信息竞争，给正确的波形**差后积分**规则与余项，避免读出投影好被提升为 signed-work 保证 |
+| **S02 参数曲率（2026-10-16 本地主控接受 scoped）** | 状态线性 RLC descriptor 仍可有非零参数二阶曲率，有限弦 Taylor remainder 与 fixed readout bias 有各自预算 | S02 上的已验数学不能作为 S150/600 V 的 uniform curvature 常数；只有匹配 source path、合法 PREP 和观测定义才可迁移证明结构 |
+
+**Side 的实际选择变化：** 先处理 S150 actual full-CAL 上 `G-p(O)` 的相关 source remainder / continuous compatible-goal 范围，再考虑有限 ΔL 的联合 work–slope enclosure 与最小 pretarget 修复。若已存完整 CAL ordinary 足够，增加摘要或新传感器没有独立信息收益；若只因已有 Banach self-map 的 q>1 而失败，则仅说明该充分性检验未通过，不能断言源模型无根或所有证书路线无望。上述记录不标记为本轮 MAIN_ACCEPTED，也不授权新 native。
+
 ## 2. Math Side 又推进了什么（Side → Main 的可吸收增量）
 
 | 新对象 / 状态 | 新的可检验能力及不能外推的部分 | 主控最小下一消费 |
