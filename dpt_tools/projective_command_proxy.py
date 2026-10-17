@@ -272,43 +272,50 @@ def known_source_point_noise_gate(data, a, actual_currents_A, actual_goal_J,
     }
 
 def source_deviation_univalence_gate(data, *, residual_upper_A, derivative_upper_A):
-    """CONDITIONAL actual nonlinear output global-injectivity criterion.
+    """Two-world global injectivity gate, conditional on ACTUAL source jets.
 
-    R bounds the four true-source vs stored-affine projective anchor residual
-    in A for ALL root/guard-qualified normalized u in the convex full [-1,1]^3.
-    J bounds its FULL source u-Jacobian induced infinity norm in A per
-    dimensionless parameter, including common PREP, RC memory and thermal
-    feedback. These are externally verified inputs, NOT inferred from a point
-    Jacobian, from the saved proxy, or from the accepted 7 archive points.
+    R/J are separately verified ALL-u C1 bounds for a single source/guard
+    branch on the convex normalized parameter cube. The true source, complete
+    legally recorded command, filter initialization and active source guards
+    are NOT qualified by this utility or by seven archived point observations.
 
-    For w=H(a)^-1 r, let rho=K R and s=K J, where K is a rigorously
-    exact rational full recorded-PREP cube supremum of ||H(a)^-1||_inf.
-    Then the normalized actual output can be factored as
-       T(u) = (u + w_tail)/(1+w0).
-    If rho<1/2 and 2s<(1-rho)(1-2rho), ||DT-I||inf<1, hence T is
-    globally injective on a convex single-source smooth branch. All legal
-    branches and the actual D>0 orientation require separate qualification.
-    Local nonsingularity of [t,Dt] alone is NOT enough for global univalence.
+    Write w=H(a)^-1[t_src-H(a)(1,u)], T=(u+w_tail)/(1+w0).
+    Split the source-output defect into one homogeneous and three tail rows:
+      |w0| <= k0 R, |wtail|inf <= kv R,
+      ||Dw0||inf <= k0 J, ||Dwtail||inf <= kv J.
+    The exact two-world projective identity gives global lower Lipschitz
+      (1 - kv*J - k0*J*(1+kv*R)/(1-k0*R))/(1+k0*R).
+    Positive lower and separate TRUE actual D>0 certify same-branch q
+    injectivity. The older ||DT-I||<1 test is sufficient but stricter.
     """
     certify(data)
     R, J = F(residual_upper_A), F(derivative_upper_A)
     if R < 0 or J < 0:
-        raise ValueError("claimed source residual and Jacobian bounds must be nonnegative")
-    # Every row signed support of H(a)^-1 is affine-over-affine in recorded
-    # a with fixed-sign determinant; extrema occur at 8 PREP cube corners.
-    K = max(sum(map(abs, row))
-            for a in product((-1, 1), repeat=3)
-            for row in _inverse4(matrix(data, a)))
+        raise ValueError("claimed continuous source bounds must be nonnegative")
+    invs = [_inverse4(matrix(data,a)) for a in product((-1,1),repeat=3)]
+    k0 = max(sum(map(abs,inv[0])) for inv in invs)
+    kv = max(sum(map(abs,row)) for inv in invs for row in inv[1:])
+    K = max(k0,kv)
     rho, s = K*R, K*J
-    passed = rho < F(1,2) and 2*s < (1-rho)*(1-2*rho)
-    kappa = ((rho*(1-rho)+2*s)/(1-rho)**2 if rho < 1 else None)
+    older_kappa = ((rho*(1-rho)+2*s)/(1-rho)**2
+                   if rho < 1 else None)
+    alpha_lower = 1-k0*R
+    if alpha_lower > 0:
+        tail_sup = (1+kv*R)/alpha_lower
+        lower = (1-kv*J-tail_sup*k0*J)/(1+k0*R)
+    else:
+        lower = None
+    passed = lower is not None and lower > 0
     return {
         "status": ("CONDITIONAL_GLOBAL_INVERSE_ON_ONE_QUALIFIED_BRANCH"
                    if passed else "INCONCLUSIVE_NONLINEAR_SOURCE_JET_GATE"),
+        "gate_method": "TWO_POINT_SPLIT_ROW_BOUNDS",
         "K_H_inverse_inf_A_inv": K,
+        "K_H_inverse_row0_A_inv": k0,
+        "K_H_inverse_tail_A_inv": kv,
         "rho": rho,
         "derivative_defect_norm": s,
-        "kappa": kappa,
-        "inverse_lower_lipschitz": 1-kappa if passed else None,
-        "claim_ceiling": "Requires true all-root branch/guard, actual D>0 and source-wide R/J bounds; saved affine rank or finite exposed points do NOT establish these",
+        "kappa": older_kappa,
+        "inverse_lower_lipschitz": lower if passed else None,
+        "claim_ceiling": "No actual nonlinear all-root source C1 domain, true D>0 or joint sensor noise claim; each must be independently qualified",
     }
