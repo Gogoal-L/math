@@ -522,3 +522,47 @@ This retention of the signed \(E_{\rm th}i_b\) is essential; setting \(v_j i_b\g
 **Minimal exact two-step controls (no source flow).** On the source clipped constant-slope G12 branch take \(u_0=0,\ u_1=0.02,\ u_2=0.04\) V, \(h=12.5\)ps, \(c=C(0.1\mathrm V)\), \(\alpha=1/2\), and \(a_n=-R_{xd}c\Delta u/(2\alpha h)\): for both steps the completed square vanishes and the remaining coefficient is strictly positive; analytic rational substitution verifies the source row orientation, half-charge term, physical units and timestep gate. Separately choose positive diode \(z_0=I_s,z_1=2I_s,z_2=3I_s,\ h=\tau\), \(v_{j,n}=a_V\log(z_n/I_s)\), \(E_{\rm th}=0,r_{\rm eff}=1\Omega\), \(d_n=-v_{j,n}-r_{\rm eff}i_{b,n}\); both diode and body BE residuals vanish exactly and satisfy the convex \(\Psi\) inequality. These controls are physically patterned test equations, not proof that an S150 legitimate full prepared history realizes them. [Explicit regression](../dpt_tools/test_paper_transfer_falsifiers.py).
 
 **Exact remaining root obstruction.** Even if S-L10a and S-L10b hold for every source step, one must prove the other actual KCL/network, threshold/clipped channel, thermal absolute-value and guard rows can jointly absorb these signed sources, and provide a uniform bound for all algebraic/thermal 50D states before S-L8's exhaustive interval root outer exists. Neither the accepted recenter center nor the seven exposed nonlinear source points proves those quantified bounds. Local historical partial F derivative used FD and source GL32 charge derivative differs from ideal primitive: only the literal value/derivative and directed interval forcing may enter any strict actual goal-adjoint remainder. Evidence level **SIDE_VERIFIED true-source one-step algebra**, actual source-wide root/goal denominator / future signed work **OPEN_RESEARCH**, whole-fork bank beta **PARK**.
+
+## 2026-10-18 S-L11: actual fixed-window work makes the P36 homogeneous source-goal Hessian partially low rank
+
+**Source-specific structure, beyond merely naming an adjoint.** Let \(X\) stack every lawful original common 126-step PREP, 4800-step filtered CAL and 6720-step target state plus actual index-one algebraic/thermal/guard variables and source Jacobian rows. Fix the recorded command and the original target H scorer *before* source forecast. On the original stored fixed 841-point target-output time grid the signed external terminal work
+$$
+G_H(X)=\frac12\sum_k\Delta t_k
+[V_k I_k+V_{k+1}I_{k+1}]\quad[\mathrm J]
+$$
+is a **quadratic function of the exposed physical port V/I state components** (with independently fixed interpolation/trapezoidal weights and no moving guard); it is NOT the unrelated \(W(\Delta V,\Delta I)\) nor a non-quadratic continuous native integral. Augment the original sampled 100MHz RC filtering recurrence and calibrated five readout states into the source vector, so five sampled CAL currents are *linear coordinate readouts of X* on one fixed mode/clock, despite the nonlinear physical DAE forcing. With a fixed P36 recorded-PREP \(a\), let \(s(X),v(X)\) be the four homogeneous projective coordinates \(H(a)^{-1}t(m(X))=(s,v)\); these are **linear in those readout coordinates**, but the constraint law \(F(X)=0\) remains nonlinear. Set \(C(a)=G_0+c_a^\top a\) and the denominator-cleared actual goal numerator
+$$
+N(X)=s(X)[G_H(X)-C(a)]-c_u^\top v(X)\quad[\mathrm J].
+$$
+At eligible true roots \(s>0\), the frozen decoder error is exactly \(N(X)/s(X)\). Because \(s,v\) are linear and \(G_H\) is quadratic, their exact source-coordinate Hessian is
+$$
+D^2N(X)=s(X)D^2G_H+
+Ds\otimes DG_H(X)+DG_H(X)\otimes Ds.
+$$
+The *mixed correction* has rank at most **two** at any point; the first \(sD^2G_H\) term and the full \(-\lambda^\top D^2F\) Hessian may be high rank over 11546 stages. **Claiming the entire 50-state/global Hessian is rank two would be false.** The actual G11 GL32 charge, diode diffusion/thermal source rows and RC coefficient variation must be differentiated as implemented; in the nonprotected archived source, some local Jacobians were obtained by finite differences and the ideal charge primitive derivative is not identical to the literal GL32 endpoint derivative. A point FD tangent is not a rigorous outward Hessian envelope.
+
+**(S-L11) Conditional goal-only projected factor certificate.** For any source/root/guard-qualified ball \(\|X_\ast-\widehat X\|\le R\) (dimensionless physical variable scaling required), choose a frozen physical row-scaled multiplier \(\lambda\) and \(\mathcal L(X)=N(X)-\lambda^\top F(X)\) [J]. Suppose on the entire convex source-valid segment all true-root Hessians admit a **verified** decomposition
+$$
+D^2\mathcal L(X)=\sum_j U_j K_j(X)U_j^\top+E(X),\quad
+\|K_j(X)\|\le M_j,\ \|E(X)\|\le\eta,
+$$
+where each \(U_j\) is a fixed low-column projection and source rows \(P_j\) satisfy uniformly \(\|U_j^\top-P_j DF(X)\|\le\delta_j\) on that ball, in the same declared row/state norms. Since \(F(X_\ast)=0\), source integration gives
+$$
+\|U_j^\top (X_\ast-\widehat X)\|
+\le b_j:=\|P_jF(\widehat X)\|+\delta_j R.
+$$
+Second-order Taylor, **without forming a global state inverse**, now yields the rigorously *conditional* signed goal-only bound
+$$
+|G_H(X_\ast)-\widehat G|
+\le
+\frac{|\mathcal L(\widehat X)|
++\|D\mathcal L(\widehat X)\|R
++\tfrac12\sum_j M_j b_j^2+\tfrac12\eta R^2}
+{s_\ast},
+\qquad s(X_\ast)\ge s_\ast>0.
+$$
+**Proof:** \(N(X_\ast)=\mathcal L(X_\ast)\). Integrate \(P_j DF(X)\) along the segment to replace the true \(U_j^\top e\) with \(-P_jF(\widehat X)\) plus at most \(\delta_jR\), then apply the Hessian factor bound in the integral Taylor remainder. This is a source-specific *factorization/computation strategy for the existing S-L6 goal Lagrangian*, not a generally sharper theorem than an exact full ordered adjoint and not a replacement for a root-containing source outer.
+
+**Exact distinct oracle.** Let \(F(x,y)=(x-1,\varepsilon(y-1))\) with \(\varepsilon>0\) arbitrarily small, \(s=1,N=(x+y)^2\), center \(\widehat X=(0,0)\) and true root \((1,1)\). Choose \(U=(1,1)^\top\), \(K_1=2\), \(P=(1,\varepsilon^{-1})\), \(\lambda=0\) and \(E=0\). Then \(U^\top=PDF\), \(\delta=0\), \(b=|PF(\widehat X)|=2\), \(\mathcal L(\widehat X)=D\mathcal L(\widehat X)=0\) and the bound is *exact*: \(|N(X_\ast)|\le(2)(2^2)/2=4\). The full inverse Jacobian norm diverges as \(\varepsilon\to0\), while the factorization's target bound stays finite. The **ordinary** full-source solver also knows the exact goal 4, so this does not imply scientific improvement over a same-information full-record ordinary; the toy only falsifies the premise that every goal bound must pay the smallest state singular value. [Exact negative-control regression](../dpt_tools/test_paper_transfer_falsifiers.py).
+
+**Primary reference and true data gap.** Endtmayer, Langer & Wick, “Two-Side a Posteriori Error Estimates for the Dual-Weighted Residual Method,” *SIAM J. Sci. Comput.* 42(1) A371–A394 (2020), DOI [10.1137/18M1227275](https://doi.org/10.1137/18M1227275), original [author report](https://www.ricam.oeaw.ac.at/files/reports/18/rep18-32.pdf) Theorem 2.1 PDF p4 retains a nonlinear functional remainder; Lemma 3.6 p7 and Theorem 3.9 p8 use additional approximation/saturation assumptions, Remark 3.13 excludes unbudgeted data/quadrature errors. It is stationary nonlinear FE a posteriori theory, **not** a guarantee for switched DAE/GL32/physical SiC. The smallest actual zero-native check is to qualify **one source-legal saved segment** containing the CAL/target active thermal row9/row41, the exact original 841-point VI scorer, genuine GL32 derivative/guard and shared filter state, then produce outward full-field \(P_jDF,U_j\) and low-dimensional Hessian factors. If source-wide root containment or \(s_\ast>0\) fails, ABSTAIN. Recenter point shifts \(\Delta G\approx-2.581761188\times10^{-13}\) J and observed joint \(-1.393544835528\times10^{-13}\) J have their own certified-offset ledger and cannot be silently swallowed into this nonlinear remainder. **Status mathematical SIDE_VERIFIED / actual all-root S150 source-G bound OPEN.**
