@@ -283,3 +283,48 @@ R^{\rm full}_{D,n}-R^{\rm aff}_{D,n}
 第二式假设在同盒内 $`G`$ 对相同加权范数有统一 Lipschitz 常数 $`L_G`$，其 guard、事件与积分窗口都已合格。**证明结构**是 Banach 自映射与收缩，加上 $`G`$ 的统一一阶增益；不是当前 600-V vendor 源已通过该完整 box 的宣告。把 (M37) 传入 $`\|HF(c)\|`$ 时还需其余 nodal/charge/network/thermal residual rows、共享 previous-state 相关性与完整伴随/goal 传播，不能只对一个 diode scalar 宣称全波形误差。
 
 这条 (M34–M39) 是对**已提供实际耦合 BE 本构**的条件余项建设：F132 提醒不可漏组合项；F119 提醒不能用不合格噪声独立性；F129 提醒 previous-step charge 及合法命令历史影响后继响应。**数学计算来自指数电荷方程自身**；不是将任何 F119/F129/F132 的原定理直接移植到 SiC。该结果对应 V6 **600 V coupled BE branch**，与先前 150-V reference-completed trapezoidal descriptor 分开，不共享求解/物理资格。
+
+## 2026-10-17 addendum: full-PREP work/slope certificate (S-L1–S-L4)
+
+**Scope and units.** The following is independent DPT calculus, inspired by F266's certificate *architecture*; it is not the MUB theorem or a source-verified SiC result. Fix one source reference, the complete **pretarget** digital command, a legal preparation protocol, a frozen future command, terminal port orientation, fixed-grid/window signed-work rule and one smooth guard/DAE branch. All derivatives are taken in stated, physically scaled coordinates. Here $L$ has units H, $W$ has units J, $W_L$ has J/H and $W_{LL}$ has J/H$^2$.
+
+**S-L1 (the prepared-state contribution is exact under regularity).** Let $P(z,L)=0$ describe the complete legal preparation, $F(X,z,L)=0$ the stacked future residual and $W=G(X,z,L)$ the frozen signed terminal work. If $P_z,F_X$ are invertible along a smooth, source-consistent continuation, solve $F_X^\top\lambda=G_X^\top$. Then
+$$
+\frac{dW}{dL}=
+\underbrace{G_L-\lambda^\top F_L}_{\text{fixed-entrance future response}}
+-\underbrace{(G_z-\lambda^\top F_z)P_z^{-1}P_L}_{\text{legal PREP transport}}.
+$$
+Indeed $z_L=-P_z^{-1}P_L$ and $X_L=-F_X^{-1}(F_L+F_z z_L)$; substitute in $dG/dL$. If $z=S(H,L)$ is a readout of prepared history $P(H,L)=0$, include the **explicit** $S_L$ term. The decomposition is parametrization- and preparation-protocol-dependent, not an intrinsic physical or causal allocation. A post hoc initial-condition splice, changing active set, moving guard/event, solver grid or inconsistent DAE algebraic initial state is outside these assumptions.
+
+**S-L2 (joint work–slope envelope and sharp two-world obstruction).** For a nonempty set $\mathcal H_y$ of source-legal worlds compatible with the **same complete pretarget** command/CAL observation $y$, let $w_h=W_h(L_0)$, $s_h=W'_h(L_0)$ and let one independently source-certified $M\ge\sup_{h\in\mathcal H_y,\,|\ell-L_0|\le r}|W_h''(\ell)|$ hold along each legal future continuation. Define the *joint* feasible pair set $\mathcal Z_y=\{(w_h,s_h):h\in\mathcal H_y\}$ and its support endpoints $a(\delta)=\inf_{\mathcal Z_y}(w+\delta s)$, $b(\delta)=\sup_{\mathcal Z_y}(w+\delta s)$. For $|\delta|\le r$,
+$$
+W_h(L_0+\delta)\in
+\left[a(\delta)-\tfrac12M\delta^2,\;
+      b(\delta)+\tfrac12M\delta^2\right],
+\qquad
+R_y(\delta)\le\tfrac{b(\delta)-a(\delta)}2+\tfrac12M\delta^2 .
+$$
+This follows by Taylor's theorem **for every eligible history** followed by infimum/supremum; the interval midpoint is a pretarget predictor with the displayed worst-case upper bound. A guaranteed $\tau$-adequate prediction needs the right-hand side $\le\tau$. Pairwise lower witnesses remain valid: any two eligible histories with $|(w_h-w_{h'})+\delta(s_h-s_{h'})|>2\tau+M\delta^2$ refute $\tau$-adequacy. Keeping $(w,s)$ **joint** can be much sharper than combining separate $w$ and $s$ boxes; for pairs $(1,-1),(-1,1)$ at $\delta=1$, the joint linear goal is identically $0$, while the independent box gives $[-2,2]$.
+
+To compute $s_h$ without a new solver, stack **all PREP + switching** residual rows as $\mathcal F(X,L;h)=0$ with $A=\mathcal F_X$ and solve $A^\top\lambda=G_X^\top$: $s_h=G_L-\lambda^\top\mathcal F_L$. Every backward-Euler mass/stamp term, previous-state derivative, prepared history and readout window belongs to this full derivative. With $J=-A^{-1}\mathcal F_L$, the conditional curvature is
+$$
+W''=G_{LL}+2G_{XL}J+G_{XX}[J,J]
+-\lambda^\top\bigl(\mathcal F_{LL}+2\mathcal F_{XL}J+\mathcal F_{XX}[J,J]\bigr).
+$$
+A pointwise floating Hessian or a finite collection of observed worlds does not supply the uniform $M$, the continuous set $\mathcal Z_y$, root existence or guard coverage. Compare on the **same information, source tube and goal** against full-source forward/adjoint and calibrated full-record ordinary predictors.
+
+**S-L3 (F266-inspired centered normal-error bound; conditional independent lemma).** Let $z=(X,L)\in\mathbb R^{n+1}$ and $\mathcal F:\mathbb R^{n+1}\to\mathbb R^n$, with a dimensionless scaled norm specified for unlike physical units. At a center $c$ choose a unit approximate tangent $t$ with $t_L\ne0$ and a preconditioner $M_0\in\mathbb R^{(n+1)\times n}$. Put $J_c=D\mathcal F(c)$,
+$$
+\alpha=\|I-tt^\top-M_0J_c\|,\quad n_0=\|M_0\mathcal F(c)\|,\quad
+s=\frac{DG(c)t}{t_L},\quad b=\|DG(c)-s\,e_L^\top\|.
+$$
+Assume every eligible exact root $c+d$ lies in one source-certified smooth, guard-consistent ball $\|d\|\le R$, that $\|M_0(\mathcal F(c+d)-\mathcal F(c)-J_c d)\|\le C\|d\|^2$ there and $\|D^2G\|\le H_G$. Then
+$$
+|G(c+d)-G(c)-s\,d_L|
+\le b(n_0+\alpha R+CR^2)+\tfrac12H_GR^2.
+$$
+**Proof:** $e=(I-tt^\top)d=(I-tt^\top-M_0J_c)d-M_0\mathcal F(c)-M_0R_F(d)$ at any root, so $\|e\|\le n_0+\alpha R+CR^2$; $DG(c)-s e_L^\top$ annihilates $t$. Apply Taylor to $G$. Neither this lemma nor F266 **establishes root existence**; a verified covering of the legal continuation and source/guard remainder are separate obligations. F266 Definition 4.1, Lemmas 4.3–4.4, Propositions 4.5–4.6 and Theorem 7.1 provide the original certificate pattern with separate global/computational obligations; its MUB and selected Lean scopes do not transfer to DPT.
+
+**S-L4 (exact analytic checks and falsifiers, all synthetic).** For unit-step BE $Li'+i=1$, legal one-step PREP $(L+1)i_0=1$, two future steps $(L+1)i_k-Li_{k-1}=1$ and $W=i_1+i_2$, exact substitution gives $W=(5L^2+6L+2)/(L+1)^3$. The fixed-entrance and PREP derivatives are respectively $-L(3L+1)/(L+1)^4$ and $-L(2L+1)/(L+1)^4$. On $L:1\to2$ their integrals are $-137/648$ and $-25/162$, summing to $\Delta W=-79/216$. The first-order remainder about $L=1$ equals $31/432$: using only the point curvature $|W''(1)|=1/8$ falsely promises $1/16$, while a **validated interval** curvature cap $M=1/6$ promises $1/12$ and covers it. Independently, $\mathcal F_a(X,L)=X-a(L-L_0)^2$, $G=X$ has the *same center residual and tangent* for every $a$ but arbitrary finite $\Delta W=a\delta^2$; source curvature enclosure is indispensable. For slope information, worlds $h=\pm1$ with $\mathcal F_h=X-h(L-L_0)$, $G=X$ and equal pretarget observation share $w_h=0$ and $M=0$ yet produce future goals $\pm\delta$; every scalar decoder has radius at least $|\delta|$.
+
+**Controller interface and current status.** Supply actual source/model+reference, legal PREP and complete pretarget command, qualified stacked current/previous derivatives, signed terminal-work scorer with physical units and ports, branch/guard/timebase, the entire compatible-history $(w_h,s_h)$ support or certified enclosure, uniformly verified $M$, sensor joint nuisance and a same-information full-record ordinary comparator. Local DPT derivations already include S02 parameter-curvature mathematics and scoped two-step actual-source results; do not relabel those as this **whole source/fiber** certificate. A failure of a particular full-fork Banach sufficient test does not prove the physical DAE has no solution. **Mathematical theorem/analytic fixture: SIDE_VERIFIED; actual whole-source/future command guarantee: OPEN_RESEARCH.** See [existing implicit certificate](../dpt_tools/implicit_goal_certificate.py), [ordered goal transport](../dpt_tools/goal_defect_transport.py) and [transfer falsifier tests](../dpt_tools/test_paper_transfer_falsifiers.py).
