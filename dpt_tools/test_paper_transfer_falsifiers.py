@@ -501,5 +501,42 @@ class FullCalSensorElimination(unittest.TestCase):
             self.assertGreaterEqual(h1,0)
             self.assertGreaterEqual(h2,0)
 
+class ContinuousCommandGoalCounterexample(unittest.TestCase):
+    """D2 synthetic passive two-branch quotient and finite-L word break."""
+
+    def test_equal_RL_branches_have_sum_only_port_for_all_common_commands(self):
+        from fractions import Fraction as Q
+        R,L,h,u,s,d=Q(1),Q(2),Q(1),Q(3),Q(4),Q(9)
+        s_next=(L*s+2*h*u)/(L+h*R)
+        d_next=(L*d)/(L+h*R)
+        i1,i2=(s+d)/2,(s-d)/2
+        i1n=(L*i1+h*u)/(L+h*R)
+        i2n=(L*i2+h*u)/(L+h*R)
+        self.assertEqual(i1n+i2n,s_next)
+        self.assertEqual(i1n-i2n,d_next)
+
+    def test_legal_asymmetric_delta_L_reveals_unseen_current_split(self):
+        L,delta,R,T,U,amp=5e-9,0.2e-9,0.1,10e-9,150.,1.
+        gap=U*amp*L/R*(math.exp(-R*T/(L+delta))-math.exp(-R*T/L))
+        self.assertGreater(gap,0)
+        self.assertAlmostEqual(gap*1e9,47.416604269156224,places=8)
+        # A full common-port ordinary cannot separate symmetric hidden split.
+        self.assertAlmostEqual(gap/(2e-9),23.708302134578112,places=8)
+
+    def test_dwell_repair_and_quantized_contracting_tube(self):
+        R,L=0.1,5e-9
+        gain=math.exp(-R*10e-9/L)
+        rho=0.1
+        r=1.0
+        for _ in range(15):
+            r=gain*r+rho/2
+        stationary=(rho/2)/(1-gain)
+        self.assertLess(r,stationary+1)
+        self.assertGreaterEqual(r,stationary)
+        gap=47.416604269156224
+        tau=2.0
+        dwell=L/R*math.log(gap/(2*tau))
+        self.assertLessEqual(gap*math.exp(-R*dwell/L)/2,tau+1e-11)
+
 if __name__ == "__main__":
     unittest.main()
