@@ -714,5 +714,26 @@ class GoalOnlyProjectedLowRankResidual(unittest.TestCase):
             self.assertEqual((Q(1)+Q(1))**2,source_goal_upper)
             self.assertGreater(1/float(eps),1)
 
+class PrefilterMemoryObservationRepair(unittest.TestCase):
+    """P43 one extra nuisance dimension requires a legal sixth CAL direction."""
+
+    def test_sixth_sample_schur_rank_can_resolve_filter_memory(self):
+        from fractions import Fraction as Q
+        # First five readings are y=x+xi*e1 for unknown five-component x.
+        # A sixth legal pretarget sample with coefficient 2xi gives a
+        # Schur complement 2-(1)=1, identifying xi with no new sensor.
+        h5=(Q(1),Q(0),Q(0),Q(0),Q(0))
+        j6=(Q(1),Q(0),Q(0),Q(0),Q(0))
+        self.assertEqual(Q(2)-sum(a*b for a,b in zip(j6,h5)),Q(1))
+        # A redundant sixth readout carries no additional identifiability.
+        self.assertEqual(Q(1)-sum(a*b for a,b in zip(j6,h5)),0)
+
+    def test_unknown_rc_initialization_is_not_common_postfilter_offset(self):
+        times=(12.,31.,42.,46.,60.)
+        h=[math.exp(-2*math.pi*.1*t) for t in times]
+        self.assertGreater(h[0],h[-1])
+        self.assertGreater(h[0]-h[1],1e-6)
+        self.assertTrue(all(z>0 for z in h))
+
 if __name__ == "__main__":
     unittest.main()
