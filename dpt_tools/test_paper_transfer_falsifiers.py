@@ -353,5 +353,32 @@ class DynamicGoalAndAdaptiveNoise(unittest.TestCase):
         self.assertEqual(max(abs(3*h-actual_after_cal[h]) for h in histories),0)
         self.assertNotEqual(actual_after_cal,{h:h for h in histories})
 
+class AffineFiveCurrentInvariant(unittest.TestCase):
+    """Same-record affine-gain quotient for exact noiseless five-current arrays."""
+
+    def test_positive_gain_common_offset_has_exact_inverse_q_orbit(self):
+        from fractions import Fraction as Q
+        def project(m):
+            d=m[4]-m[0]
+            if d<=0: raise ValueError("denominator orientation")
+            return tuple((m[k]-m[0])/d for k in (1,2,3))
+        m=(Q(2),Q(3),Q(5),Q(7),Q(10))
+        a,b=Q(1001535,1000000),Q(23624,1000000000)
+        transformed=tuple(a*x+b for x in m)
+        self.assertEqual(project(transformed),project(m))
+        inverse_a=(transformed[4]-transformed[0])/(m[4]-m[0])
+        inverse_b=transformed[0]-inverse_a*m[0]
+        self.assertEqual((inverse_a,inverse_b),(a,b))
+
+    def test_bounded_gain_or_absolute_calibration_changes_information(self):
+        from fractions import Fraction as Q
+        m=(Q(2),Q(3),Q(5),Q(7),Q(10))
+        transformed=tuple(Q(3,2)*x+Q(1,10) for x in m)
+        self.assertNotEqual(m,transformed)
+        q=lambda seq:tuple((seq[k]-seq[0])/(seq[4]-seq[0]) for k in (1,2,3))
+        self.assertEqual(q(m),q(transformed))
+        self.assertGreater((transformed[4]-transformed[0])/(m[4]-m[0]),Q(11,10))
+        self.assertEqual((Q(4)-Q(0))/2,Q(2))
+
 if __name__ == "__main__":
     unittest.main()
