@@ -156,3 +156,40 @@ def sensor_certificate(data, noise_abs_A, gain_lower):
             "count": count, "max_abs_goal_error_nJ": max_err,
             "minimum_effective_gain": min_gain, "witness": witness,
             "claim_ceiling": "Stored affine proxy and hypothetical joint sensor envelope only"}
+
+def audit_source_gap(data, a, u, actual_currents, actual_goal_J):
+    """Exact post-hoc source/model correction; not a pretarget predictor.
+
+    Requires matched source-law currents and the future goal for an actual
+    same-command member, so this is for source-replay certification only.
+    Do not apply to uncalibrated measured currents or fit to heldout goals.
+    """
+    _, _, c, G0 = _coefs(data)
+    ua = tuple(F(x) for x in u)
+    aa = tuple(F(x) for x in a)
+    if len(ua) != 3 or any(abs(x) > 1 for x in ua):
+        raise ValueError("normalized source parameter outside proxy bank")
+    nominal_currents = forward(data, aa, ua)
+    measured = tuple(F(x) for x in actual_currents)
+    if len(measured) != 5:
+        raise ValueError("expected five actual law currents")
+    difference = [measured[i]-measured[0] -
+                  (nominal_currents[i]-nominal_currents[0])
+                  for i in (4, 1, 2, 3)]
+    inv = _inverse4(matrix(data, aa))
+    w = tuple(_dot(row, difference) for row in inv)
+    alpha = 1+w[0]
+    if alpha <= 0:
+        raise ValueError("actual homogeneous coordinate nonpositive")
+    nominal_goal = G0+_dot(c[:3], aa)+_dot(c[3:], ua)
+    gap = F(actual_goal_J)-nominal_goal
+    mixed = _dot(c[3:], tuple(w[i+1]-ua[i]*w[0] for i in range(3)))
+    numerator = alpha*gap-mixed
+    output = numerator/alpha
+    if output != F(actual_goal_J)-decode(data,aa,measured)["goal_J"]:
+        raise AssertionError("matched source/goal algebra mismatch")
+    return {"status":"POSTHOC_STORED_PROXY_SOURCE_GAP_IDENTITY",
+            "homogeneous_gain":alpha,
+            "goal_model_gap_J":gap,
+            "joint_numerator_J":numerator,
+            "goal_error_J":output}
