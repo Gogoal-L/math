@@ -673,5 +673,30 @@ class ActualSourceStageRowDissipation(unittest.TestCase):
             self.assertGreaterEqual(vj*(z-zold)+1e-21,psi(z)-psi(zold))
             self.assertGreaterEqual(vj*(z-Is),-1e-21)
 
+class FullRecordPairwiseGoalResidual(unittest.TestCase):
+    """P42 exact correlated-noise two-copy source residual goal bound."""
+
+    def test_one_persistent_sensor_drift_is_annihilated_by_goal_contrast(self):
+        from fractions import Fraction as Q
+        kappa=(Q(4,3),-Q(4,3))
+        for z in (Q(-1),Q(1),Q(2),Q(3,2)):
+            goal=z*z*z
+            O=(z/2,-z/4)
+            F=z*z-1
+            self.assertEqual(goal-sum(k*o for k,o in zip(kappa,O)),z*F)
+            self.assertEqual(sum(k for k in kappa),0)
+        # At source roots +/-1, this source identity implies same goal
+        # whenever their joint complete pretarget readings are compatible.
+
+    def test_independently_wandering_noise_creates_a_fake_second_world(self):
+        from fractions import Fraction as Q
+        observed=(Q(1,2),Q(-1,4))
+        hidden_minus=(Q(-1,2),Q(1,4))
+        required=tuple(y-o for y,o in zip(observed,hidden_minus))
+        self.assertEqual(required,(Q(1),Q(-1,2)))
+        self.assertNotEqual(required[0],required[1])
+        self.assertTrue(all(-1<=x<=1 for x in required))  # independent box
+        self.assertEqual((Q(1)-Q(-1))/2,Q(1))  # wrong radius
+
 if __name__ == "__main__":
     unittest.main()
