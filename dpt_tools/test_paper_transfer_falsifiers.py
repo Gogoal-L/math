@@ -161,5 +161,59 @@ class UnifiedDPTMathematicalToy(unittest.TestCase):
         # With independent offsets cancellation no longer holds.
         self.assertNotEqual((1+0.45)-0.35,1)
 
+
+class GoalSourceTransferCertificates(unittest.TestCase):
+    """Independent exact fixtures, not certified actual DPT source evidence."""
+
+    def test_prepared_signed_work_partitions_exactly(self):
+        from fractions import Fraction as Q
+        def work(l):
+            return (5*l*l+6*l+2)/(l+1)**3
+        delta=work(Q(2))-work(Q(1))
+        self.assertEqual(delta,Q(-79,216))
+        self.assertEqual(Q(-137,648)-Q(25,162),delta)
+        # Point curvature is not a uniform finite-intervention upper bound.
+        remainder=delta+Q(7,16)
+        self.assertEqual(remainder,Q(31,432))
+        self.assertGreater(remainder,Q(1,16))
+        self.assertLessEqual(remainder,Q(1,12))
+
+    def test_joint_work_slope_support_beats_separate_boxes(self):
+        from fractions import Fraction as Q
+        ws=[(Q(1),Q(-1)),(Q(-1),Q(1))]
+        self.assertEqual([w+s for w,s in ws],[0,0])
+        # Synthetic two-world slope ambiguity defeats any constant goal forecast.
+        goals=[Q(0)+Q(2,5)*s for s in (-1,1)]
+        self.assertEqual((max(goals)-min(goals))/2,Q(2,5))
+
+    def test_source_qualified_net_interval_vs_false_finite_bank(self):
+        from fractions import Fraction as Q
+        rho=Q(1,16)
+        centers=[Q(k,8) for k in range(9)]
+        obs=lambda q:q*q
+        goal=lambda q:q
+        y=Q(1,4)
+        eps=Q(1,100)
+        B=[q for q in centers if abs(y-obs(q))<=eps+2*rho]
+        lo=min(map(goal,B))-rho
+        hi=max(map(goal,B))+rho
+        self.assertTrue(B)
+        for k in range(1001):
+            q=Q(k,1000)
+            if abs(y-obs(q))<=eps:
+                self.assertLessEqual(lo,goal(q))
+                self.assertLessEqual(goal(q),hi)
+        # Endpoint-only sampling misses a reachable interior extreme.
+        hidden=lambda q:4*q*(1-q)
+        self.assertEqual([hidden(q) for q in (Q(0),Q(1))],[0,0])
+        self.assertEqual(hidden(Q(1,2)),1)
+
+    def test_co_lipschitz_requires_uniform_chord_gain(self):
+        import math
+        for t in (0,math.pi/2,math.pi,2*math.pi):
+            self.assertAlmostEqual(math.hypot(-math.sin(t),math.cos(t)),1.0)
+        self.assertAlmostEqual(math.cos(0),math.cos(2*math.pi))
+        self.assertAlmostEqual(math.sin(0),math.sin(2*math.pi))
+
 if __name__ == "__main__":
     unittest.main()
