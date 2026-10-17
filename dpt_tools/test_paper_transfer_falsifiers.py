@@ -621,5 +621,24 @@ class GloballyFoldedProjectiveObservation(unittest.TestCase):
         c_kappa_J=-3.0612283425329477e-6*.018
         self.assertGreater(abs(c_kappa_J)*1e9,55)
 
+class CoupledElectrothermalBackwardEuler(unittest.TestCase):
+    """D3: fixed-forcing diode charge contraction does not imply coupled stability."""
+
+    def test_exact_positive_thermal_balance_and_negative_full_det(self):
+        from fractions import Fraction as Q
+        Rs, r, H = Q(1,1000), Q(6,100), Q(75,1000)
+        q, a, z, v, vj = Q(1,200),Q(4,1000),Q(10),Q(3,2),Q(9,10)
+        self.assertEqual(vj*z+r*z*z,Q(15))  # positive dissipative heat
+        self.assertEqual(H*(Q(225)-Q(25)),Q(15))
+        determinant = (H*(Rs+r+q)-a*(v-Rs*z))/r
+        self.assertEqual(determinant,-Q(101,6000))
+        self.assertLess(determinant,0)  # a positive full state eigenvalue exists
+
+    def test_fixed_forcing_diode_z_be_gain_still_strictly_small(self):
+        from fractions import Fraction as Q
+        r,tau,h,z,Vt=Q(6,100),Q(1,100),Q(1,1000),Q(10),Q(1,20)
+        derivative=(r*tau/h)/(Vt/z+r*(1+tau/h))
+        self.assertTrue(0<derivative<tau/(tau+h))
+
 if __name__ == "__main__":
     unittest.main()
