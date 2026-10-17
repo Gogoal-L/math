@@ -380,5 +380,46 @@ class AffineFiveCurrentInvariant(unittest.TestCase):
         self.assertGreater((transformed[4]-transformed[0])/(m[4]-m[0]),Q(11,10))
         self.assertEqual((Q(4)-Q(0))/2,Q(2))
 
+class HomogeneousProjectiveRootWitness(unittest.TestCase):
+    """S-L7 exact source-root oracle; not actual DPT certification."""
+
+    def test_denominator_positive_only_at_roots(self):
+        from fractions import Fraction as Q
+        F = lambda x: x*(x-2)
+        D = lambda x: 1-F(x)
+        for k in range(-4, 13):
+            x = Q(k, 4)
+            self.assertEqual(D(x)-1+F(x), 0)
+        self.assertEqual(D(Q(0)), 1)
+        self.assertEqual(D(Q(2)), 1)
+        self.assertLess(D(Q(5, 2)), 0)  # off-shell pole within [-1, 3]
+
+    def test_homogeneous_goal_duality_works_through_offshell_pole(self):
+        from fractions import Fraction as Q
+        F = lambda x: x*(x-2)
+        D = lambda x: 1-F(x)
+        N = lambda x: -F(x)  # G=0, p(q)=q1, B1=F
+        for k in range(-4, 13):
+            x = Q(k, 4)
+            self.assertEqual(D(x)-1+F(x), 0)  # mu=-1, d0=1
+            self.assertEqual(N(x)+F(x), 0)    # nu_plus=-1
+            self.assertEqual(-N(x)-F(x), 0)   # nu_minus=+1
+        for root in (Q(0), Q(2)):
+            self.assertEqual(F(root), 0)
+            self.assertEqual(N(root)/D(root), 0)
+
+    def test_two_root_same_record_goal_separation_is_unavoidable(self):
+        from fractions import Fraction as Q
+        F = lambda x: x*(x-2)
+        roots = (Q(0), Q(2))
+        self.assertEqual([F(x) for x in roots], [0, 0])
+        self.assertEqual((max(roots)-min(roots))/2, 1)
+        for k in range(-4, 13):
+            x = Q(k, 4)
+            self.assertEqual(x+F(x)/2, x*x/2)
+            self.assertEqual(2-x+F(x)/2, (x-2)**2/2)
+            self.assertGreaterEqual(x*x/2, 0)
+            self.assertGreaterEqual((x-2)**2/2, 0)
+
 if __name__ == "__main__":
     unittest.main()
