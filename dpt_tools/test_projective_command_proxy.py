@@ -121,5 +121,85 @@ class SourceGapIdentity(unittest.TestCase):
         with self.assertRaises(ValueError):
             audit_source_gap(DATA,a,u,reversed_currents,F(1))
 
+# Seven PREVIOUSLY EXPOSED, NONPROTECTED actual-S150 BE/filtered-CAL/target
+# records (2026-10-11 accepted). They are NOT seven same-digital-PREP worlds,
+# not a prospective holdout, and not a whole-source/root/guard certificate.
+# Source identity: Power Semiconductor/pro_runs/20261010_pro18_goal_adequacy_frontier/
+# artifacts/run_C/pro18c_submission/evidence.json, original_submission.zip
+# SHA256 250aa4ea17514ffdeda3a51d95bedf8e034b181f97bdc254db29ddc36281b9c8.
+# Records: pro18c_final_same_fiber_observations.json::records T00–T06 and
+# pro18c_final_same_fiber_results.json::members T00–T06.
+EXPOSED_SOURCE_POINT_RECEIPTS = [
+    ((.2145431754097475, .1989710249221997, .26),
+     (-.0016662905239417055, 3.755624581366593, 5.880856040851975,
+      4.524329335110529, 5.457730705802027), 1.1175682423019277e-05),
+    ((.24299803229881015, .23265778690598232, .2733333333333333),
+     (-.0016655562650208966, 3.756134006102819, 5.8816531956177025,
+      4.524942833021625, 5.458470574599871), 1.1175735258683418e-05),
+    ((.2714847162858332, .26633529219614527, .2866666666666667),
+     (-.001664816599379838, 3.75664375086834, 5.8824508478854725,
+      4.525556715043073, 5.459210905747265), 1.117578930058725e-05),
+    ((.3, .3, .3),
+     (-.001664071488953948, 3.757153765114533, 5.883248919391443,
+      4.526170920753471, 5.459951626164625), 1.1175844563502935e-05),
+    ((.3285466058668199, .3336573710798238, .31333333333333335),
+     (-.0016633210170261478, 3.757664115803705, 5.884047468824628,
+      4.526785505145808, 5.460692813212907), 1.1175901060027933e-05),
+    ((.3571222954486464, .36730204858967713, .32666666666666666),
+     (-.001662565124926676, 3.758174703992945, 5.884846481633284,
+      4.527400427118551, 5.46143438374844), 1.1175958779206933e-05),
+    ((.38572942594214493, .4009383662254762, .33999999999999997),
+     (-.0016618038452613643, 3.7586856143043756, 5.885645954234172,
+      4.5280157126959555, 5.462176401904682), 1.1176017726225357e-05),
+]
+
+
+class ArchivedNonlinearSourcePointGate(unittest.TestCase):
+    def _norm_prep(self, amplitudes):
+        # Lift EACH binary64 stored input independently before subtraction.
+        return tuple((F(amplitudes[j])-F(.3))/F(.14) for j in range(3))
+
+    def test_original_accepted_seven_source_readouts_and_exact_noise_threshold(self):
+        from projective_command_proxy import known_source_point_noise_gate
+        rows = []
+        for a_volts, current_A, signed_work_J in EXPOSED_SOURCE_POINT_RECEIPTS:
+            self.assertEqual(len(current_A), 5)
+            out = known_source_point_noise_gate(
+                DATA, self._norm_prep(a_volts), current_A, signed_work_J,
+                gain_lower=F(9,10), noise_abs_A=F(1,1000),
+                goal_tolerance_J=F(1,10**9))
+            self.assertEqual(out["status"], "POSTHOC_EXPOSED_SOURCE_POINT_ONLY")
+            self.assertEqual(out["joint_noise_corners"], 32)
+            self.assertGreater(out["minimum_effective_gain"], 0)
+            rows.append(out)
+        worst = max(float(out["worst_error_nJ"]) for out in rows)
+        threshold = min(float(out["max_noise_for_goal_tolerance_A"])*1000
+                        for out in rows)
+        self.assertAlmostEqual(worst, 2.9283647861895816, places=10)
+        self.assertAlmostEqual(threshold, 0.3402710153664446, places=11)
+        self.assertEqual(rows[-1]["limiting_signs"], (1,-1,-1,1,1))
+        self.assertEqual(rows[-1]["limiting_constraint"], "goal_lower")
+        self.assertLess(threshold, 1)  # hypothetical 1mA does NOT meet 1nJ.
+
+    def test_exposed_real_source_has_nonzero_model_error_at_zero_noise(self):
+        from projective_command_proxy import known_source_point_noise_gate
+        a, measured, future_goal = EXPOSED_SOURCE_POINT_RECEIPTS[-1]
+        out = known_source_point_noise_gate(
+            DATA, self._norm_prep(a), measured, future_goal,
+            gain_lower=F(9,10), noise_abs_A=F(0),
+            goal_tolerance_J=F(1,10**9))
+        self.assertAlmostEqual(float(out["worst_error_nJ"]),
+                               0.005601739350126236, places=11)
+        self.assertGreater(out["max_noise_for_goal_tolerance_A"],0)
+
+    def test_noise_orientation_rejected_and_no_spurious_forecast_claim(self):
+        from projective_command_proxy import known_source_point_noise_gate
+        a, measured, future_goal = EXPOSED_SOURCE_POINT_RECEIPTS[3]
+        with self.assertRaises(ValueError):
+            known_source_point_noise_gate(
+                DATA, self._norm_prep(a), [-z for z in measured], future_goal,
+                gain_lower=F(9,10), noise_abs_A=F(1,1000),
+                goal_tolerance_J=F(1,10**9))
+
 if __name__ == "__main__":
     unittest.main()
