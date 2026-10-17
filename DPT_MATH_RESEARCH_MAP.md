@@ -80,9 +80,11 @@
 $
 W_L=(G_L-\lambda^TF_L)-(G_z-\lambda^TF_z)P_z^{-1}P_L.
 $
-这是包含入口状态传导的**条件精确恒等式**，不自动给 preparation/window 因果比例。二步 BE 合法 PREP 解析 oracle 的 W=(5L²+6L+2)/(L+1)³，在 L=1→2 的窗口和 PREP 积分贡献分别为 −137/648、−25/162，总和 −79/216；中心曲率值不能替代完整有限 L 的余项常数。 [完整 S-L1–S-L4 推导与独立负控](dpt_research/20261010_goal_information_solver_fidelity.md) 以 F266 center–tangent–remainder 为证书组织借鉴，原 MUB theorem、root existence、Lean 结论均不自动迁移。
+这是包含入口状态传导的**条件精确恒等式**，不自动给 preparation/window 因果比例。二步 BE 合法 PREP 解析 oracle 的 W=(5L²+6L+2)/(L+1)³，在 L=1→2 的窗口和 PREP 积分贡献分别为 −137/648、−25/162，总和 −79/216；中心曲率值不能替代完整有限 L 的余项常数。 [完整 S-L1–S-L6 推导与独立负控](dpt_research/20261010_goal_information_solver_fidelity.md) 以 F266 center–tangent–remainder 为证书组织借鉴，原 MUB theorem、root existence、Lean 结论均不自动迁移。
 
 **新的 goal-relevant 预测对象。** 对同完整 pretarget CAL/recorded-command 相容的历史集合 H_y，联合保留 w_h=W_h(L0) 与 s_h=W_h'(L0)，在全部合法有限 ΔL 路径上独立证明 M≥sup |W_h''|。令 a(δ)=inf_(h∈H_y)(w_h+δs_h), b(δ)=sup_(h∈H_y)(w_h+δs_h)。则冻结未来 signed work 处于 [a(δ)−Mδ²/2,b(δ)+Mδ²/2]；若半宽 (b−a)/2+Mδ²/2≤τ，中点是条件式 τ-adequate decoder。存在合法同信息双世界且未来差>2τ 则任何点预测均不能达到 τ。务必保留 (w,s) **联合支持**，不能以分别建盒声称最优。L、W、s、M 的单位分别为 H、J、J/H、J/H²；source-wide M、guard、previous/current Jacobian、合法 prep 与 frozen goal 缺失时只报告 OPEN_RESEARCH。F266 的原论文证明模式不提供这些 source constants。
+
+**Goal27 直接目标残差的两条条件证书（新 S-L5–S-L6）。** 将实际 S150 whole PREP+CAL/target source 写为 F(Z,θ)=0，冻结未见 signed work G、原完整预目标观察 O 及已训练的 p，直接研究 R=G−p(O)，其 source adjoint 解 F_Z^Tλ=(G−p(O))_Z^T。S-L5 用真实 root/guard 和统一 R'' 的**参数单元 Taylor 余项**证明误差界，保留 G 与 O 的共享状态抵消；S-L6 在经过独立资格化、确实包含全部合法 source roots 的外包集合 B 上验证 sup_B |R−λ^TF|≤ε，则因为 root 上 F=0，无须统一逆范数/收缩即可取得目标误差≤ε。两者都需要实际 source 全域证据；S-L6 **没有证明根存在或物理 law 有效**。对现有 projective proxy 的 ε_proxy=0.876578434279 nJ，只能在另外证明同源联合差额 δ 后写 actual bound≤ε_proxy+δ；未资格化 δ 时保持 OPEN。证明、解析负控及单位见 [S-L5–S-L6](dpt_research/20261010_goal_information_solver_fidelity.md) 和 [同源负控](dpt_tools/test_paper_transfer_falsifiers.py)。
 
 **F329 启发的独立连续 fiber 正向界（P33）。** 同实际 source-legal compact Θ 上若已认证覆盖半径 ρ 的网格、完整预目标观测 O 和未来目标 G 的 uniform Lipschitz L_O/L_G，以及同一 joint error 集 E，定义 B(y)={i:dist(y−O_i,E)≤L_Oρ}。所有连续合法相容世界的 future goal 都落于 [min_B G_i−L_Gρ,max_B G_i+L_Gρ]；半宽≤τ 才预测，否则 ABSTAIN。证明和 Θ=[0,1], O=0, G=4θ(1−θ) 端点 bank 假稳定反例见 [P33](dpt_research/20261012_mixed_nuisance_goal_radius_formal_derivation.md)。F329 polar metric entropy counterexample 和 F140-A Gaussian streaming bit bound 均不直接成为 DPT lower bound；history compression 还需完整 digital transcript、joint noise 与合法 future 更新相容。finite bank 最大差只能构成必要 lower witness，未认证 ρ/Lipschitz 不能宣称连续充分。
 
@@ -96,7 +98,7 @@ $
 
 | 当前证明笔记 | 主要内容；对应 Python 入口 |
 | --- | --- |
-| [Mixed nuisance / goal radius](dpt_research/20261012_mixed_nuisance_goal_radius_formal_derivation.md) | P1–P32、joint-noise radius、CAL、finite-bank repair；[recovery tool](dpt_tools/contextual_goal_recovery.py)、[cover](dpt_tools/goal_repair_cover.py) |
+| [Mixed nuisance / goal radius](dpt_research/20261012_mixed_nuisance_goal_radius_formal_derivation.md) | P1–P33、joint-noise radius、CAL、finite-bank repair；[recovery tool](dpt_tools/contextual_goal_recovery.py)、[cover](dpt_tools/goal_repair_cover.py) |
 | [Goal stability / dynamic closure](dpt_research/20261010_goal_stability_compositional_closure.md) | finite gain、recursive consistency、ordered goal-defect；[stability](dpt_tools/goal_lipschitz_stability.py)、[defect](dpt_tools/goal_defect_transport.py) |
 | [Second-order goal fiber / source Hessian](dpt_research/20261012_second_order_goal_fiber.md) | C1–C23 的 relative Hessian、Q1–Q2 的 Gaussian-Gq/BAE acquisition、stage tube 与 native qualifications；[fiber](dpt_tools/fiber_goal_curvature.py)、[implicit Hessian](dpt_tools/implicit_goal_hessian.py) |
 | [Information × solver fidelity](dpt_research/20261010_goal_information_solver_fidelity.md) | goal sensitivity、source BE storage defect、work/peak、contraction、solver error；[certificate](dpt_tools/implicit_goal_certificate.py) |
