@@ -201,5 +201,39 @@ class ArchivedNonlinearSourcePointGate(unittest.TestCase):
                 gain_lower=F(9,10), noise_abs_A=F(1,1000),
                 goal_tolerance_J=F(1,10**9))
 
+class ConditionalActualSourceProjectiveUnivalence(unittest.TestCase):
+    """The input R/J are C1 WHOLE-SOURCE hypotheses, never fitted here."""
+
+    def test_exact_full_prep_H_inverse_norm_and_strict_global_gate(self):
+        from projective_command_proxy import source_deviation_univalence_gate
+        r = source_deviation_univalence_gate(
+            DATA, residual_upper_A=F(1,10000),
+            derivative_upper_A=F(1,10000))
+        self.assertEqual(r["status"],
+                         "CONDITIONAL_GLOBAL_INVERSE_ON_ONE_QUALIFIED_BRANCH")
+        self.assertAlmostEqual(float(r["K_H_inverse_inf_A_inv"]),
+                               36.0458273992841, places=11)
+        self.assertLess(r["rho"],F(1,2))
+        self.assertLess(r["kappa"],1)
+        self.assertGreater(r["inverse_lower_lipschitz"],0)
+
+    def test_pointwise_inverse_criterion_is_not_global_univalence(self):
+        from projective_command_proxy import source_deviation_univalence_gate
+        r = source_deviation_univalence_gate(
+            DATA, residual_upper_A=F(3,100),
+            derivative_upper_A=F(1,100))
+        self.assertEqual(r["status"], "INCONCLUSIVE_NONLINEAR_SOURCE_JET_GATE")
+        self.assertIsNone(r["inverse_lower_lipschitz"])
+
+    def test_source_exact_proxy_recovery_and_negative_bound_rejected(self):
+        from projective_command_proxy import source_deviation_univalence_gate
+        r = source_deviation_univalence_gate(
+            DATA, residual_upper_A=F(0), derivative_upper_A=F(0))
+        self.assertEqual(r["kappa"],0)
+        self.assertEqual(r["inverse_lower_lipschitz"],1)
+        with self.assertRaises(ValueError):
+            source_deviation_univalence_gate(
+                DATA, residual_upper_A=-1, derivative_upper_A=0)
+
 if __name__ == "__main__":
     unittest.main()
