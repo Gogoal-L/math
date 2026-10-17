@@ -1315,3 +1315,53 @@ $$
 **First source-connected quantitative consequence.** With the seven archived source outputs, \(\gamma_{\min}=0.9\), **hypothetical** ±1mA per filtered current sample and common arbitrary postfilter offset, exactly \(7\times32=224\) rational corners yield a worst absolute signed-work error of **2.928364786189582 nJ** (T06, signs \(+,-,-,+,+\)); all 224 denominator orientations remain positive. Therefore that **particular fixed five-sample decoder** fails a proposed 1nJ worst-case tolerance on the stated seven-source-point-plus-noise scenario, but no all-decoder impossibility or actual instrument noise statement follows. The precisely computed maximal common ε for all seven to have |work error|≤**1nJ** is about **0.340271015366445 mA**, attained at T06 with signs \(+,-,-,+,+\) and a goal-lower crossing (not a denominator pole). An independent adversarial read-only replay reproduced the extrema and noise threshold to >10 decimals. Implementation: [posthoc exact archive gate](../dpt_tools/projective_command_proxy.py) known_source_point_noise_gate; [regression with accepted nonprotected saved numeric receipts](../dpt_tools/test_projective_command_proxy.py). Source path, date and SHA above; claim level VERIFIED_FRESH on saved-source-point rational calculations / not actual source-wide.
 
 **Next legal zero-native decision.** The local OBS-E06A operator explicitly distinguishes postfilter bias from prewindow filter-memory response. The real shared 100MHz initialization, clock/gain dependence and **joint noise across the whole 4801-sample CAL** must be qualified: the hypothetical five-component box does not define a real instrument or complete recorded-data noise contract. Run same-information full-CAL ordinary first; it can strictly dominate this five-sample decoder. Uniform actual nonlinear S150 \(G-p(O)\) still requires all legal 50-state source roots/guard/GL32/thermal coverage, true \(D_{\rm actual}>0\), and a signed CAL/work residual bound. The old whole-fork beta remains PARK. Nothing here is a new future-query blind result or MAIN_ACCEPTED.
+
+## 2026-10-18 P41: a testable nonlinear S150 projective output-injectivity gate, stronger than center rank
+
+**New named actual-source proof obligation.** The proven P36 rank is the exact *stored proxy* \(4\times4\) homogeneous \(H(a)\) for the three normalized, digitally recorded PREP amplitudes \(a\) and three remaining normalized unknowns \(u=(L,\kappa,b)\in[-1,1]^3\); \(b\) enters the shared RC filter, not the internal physical source. On a **single source-qualified smooth continuous branch** containing every \(u\) in the convex cube, define the truly filtered actual anchor-difference map \(t_{\rm src}(a,u)=(D,B_1,B_2,B_3)^\top\), using the **same** lawful PREP/50-state source/filter initialization and recorded current channel. Define
+$$
+r(a,u)=t_{\rm src}(a,u)-H(a)(1,u)^\top\ [\mathrm A],
+\quad w(a,u)=H(a)^{-1}r=(w_0,w_u).
+$$
+The algebraic factorization is EXACT even for nonlinear source outputs:
+$$
+t_{\rm src}=(1+w_0)\,H(a)(1,T(u))^\top,\qquad
+T(u)=\frac{u+w_u}{1+w_0}.
+$$
+A *second* independently qualified actual denominator \(D_{\rm src}>0\) is required; \(1+w_0>0\) is **not** equivalent to this physical positive-anchor gate. When both hold, \(q_{\rm src}(u)=q_{\rm aff}(T(u))\) and the full-rank P36 homogeneous map maps equal normalized observations to equal \(T\).
+
+**(P41) Conditional global source-output recovery.** Suppose verified source-root/guard/parameter continuation and outward interval automatic differentiation show, for every \(u\) on that entire branch, with induced \(\ell_\infty\) norms in A and the normalized parameter cube,
+$$
+\|r(a,u)\|_\infty\le R,\qquad
+\|\partial_u r(a,u)\|_\infty\le J .
+$$
+Let \(K=\sup_{a\in[-1,1]^3}\|H(a)^{-1}\|_\infty\ [\mathrm A^{-1}]\), \(\rho=KR\) and \(s=KJ\). Then \(w\) and its derivative satisfy \(\|w\|\le\rho\), \(\|Dw\|\le s\). Direct differentiation of \(T\) and \(\|u\|_\infty\le1\) gives the *sharp elementary sufficient envelope*
+$$
+\|DT-I\|_\infty
+\le\kappa_T:=\frac{\rho(1-\rho)+2s}{(1-\rho)^2}.
+$$
+If \(\rho<1/2\) and \(2s<(1-\rho)(1-2\rho)\) (equivalently \(\kappa_T<1\)), integrate \(DT-I\) along any segment in the convex cube to obtain
+$$
+(1-\kappa_T)\|u-v\|_\infty\le
+\|T(u)-T(v)\|_\infty\le
+(1+\kappa_T)\|u-v\|_\infty .
+$$
+Thus \(T\), and consequently source \(q_{\rm src}\), are **globally injective on this one declared physical source branch** even if its nonlinear outputs are not the frozen affine proxy. For multiple roots/guard branches, the criterion must cover **all branch pairs** or the source must exclude competing branches; one point's full-rank Jacobian proves none of this. The simpler but conservative \(K(3R+2J)<1\) suffices. **WARNING:** the much weaker condition \(2K(R+J)<1\) checks a local augmented Jacobian perturbation, but is **NOT sufficient for global univalence**; do not import that false shortcut from source geometry. No actual 50-state source-wide \(R,J,D\) has yet been qualified.
+
+**Exact practical frozen-PREP constant.** Since only the first column of \(H(a)\) changes affinely with \(a\), each *signed row support* of \(H(a)^{-1}\) is a linear-fractional function with a fixed-sign affine denominator. It takes its extrema on the eight PREP command corners. Independent exact rational inversion of the saved binary64 coefficients gives
+$$
+K=36.0458273992841\ldots\ \mathrm{A}^{-1}
+<36.046\ \mathrm{A}^{-1}.
+$$
+The eight-corner calculation is a **full PREP command cube bound for this frozen stored proxy**, not a point Jacobian evaluation of actual source. Its computable sufficient gate is \(36.046(3R+2J)<1\), where \(R,J\) are independently validated whole-source A-valued residual and derivative bounds. As a diagnostic only, seven archived real-source points gave max \( \|r(a_i,u_i)\|_\infty\simeq6.6988783\times10^{-5}\) A, but their \(a_i\) differ and these point values do not bound continuous \(R\), let alone \(J\) or alternate roots. The new [exact-rational qualified-input gate](../dpt_tools/projective_command_proxy.py) source_deviation_univalence_gate fails closed as INCONCLUSIVE without sufficiently small **externally supplied** bounds; [tests](../dpt_tools/test_projective_command_proxy.py) check exact K, passing/abstaining and zero-deviation controls.
+
+**Why local rank is inadequate (analytic fold).** Let the actual-source-like output abstraction on a fixed \(a\) be \(t_{\rm fake}(u)=H(a)(1,T_{\rm fold}(u))^\top\), with
+$$
+T_{\rm fold}(u)=\left(\tfrac14e^{u_1/5}\cos(2\pi u_2),
+\tfrac14e^{u_1/5}\sin(2\pi u_2),u_3\right).
+$$
+Every \(u\in[-1,1]^3\) maps to the original proxy's positive-D domain and \(\det DT_{\rm fold}=2\pi(1/5)(e^{u_1/5}/4)^2>0\) **everywhere**, yet \(u_2=0\) and \(u_2=1\) have the **same five-current positive-affine orbit** under the same recorded digital \(a\). If the synthetic future goal is \(G_{\rm aff}(a,u)\), the two corresponding goals differ by \(|c_{\kappa}|=55.102110\ldots\) nJ, while \(q\) is identical. This disproves the inference "nonvanishing determinant everywhere ⇒ globally unique future goal" even with positive denominator; it is **not an actual SiC source or same-4801-point-Full-CAL collision**. The true nonlinear source must have its own interval parameter-Jacobian or stronger Gale–Nikaidō-type hypotheses.
+
+**Original-paper theorem/proof locator.** Gale & Nikaidō, “The Jacobian Matrix and Global Univalence of Mappings,” *Math. Ann.* 159 (1965), 81–93, original author-era paper [scanned PDF](https://fig.if.usp.br/~marchett/fluidos/jacobian-matrix-global-univalence-mapping_gale-nikaido.pdf): Theorem 3 at print pp.85–86 proves an order-separation property by minimal-element induction; Theorem 4 and proof at **print p.86/PDF page 6** prove injectivity **if the full Jacobian is a P-matrix at every point of a rectangular domain**, by sign conjugation and Theorem 3. Print p.82 also gives a counterexample to nonvanishing *leading minors* implying global uniqueness. Here P41 is independently proved by a **uniform near-identity differential bound** and does not claim the actual switched DAE satisfies Gale–Nikaidō, which would require complete source branch/root, smoothness and domain checks.
+
+**Smallest next actual no-native input:** existing original prepared/cal/target source law and finite checkpoints *plus* a **strict interval bound** on filtered five-output anchor residual \(r\) and its three-column **full PREP-and-filter-propagated** parameter Jacobian over each declared same-digital-command source/root/guard domain, actual D_src positive with certified filter init, and one joint sensor error set. A single center linearization, 7 saved forward samples, point invertibility, a synthetically PASS Gaussian model or an unvalidated global Hessian does NOT satisfy these obligations. Compare any successful source-output inverse/goal range against the strongest full recorded-CAL ordinary under identical physical information, and exclude or retain actual competing root branches. Actual Goal27 source-wide signed-work certificate **remains OPEN**, old whole-fork beta **PARK**.
