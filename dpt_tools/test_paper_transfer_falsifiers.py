@@ -698,5 +698,21 @@ class FullRecordPairwiseGoalResidual(unittest.TestCase):
         self.assertTrue(all(-1<=x<=1 for x in required))  # independent box
         self.assertEqual((Q(1)-Q(-1))/2,Q(1))  # wrong radius
 
+class GoalOnlyProjectedLowRankResidual(unittest.TestCase):
+    """S-L11 exact target factor certificate despite an ill-conditioned state."""
+
+    def test_exact_projected_source_residual_avoids_full_inverse_norm(self):
+        from fractions import Fraction as Q
+        for eps in (Q(1,10), Q(1,10**6), Q(1,10**12)):
+            Fhat=(Q(-1),-eps)
+            P=(Q(1),Q(1)/eps)
+            projected=-sum(a*b for a,b in zip(P,Fhat))
+            self.assertEqual(projected,2)
+            # N=(x+y)^2 at center (0,0), Hessian=2*UU', U=(1,1).
+            source_goal_upper=Q(2)*projected**2/Q(2)
+            self.assertEqual(source_goal_upper,Q(4))
+            self.assertEqual((Q(1)+Q(1))**2,source_goal_upper)
+            self.assertGreater(1/float(eps),1)
+
 if __name__ == "__main__":
     unittest.main()
