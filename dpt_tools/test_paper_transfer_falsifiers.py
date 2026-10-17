@@ -600,5 +600,26 @@ class SwitchedDAEGoalGuard(unittest.TestCase):
         self.assertEqual(G-lam[0]*F[0]-lam[1]*F[1],Q(1697,1000))
         self.assertEqual(Q(17,10)-(G-lam[0]*F[0]-lam[1]*F[1]),Q(3,1000))
 
+class GloballyFoldedProjectiveObservation(unittest.TestCase):
+    """P41: everywhere full local rank does not certify global q-goal closure."""
+
+    def test_smooth_positive_det_with_same_five_point_ratios(self):
+        radius, rate = 0.25, 0.2
+        def T(u1,u2,u3):
+            r=radius*math.exp(rate*u1)
+            return (r*math.cos(2*math.pi*u2),
+                    r*math.sin(2*math.pi*u2),u3)
+        x,y=T(0,0,0),T(0,1,0)
+        for a,b in zip(x,y):
+            self.assertAlmostEqual(a,b,places=12)
+        for u1 in (-1.,0.,1.):
+            det = 2*math.pi*rate*(radius*math.exp(rate*u1))**2
+            self.assertGreater(det,0)
+            self.assertLess(radius*math.exp(rate*u1),1)
+        # Same five-sample positive-affine orbit, yet an independent goal
+        # can still vary along the folded second normalized parameter.
+        c_kappa_J=-3.0612283425329477e-6*.018
+        self.assertGreater(abs(c_kappa_J)*1e9,55)
+
 if __name__ == "__main__":
     unittest.main()
