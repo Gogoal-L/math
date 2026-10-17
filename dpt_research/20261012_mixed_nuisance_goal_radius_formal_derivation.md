@@ -1377,7 +1377,7 @@ Every $u\in[-1,1]^3$ maps to the original proxy's positive-D domain and $\det DT
 
 ## 2026-10-18 P42: two-copy *full raw CAL* source residual bound on the optimal future goal diameter
 
-**Second genuinely different Goal27 positive closure candidate, beyond the P38 single-world SOS goal strip.** Freeze one **complete, identical digital PREP/command record**, all original source/guard/filter states, the entire 4801-point raw CAL record $y$, its true joint temporally persistent sensor error set $E$, and one predeclared unseen signed external work $G$. For a lawful complete S150 world $x$ let $F(x)=0$ include full 126 PREP stages and CAL/target forks with the common prepared endpoint and correct nonlinear 50-state law; $O(x)$ is the full externally recorded pretarget observation, not five $q$ samples. The compatible fiber is $\mathcal C(y)=\{x:F(x)=0,\;x\text{ source/guard legal},\;y-O(x)\in E\}$. The ideal strongest same-information scalar ordinary is its Chebyshev midpoint; its minimax absolute error is $\tfrac12\operatorname{diam}G(\mathcal C(y))$ and cannot be beaten without extra information.
+**Second genuinely different Goal27 positive closure candidate, beyond the P38 single-world SOS goal strip.** Freeze one **complete, identical digital PREP/command record**, all original source/guard/filter states, the entire 4801-point raw CAL record $y$, its true joint temporally persistent sensor error set $E$, and one predeclared unseen signed external work $G$. For a lawful complete S150 world $x$ let $F(x)=0$ include full 126 PREP stages and CAL/target forks with the common prepared endpoint and correct nonlinear 50-state law; $O(x)$ is the full externally recorded pretarget observation, not five $q$ samples. The compatible fiber is $\mathcal C(y)=\{x:F(x)=0,\;x\text{ source/guard legal},\;y-O(x)\in E\}$. The ideal strongest same-information scalar ordinary is its Chebyshev midpoint; its minimax absolute error is $\tfrac12\mathrm{diam}G(\mathcal C(y))$ and cannot be beaten without extra information.
 
 **(P42) Pairwise residual/measurement dual.** Let verified *exhaustive* bounded pair boxes $\mathcal B_j$ cover every ordered compatible root pair $(x_+,x_-)\in\mathcal C(y)^2$, including different legal root branches and noise dependence. For each box preselect a vector $\kappa_j$ of units J/observable-unit (one coefficient per declared full CAL sample, or a rigorously supported reduced projection) and physical row-scaled source residual multipliers $\lambda_{j,+},\lambda_{j,-}$. On all of $\mathcal B_j$ verify with directed arithmetic
 $$
@@ -1395,7 +1395,7 @@ s_j=\sup_{d\in E-E}|\kappa_j^\top d|
 $$
 At true compatible roots each residual vanishes, and because **the same recorded $y$** is matched by each world, $\Delta O=e_- -e_+\in E-E$, with the actual physical joint error models/initializations used consistently. Hence
 $$
-\operatorname{diam}G(\mathcal C(y))
+\mathrm{diam}G(\mathcal C(y))
 \le U:=\max_j(c_j+s_j),\qquad
 R_{\rm full}^{\star}(y)\le U/2.
 $$
