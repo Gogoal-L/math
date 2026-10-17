@@ -304,5 +304,54 @@ class GoalLagrangianDualFixture(unittest.TestCase):
             self.assertEqual(x*(x-2),0)
         self.assertEqual(abs(Q(2)-Q(0)),2)
 
+class DynamicGoalAndAdaptiveNoise(unittest.TestCase):
+    """Exact finite-world oracles; NOT native physical DPT certification."""
+
+    def test_one_command_pass_does_not_certify_two_step_AB(self):
+        def future_goal(h, word):
+            flag,goal=0,0
+            for a in word:
+                if a=="A":
+                    flag=1
+                if a=="B" and flag:
+                    goal=h
+            return goal
+        for word in ("","A","B"):
+            self.assertEqual(future_goal(-1,word),future_goal(1,word))
+        self.assertEqual((future_goal(1,"AB")-future_goal(-1,"AB"))/2,1)
+
+    def test_immediate_goal_partition_may_fail_future_right_congruence(self):
+        def goal_B(h,flag):
+            return h if flag else 0
+        self.assertEqual(goal_B(-1,0),goal_B(1,0))
+        self.assertEqual(abs(goal_B(-1,1)-goal_B(1,1)),2)
+
+    def test_joint_common_offset_is_reused_across_pretarget_reads(self):
+        from fractions import Fraction as Q
+        worlds=list(itertools.product((-1,1),(Q(-2),Q(0),Q(2))))
+        y1=Q(1)
+        stage1=[w for w in worlds if w[0]+w[1]==y1]
+        stage2=[w for w in stage1 if w[1]==0]
+        self.assertEqual(set(w[0] for w in stage1),{-1,1})
+        self.assertEqual(set(w[0] for w in stage2),{1})
+        radius=lambda ws:(max(x[0] for x in ws)-min(x[0] for x in ws))/2
+        self.assertEqual(radius(stage1),1)
+        self.assertEqual(radius(stage2),0)
+
+    def test_marginal_coverage_is_not_simultaneous_coverage(self):
+        from fractions import Fraction as Q
+        worlds=set(range(10))
+        failures=[{i} for i in range(10)]
+        for failed in failures:
+            self.assertEqual(Q(len(failed),len(worlds)),Q(1,10))
+        self.assertEqual(set().union(*failures),worlds)
+
+    def test_cal_pulse_execution_must_be_matched_in_sensor_comparison(self):
+        histories=(-1,1)
+        actual_after_cal={h:3*h for h in histories}
+        self.assertEqual((max(actual_after_cal.values())-min(actual_after_cal.values()))/2,3)
+        self.assertEqual(max(abs(3*h-actual_after_cal[h]) for h in histories),0)
+        self.assertNotEqual(actual_after_cal,{h:h for h in histories})
+
 if __name__ == "__main__":
     unittest.main()
