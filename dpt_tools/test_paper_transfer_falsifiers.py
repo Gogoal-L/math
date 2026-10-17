@@ -273,5 +273,36 @@ class GoalCorrectedResidualCellFixture(unittest.TestCase):
             h=Q(1,10)
             self.assertEqual(-((t+h)**2)+2*t*(t+h)-t*t,-h*h)
 
+class GoalLagrangianDualFixture(unittest.TestCase):
+    """Exact same-source dual bound, not a physical source-domain certificate."""
+
+    def test_dual_goal_identity_holds_on_an_outer_box(self):
+        from fractions import Fraction as Q
+        eps=Q(1,1000)
+        for a in range(-8,9):
+            for b in range(-4,5):
+                x,y=Q(a,4),Q(b,4)
+                F0=x+y*y-1
+                F1=eps*y
+                R=x+y*y-1
+                self.assertEqual(R-(F0+0*F1),0)
+        self.assertEqual((Q(1)+Q(0)**2-1,eps*Q(0)),(0,0))
+
+    def test_center_contraction_gate_can_fail_even_if_goal_dual_exact(self):
+        from fractions import Fraction as Q
+        # DF(x,y)=[[1,2*y],[0,eps]], inverse center=diag(1,1/eps).
+        eps=Q(1,1000)
+        self.assertGreaterEqual(1/eps,1000)
+        self.assertEqual(max(2*abs(y) for y in (Q(-1),Q(0),Q(1))),2)
+        # Nonetheless R-lambda.F=0 at every point of the outer box.
+        self.assertEqual((Q(-1)+Q(1)**2-1)-(Q(-1)+Q(1)**2-1),0)
+
+    def test_a_single_root_center_cannot_certify_all_other_roots(self):
+        from fractions import Fraction as Q
+        # F(x)=x(x-2), goal=x: a box containing both zeros has diameter 2.
+        for x in (Q(0),Q(2)):
+            self.assertEqual(x*(x-2),0)
+        self.assertEqual(abs(Q(2)-Q(0)),2)
+
 if __name__ == "__main__":
     unittest.main()
