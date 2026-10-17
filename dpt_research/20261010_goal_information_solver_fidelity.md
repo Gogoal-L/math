@@ -412,3 +412,54 @@ This is an **independent elementary root-relative positivity lemma** in the line
 **Research prior and actual next computation.** Exact rational SOS certificates (e.g. Kaltofen, Li, Yang & Zhi, *J. Symbolic Comput.* 47 (2012), 1–15, DOI [10.1016/j.jsc.2011.08.002](https://doi.org/10.1016/j.jsc.2011.08.002)) motivate checking signed positivity with equality constraints. The real DPT BE charge/thermal exponential, piecewise clip and GL32 law are not automatically polynomials or amenable to a low-degree SOS certificate. An alternative interval arithmetic implementation must bound the **whole signed expression** before splitting absolute terms, retain branch/pole orientation, and use the original archived source/guard/measurement law. For 150-V Goal27 the smallest new legitimate input is (i) a source-justified **root-exhaustive all-branch outer \(K\)** over the common 126-step PREP, CAL4800 and target6720, all 50 law variables and the recorded command, (ii) the actual \(D,B,G,F\) and frozen predictor, (iii) a prefix-first signed positivity test for actual \(D-d_0-\mu^\top F\) on \(K\), then (iv) verified positive upper margins for the two numerator signs and a same-information full-CAL ordinary. Mere proxy \(D_{\rm aff}>0\) is insufficient; a point Hessian, coarse sample or PARKed full-state contraction failure neither proves nor refutes S-L7 feasibility. **S-L7 mathematical SIDE_VERIFIED / actual S150 all-root denominator and goal still OPEN_RESEARCH.**
 
 **Interaction with command-aware P36.** In the stored *affine proxy*, the recorded digital PREP amplitudes can be used to replace the original command-blind fixed \(p(q)\) with the projective inverse \(\widehat G(a,q)\); the proxy no-noise residual then vanishes (P36). A physical S-L7 consumer could apply the same homogenization to a suitably derived rational command-aware decoder, but its denominator and the source-root cover must be established anew. The old 0.3435875 nJ q-only lower witness uses different recorded PREP amplitudes; it does not refute P36 or prove real full-CAL ambiguity.
+
+## 2026-10-17 S-L8: exhaustive discrete-prefix root outer and denominator-first continuation
+
+**Purpose: supply the missing outer B of S-L6/S-L7 without asserting a full-state contraction.** Let the genuine source parameter bank be \(\theta_s=(a_1,a_2,a_3,L,\kappa)\); the remaining Goal27 \(b\) (90–110 MHz readout bandwidth) enters the common observation RC filter, **not** an extra 50-state network residual parameter. Let the full source-legal backward-Euler or other *qualified* stage equations be
+\[
+F_{n,m}(x_n,x_{n-1},\theta_s)=0,\quad
+(x_n,x_{n-1},\theta_s)\in{\cal G}_{n,m},
+\]
+where \(m\) ranges over **all legally reachable** conduction/clip/guard modes, and \(x_n\) includes electrical and algebraic states, old/new charge, GL32, thermal and source-consistency conditions. The joint PREP endpoint is propagated into **both** saved CAL and target command forks; do not independently reinitialize a fork. To avoid a circular guessed small tube, require a source-proved globally exhaustive ambient family \(K_n(E)\) (compact in all 50 coordinates, not just dynamic voltages/current).
+
+**(S-L8) Conditional discrete-prefix all-root covering lemma.** Suppose for *every* legal stage root, not just a selected solver root, a nonnegative proper source-verified storage/estimate \(V_n(x_n)\) satisfies
+\[
+V_n(x_n)-V_{n-1}(x_{n-1})
+\le h_n\big(\alpha_n V_n(x_n)+c_n\big),
+\qquad h_n\alpha_n<1,
+\]
+with source-qualified constants \(\alpha_n,c_n\), and source KCL/algebraic coercivity/thermal bounds plus legal guards prove **all** state components in a compact envelope \(K_n(E_n)\) whenever \(V_n\le E_n\). Starting from the certified *entire* legal preparation set \(K_0(E_0)\), take
+\[
+E_n=\frac{E_{n-1}+h_nc_n}{1-h_n\alpha_n}.
+\]
+At each stage, exhaustively tile the ambient set \(K_{n-1}(E_{n-1})\times K_n(E_n)\times\Theta_s\), splitting modes at every unresolved switching/clip/initialization seam. Discard a cell only when a **sound directed interval** evaluator proves \(0\notin F_{n,m}(\text{cell})\) in some row, or a guard/recorded command is rigorously impossible; retain all remaining cells, including uncertain and seam-touching cells, and project survivors into the next reachable outer. Then **every** source-legal exact stage-root sequence remains in the retained prefix set, by induction on n. It does not follow that any root exists, branches are unique, or that surviving cells are reasonably narrow. Parameter sharing, one prepared endpoint for both forks, full controller timebase, and filter memory must be preserved in a global parameter/path dependency representation; dropping correlations preserves only a looser valid outer. If any source-variable lacks global algebraic/thermal/coercive compactness, S-L8 CANNOT claim the full-root outer.
+
+**Prefix first: certify actual rational readout, then goal.** At the completed pretarget CAL prefix, attach the original filter recurrence with \(b\in[90,110]\) MHz, its lawful initial state and full gain/offset/clock nuisance; the 5 selected filtered currents must share the same recorded PREP/CAL path. Evaluate \(D_{\rm actual}=I_{60}-I_{12}\) on the exhaustive retained CAL prefixes, ideally using source-residual multipliers of S-L7, and require a **strict** true-root lower \(D_{\rm actual}\ge d_*>0\) A. The old proxy's \(D_{\rm aff}\) bound is irrelevant to this actual-gate assertion. Then retain actual source signed goal \(G_{\rm actual}\), the fixed proxy decoder \(p\) (or P36's recorded-command decoder if its new homogeneous denominators are separately qualified), and the fraction-free
+\[
+N=D_{\rm actual}[G_{\rm actual}-G_0+\ell^\top q_0]-\ell^\top B_{\rm actual}\quad[\mathrm{J\,A}].
+\]
+If the accepted *proxy* full-bank bound \(|R_{\rm aff}(\theta)|\le\epsilon_{\rm aff}=0.876578434279\) nJ and a **rigorously directed, same-parameter, same-command** residual certificate
+\[
+\sup_{B_{\rm all}}|N-D_{\rm actual}R_{\rm aff}(\theta)-\mu^\top F_{\rm whole}|
+\le\delta_N\quad[\mathrm{J\,A}]
+\]
+hold, then every eligible root obeys \(|G_{\rm actual}-p(q_{\rm actual})|\le\epsilon_{\rm aff}+\delta_N/d_*\). The correlation between actual CAL and target signed work remains inside **one** numerator. Solver/GL32/rounding residue, gain/offset joint noise and unknown physical model discrepancy must be qualified independently, with row units in \(\mu\). The certificate is *conditional*, does not assume the existing PARKed Kantorovich q becomes small, and may be computationally uneconomic because prefix boxes can explode.
+
+**Two exact sanity examples expose the necessary distinctions.** (Positive) A single passive RL load with \(R=1\Omega\), \(u=1\mathrm V\), \(h=1\mathrm s\), \(L\in[1,2]\mathrm H\), initial \(i_0=0\), and two BE steps has
+\[
+i_1=\frac1{L+1}\in[1/3,1/2]\mathrm A,\quad
+i_2=\frac{2L+1}{(L+1)^2}\in[5/9,3/4]\mathrm A,\quad
+D=i_2-i_1=\frac{L}{(L+1)^2}\in[2/9,1/4]\mathrm A.
+\]
+Its **discrete** physical energy identity
+\[
+\tfrac L2(i_n^2-i_{n-1}^2)+\tfrac L2(i_n-i_{n-1})^2
++hRi_n^2=hu i_n
+\]
+establishes a whole-root storage inequality, before simple residual algebra narrows the actual current and D ranges. The two-step terminal work \(W=hu(i_1+i_2)\in[8/9,5/4]\mathrm J\) is NOT a SiC/150-V claim. (Negative) For a *continuous dissipative* gradient flow \(\dot x=x-x^3=-V'(x)\), \(V=(x^2-1)^2/4\), \(V'\dot x=-(V')^2\le0\), \(x_0=1\), the BE stage \(h=5\) has **three** real roots
+\[
+5x_1^3-4x_1-1=(x_1-1)(5x_1^2+5x_1+1)=0.
+\]
+Besides \(x_1=1\), the two regular roots \(x_1=(-5\pm\sqrt5)/10\) **increase** \(V\) above zero. A second BE stage \(h=1\) satisfies \(x_2^3=x_1\), so each branch has a real two-step continuation. Thus *continuous-time* barrier/passivity does not prove a BE all-root energy bound: a source-specific discrete inequality, selected branch rule or conservative all-branch ambient is indispensable. Separately, a passive RL at DC equilibrium \(i_0=u/R\) has a unique constant trajectory but two equal CAL samples \(D=0\). Root/energy coverage never by itself proves projective denominator positivity. [Analytic unit tests](../dpt_tools/test_paper_transfer_falsifiers.py) preserve both controls.
+
+**Original literature and transfer distance.** Rauh, Brill & Günther, “A Novel Interval Arithmetic Approach for Solving Differential-Algebraic Equations with VALENCIA-IVP,” *Int. J. Appl. Math. Comput. Sci.* 19 (2009), 381–397, DOI [10.2478/v10006-009-0032-4](https://doi.org/10.2478/v10006-009-0032-4), §§2.2,4.2,6,8.1 (paper pp.383–394), derives validated DAE state enclosures/constraint pruning under interval algebraic solvability; it does **not** prove DPT whole electrothermal root existence. Prajna & Rantzer, “Convex Programs for Temporal Verification of Nonlinear Dynamical Systems,” *SIAM JCO* 46 (2007), 999–1021, DOI [10.1137/050645178](https://doi.org/10.1137/050645178), §1 equations (1.1–1.3), treats **continuous** vector fields/barrier trajectories; the discrete BE negative control is therefore material. Other related interval-DAE references whose full theorem proofs were not verified must not be elevated to authority. **Scientific decision:** do not pay for new native or restart PARKed full-fork beta until real source discrete coercive/global ambient plus CAL positive denominator can be certified; if no such physical all-branch outer emerges from stored law, the proof route is INCONCLUSIVE, while actual full-CAL fiber remains a separate competing information strategy.
