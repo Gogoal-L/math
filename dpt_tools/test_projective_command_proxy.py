@@ -87,5 +87,39 @@ class CommandConditionedProxy(unittest.TestCase):
             decode(DATA, (2, 0, 0), [0, 1, 2, 3, 4])
 
 
+class SourceGapIdentity(unittest.TestCase):
+    def test_exact_common_dynamic_gain_and_offset_cancel(self):
+        from projective_command_proxy import audit_source_gap
+        a=(F(1,2),F(-1,4),F(1,5))
+        u=(F(1,3),F(-1,5),F(1,2))
+        m=forward(DATA,a,u)
+        gain,offset=F(5,4),F(2,7)
+        actual=tuple(gain*x+offset for x in m)
+        goal=decode(DATA,a,m)["goal_J"]
+        receipt=audit_source_gap(DATA,a,u,actual,goal)
+        self.assertEqual(receipt["homogeneous_gain"],gain)
+        self.assertEqual(receipt["joint_numerator_J"],0)
+        self.assertEqual(receipt["goal_error_J"],0)
+
+    def test_nonzero_correlated_observation_and_work_gaps_cancel(self):
+        from projective_command_proxy import audit_source_gap
+        a=(F(1,2),F(-1,4),F(1,5))
+        u=(F(1,3),F(-1,5),F(1,2))
+        shifted=(u[0]+F(1,10),u[1]-F(1,7),u[2]+F(1,9))
+        actual=forward(DATA,a,shifted)
+        goal=decode(DATA,a,actual)["goal_J"]
+        receipt=audit_source_gap(DATA,a,u,actual,goal)
+        self.assertEqual(receipt["joint_numerator_J"],0)
+        self.assertEqual(receipt["goal_error_J"],0)
+        self.assertNotEqual(receipt["goal_model_gap_J"],0)
+
+    def test_reversed_source_readout_orientation_rejected(self):
+        from projective_command_proxy import audit_source_gap
+        a=(F(0),)*3
+        u=(F(0),)*3
+        reversed_currents=tuple(-m for m in forward(DATA,a,u))
+        with self.assertRaises(ValueError):
+            audit_source_gap(DATA,a,u,reversed_currents,F(1))
+
 if __name__ == "__main__":
     unittest.main()
