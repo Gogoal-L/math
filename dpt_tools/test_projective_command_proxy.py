@@ -220,10 +220,23 @@ class ConditionalActualSourceProjectiveUnivalence(unittest.TestCase):
     def test_pointwise_inverse_criterion_is_not_global_univalence(self):
         from projective_command_proxy import source_deviation_univalence_gate
         r = source_deviation_univalence_gate(
-            DATA, residual_upper_A=F(3,100),
-            derivative_upper_A=F(1,100))
+            DATA, residual_upper_A=F(1,10),
+            derivative_upper_A=F(1,20))
         self.assertEqual(r["status"], "INCONCLUSIVE_NONLINEAR_SOURCE_JET_GATE")
         self.assertIsNone(r["inverse_lower_lipschitz"])
+
+    def test_two_world_row_split_strictly_stronger_than_near_identity(self):
+        from projective_command_proxy import source_deviation_univalence_gate
+        r = source_deviation_univalence_gate(
+            DATA, residual_upper_A=F(1,100),
+            derivative_upper_A=F(1,40))
+        self.assertEqual(r["gate_method"], "TWO_POINT_SPLIT_ROW_BOUNDS")
+        self.assertEqual(r["status"],
+                         "CONDITIONAL_GLOBAL_INVERSE_ON_ONE_QUALIFIED_BRANCH")
+        self.assertGreater(r["kappa"],1)  # old derivative-near-I gate fails.
+        self.assertGreater(r["inverse_lower_lipschitz"],0)
+        self.assertLess(float(r["K_H_inverse_row0_A_inv"]),0.21)
+        self.assertLess(float(r["K_H_inverse_tail_A_inv"]),36.046)
 
     def test_source_exact_proxy_recovery_and_negative_bound_rejected(self):
         from projective_command_proxy import source_deviation_univalence_gate
