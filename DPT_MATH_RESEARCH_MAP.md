@@ -1,6 +1,6 @@
 # DPT-R1 × OpenAI Math：Research Transfer Map
 
-**更新：2026-10-17（本轮新数学审计，MAIN 只读）。** 本页是 DPT 主控和 Math Side 的双向科研接口。它回答：**Main 已吸收什么，Side 又推进了什么新的可吸收结果，下一项实际证据怎样改变判断。** 完整证明在 [dpt_research](dpt_research/)，代码/输入合同在 [dpt_tools](dpt_tools/README.md)，此处保留科研决策必需的结果、状态、界限与可执行接入路径。
+**更新：2026-10-18（新 S150 source 行级证据／Math SIDE；MAIN 只读）。** 本页是 DPT 主控和 Math Side 的双向科研接口。它回答：**Main 已吸收什么，Side 又推进了什么新的可吸收结果，下一项实际证据怎样改变判断。** 完整证明在 [dpt_research](dpt_research/)，代码/输入合同在 [dpt_tools](dpt_tools/README.md)，此处保留科研决策必需的结果、状态、界限与可执行接入路径。
 
 **当前判断。** Main 已记录 Pro18A 的可达信息证书与观测修复、Pro18B 的主动两阶段历史反例及外推失败、Pro18C 的 active CAL 与目标预测。Side 进一步形成目标相关 minimax recovery、shared-nuisance quotient、有限历史消息比特预算、重复采集的共享漂移信息下界、跨传感器未知相关性的可辨识界、二次目标 Gq/相关模型误差下的 acquisition 排序、非线性 observation-fiber Hessian、source-law Hessian/charge bounds 的独立数学结构。**这批 Math 仓库模块在真实 DPT 输入上直接 replay 尚未确认；不能凭 synthetic tests 把它们自动标为 Main 已接受。**
 
@@ -80,7 +80,7 @@
 ```math
 W_L=(G_L-\lambda^TF_L)-(G_z-\lambda^TF_z)P_z^{-1}P_L.
 ```
-这是包含入口状态传导的**条件精确恒等式**，不自动给 preparation/window 因果比例。二步 BE 合法 PREP 解析 oracle 的 W=(5L²+6L+2)/(L+1)³，在 L=1→2 的窗口和 PREP 积分贡献分别为 −137/648、−25/162，总和 −79/216；中心曲率值不能替代完整有限 L 的余项常数。 [完整 S-L1–S-L8 推导与独立负控](dpt_research/20261010_goal_information_solver_fidelity.md) 以 F266 center–tangent–remainder 为证书组织借鉴，原 MUB theorem、root existence、Lean 结论均不自动迁移。
+这是包含入口状态传导的**条件精确恒等式**，不自动给 preparation/window 因果比例。二步 BE 合法 PREP 解析 oracle 的 W=(5L²+6L+2)/(L+1)³，在 L=1→2 的窗口和 PREP 积分贡献分别为 −137/648、−25/162，总和 −79/216；中心曲率值不能替代完整有限 L 的余项常数。 [完整 S-L1–S-L11 推导与独立负控](dpt_research/20261010_goal_information_solver_fidelity.md) 以 F266 center–tangent–remainder 为证书组织借鉴，原 MUB theorem、root existence、Lean 结论均不自动迁移。
 
 **新的 goal-relevant 预测对象。** 对同完整 pretarget CAL/recorded-command 相容的历史集合 H_y，联合保留 w_h=W_h(L0) 与 s_h=W_h'(L0)，在全部合法有限 ΔL 路径上独立证明 M≥sup |W_h''|。令 a(δ)=inf_(h∈H_y)(w_h+δs_h), b(δ)=sup_(h∈H_y)(w_h+δs_h)。则冻结未来 signed work 处于 [a(δ)−Mδ²/2,b(δ)+Mδ²/2]；若半宽 (b−a)/2+Mδ²/2≤τ，中点是条件式 τ-adequate decoder。存在合法同信息双世界且未来差>2τ 则任何点预测均不能达到 τ。务必保留 (w,s) **联合支持**，不能以分别建盒声称最优。L、W、s、M 的单位分别为 H、J、J/H、J/H²；source-wide M、guard、previous/current Jacobian、合法 prep 与 frozen goal 缺失时只报告 OPEN_RESEARCH。F266 的原论文证明模式不提供这些 source constants。
 
@@ -108,6 +108,14 @@ W_L=(G_L-\lambda^TF_L)-(G_z-\lambda^TF_z)P_z^{-1}P_L.
 
 **事件型 DAE 错漏的实际诊断／S-L9（局部数学）。** 对具有 consistent algebraic initialization、唯一 transverse event 和合法 jump 的源段， signed work 的移动边界响应需包含 `(VI)^−−(VI)^+` 乘事件时间扰动；一个严格 2×2 guard/DAE 例中，忽略 guard 时保留的 flow residual=0 仍产生 `0.050 J` 的错误 work，而含 guard 的完整 goal-adjoint 在点上修正到 `1.697 J`（真值 `1.700 J`，余 `0.003 J`）。该例[见 S-L9](dpt_research/20261010_goal_information_solver_fidelity.md)、[测试](dpt_tools/test_paper_transfer_falsifiers.py)，其证明是 S-L6 的事件特化、不是优于 exact ordered-adjoint 的新信息理论；实际 N100/S150 的 guard/transversality/全根状态仍需源资格。
 
+**2026-10-18：首次冻结 P36 解码器接入已曝光实际 S150 数值源／P40。** 原主控已接受的 Pro18C 非保护归档 evidence.json::records（原 ZIP SHA256 250aa4ea17514ffdeda3a51d95bedf8e034b181f97bdc254db29ddc36281b9c8；观测 T00–T06 L13616–13808、实际未来 work L13808–14055），以原保存 5 CAL currents、各自数字 PREP command 和冻结 2026-10-12 P36 代理系数作 IEEE754→Fraction 严格有理重算，无 source/native 运行或新拟合：**七点** P36 后验最大绝对 signed work 偏差 0.005601739350126236 nJ；旧遗忘 command 的 p(q) 为 0.173302707696352 nJ（均非强同信息 FULL-CAL ordinary）。七点 **PREP 各不相同、target 已曝光**，不能作 same-command 双世界/盲测/全域 upper。对仅此七个已保存真实 source 数值点与*假设性*单一后滤波 gain≥0.9/共偏置/五电流逐样本 ±1mA 盒，224个 exact 角点固定 P36 最坏误差 2.928364786189582 nJ；要求 1nJ 该固定解码器充分必要的传感器预算 ≤0.340271015366445 mA，不能称仪器规格或所有 decoder 下界。新 [P40 完整源与证明](dpt_research/20261012_mixed_nuisance_goal_radius_formal_derivation.md)、[后验工具](dpt_tools/projective_command_proxy.py)、[七点回归](dpt_tools/test_projective_command_proxy.py)。
+
+**2026-10-18：真实离散 source 行级耗散／S-L10 与目标专属余项因子／S-L11。** 实读 Rev6 accepted source 的 actual_law.py，G12-GL32 charge+真实 x–d resistor (Rxd=1e−4 Ω) 在 BE 步对电流功交叉项精确平方；分配 α=1/2、G12 割线 Cmax=1.0156922324976233 nF，单个 source 子块非负所需 h≥Rxd*Cmax/(2α)=0.1015692232497623 ps，原 PREP min≈63.492 ps/CAL-target12.5 ps 均满足。真实 diode/body diffusion 以正 z 的凸势能 τΨ 与可能负的 ib、Eth Young 预算另给局部行级不等式。**割线系数随步变化而不能自动能量 telescoping**；整个 50D KCL/热/guard、真实 D_actual 正性尚 OPEN。S-L11 对固定841点 H 的真实 V·I 梯形 scorer 与共享 RC filter state，证明 P36 homogenous goal numerator 的 Hessian **mixed part rank≤2**，构造经真实 root-containing box 和所有 GL32/热导数资格化的低维 source residual-factor 上界；不是整条全路径 Hessian rank2，也不胜过同信息 exact ordered adjoint。[S-L10/S-L11](dpt_research/20261010_goal_information_solver_fidelity.md)、[解析回归](dpt_tools/test_paper_transfer_falsifiers.py)。
+
+**2026-10-18：源条件下的两条互补 GOAL 闭合条件及新合法测量闸门／P41–P43。** [P41](dpt_research/20261012_mixed_nuisance_goal_radius_formal_derivation.md) 在固定数字 PREP 和**单个 smooth、凸、全源合法 guard/root 分支**上，如真实四锚差相对代理的均匀残差 R(A) 与参数 Jacobian J(A/normalized-axis) 经 outward source 区间证明，则从冻结 H(a) 的 exact 全 PREP inverse row norm k0<0.21 A−1、kv<36.1 A−1，取得全球双世界 lower-Lipschitz sufficient gate：k0R<1 且 J<[kv+k0(1+kvR)/(1−k0R)]^−1。仍须另外证真实 D_actual>0，且必须覆盖**所有合法源分支**；七个 point residual 与点 Jacobian/每点 det 非零不替代。更弱同域全局双世界量词已独立复核，无虚报局部 Jac→global。 [P42](dpt_research/20261012_mixed_nuisance_goal_radius_formal_derivation.md) 对**同完整 PREP、full 4801 raw CAL、同 joint E** 的两个 source root，验证 signed pair goal dual 残差和共同 E−E support，可对最强同信息 FULL-CAL oracle minimax radius 给严格上/下 bracket，前提为真实 all-branch pair outer；与 P38 单一 fiber SOS 不同。 [P43](dpt_research/20261012_mixed_nuisance_goal_radius_formal_derivation.md) 从本地主控 OBS-E06A 区分**后滤波 constant offset**与**未知 RC 初态瞬态**：如额外合法 ξ，则五点 P36 无噪声可逆性不自动存活；已有完整 CAL 的第六个时间点可按 Schur rank h6−j6 J5^−1 h5≠0 作最小零新增硬件信息修复试验，真实 initial state/噪声权限待查；合成双世界不是实际同完整 CAL 别名。
+
+**连续命令/thermal 负控 D3。** [D3](dpt_research/20261010_goal_stability_compositional_closure.md) 正向 diode–RLC–thermal 四状态合成物理电路：固定 electrical/temperature forcing 时正 z 旧态 BE 导数<τ/(τ+h)，但完整闭环微分存在 λ+>0，因此本地主控 accepted 标量电荷记忆收缩不自动给源状态或 signed work 全闭环收缩。正向条件需要**全电热闭环 Schur** Jacobian 的 common SPD P 增量耗散，future adaptive sensor feedback 还须真实 J_closed、saltation、持续 joint error。不是 actual S150 instability 或 actual full-CAL 隐态事实。[解析回归](dpt_tools/test_paper_transfer_falsifiers.py)。
+
 **Main closure 接口与决定性比较。** 本地主控 [docs/derivations/README.md]（只读检查 2026-10-17）已记录 S02 有接受的参数曲率有限弦数学；Goal27 的五电流 fractional-linear **代理域**全 bank 有条件 uniform goal 上界、raw5/calibrated-D ordinary，而 actual S150 全非线性 G−p(O) source-wide 认证仍 OPEN，原 whole-fork root/bank-beta 充分证书路线 PARK。这两种 reference 和证据身份均不得混接。优先接入同一 150 V source 的真实合法 PREP、完整预目标数字命令与 CAL、source current/previous derivatives、原 H/scorer、joint nuisance、source/guard tube、冻结 unseen finite ΔL signed work，比较最强同信息 full-record ordinary；先尝试 G−p(O) source-qualified uniform upper 或合法同 full-CAL 双世界分离>2τ。q>1 的已有 Banach 充分检验失败不是物理解不存在证明。不得读取 protected truth、自动启动 native 或自行晋级 MAIN_ACCEPTED。现有六份证明笔记、7 core / 26 archive 文献与 dpt_tools 入口继续复用。
 
 ## 4. 完整数学知识位置与工具
@@ -116,7 +124,7 @@ W_L=(G_L-\lambda^TF_L)-(G_z-\lambda^TF_z)P_z^{-1}P_L.
 
 | 当前证明笔记 | 主要内容；对应 Python 入口 |
 | --- | --- |
-| [Mixed nuisance / goal radius](dpt_research/20261012_mixed_nuisance_goal_radius_formal_derivation.md) | P1–P39、joint-noise radius、CAL、finite-bank repair；[recovery tool](dpt_tools/contextual_goal_recovery.py)、[cover](dpt_tools/goal_repair_cover.py) |
+| [Mixed nuisance / goal radius](dpt_research/20261012_mixed_nuisance_goal_radius_formal_derivation.md) | P1–P43、joint-noise radius、CAL、finite-bank repair；[recovery tool](dpt_tools/contextual_goal_recovery.py)、[cover](dpt_tools/goal_repair_cover.py) |
 | [Goal stability / dynamic closure](dpt_research/20261010_goal_stability_compositional_closure.md) | finite gain、recursive consistency、ordered goal-defect；[stability](dpt_tools/goal_lipschitz_stability.py)、[defect](dpt_tools/goal_defect_transport.py) |
 | [Second-order goal fiber / source Hessian](dpt_research/20261012_second_order_goal_fiber.md) | C1–C23 的 relative Hessian、Q1–Q2 的 Gaussian-Gq/BAE acquisition、stage tube 与 native qualifications；[fiber](dpt_tools/fiber_goal_curvature.py)、[implicit Hessian](dpt_tools/implicit_goal_hessian.py) |
 | [Information × solver fidelity](dpt_research/20261010_goal_information_solver_fidelity.md) | goal sensitivity、source BE storage defect、work/peak、contraction、solver error；[certificate](dpt_tools/implicit_goal_certificate.py) |
