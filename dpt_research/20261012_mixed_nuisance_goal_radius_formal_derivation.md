@@ -1200,3 +1200,36 @@ This explicitly retains the common anchor noise: independently bounding four dif
 **Strongest ordinary, source bridge and failure gate.** The strongest rival knows the same complete digital command, original full pretarget CAL waveform/RC memory, joint gain/offset/noise and the same frozen future source law; it may exactly match or improve this five-current decoder. Actual nonlinear $G_{\rm actual}-\widehat G(a,m_{\rm actual})$ uniform coverage, joint finite sensor error over the **actual** observation manifold, real \(D_{\rm actual}>0\), physical actuation error, all-root/guard qualification, and native/physical calibration remain OPEN. The 2.939 nJ proxy scenario **cannot simply be added** to a nonexistent actual-source gap: its global Lipschitz/corner certificate covers only the stored affine proxy image. Next qualified actual test should use the saved same-source PREP/CAL/target checkpoints and original 100-MHz filter initialization, compute the *command-conditioned* corrected-goal source residual with full recorded \(a\), validate the actual denominator and joint noise over a meaningful lawful source domain, and compare its goal range against the identical-input full-CAL ordinary. Falsifier: fixed identical digital \(a\), qualified actual source pair within the same complete raw CAL/joint noise with future signed-work gap \(>2\tau\), or actual branch/denominator collision. A changed-command pair is **not** such a falsifier.
 
 **Reproducible consumer.** [\`projective_command_proxy.py\`](../dpt_tools/projective_command_proxy.py) reads the archived proxy coefficient schema or an equivalent 5x6 array, performs exact Fraction determinant/rank/denominator audit, projective inverse and 2048-corner hypothetical sensor check; [regressions](../dpt_tools/test_projective_command_proxy.py) use a minimal attributed snapshot of the accepted coefficient arrays. These tests certify **exact interpreted coefficients and mathematics**, not the coefficient derivation from original source Jacobians. Claim status: SIDE_VERIFIED strict *proxy* theorem and executable scenario; actual S150 source/root, nonlinear sensor and unseen command: OPEN_RESEARCH; no Main acceptance implied.
+
+## 2026-10-17 P37: exact nonlinear-source-to-command-conditioned projective goal defect (strictly correlated bridge)
+
+**Different task than P36 proxy invertibility.** Fix the SAME digital PREP command \(a\), full source-law parameters \(u=(L,\kappa,b)\) (normalized proxy coordinates, with \(b\) in the qualified 100MHz observation-filter family), source time stamps and signed future work scorer for each legal actual nonlinear member. Let the stored affine-model current vector be \(m_{\mathrm{aff}}(a,u)\), actual source (not new instrument data) five-current vector be \(m_{\mathrm{src}}(a,u)\), and future goals \(G_{\mathrm{aff}},G_{\mathrm{src}}\) in J. Define the common-offset-free **four differences**
+\[
+t(m)=(m_{60}-m_{12},m_{31}-m_{12},m_{42}-m_{12},m_{46}-m_{12})^\top\quad [\mathrm A].
+\]
+Retain the exact stored proxy \(H(a)\) from P36, \(H(a)(1,u)^\top=t(m_{\mathrm{aff}})\), and define the **single correlated source-output discrepancy**
+\[
+w(a,u)=H(a)^{-1}[t(m_{\mathrm{src}})-t(m_{\mathrm{aff}})]
+=(w_0,w_u)\in\mathbb R^4,\qquad e_G=G_{\mathrm{src}}-G_{\mathrm{aff}}\quad[\mathrm J].
+\]
+At every qualified actual member with \(1+w_0>0\) and valid physical source/guard/anchor denominator, applying **the same frozen command-conditioned P36 decoder** to its actual source CAL yields exactly
+\[
+\boxed{
+G_{\mathrm{src}}-\widehat G(a,m_{\mathrm{src}})
+=e_G-\frac{c_u^\top(w_u-u\,w_0)}{1+w_0}
+=\frac{(1+w_0)e_G-c_u^\top(w_u-u\,w_0)}{1+w_0}
+.}
+\tag{P37}
+\]
+**Proof:** \(H(a)^{-1}t(m_{\mathrm{src}})=(1,u)+w\). The homogeneous inverse gives \(\widehat u=(u+w_u)/(1+w_0)\); then subtract \(\widehat G=G_0+c_a^\top a+c_u^\top\widehat u\) from \(G_{\mathrm{src}}=G_0+c_a^\top a+c_u^\top u+e_G\). All variables and residuals of the actual 50-state source belong to the **lawful construction of \(m_{\mathrm{src}},G_{\mathrm{src}}\)**, but the algebraic identity alone does not certify they exist for every bank member.
+
+**A more economical eventual actual-source certificate (still OPEN).** A source/guard-validated all-parameter outer family \(\mathcal B\) and directed whole-expression evaluator need only prove
+\[
+1+w_0\ge\alpha>0,\qquad
+\sup_{\mathcal B}|(1+w_0)e_G-c_u^\top(w_u-u\,w_0)|\le\alpha\,\epsilon ,
+\]
+to ensure \(|G_{\mathrm{src}}-\widehat G|\le\epsilon\) J for every covered actual root. This keeps **goal discrepancy and measured CAL discrepancy in one signed scalar numerator**, and can succeed even when separate absolute \(|e_G|\) and \(\|w\|\) budgets are large. It is a concrete *same-source representation of the S-L6/S-L7 corrected goal*, not an independently solved whole-source bound or a novel optimization duality theorem. Root/guard/nonlinear filter/actuation and sensor errors must be certified **before** the boxed actual inequality is called predictive. For post-gain/offset joint e, replace the true source CAL by the legal joint \(y=\gamma m_{\mathrm{src}}+\beta\mathbf 1+e\), retain the shared anchor error inside \(t(y)\), and qualify the additional combined quotient error rather than blindly append the P36 proxy-only 2.939 nJ bound.
+
+**Two exact nonphysical mechanisms (independent counterchecks).** Take any legal stored proxy point and let \(m_{\mathrm{src}}=\frac54 m_{\mathrm{aff}}+\frac27\mathbf1\) and \(G_{\mathrm{src}}=G_{\mathrm{aff}}\). Even though the five currents individually change substantially, \(w=(1/4,u/4)\), so \(w_u-u\,w_0=0\) and the exact future prediction defect vanishes; this is a *synthetic source-output discrepancy*, **not** evidence that a physical device law is permitted to have arbitrary gain. Alternatively let \(m_{\mathrm{src}}=m_{\mathrm{aff}}(a,u+\delta u)\) and \(G_{\mathrm{src}}=G_{\mathrm{aff}}(a,u+\delta u)\), so each of goal and CAL changes while their joint numerator cancels exactly. A source with \(1+w_0=0\) makes the homogeneous inverse singular even when \(\det H(a)\neq0\); positive proxy \(D_{\mathrm{aff}}\) does not prevent that actual-source failure. [Executable retrospective known-answer](../dpt_tools/test_projective_command_proxy.py) checks both cancellations and the singular-orientation rejection; [audit-only function](../dpt_tools/projective_command_proxy.py) takes **future actual work as input** and is explicitly NOT a prospective predictor or a leakage-safe fit.
+
+**Scientific priority relative to an ordinary.** P37 shows the exact *single joint scalar* that should be interval-certified from actual source checkpoint outputs before buying high-dimensional separate \(L_G/L_O\) bounds. But a full-pretarget-CAL ordinary using the **same digital PREP, 4801-sample source record and same joint sensor law** remains strictly at least as informative as its five-current restriction. Any actual source-bound cost/sensor comparison must give that ordinary the opportunity to use P37's same physics, and must score a frozen heldout signed-work goal under new lawful commands and matched PREP. Failure to bound the P37 numerator with true root coverage returns OPEN_RESEARCH; it is not evidence of an intrinsic complete-observation information lower bound.
