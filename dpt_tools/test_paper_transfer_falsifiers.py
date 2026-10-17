@@ -462,5 +462,44 @@ class AllRootDiscreteStageEnergy(unittest.TestCase):
         self.assertGreater(energy(roots[1]),0)
         self.assertGreater(energy(roots[2]),0)
 
+class FullCalSensorElimination(unittest.TestCase):
+    """P38 symbolic full-record calibration and two-world goal strip."""
+
+    def test_single_gain_offset_and_joint_noise_eliminate_exactly(self):
+        from fractions import Fraction as Q
+        m=[Q(0),Q(2),Q(4),Q(6),Q(10),Q(8),Q(9)]
+        k12,k60=0,4
+        gamma,beta=Q(11,10),Q(-2,5)
+        joint=[Q(1,1000),Q(-1,1000),Q(0),Q(1,2000),
+               Q(-1,2000),Q(1,3000),Q(-1,3000)]
+        y=[gamma*v+beta+e for v,e in zip(m,joint)]
+        D=m[k60]-m[k12]
+        w=[y[k]-y[k12]-(joint[k]-joint[k12]) for k in range(len(m))]
+        d=w[k60]
+        self.assertEqual(d/D,gamma)
+        self.assertEqual(y[k12]-joint[k12]-d*m[k12]/D,beta)
+        for k in range(len(m)):
+            self.assertEqual(D*w[k],d*(m[k]-m[k12]))
+        self.assertLessEqual(Q(1)*D,d)
+        self.assertLessEqual(d,Q(6,5)*D)
+        self.assertLessEqual(-D,D*(y[0]-joint[0])-d*m[0])
+        self.assertLessEqual(D*(y[0]-joint[0])-d*m[0],Q(1)*D)
+
+    def test_source_same_full_record_can_identify_goal_not_hidden_state(self):
+        from fractions import Fraction as Q
+        observed_y=Q(1,4)
+        worlds=(Q(-1,2),Q(1,2))
+        self.assertEqual([t*t for t in worlds],[observed_y]*2)
+        self.assertEqual((max(t*t for t in worlds)-min(t*t for t in worlds))/2,0)
+        self.assertEqual((max(worlds)-min(worlds))/2,Q(1,2))
+        for t in worlds:
+            h1=t*t-observed_y
+            h2=observed_y-t*t
+            # U-g=h2, g-L=h1 are exact unit-multiplier SOS certificates.
+            self.assertEqual(observed_y-t*t,h2)
+            self.assertEqual(t*t-observed_y,h1)
+            self.assertGreaterEqual(h1,0)
+            self.assertGreaterEqual(h2,0)
+
 if __name__ == "__main__":
     unittest.main()
