@@ -1192,15 +1192,15 @@ This uses no absolute gain/offset calibration, additional current channel, or wi
 This explicitly retains the common anchor noise: independently bounding four differences would lose it. Since only the first column of $H(a)$ changes with $a$, the entries of $\mathrm{adj}H(a)$ and $\det H(a)$ are affine in $a$. For each fixed other coordinate the displayed rational expression is linear-fractional in each $a_j$ and each $e_t$, affine in $u_j$, and its absolute value decreases as $\gamma$ increases when its effective denominator is positive. Thus its continuous-box extrema occur at $(a,u,e/\epsilon)\in\{-1,+1\}^{3+3+5}$, $\gamma=0.9$, **2048 jointly enumerated exact cases**. The same corner/linear-fractional argument certifies the global effective gain floor $\gamma+w_0\ge0.8995834925637281>0$, while the exact worst proxy signed-goal error is
 ```math
 \begin{gathered}\sup|\widehat G-G_{\rm aff}|\\\approx2.9391938011026248404\;\mathrm{nJ}\\<2.939193801103\;\mathrm{nJ}.\end{gathered}
-```math
+```
 t(m)=(m_{60}-m_{12},m_{31}-m_{12},m_{42}-m_{12},m_{46}-m_{12})^\top\quad [\mathrm A].
 ```
 Retain the exact stored proxy $H(a)$ from P36, $H(a)(1,u)^\top=t(m_{\mathrm{aff}})$, and define the **single correlated source-output discrepancy**
 ```math
 \begin{gathered}w(a,u)=H(a)^{-1}[t(m_{\mathrm{src}})-t(m_{\mathrm{aff}})],\\w=(w_0,w_u)\in\mathbb R^4,\\e_G=G_{\mathrm{src}}-G_{\mathrm{aff}}\quad[\mathrm J].\end{gathered}
-```math
+```
 \begin{gathered}\Delta_G:=G_{\mathrm{src}}-\widehat G(a,m_{\mathrm{src}}),\\\Delta_G=e_G-\frac{c_u^\top(w_u-u\,w_0)}{1+w_0},\\(1+w_0)\Delta_G\\=(1+w_0)e_G-c_u^\top(w_u-u\,w_0).\end{gathered}
-```math
+```
 1+w_0\ge\alpha>0,\qquad
 \sup_{\mathcal B}|(1+w_0)e_G-c_u^\top(w_u-u\,w_0)|\le\alpha\,\epsilon ,
 ```
@@ -1217,7 +1217,7 @@ to ensure $|G_{\mathrm{src}}-\widehat G|\le\epsilon$ J for every covered actual 
 **(P38-a) Exact algebraic iff.** There exists an admissible pair of common gain/offset explaining **every** raw recorded current iff some admissible **joint** $e\in E$ satisfies, for all $k\in{\cal T}$,
 ```math
 \begin{gathered}Dw_k=d(m_k-m_{12}),\qquad D>0,\\\gamma_-D\le d\le\gamma_+D,\\\beta_-D\le D(y_{12}-e_{12})-d\,m_{12}\\\le\beta_+D.\end{gathered}
-```math
+```
 U-g=\sigma_0+\sum_j\sigma_jh_j,\qquad
 g-L=\tau_0+\sum_j\tau_jh_j
 
@@ -1233,7 +1233,7 @@ hold, with all $\sigma_j,\tau_j$ sums of squares, then each actual goal lies in 
 **New decision theorem beyond the P34 nested-set and P35 five-point quotient.** Condition on the FULL legal, already recorded S150 digital PREP/command/raw CAL/clock/calibration archive $D$, and let $\Theta_D$ contain all compatible same-source prepared histories together with the qualified *joint* gain/offset/filter/noise laws. For each candidate sensor/acquisition action $a$, define the probability law $P_\theta^a$ of its **complete** legally adaptive observation/action/stopping transcript. The action may itself alter the prepared state and the future finite-$\Delta L$ signed external-work curve $G_a(\theta,\ell)$, $\ell\in I$. For another action $b$, define **uniform** experiment deficiency
 ```math
 \begin{gathered}\delta_D(a\to b)=\inf_{K\text{ independent of hidden }\theta}\\\sup_{\theta\in\Theta_D}\|KP_\theta^a-P_\theta^b\|_{\mathrm{TV}},\\\beta_{ab}=\frac1{\tau}\sup_{\theta,\ell\in I}\\|G_a(\theta,\ell)-G_b(\theta,\ell)|.\end{gathered}
-```math
+```
 \boxed{\quad V_a\le V_b+\delta_D(a\to b)+\min(1,\beta_{ab}).\quad}
 
 ```
@@ -1385,7 +1385,7 @@ This Schur-complement rank test supplies the **minimal one-more-observation loca
 
 ## 2026-10-18 P44: all-4801-CAL RC-memory annihilator and joint-error candidate exclusion (new)
 
-**Actual operator and domain.** Controller's nonprotected \`docs/derivations/dpt_r1_03_observation_operator.tex\` OBS-E06/E06A/E07 (L272–313) separately retains prewindow filter memory and postfilter offset; archived \`replay/goal27_projective_bank.py\` L55–65 uses one first-order RC recurrence. For one **fixed recorded digital PREP/command**, true 4801-timestamp filtered source trace \(m\), unknown common positive record gain \(\gamma\), constant postfilter offset \(\beta\), optional single shared RC-init amplitude \(\xi\), known candidate bandwidth \(b>0\), and one *whole-record joint* deterministic noise \(e\in E\), the declared observation extension is \(y=\gamma m+\beta{\bf1}+\xi h_b+e\), where \(h_{b,n}=\exp[-2\pi b(t_n-t_0)]\). The optional free \(\xi\) is a **conditional nuisance enlargement**, NOT evidence that actual qualified preparation permits it. It is not a new independent per-time perturbation.
+**Actual operator and domain.** Controller's nonprotected \`docs/derivations/dpt_r1_03_observation_operator.tex\` OBS-E06/E06A/E07 (L272–313) separately retains prewindow filter memory and postfilter offset; archived \`replay/goal27_projective_bank.py\` L55–65 uses one first-order RC recurrence. For one **fixed recorded digital PREP/command**, true 4801-timestamp filtered source trace $m$, unknown common positive record gain $\gamma$, constant postfilter offset $\beta$, optional single shared RC-init amplitude $\xi$, known candidate bandwidth $b>0$, and one *whole-record joint* deterministic noise $e\in E$, the declared observation extension is $y=\gamma m+\beta{\bf1}+\xi h_b+e$, where $h_{b,n}=\exp[-2\pi b(t_n-t_0)]$. The optional free $\xi$ is a **conditional nuisance enlargement**, NOT evidence that actual qualified preparation permits it. It is not a new independent per-time perturbation.
 
 **P44a (exact full-record quotient theorem).** For strict increasing timestamps, define
 $$
@@ -1394,7 +1394,7 @@ r_n(v)=v_{n+1}-\alpha_n v_n,\\
 \alpha_n=e^{-2\pi b(t_{n+1}-t_n)}.
 \end{gathered}
 $$
-For \(n=0,\ldots,4798\) put
+For $n=0,\ldots,4798$ put
 $$
 \begin{gathered}
 (L_bv)_n=(1-\alpha_n)r_{n+1}(v)\\
@@ -1408,21 +1408,21 @@ $$
 \operatorname{rank}L_b=4799.
 \end{gathered}
 $$
-*Proof.* \(L_bv=0\) forces \(r_n(v)/(1-\alpha_n)\) to equal the same constant for every \(n\), hence \(v_n=\beta'+\xi' h_{b,n}\); conversely both generating vectors are annihilated. Each \(\alpha_n\in(0,1)\), so the kernel generators are linearly independent. Thus if \(\beta,\xi\) are unconstrained, at fixed candidate \(b\) a complete CAL record is compatible precisely if some legal \(\gamma,e\) obey
+*Proof.* $L_bv=0$ forces $r_n(v)/(1-\alpha_n)$ to equal the same constant for every $n$, hence $v_n=\beta'+\xi' h_{b,n}$; conversely both generating vectors are annihilated. Each $\alpha_n\in(0,1)$, so the kernel generators are linearly independent. Thus if $\beta,\xi$ are unconstrained, at fixed candidate $b$ a complete CAL record is compatible precisely if some legal $\gamma,e$ obey
 $$
 L_by\in \Gamma L_bm+L_bE.
 $$
-For compact positive gain interval \(\Gamma\) and compact convex **joint** \(E\), convex separation makes this equivalent to the support inequalities, for every \(\kappa\in{\mathbb R}^{4799}\),
+For compact positive gain interval $\Gamma$ and compact convex **joint** $E$, convex separation makes this equivalent to the support inequalities, for every $\kappa\in{\mathbb R}^{4799}$,
 $$
 \begin{gathered}
 \kappa^\top L_by\le \sigma_\Gamma(\kappa^\top L_bm)\\
 +\sigma_E(L_b^\top\kappa).
 \end{gathered}
 $$
-A single outward strict violation **rejects a candidate source future goal** without a full-history inverse, source-wide denominator \(D>0\), five-sample selection or future target label. If \(\beta,\xi\) are bounded, physically prepared, or coupled to hidden source state, the quotient is only **necessary**; recover the discarded two coordinates and check their constraints. The candidate \(b\) must vary with source world: never set all \(b\) to a nominal 100 MHz.
+A single outward strict violation **rejects a candidate source future goal** without a full-history inverse, source-wide denominator $D>0$, five-sample selection or future target label. If $\beta,\xi$ are bounded, physically prepared, or coupled to hidden source state, the quotient is only **necessary**; recover the discarded two coordinates and check their constraints. The candidate $b$ must vary with source world: never set all $b$ to a nominal 100 MHz.
 
-**Full-record local rank and cross-bandwidth pair geometry.** With source coordinates \((L,\kappa,b)\) and gain \(\gamma\), let \(J_4=[\gamma D_Lm,\gamma D_\kappa m,\gamma D_bm+\xi D_bh_b,m]\). The complete six-parameter observation Jacobian has rank six if and only if \(\operatorname{rank}(L_bJ_4)=4\) on one smooth, branch-valid source chart. Both \(D_bh_b\) and prepared-source/filter history derivative are mandatory. This is not a global root/guard result. For two worlds with possibly distinct \(b_\pm\), choose any exact annihilator \(Q\) of \(\operatorname{span}\{{\bf1},h_{b_+},h_{b_-}\}\). Under independently free \(\beta_\pm,\xi_\pm\), their **same-full-CAL** observation sets intersect if and only if \(0\in\Gamma Qm_+-\Gamma Qm_-+Q(E-E)\). Every proposed pair with \(|G_+-G_-|>2\tau\) must be excluded **on the same digital command and entire joint noise contract** before claiming an all-decoder \(\tau\) goal upper. With constrained initial-state memory, projected intersection is not sufficient to establish a legal pair. The strongest ordinary remains the full-compatible-fiber Chebyshev half diameter, which this test cannot outperform.
+**Full-record local rank and cross-bandwidth pair geometry.** With source coordinates $(L,\kappa,b)$ and gain $\gamma$, let $J_4=[\gamma D_Lm,\gamma D_\kappa m,\gamma D_bm+\xi D_bh_b,m]$. The complete six-parameter observation Jacobian has rank six if and only if $\operatorname{rank}(L_bJ_4)=4$ on one smooth, branch-valid source chart. Both $D_bh_b$ and prepared-source/filter history derivative are mandatory. This is not a global root/guard result. For two worlds with possibly distinct $b_\pm$, choose any exact annihilator $Q$ of $\operatorname{span}\{{\bf1},h_{b_+},h_{b_-}\}$. Under independently free $\beta_\pm,\xi_\pm$, their **same-full-CAL** observation sets intersect if and only if $0\in\Gamma Qm_+-\Gamma Qm_-+Q(E-E)$. Every proposed pair with $|G_+-G_-|>2\tau$ must be excluded **on the same digital command and entire joint noise contract** before claiming an all-decoder $\tau$ goal upper. With constrained initial-state memory, projected intersection is not sufficient to establish a legal pair. The strongest ordinary remains the full-compatible-fiber Chebyshev half diameter, which this test cannot outperform.
 
-**Known-answer, evidence and missing input.** Independent Fraction five-point nonuniform \(\alpha=(2/3,3/4,4/5,5/6)\) verifies both kernel generators, rank \(3=5-2\), and one shared offset/RC/noise mode; a separate nonuniform 4801-point float check of the analytic invariants has maximum residual \(3.28\times10^{-17}\) A. The nonprotected Pro18C evidence.json T00–T06 (L13616–14055) saves only five filtered currents for each **different** digital PREP command; the archived same-fiber NPZ has H/ports/parameters, not seven 4801-point currents. Thus no actual S150 full-CAL rank, same-command collision, goal-radius reduction or actual sensor contract has been numerically certified. Need the original \(y[4801],t[4801]\), qualified one-record \(\Gamma,E,\beta,\xi\) law, true RC initial receipt and all legal source candidate \(m[4801]\)/guards before using strict separation. Regression: [original-transfer tests](../dpt_tools/test_paper_transfer_falsifiers.py). Status **SIDE_VERIFIED exact conditional operator / actual whole-source goal OPEN**.
+**Known-answer, evidence and missing input.** Independent Fraction five-point nonuniform $\alpha=(2/3,3/4,4/5,5/6)$ verifies both kernel generators, rank $3=5-2$, and one shared offset/RC/noise mode; a separate nonuniform 4801-point float check of the analytic invariants has maximum residual $3.28\times10^{-17}$ A. The nonprotected Pro18C evidence.json T00–T06 (L13616–14055) saves only five filtered currents for each **different** digital PREP command; the archived same-fiber NPZ has H/ports/parameters, not seven 4801-point currents. Thus no actual S150 full-CAL rank, same-command collision, goal-radius reduction or actual sensor contract has been numerically certified. Need the original $y[4801],t[4801]$, qualified one-record $\Gamma,E,\beta,\xi$ law, true RC initial receipt and all legal source candidate $m[4801]$/guards before using strict separation. Regression: [original-transfer tests](../dpt_tools/test_paper_transfer_falsifiers.py). Status **SIDE_VERIFIED exact conditional operator / actual whole-source goal OPEN**.
 
-**P45 conditional cross-branch certificate and anchor audit.** On a finite **exhaustively enumerated** disjoint union of compact \(C^1\) three-dimensional lawful source/guard charts, if the continuous actual projective map \(q=(B_1,B_2,B_3)/D\) has nonzero Jacobian determinant on every chart interior and \(D\ne0\), then for any connected open \(U\) disjoint from **all** chart and guard/root-birth boundary images, \(q:q^{-1}(U)\to U\) is a proper local homeomorphism, hence a finite covering. Its cross-branch preimage count is constant on \(U\); a **certified exhaustive seed count exactly one** propagates global injectivity over \(U\). This is a project-owned application of Chung-Wu Ho, [*A Note on Proper Maps*](https://doi.org/10.1090/S0002-9939-1975-0370471-3), *Proc. AMS* 51 (1975), 237–241, Lemmas 2–3 (proper local homeomorphism/covering), not a proof that actual S150 meets the hypotheses. Two disjoint identical-output charts with \(D=5\) A and \(q=u\) have locally positive determinant yet two global sheets: point Jacobian positivity alone is insufficient. Separately, if the **same full-branch residual bound** of P41 includes \(D_{\rm src}=D_{\rm aff}+r_D\) with \(|r_D|\le R\), then \(D_{\rm aff,min}=5.372685848430501\) A and \(k_0R<1\), \(k_0=0.2082537181359361\ {\rm A}^{-1}\), imply \(D_{\rm src}>0.570850813\) A; actual \(R\) is **not** known source-wide and any branch not covered remains open. The *measured* positive denominator independently requires \(\gamma_{\min}D_{\min}>\sup_{e\in E}(e_{12}-e_{60})\). No 2K(R+J) local-Jacobian shortcut to global injectivity is used.
+**P45 conditional cross-branch certificate and anchor audit.** On a finite **exhaustively enumerated** disjoint union of compact $C^1$ three-dimensional lawful source/guard charts, if the continuous actual projective map $q=(B_1,B_2,B_3)/D$ has nonzero Jacobian determinant on every chart interior and $D\ne0$, then for any connected open $U$ disjoint from **all** chart and guard/root-birth boundary images, $q:q^{-1}(U)\to U$ is a proper local homeomorphism, hence a finite covering. Its cross-branch preimage count is constant on $U$; a **certified exhaustive seed count exactly one** propagates global injectivity over $U$. This is a project-owned application of Chung-Wu Ho, [*A Note on Proper Maps*](https://doi.org/10.1090/S0002-9939-1975-0370471-3), *Proc. AMS* 51 (1975), 237–241, Lemmas 2–3 (proper local homeomorphism/covering), not a proof that actual S150 meets the hypotheses. Two disjoint identical-output charts with $D=5$ A and $q=u$ have locally positive determinant yet two global sheets: point Jacobian positivity alone is insufficient. Separately, if the **same full-branch residual bound** of P41 includes $D_{\rm src}=D_{\rm aff}+r_D$ with $|r_D|\le R$, then $D_{\rm aff,min}=5.372685848430501$ A and $k_0R<1$, $k_0=0.2082537181359361\ {\rm A}^{-1}$, imply $D_{\rm src}>0.570850813$ A; actual $R$ is **not** known source-wide and any branch not covered remains open. The *measured* positive denominator independently requires $\gamma_{\min}D_{\min}>\sup_{e\in E}(e_{12}-e_{60})$. No 2K(R+J) local-Jacobian shortcut to global injectivity is used.
