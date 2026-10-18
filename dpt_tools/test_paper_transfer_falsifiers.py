@@ -1028,5 +1028,82 @@ class SavedFourTimeFullCalDual(unittest.TestCase):
             self.assertEqual(sum(x*yy for x,yy in zip(w,m)),0)
 
 
+class SourceG12EliminationAndL450Dual(unittest.TestCase):
+    """Reproducible stored-binary64 x-source and in-domain CAL witnesses."""
+
+    def test_exact_x_kcl_real_law_cap_and_first_prep_heat_sign(self):
+        from fractions import Fraction as Q
+        a, b = Q(10000), Q(1, 10**7)
+        h = Q.from_float(6.349206349224305e-11)
+        radius, ib_radius = Q(1, 10**6), Q(1, 10**5)
+        # Independent integer-power cap comparisons bound source .63 exponent
+        # between .629 and .631 and source CJO[pF] between 1107 and 1109.
+        q1 = Q(1, 10) / Q(9, 2)
+        self.assertLess(q1**629, (Q(1107, 1010)-1)**1000)
+        self.assertGreater(q1**631, (Q(1109, 1030)-1)**1000)
+        self.assertLess((Q(155)/Q(9, 2))**631, (Q(1107, 107)-1)**1000)
+        self.assertGreater((Q(154)/Q(9, 2))**629, (Q(1109, 109)-1)**1000)
+        # Archived original Pro18C n0/n1 source binary64 d,s,ib.
+        samples = [
+            ((150.00545013896675, 154.45493573259364),
+             (150.00537107035638, 154.45485845636045),
+             5.193101454504642, 1010, 1030),
+            ((154.48240977926386, 2.1683813593739798e-07),
+             (154.47654469263784, -0.005831568263377308),
+             -8.312221736852897e-13, 107, 109),
+        ]
+        alpha = a / (a+b)
+        for k, (old, new, ib, cmin, cmax) in enumerate(samples):
+            old_ds = Q.from_float(old[0])-Q.from_float(old[1])
+            ds = Q.from_float(new[0])-Q.from_float(new[1])
+            lo, hi = ds-2*radius, ds+2*radius
+            qrange = [Q(c, 10**12)*dv for c in (cmin, cmax)
+                      for dv in (lo-old_ds, hi-old_ds)]
+            s_lo = alpha*(b*lo+min(qrange)/h)+(b+Q(1, 400000000))*lo-(Q.from_float(ib)+ib_radius)
+            s_hi = alpha*(b*hi+max(qrange)/h)+(b+Q(1, 400000000))*hi-(Q.from_float(ib)-ib_radius)
+            self.assertLess(s_hi, 0)
+            if k == 0:
+                self.assertLess(hi, 0)
+                self.assertLess(s_hi, Q("-5.193088"))
+            else:
+                self.assertGreater(lo, 0)
+                self.assertLess(s_hi, -Q(11, 10**6))
+                self.assertGreater(s_lo, -Q(40, 10**6))
+        # Algebraic x root, passive two-terminal row and diagonal-only
+        # equal-radius Banach failure are independent of archived x values.
+        d, s, dq_per_h = Q(2), Q(3), Q(1, 4)
+        x = (a*d+b*s-dq_per_h)/(a+b)
+        self.assertEqual(a*(x-d)+b*(x-s)+dq_per_h, 0)
+        C_over_h = Q(107, 10**12)/h
+        self.assertLess(C_over_h, a)
+        self.assertEqual(abs(-a+C_over_h)+abs(-b-C_over_h), a+b)
+
+    def test_exact_original_domain_l450_three_time_voltage_dual(self):
+        from fractions import Fraction as Q
+        # From original Pro18F L4.50 fixed load own-PREP H4801, and
+        # Pro18E recorded y_D, at zero-based H indices 2614,3799,4146.
+        m = [Q(4690438247181883,35184372088832),
+             Q(70327531889071,8796093022208),
+             Q(-1924824156327189,1125899906842624)]
+        y = [Q(4685048344361601,35184372088832),
+             Q(8845003663998257,1125899906842624),
+             Q(-2673645454307957,2251799813685248)]
+        w0 = [m[1]-m[2], m[2]-m[0], m[0]-m[1]]
+        norm = sum(map(abs,w0))
+        w = [v/norm for v in w0]
+        self.assertEqual(sum(w), 0)
+        self.assertEqual(sum(ww*mm for ww,mm in zip(w,m)), 0)
+        self.assertEqual(sum(map(abs,w)), 1)
+        C = abs(sum(ww*yy for ww,yy in zip(w,y)))
+        self.assertGreater(C,Q("0.30653723963888"))
+        self.assertLess(C,Q("0.30653723963889"))
+        # Conditional stored-PL <=1ps common-clock support, NOT hardware E.
+        M = list(map(Q, ("2.304408","6.245388","3.660111")))
+        B = sum(abs(ww)*mm for ww,mm in zip(w,M))
+        self.assertLess(B,Q("4.9041"))
+        self.assertGreater(C-Q("1.1")*B*Q("0.001"),Q("0.30114"))
+
+
+
 if __name__ == "__main__":
     unittest.main()
