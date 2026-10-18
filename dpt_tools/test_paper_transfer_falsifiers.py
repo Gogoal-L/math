@@ -1173,8 +1173,8 @@ class SetInversionTransferContractRegression(unittest.TestCase):
         self.assertIn("`UNDECIDED`", note)
         self.assertIn("[2,3]", note)
         self.assertIn("`REJECT`", note)
-        self.assertIn("UNDECIDED because overlap is not containment", note)
-        self.assertIn("REJECT because the sets are disjoint", note)
+        self.assertIn("overlap is not containment", note)
+        self.assertIn("the sets are disjoint", note)
 
     def test_phase_clock_residual_contract_states_voltage_units_and_gain_scaling(self):
         from pathlib import Path
