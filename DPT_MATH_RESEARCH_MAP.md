@@ -2,7 +2,7 @@
 
 **更新：2026-10-19（Main 定向吸收与 Side 下一批攻坚；历史源证据身份保留）。** 本页是 DPT 主控和 Math Side 的双向科研接口。它回答：**Main 已吸收什么，Side 又推进了什么新的可吸收结果，下一项实际证据怎样改变判断。** 完整证明在 [dpt_research](dpt_research/)，代码/输入合同在 [dpt_tools](dpt_tools/README.md)，此处保留科研决策必需的结果、状态、界限与可执行接入路径。
 
-**当前判断。** Main 已记录 Pro18A 的可达信息证书与观测修复、Pro18B 的主动两阶段历史反例及外推失败、Pro18C 的 active CAL 与目标预测。Side 进一步形成目标相关 minimax recovery、shared-nuisance quotient、有限历史消息比特预算、重复采集的共享漂移信息下界、跨传感器未知相关性的可辨识界、二次目标 Gq/相关模型误差下的 acquisition 排序、非线性 observation-fiber Hessian、source-law Hessian/charge bounds 的独立数学结构。**这批 Math 仓库模块在真实 DPT 输入上直接 replay 尚未确认；不能凭 synthetic tests 把它们自动标为 Main 已接受。**
+**当前判断。** Main 已记录 Pro18A 的可达信息证书与观测修复、Pro18B 的主动两阶段历史反例及外推失败、Pro18C 的 active CAL 与目标预测。Side 进一步形成目标相关 minimax recovery、shared-nuisance quotient、有限历史消息比特预算、重复采集的共享漂移信息下界、跨传感器未知相关性的可辨识界、二次目标 Gq/相关模型误差下的 acquisition 排序、非线性 observation-fiber Hessian、source-law Hessian/charge bounds 的独立数学结构。**D16 两线圈工具已由 Main 在原 Pro18C 数组上实际重放并限定接受；其余模块逐项保留各自验证状态，不能凭 synthetic tests 自动升级。最新 Main 吸收和执行状态见第 1 节的 2026-10-19 入口，详细裁决保留在后文。**
 
 ## 0. 两条证据账本与更新规则
 
@@ -28,6 +28,24 @@
 | **Pro18C — MAIN_ACCEPTED（按本地吸收记录）** | 150 V κ 在 off observation 不可见而未来 work 有差；5-point nonlinear CAL chart 的 12-member bank：Full/N2/Direct 最大误差 **0.875243/0.891739/5.875723 nJ**；7 个近等观测成员 L 为 **4.278748–4.321331 nH**，work spread 仅 **0.335303 nJ** | 参数无法唯一恢复而给定 goal 可以稳定；0.335303 nJ 不是连续 fiber 上界，6.086919 nJ 已见 joint remainder 最大值也不是 uniform β |
 
 **Main 接受的含义。** 上述 MAIN_ACCEPTED 是现有本地 absorption 记录的状态转述，不表示本次 GitHub Math 重演了原始 DPT 仿真；来源、时间、owner 都在第 5 节。18A 的完整 recorded-command 替代方案、18B 未见成员失败、18C 非唯一 L 是 Side 后续研究必须正面接受的证据。**100 V R1、150 V CAL/history、600 V native 是三套不同 evidence chart，不能拼接成一条硬件测量证明。**
+
+
+### 2026-10-19 Main 实际吸收与执行状态（最新入口）
+
+本表是主控实际动作的入口，不以“安排了任务”冒充完成；证明/代码细节仍由原专题与后文裁决拥有。
+
+| 对象 | Main 已做什么、当前接受什么 | 进入项目的位置 / 下一实际动作 |
+| --- | --- | --- |
+| **D16 两线圈/目标伴随** | 原 Pro18C H841、同静态 L、原假设内部输入半径下实跑：W=11161.291889185979nJ，条件半径0.02306262344767322nJ；残差/伴随复现，i34反号负控有效。**接受条件浮点计算，不接受全源范围** | 本地 `analysis/acceptance/side_math_20261019_review.json`；用于 S02 有限响应与 S08/S09 目标传播接口。Luna 已获派有限ΔL/各自own-PREP两世界的实际比较、关联forcing/独立盒差别与CAL可获得性分析，尚未完成 |
+| **S-L26 根包含/历史** | 原9项收据测试本地通过；**未接受 source 根包含**，混合量纲、完整 R/J、非中心 directed 项与历史链仍缺 | 已吸收“代数少变量不等于少动态状态、不得reset carry”的科学限制；不重复 synthetic PASS，不将全认证前置到19G |
+| **S-L27 分支投影** | 原式/反例作为有价值候选；本轮尚未独立重算其tiny-current临界盒 | Luna 已获派实际source局部标量/存储/端口与热投影复核，含deep-reverse admission与失效反例；不是全50D新轨迹/硬件保证 |
+| **D15 / P54–P55** | 相关误差和联合时钟/RC思路已进入研究问题；完整stage/候选原始回执仍未接受 | 由具体误差或CAL修复需要触发，暂不为补齐名单启动昂贵全链；不宣称连续goal直径已经收缩 |
+| **N100 新native恢复→预测** | 同Alt/Gear/合法PREP query的L误差1.4–2.4pH，work仍偏48–53pJ；known-L同规则余偏47–50pJ。新增E@5.5端点预测只偏3–4pJ，均已限定接受 | 这是Original R1/S03–S04→S09的实际断点，提供Side有限L×history问题；不是Full-CAL歧义或原compound gate关闭 |
+| **N100 CAL有限端口斜率** | known L5nH/Rg7.5，A/B/D CAL拟合R_port≈.0815Ω；C/E回顾性误差median3.39022→.00772922nJ，fullwaveordinary .00168237nJ更强 | 有物理用途的低参数positive已接受；用于跨PREP端口机制/新关系构造，不命名intrinsic Rds，不宣称已跨L |
+| **Pro19G 的实质接入** | 六项合同加入可选两线圈goal投影/相关history/latent与端口后果分离路线；原固定母版不改。actual-source完整CAL消费者、Full、未来计算及库外包复算已通过 | 研究者准备手动发送。当前仅优化上传分片，科学合同不再扩大；不会为了等Side全源证明而阻塞G |
+
+两条 Math→Main Luna 单元的本地写域为 `pro_runs/20261014_pro19_physical_recovery_response_frontier/analysis/math_side_bridge/{two_coil,hybrid_projection}/`，这是**派发状态**，不是已交付结论；完成后由主控核承重数值并更新原推导/absorption。原推导 TeX/PDF 此刻尚未因此全部更新，不能把MAP同步等同于正文已吸收。
+
 
 ### 2026-10-17 本地主控只读回填：新证据如何改变 Side 问题
 
