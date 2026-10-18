@@ -986,5 +986,47 @@ class SecondRoundSourceStrictGates(unittest.TestCase):
         self.assertEqual(frozen_h-signed_pl, h*(v1-v0)*(i1-i0)/6)
         self.assertGreater(frozen_h-signed_pl, 0)
 
+
+class SavedFourTimeFullCalDual(unittest.TestCase):
+    """Actual Pro18E/Pro19B source-bin64 four-point affine-span oracle."""
+
+    def test_exact_affine_span_dual_and_shared_clock_negative_control(self):
+        from fractions import Fraction as Q
+        # Original Pro19B L485 full source own-PREP r1 and r2 H points.
+        v1 = [130.6151058986849, 6.278730658689222,
+              -0.8322212882744453, -0.782364673627695]
+        v2 = [130.61449762179043, 6.26705273494299,
+              -0.8446835903674339, -0.793789141938967]
+        y = [131.0191188358652, 5.63548306061056,
+             0.2241706783575133, 0.2722423100475644]
+        rows = [[Q(1)] * 4] + [[Q.from_float(v) for v in vrow]
+                                for vrow in (v1, v2)]
+        def det3(M):
+            a, b, c = M[0]; d, e, f = M[1]; g, h, i = M[2]
+            return a*(e*i-f*h)-b*(d*i-f*g)+c*(d*h-e*g)
+        w = [(-1)**j * det3([[r[k] for k in range(4) if k != j]
+                              for r in rows]) for j in range(4)]
+        norm = sum(map(abs, w)); self.assertGreater(norm, 0)
+        w = [x/norm for x in w]
+        for r in rows:
+            self.assertEqual(sum(x*yy for x,yy in zip(w,r)),0)
+        self.assertEqual(sum(map(abs,w)),1)
+        C = abs(sum(x*Q.from_float(yy) for x,yy in zip(w,y)))
+        self.assertGreater(C,Q("0.83206732713215"))
+        self.assertLess(C,Q("0.83206732713217"))
+        # A hypothetical positive common gain<=1.1 and <=130ps clock,
+        # with exact archival slope caps. Not calibrated hardware noise.
+        M = list(map(Q, ("3.405146","6.697318","4.121299","4.124648")))
+        B = sum(abs(x)*m for x,m in zip(w,M))
+        self.assertLess(B,Q("5.391"))
+        necessary = C-Q("1.1")*B*Q("0.13")
+        self.assertGreater(necessary,Q("0.0611"))
+        self.assertGreater(necessary,Q("0.05"))
+        # Dual nulls all affine mixtures of the two exact saved V columns.
+        for a,b,c in ((Q(2),Q(0),Q(1)),(Q(1,3),Q(2,3),Q(-2))):
+            m=[a*r1+b*r2+c for r1,r2 in zip(rows[1],rows[2])]
+            self.assertEqual(sum(x*yy for x,yy in zip(w,m)),0)
+
+
 if __name__ == "__main__":
     unittest.main()

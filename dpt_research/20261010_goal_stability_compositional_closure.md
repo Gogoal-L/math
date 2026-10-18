@@ -538,3 +538,33 @@ This preserves the same stored source current path, bus/load cancellation, and c
 **Named actual S150 numerical receipt.** Nonprotected analysis/acceptance/pro18c_prediction_extension.npz SHA256 af7299434d7dcde687da3bf56b5ce31babbc4e0c12b1a849b5f5530ae8fd supplies target6721x50 and H841 with a=(.23,.37,.23)V, static Ls=4.16nH, kappa1.009, b95MHz. Fresh independent original-array recomputation yields Q_H≈−0.02259219766 nJ, with signed source-coil terms in nJ: initial +.0038003812478, bus −4.850786424625, external coil +.003221094127, load coil +4.821172735126, residual +1.64636e−8. Source-row closure <1e−12 nJ; max |r36-r37|≈3.55212e−9 V. Here sum_{n>=1}|w_n|≈5.52286436823e−7 A s, so under independently supplied **hypothetical** |r36|,|r37|<=3e−8V, the FIXED-path Q_H coil-substitution interval centered near −0.02259221413 nJ has radius **3.313718621e−5 nJ**, approximately [−0.02262535131,−0.02255907694] nJ. A 0.000033nJ residual allowance must NOT be advertised as complete nonlinear BE/source discretization error, and a single stored current path cannot bound the whole original Goal27 source-compatible future fiber. [Reusable coefficient-based API](../dpt_tools/goal_defect_transport.py) and [regressions](../dpt_tools/test_goal_defect_transport.py) preserve the original scorer.
 
 **Fixed-L/source-law limitation.** The source does not define post-CAL L switching or flux reset; only a fixed L chosen before its own-PREP and reused by CAL/future can enter the above equalities. The strong same-information ordinary consumes all original legal PREP/full V-I CAL and uses exactly K; no five-sample comparison, direct future-label feed, or broken history handoff is allowed.
+
+
+## 2026-10-18 D8: source-flux coupled FAMILY bounds for frozen signed work
+
+**An actual-source goal-only norm relation, conditional on a jointly legal future fiber.** Let A be the frozen H841-by-source6721 piecewise-linear sampling matrix, Ω its H trapezoidal time weights [s], D=diag(0,h1,...,h6720) [s], G=AᵀΩA and K=G−D. Original signed terminal work W_H=VᵀGs and D7 BE-right correction Q_H=VᵀKs. The frozen fixed-L original coil BE source rows actual_law.py L200–202,235–240,276–295 give r36=−vsl+Ls Δs/h and r37=−vD+150+LD Δj/h; define physical flux φ=LD j−Ls s [Wb], r=r36−r37. On each fine BE step j>=1, V_j=150+Δφ_j/h_j+r_j.
+
+For any TWO source-legal futures on the SAME grid and with the SAME PREPARED starting s0,V0, set x_j=Δs_j [A], q_j=Δ(φ_j−φ_{j−1})/h_j [V], e_j=Δr_j [V] and x0=ΔV0=0. For either E=G (frozen full work) or E=K (D7 signed correction), exact polarization around the first path gives
+```math
+\Delta(V^\top E s)=(EV)_{1:}^\top x+(Es)_{1:}^\top(q+e)
++x^\top E_{1:,1:}(q+e).
+```
+With T=diag(h1,...,h6720), let Rs=||T^{1/2}x|| [A sqrt(s)], Rphi=||T^{1/2}q|| [V sqrt(s)], Rr=||T^{1/2}e|| [V sqrt(s)]. Define Cs=||T^{-1/2}(EV)_{1:}|| [V sqrt(s)], Cphi=||T^{-1/2}(Es)_{1:}|| [A sqrt(s)] and sigma=||T^{-1/2}E_{1:,1:}T^{-1/2}||. Then this **joint goal-family** bound follows by weighted Cauchy-Schwarz and spectral norm:
+```math
+|\Delta G_E|\le C_s R_s+C_\phi(R_\phi+R_r)
++\sigma R_s(R_\phi+R_r).
+```
+The radii are JOINT correlated temporal source uncertainty, not per-sample boxes. This inequality is not yet an ACTUAL Goal27 full-CAL diameter until each radius is bounded for every legal guarded same-information future world. Different own-PREP fixed-L worlds require explicit starting-endpoint terms instead of x0=ΔV0=0.
+
+**New directed stored-binary64 real-lift coefficient receipt.** Nonprotected acceptance/pro18c_prediction_extension.npz SHA256 af7299434d7dcde687da3bf56b5ce31babbc4e0c12b1a849b5f5530ae8fd provides actual 84ns/H841 t6721/V=x0−x1/s=x36/j=x37, query (.23,.37,.23)V,Ls4.16nH,LD100microH. Independent exact Fraction evaluation reconstructs A,Ω,G,K on the saved grids; every nonnegative weighted sum term is rational outward CEILED to 1e−19 and the Gershgorin bound uses exact rational 1/sqrt(h_i*h_j)≤(1/h_i+1/h_j)/2. Strict STORED-VALUE upper bounds, not solver/domain error certificates:
+
+| Goal matrix | Cs [V sqrt(s)] | Cphi [A sqrt(s)] | sigma [dimensionless] |
+|---|---:|---:|---:|
+| G for frozen W_H | <0.084797 | <0.004130 | <8.000001 |
+| K for signed Q_H | <0.079327 | <0.003864 | <7.000001 |
+
+Fresh floating diagnostics respectively (0.0847967522634,0.0041298213837,8.0000000005082) and (0.0793266786565,0.0038630291613,7.0000000005082). Source flux endpoint check phi0≈−0.0005192794483166381Wb, phiN≈−0.0005257303404755968Wb; Δphi=−6.450892158958656e−6Wb and sum h(V−150)≈−6.450892158959148e−6Wb, residual difference≈4.92e−19Wb. Frozen W_H≈1.116129188918598e−5J and Q_H≈−0.02259219766nJ. These are real-lifted ONE source-point coefficients: numerical source truncation, actual sensor E, other branches and Rs/Rphi/Rr remain OPEN.
+
+**A legal two-source polarity crosscheck in a DIFFERENT frozen future.** Accepted nonprotected Pro18D artifacts/run_D/primitives/evaluation_ports.npz SHA256 2bc0926d2b757be3e1cadb2c8300aa669ea3234dbed5cbc893f0fee22f22a234 and pro18d_design_freeze.json L4–29,55–81 contain TWO lawful static L4.3/5.2nH own-PREP source traces, identical initial50 and D1 continuous future command, H561/56ns. Independently rescored source Q0≈−0.104531427024nJ, Q1≈−0.059556138216nJ, ΔQ≈+.044975288806nJ. The exact two-copy identity separates +.041450546248nJ from ΔVᵀK mean(s) and +.003524742561nJ from mean(V)ᵀKΔs (closure <3e−12nJ). Their PREPARED endpoint port states differ, so they check general D7 polarization, NOT the new same-initial-point radius formula; H561 and command are not original Goal27 H841. Fixed L chosen before own PREP is legal; the source has no post-CAL ΔL switch, magnetic-flux reset or actuator-work law.
+
+**Decision ceiling.** D8 supplies a finite-family norm bound with actual-source, exact-stored coefficient upper constants. D7's ±3.313718621e−5nJ is only a separate fixed-current residual box. Neither is a full original source-compatible future goal interval. Require legal jointly guarded Rs/Rphi/Rr over PREP/full4801 CAL/target6721 at same full-record information, or an accepted common-record second future source path, before asserting physical Goal27 shrinkage.

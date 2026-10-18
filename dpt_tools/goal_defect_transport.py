@@ -245,6 +245,67 @@ def s150_load_current_from_raw_ports(t_s, port_V, port_I, *, source_Ls_H,
               "Not a recovery from filtered CAL with unknown b/xi, not future scorer or 50D root coverage."}
 
 
+
+def s150_goal_family_weighted_bound(t_s, H_s, voltage_V, current_A,
+                                   R_s_A_root_s, R_phi_V_root_s,
+                                   R_r_V_root_s, *, score="frozen"):
+    """Conditional signed work-family norm bound from original H PL scorer.
+
+    Two lawful paths must have SAME fine t, H, static L, bus, prepared
+    starting V0,I0, and source flux increments; R_s, R_phi, R_r MUST
+    enclose their true joint weighted temporal differences. This
+    evaluates point floating coefficients, NOT directed source/solver
+    bounds or a source-compatible fiber certificate.
+    """
+    t=np.asarray(t_s,float);H=np.asarray(H_s,float)
+    V=np.asarray(voltage_V,float);I=np.asarray(current_A,float)
+    if (t.ndim!=1 or H.ndim!=1 or len(t)<2 or len(H)<2 or
+        V.shape!=t.shape or I.shape!=t.shape or
+        not all(np.all(np.isfinite(a)) for a in (t,H,V,I)) or
+        np.any(np.diff(t)<=0) or np.any(np.diff(H)<=0) or
+        H[0]<t[0] or H[-1]>t[-1]):
+        raise ValueError("aligned finite source t/H/V/I, no extrapolation required")
+    radii=np.asarray([R_s_A_root_s,R_phi_V_root_s,R_r_V_root_s],float)
+    if np.any(~np.isfinite(radii)) or np.any(radii<0):
+        raise ValueError("joint temporal source radii must be finite nonnegative")
+    if score not in ("frozen","signed_correction"):
+        raise ValueError("score must be frozen or signed_correction")
+    h=np.diff(t);n=len(t)
+    omega=np.empty_like(H)
+    omega[0]=(H[1]-H[0])/2;omega[-1]=(H[-1]-H[-2])/2
+    omega[1:-1]=(H[2:]-H[:-2])/2
+    right=np.clip(np.searchsorted(t,H,side="right"),1,n-1)
+    left=right-1
+    alpha=np.clip((H-t[left])/(t[right]-t[left]),0,1)
+    diag=np.zeros(n);off=np.zeros(n-1)
+    np.add.at(diag,left,omega*(1-alpha)**2)
+    np.add.at(diag,right,omega*alpha**2)
+    np.add.at(off,left,omega*alpha*(1-alpha))
+    if score=="signed_correction":diag[1:]-=h
+    def apply(z):
+        out=diag*z
+        out[1:]+=off*z[:-1]
+        out[:-1]+=off*z[1:]
+        return out
+    cs=float(np.linalg.norm(apply(V)[1:]/np.sqrt(h)))
+    cp=float(np.linalg.norm(apply(I)[1:]/np.sqrt(h)))
+    # Absolute weighted Gershgorin row-sums upper-bound ||T^-1/2 E T^-1/2||_2.
+    rows=np.abs(diag[1:])/h
+    weights=np.abs(off[1:])/np.sqrt(h[:-1]*h[1:])
+    rows[:-1]+=weights;rows[1:]+=weights
+    sigma=float(np.max(rows))
+    rs,rp,rr=map(float,radii)
+    upper=cs*rs+cp*(rp+rr)+sigma*rs*(rp+rr)
+    return {"status":"CONDITIONAL_SOURCE_FAMILY_NORM","score":score,
+            "C_s_V_root_s":cs,"C_phi_A_root_s":cp,
+            "sigma_float_gershgorin":sigma,"delta_goal_abs_upper_J":float(upper),
+            "claim_ceiling":"Valid bound only if supplied joint weighted radii cover ALL "
+                "legal same-start/same-source-parameter future paths, with "
+                "appropriate source residual/clock/guard and fixed scorer. "
+                "All calculations are IEEE64, NOT directed interval arithmetic; "
+                "point source outputs cannot certify a full Goal27 goal diameter."}
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("input", type=Path, help="NPZ: updates, observation, goal, initial_radius, defect_radii")

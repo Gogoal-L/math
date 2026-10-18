@@ -159,5 +159,47 @@ class S150TwoCoilSignedWorkTests(unittest.TestCase):
             recover(t,[150]*3,[0]*3,source_Ls_H=-4e-9,seed_load_A=0)
 
 
+
+class D8CorrelatedFutureFamilyBoundTests(unittest.TestCase):
+    def test_small_grid_matches_independent_dense_gram_and_source_bound(self):
+        from goal_defect_transport import s150_goal_family_weighted_bound as bound
+        t=np.arange(6,dtype=float)*1e-9
+        H=np.array([0.,1.5,3.5,5.])*1e-9
+        V=np.array([2,3,6,4,5,7],float)
+        I=np.array([.2,.3,.4,.6,.7,.8],float)
+        h=np.diff(t)
+        omega=np.array([.75,1.75,1.75,.75])*1e-9
+        A=np.zeros((len(H),len(t)))
+        for k,v in enumerate(H):
+            j=min(max(np.searchsorted(t,v,side="right"),1),len(t)-1)
+            a=(v-t[j-1])/(t[j]-t[j-1])
+            A[k,j-1],A[k,j]=1-a,a
+        gram=A.T@np.diag(omega)@A
+        for name,E in [("frozen",gram),
+                       ("signed_correction",gram-np.diag([0.,*h]))]:
+            rs,rp,rr=.003,.004,.002
+            r=bound(t,H,V,I,rs,rp,rr,score=name)
+            self.assertAlmostEqual(r['C_s_V_root_s'],
+                                   np.linalg.norm((E@V)[1:]/np.sqrt(h)))
+            self.assertAlmostEqual(r['C_phi_A_root_s'],
+                                   np.linalg.norm((E@I)[1:]/np.sqrt(h)))
+            # Dense spectral norm must not exceed Gershgorin support.
+            W=np.diag(1/np.sqrt(h))
+            self.assertLessEqual(np.linalg.norm(W@E[1:,1:]@W,2),
+                                 r['sigma_float_gershgorin']+1e-12)
+            dx=np.array([0,.0001,-.0001,.0002,-.0003,.0004])
+            q=np.array([0,.0008,.0004,-.0003,.0005,-.0001])
+            delta=float((V+q)@E@(I+dx)-V@E@I)
+            self.assertLess(abs(delta),r['delta_goal_abs_upper_J'])
+            self.assertEqual(r['status'],'CONDITIONAL_SOURCE_FAMILY_NORM')
+
+    def test_require_same_grid_and_nonnegative_certified_radii(self):
+        from goal_defect_transport import s150_goal_family_weighted_bound as bound
+        for t,H,rs in (([0,0],[0,1],0),([0,1],[-1,1],0),
+                       ([0,1],[0,1],-1)):
+            with self.assertRaises(ValueError):
+                bound(t,H,[2,3],[0,1],rs,0,0)
+
+
 if __name__ == '__main__':
     unittest.main()
