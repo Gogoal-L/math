@@ -33,11 +33,12 @@ X1_RADIUS = Fraction(1, 1_000_000)
 # These inputs are hash-verified in the local read-only master workspace but
 # are not currently present in the remote Math tree. No source calculation is
 # allowed to run until their exact bytes are made available to the cloud runner.
+# S-L26 n1->n2 uses the original source archive and its pinned members.
+# The Pro18C target NPZ belongs to the separate D15 thermal contract and is
+# intentionally not a prerequisite for this 24-row Krawczyk receipt.
 SOURCE_ARTIFACT_SHA256 = {
     "source_inputs/s150/original_submission.zip":
         "250aa4ea17514ffdeda3a51d95bedf8e034b181f97bdc254db29ddc36281b9c8",
-    "source_inputs/s150/pro18c_prediction_extension.npz":
-        "af7299434d7dcde687da3bf56b5ce31babbc4e0c1c0e12b1a849b5f5530ae8fd",
 }
 SOURCE_ARCHIVE_MEMBER_SHA256 = {
     "analysis/actual_law.py":
@@ -442,12 +443,13 @@ def audit_receipt(receipt: dict, *, root: str | Path | None = None) -> dict:
         else:
             noncenter_status = _verify_noncenter_receipt(receipt, root_path, noncenter)
             result["status"] = (
-                "SOURCE_RECEIPTS_HASHED_CENTER_ARITHMETIC_PASS_ONLY"
+                "SOURCE_INPUTS_HASHED_CENTER_ARITHMETIC_PASS_ONLY"
                 if noncenter_status == "NONCENTER_RECEIPT_HASHED"
                 else noncenter_status
             )
             result["source_artifact_check"] = source_status
             result["noncenter_receipt_status"] = noncenter_status
+            result["source_interval_provenance"] = "NOT_VALIDATED"
     return result
 
 
