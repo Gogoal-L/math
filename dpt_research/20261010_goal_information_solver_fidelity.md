@@ -298,25 +298,19 @@ Indeed $z_L=-P_z^{-1}P_L$ and $X_L=-F_X^{-1}(F_L+F_z z_L)$; substitute in $dG/dL
 
 **S-L2 (joint work–slope envelope and sharp two-world obstruction).** For a nonempty set $\mathcal H_y$ of source-legal worlds compatible with the **same complete pretarget** command/CAL observation $y$, let $w_h=W_h(L_0)$, $s_h=W'_h(L_0)$ and let one independently source-certified $M\ge\sup_{h\in\mathcal H_y,\,|\ell-L_0|\le r}|W_h''(\ell)|$ hold along each legal future continuation. Define the *joint* feasible pair set $\mathcal Z_y=\{(w_h,s_h):h\in\mathcal H_y\}$ and its support endpoints $a(\delta)=\inf_{\mathcal Z_y}(w+\delta s)$, $b(\delta)=\sup_{\mathcal Z_y}(w+\delta s)$. For $|\delta|\le r$,
 $$
-W_h(L_0+\delta)\in
-\left[a(\delta)-\tfrac12M\delta^2,\;
-      b(\delta)+\tfrac12M\delta^2\right],
-\qquad
-R_y(\delta)\le\tfrac{b(\delta)-a(\delta)}2+\tfrac12M\delta^2 .
+\begin{gathered}W_h(L_0+\delta)\in\\\left[a(\delta)-\tfrac12M\delta^2,\;b(\delta)+\tfrac12M\delta^2\right],\\R_y(\delta)\le\tfrac{b(\delta)-a(\delta)}2\\+\tfrac12M\delta^2.\end{gathered}
 $$
 This follows by Taylor's theorem **for every eligible history** followed by infimum/supremum; the interval midpoint is a pretarget predictor with the displayed worst-case upper bound. A guaranteed $\tau$-adequate prediction needs the right-hand side $\le\tau$. Pairwise lower witnesses remain valid: any two eligible histories with $|(w_h-w_{h'})+\delta(s_h-s_{h'})|>2\tau+M\delta^2$ refute $\tau$-adequacy. Keeping $(w,s)$ **joint** can be much sharper than combining separate $w$ and $s$ boxes; for pairs $(1,-1),(-1,1)$ at $\delta=1$, the joint linear goal is identically $0$, while the independent box gives $[-2,2]$.
 
 To compute $s_h$ without a new solver, stack **all PREP + switching** residual rows as $\mathcal F(X,L;h)=0$ with $A=\mathcal F_X$ and solve $A^\top\lambda=G_X^\top$: $s_h=G_L-\lambda^\top\mathcal F_L$. Every backward-Euler mass/stamp term, previous-state derivative, prepared history and readout window belongs to this full derivative. With $J=-A^{-1}\mathcal F_L$, the conditional curvature is
 $$
-W''=G_{LL}+2G_{XL}J+G_{XX}[J,J]
--\lambda^\top\bigl(\mathcal F_{LL}+2\mathcal F_{XL}J+\mathcal F_{XX}[J,J]\bigr).
+\begin{gathered}W''=G_{LL}+2G_{XL}J+G_{XX}[J,J]\\-\lambda^\top(\mathcal F_{LL}+2\mathcal F_{XL}J\\+\mathcal F_{XX}[J,J]).\end{gathered}
 $$
 A pointwise floating Hessian or a finite collection of observed worlds does not supply the uniform $M$, the continuous set $\mathcal Z_y$, root existence or guard coverage. Compare on the **same information, source tube and goal** against full-source forward/adjoint and calibrated full-record ordinary predictors.
 
 **S-L3 (F266-inspired centered normal-error bound; conditional independent lemma).** Let $z=(X,L)\in\mathbb R^{n+1}$ and $\mathcal F:\mathbb R^{n+1}\to\mathbb R^n$, with a dimensionless scaled norm specified for unlike physical units. At a center $c$ choose a unit approximate tangent $t$ with $t_L\ne0$ and a preconditioner $M_0\in\mathbb R^{(n+1)\times n}$. Put $J_c=D\mathcal F(c)$,
 $$
-\alpha=\|I-tt^\top-M_0J_c\|,\quad n_0=\|M_0\mathcal F(c)\|,\quad
-s=\frac{DG(c)t}{t_L},\quad b=\|DG(c)-s\,e_L^\top\|.
+\begin{gathered}\alpha=\|I-tt^\top-M_0J_c\|,\\n_0=\|M_0\mathcal F(c)\|,\\s=\frac{DG(c)t}{t_L},\\b=\|DG(c)-s\,e_L^\top\|.\end{gathered}
 $$
 Assume every eligible exact root $c+d$ lies in one source-certified smooth, guard-consistent ball $\|d\|\le R$, that $\|M_0(\mathcal F(c+d)-\mathcal F(c)-J_c d)\|\le C\|d\|^2$ there and $\|D^2G\|\le H_G$. Then
 $$
@@ -337,9 +331,7 @@ Q(X,\xi)=G(X,\xi)-p(O(X,\xi)),\qquad R_p(\xi)=Q(X(\xi),\xi).
 $$
 The associated adjoint uses the **corrected-goal covector** $Q_X=G_X-Dp(O)O_X$, not $G_X$ alone. Solving $A^\top\lambda=Q_X^\top$ and $X'=-A^{-1}F_\xi$ gives the following independently proved **conditional exact identities**:
 $$
-R_p'=Q_\xi-\lambda^\top F_\xi,\qquad
-R_p''=D^2Q[(X',1),(X',1)]
--\lambda^\top D^2F[(X',1),(X',1)].
+\begin{gathered}R_p'=Q_\xi-\lambda^\top F_\xi,\\R_p''=D^2Q[(X',1),(X',1)]\\-\lambda^\top D^2F[(X',1),(X',1)].\end{gathered}
 $$
 Proof: differentiate $F(X(\xi),\xi)=0$ once and twice, substitute in the chain rule for $Q$. Every mixed current/previous Hessian and PREP derivative remains in the full stacked $D^2F$, while $D^2Q$ includes the nonlinear projective readout curvature $D^2p(O)$. These formulae establish **point derivatives only** until actual source-legal intervals have verified root existence, identical goal/port/timebase, invertible $F_X$, guard coverage and *uniform* remainder bounds.
 
@@ -352,10 +344,7 @@ Unlike separately bounding $G$ and $O$ before subtracting, this uses their **sha
 
 **Exact synthetic cancellation oracle and failure gate.** On $\xi\in[0,1]$, let $F(x,\xi)=x-1000\xi-\xi^2$, $G=x+\xi^2$, $O=(999/1000)x$ and frozen $p(y)=y$. The exact source root gives
 $$
-R_p(\xi)=\xi+\frac{1001}{1000}\xi^2,\quad
-\lambda=\frac1{1000},\quad
-R_p'(\xi)=1+\frac{2002}{1000}\xi,\quad
-R_p''=\frac{2002}{1000}.
+\begin{gathered}R_p(\xi)=\xi+\frac{1001}{1000}\xi^2,\\\lambda=\frac1{1000},\\R_p'(\xi)=1+\frac{2002}{1000}\xi,\\R_p''=\frac{2002}{1000}.\end{gathered}
 $$
 One certified cell centered at $\xi=1/2$, $h=1/2$ yields a **sharp** upper $R_p(1)=2001/1000$ despite individually order-1000 changes in $G$ and $O$. A separate naive triangle for these two readings loses the cancellation. The example is pure dimensionless algebra, **not** S150 volt/current scaling or evidence of qualified DPT coverage. If source-root/guard enclosure fails, $M_j$ is just a point Hessian, $p$ was fitted to the heldout work, or sensor gain/noise is omitted, return INCONCLUSIVE rather than a bound. [Three independent exact analytic checks](../dpt_tools/test_paper_transfer_falsifiers.py) establish this fixture.
 
@@ -396,12 +385,7 @@ N=D\,[G-g_0+\ell^\top q_0]-\ell^\top B \qquad [N]=\mathrm{J\,A}.
 ```
 The identity $G-p(B/D)=N/D$ is exact only where $D\ne0$. To avoid demanding that $B/D$ be even *defined* on a loose off-source interval box, select a physical/source-qualified set $K$ containing **every** admissible exact joint PREP+CAL+target root and all legal parameters/modes. Suppose outward interval arithmetic or exact symbolic identities certify on **all of $K$** a positive scalar $d_0$ (A), error $\epsilon$ (J), and residual multipliers $\mu,\nu_+,\nu_-$ with the three signed inequalities
 ```math
-D-d_0-\mu^\top F\ge0,\qquad
-\epsilon D+N-\nu_+^\top F\ge0,\qquad
-\epsilon D-N-\nu_-^\top F\ge0.
-
-```
-Each multiplier has the row-specific units required to make its product with the full source residual respectively A or J·A. At every exact root $F=0$, the inequalities give $D\ge d_0>0$ and $-\epsilon D\le N\le\epsilon D$. Hence
+\begin{gathered}D-d_0-\mu^\top F\ge0,\\\epsilon D+N-\nu_+^\top F\ge0,\\\epsilon D-N-\nu_-^\top F\ge0.\end{gathered}
 ```math
 \boxed{\quad |G-p(q)|=|N/D|\le\epsilon\quad\text{for ALL legal source roots}.}
 ```
@@ -447,11 +431,7 @@ hold, then every eligible root obeys $|G_{\rm actual}-p(q_{\rm actual})|\le\epsi
 
 **Two exact sanity examples expose the necessary distinctions.** (Positive) A single passive RL load with $R=1\Omega$, $u=1\mathrm V$, $h=1\mathrm s$, $L\in[1,2]\mathrm H$, initial $i_0=0$, and two BE steps has
 ```math
-i_1=\frac1{L+1}\in[1/3,1/2]\mathrm A,\quad
-i_2=\frac{2L+1}{(L+1)^2}\in[5/9,3/4]\mathrm A,\quad
-D=i_2-i_1=\frac{L}{(L+1)^2}\in[2/9,1/4]\mathrm A.
-```
-Its **discrete** physical energy identity
+\begin{gathered}i_1=\frac1{L+1}\in[1/3,1/2]\mathrm A,\\i_2=\frac{2L+1}{(L+1)^2}\\\in[5/9,3/4]\mathrm A,\\D=i_2-i_1=\frac{L}{(L+1)^2}\\\in[2/9,1/4]\mathrm A.\end{gathered}
 ```math
 \tfrac L2(i_n^2-i_{n-1}^2)+\tfrac L2(i_n-i_{n-1})^2
 +hRi_n^2=hu i_n
@@ -488,15 +468,7 @@ With a verified root ball $B_r$, a qualified matrix preconditioner $K$ and $q=\s
 
 **(S-L10a) Source G12-GL32 stepwise shunt allocation, exact completion of square.** The source nodal residual includes the genuine G12 branch of *quadrature-computed charge* $Q_{12}(u)$, $u=v_d-v_s$, sampled at each implicit step with $\Delta Q=Q_{12}(u_n)-Q_{12}(u_{n-1})$. The associated incidence vector is the x–s edge, so pairing all nodal rows with the potentials leaves a cross term $(u+a)\Delta Q/h$, where $a=v_x-v_d$. The source x–d shunt has $R_{xd}=10^{-4}\Omega$; allocate a **nonnegative fraction** $0<\alpha\le1$ of its conductance dissipation $\alpha a^2/R_{xd}$ to this one charge branch, leaving $1-\alpha$ for other residual contributions. Where actual source charge is increasing, its **real secant** $c=\Delta Q/(u_n-u_{n-1})$ has units F and is nonnegative. The following identity is exact for every BE step $h>0$ and every $u_n,u_{n-1},a$, without a root unique inverse:
 $$
-\begin{aligned}
-\frac{\alpha a^2}{R_{xd}}+
-(u_n+a)\frac{\Delta Q}{h}
-&=\frac{c}{2h}(u_n^2-u_{n-1}^2)
-+\left[\frac{c}{2h}-\frac{R_{xd}c^2}{4\alpha h^2}\right]
-(u_n-u_{n-1})^2\\
-&\quad+\frac{\alpha}{R_{xd}}
-\left[a+\frac{R_{xd}c(u_n-u_{n-1})}{2\alpha h}\right]^2 .
-\end{aligned}
+\begin{gathered}\Delta u:=u_n-u_{n-1},\\\frac{\alpha a^2}{R_{xd}}+(u_n+a)\frac{\Delta Q}{h}\\=\frac{c}{2h}(u_n^2-u_{n-1}^2)\\+\left[\frac{c}{2h}-\frac{R_{xd}c^2}{4\alpha h^2}\right](\Delta u)^2\\+\frac{\alpha}{R_{xd}}\left[a+\frac{R_{xd}c\Delta u}{2\alpha h}\right]^2.\end{gathered}
 $$
 **Proof:** expand both squares, use $u_n^2-u_{n-1}^2=2u_n\Delta u-(\Delta u)^2$, and cancel the $a\,c\Delta u/h$ cross term. If the **literal** source GL32 integrated charge is monotone and $0\le c\le C_{\max}$ on the entire declared guard and parameter interval, a sufficient **sharp for this allocated square** timestep condition is
 $$
@@ -543,8 +515,7 @@ The *mixed correction* has rank at most **two** at any point; the first $sD^2G_H
 
 **(S-L11) Conditional goal-only projected factor certificate.** For any source/root/guard-qualified ball $\|X_\ast-\widehat X\|\le R$ (dimensionless physical variable scaling required), choose a frozen physical row-scaled multiplier $\lambda$ and $\mathcal L(X)=N(X)-\lambda^\top F(X)$ [J]. Suppose on the entire convex source-valid segment all true-root Hessians admit a **verified** decomposition
 $$
-D^2\mathcal L(X)=\sum_j U_j K_j(X)U_j^\top+E(X),\quad
-\|K_j(X)\|\le M_j,\ \|E(X)\|\le\eta,
+\begin{gathered}D^2\mathcal L(X)=\sum_j U_jK_j(X)U_j^\top\\+E(X),\\\|K_j(X)\|\le M_j,\quad\|E(X)\|\le\eta.\end{gathered}
 $$
 where each $U_j$ is a fixed low-column projection and source rows $P_j$ satisfy uniformly $\|U_j^\top-P_j DF(X)\|\le\delta_j$ on that ball, in the same declared row/state norms. Since $F(X_\ast)=0$, source integration gives
 $$
@@ -553,16 +524,37 @@ $$
 $$
 Second-order Taylor, **without forming a global state inverse**, now yields the rigorously *conditional* signed goal-only bound
 $$
-|G_H(X_\ast)-\widehat G|
-\le
-\frac{|\mathcal L(\widehat X)|
-+\|D\mathcal L(\widehat X)\|R
-+\tfrac12\sum_j M_j b_j^2+\tfrac12\eta R^2}
-{s_\ast},
-\qquad s(X_\ast)\ge s_\ast>0.
+\begin{gathered}|G_H(X_\ast)-\widehat G|\\\le\frac{|\mathcal L(\widehat X)|+\|D\mathcal L(\widehat X)\|R}{s_\ast}\\+\frac{\tfrac12\sum_j M_j b_j^2+\tfrac12\eta R^2}{s_\ast},\\s(X_\ast)\ge s_\ast>0.\end{gathered}
 $$
 **Proof:** $N(X_\ast)=\mathcal L(X_\ast)$. Integrate $P_j DF(X)$ along the segment to replace the true $U_j^\top e$ with $-P_jF(\widehat X)$ plus at most $\delta_jR$, then apply the Hessian factor bound in the integral Taylor remainder. This is a source-specific *factorization/computation strategy for the existing S-L6 goal Lagrangian*, not a generally sharper theorem than an exact full ordered adjoint and not a replacement for a root-containing source outer.
 
 **Exact distinct oracle.** Let $F(x,y)=(x-1,\varepsilon(y-1))$ with $\varepsilon>0$ arbitrarily small, $s=1,N=(x+y)^2$, center $\widehat X=(0,0)$ and true root $(1,1)$. Choose $U=(1,1)^\top$, $K_1=2$, $P=(1,\varepsilon^{-1})$, $\lambda=0$ and $E=0$. Then $U^\top=PDF$, $\delta=0$, $b=|PF(\widehat X)|=2$, $\mathcal L(\widehat X)=D\mathcal L(\widehat X)=0$ and the bound is *exact*: $|N(X_\ast)|\le(2)(2^2)/2=4$. The full inverse Jacobian norm diverges as $\varepsilon\to0$, while the factorization's target bound stays finite. The **ordinary** full-source solver also knows the exact goal 4, so this does not imply scientific improvement over a same-information full-record ordinary; the toy only falsifies the premise that every goal bound must pay the smallest state singular value. [Exact negative-control regression](../dpt_tools/test_paper_transfer_falsifiers.py).
 
 **Primary reference and true data gap.** Endtmayer, Langer & Wick, “Two-Side a Posteriori Error Estimates for the Dual-Weighted Residual Method,” *SIAM J. Sci. Comput.* 42(1) A371–A394 (2020), DOI [10.1137/18M1227275](https://doi.org/10.1137/18M1227275), original [author report](https://www.ricam.oeaw.ac.at/files/reports/18/rep18-32.pdf) Theorem 2.1 PDF p4 retains a nonlinear functional remainder; Lemma 3.6 p7 and Theorem 3.9 p8 use additional approximation/saturation assumptions, Remark 3.13 excludes unbudgeted data/quadrature errors. It is stationary nonlinear FE a posteriori theory, **not** a guarantee for switched DAE/GL32/physical SiC. The smallest actual zero-native check is to qualify **one source-legal saved segment** containing the CAL/target active thermal row9/row41, the exact original 841-point VI scorer, genuine GL32 derivative/guard and shared filter state, then produce outward full-field $P_jDF,U_j$ and low-dimensional Hessian factors. If source-wide root containment or $s_\ast>0$ fails, ABSTAIN. Recenter point shifts $\Delta G\approx-2.581761188\times10^{-13}$ J and observed joint $-1.393544835528\times10^{-13}$ J have their own certified-offset ledger and cannot be silently swallowed into this nonlinear remainder. **Status mathematical SIDE_VERIFIED / actual all-root S150 source-G bound OPEN.**
+
+
+## 2026-10-18 S-L12: literal source thermal-ray root exclusion and GL32 endpoint-jet correction
+
+**Source-specific all-root thermal necessary gate.** Original nonprotected \`pro_runs/20261010_pro18_goal_adequacy_frontier/analysis/actual_law.py\` L20–21 and L116–129 gives the accepted 4-node-per-leg Rev6 \(R_{\rm th}=(.06378,.1553,.09942,.1417)\) C/W and \(C_{\rm th}=(.00131,.006698,.01941,.07301)\) J/C. Source L255–259 and L289–297 uses the literal BE thermal residual and \(H=|d\,i_{\rm sense}|+(v_g-v_{g2})^2/9\ge0\) W; thermal **state** itself is not globally clipped. Set
+$$
+M_h=C_{\rm th}/h+K_{\rm th}.
+$$
+Because this grounded thermal Stieltjes matrix is a nonsingular M-matrix, \(z_h=M_h^{-1}e_1>0\). With previous legally reached temperature \(T_{\rm old}\), every exact source root in a leg **must** satisfy
+$$
+\begin{gathered}
+T=T^0+z_hH,\\
+T^0=25{\bf1}+M_h^{-1}(C_{\rm th}/h)(T_{\rm old}-25{\bf1}).
+\end{gathered}
+$$
+Consequently any proposed all-root state box \(B\) is **impossible** if the independently outward-enclosed sets \(H_{\rm electric}(B)\) and \((T_1-T_1^0)/(z_h)_1\) have empty intersection, or if the other three temperatures cannot share that same ray. This rejects **all** roots in the cell, not merely a chosen Newton iteration; it makes no claim of existence in accepted cells. For fixed electric forcing and smooth fixed guard/clip branch, \((z_h)_1\,\sup|dH/dT_1|<1\) is a separate *conditional* scalar uniqueness gate; variable electric/diode forcing requires full Schur/guard analysis.
+
+**Independent exact source-coefficient control.** Fraction Gaussian elimination of those four literal \(R/C\) values gives \((z_h)_1=9.5419833052694515\times10^{-9}\) C/W at \(h=12.5\) ps and \(4.8467187209060625\times10^{-8}\) C/W at \(h=63.49206349224305\) ps. All 4 source thermal rows have exactly zero rational residual for one-W ray forcing. With \(T_{\rm old}=25^\circ\mathrm C\), a 3 V voltage across the 9 ohm gate resistor already supplies at least 1 W in the source heat; an unheated \(T=25^\circ\mathrm C\) candidate therefore fails, without solving the full 50-state system. The heat values, source guards, full digital PREP old state and electric box must be separately qualified for actual CAL/target decisions. This is a **rigorous source subblock exclusion**, NOT a tight all-source work bound or an S150 whole-domain positive certificate. A separate archived first-PREP coarse uncentered energy attempt returned a huge ~250 kV bounding scale because of the 150 V/87.416 micro-ohm Norton injection; that float diagnostic is not evidence that source roots reach this magnitude. A useful next energy enclosure must first complete the signed bus/source work around its driven center.
+
+**Literal G11 GL32 differentiation (distinct from ideal capacitance).** Actual source L207–224 evaluates a fixed split-panel 32-node charge quadrature, while L261–265 uses point finite differences and L293 idealized charge_tangent. For one legitimate smooth quadrature panel from \(c\) to \(b\), with length \(\ell=b-c\), positive weights \(p_j=w_j/2\), nodes \(\xi_j=(1+x_j)/2\), \(C_j=C(c+\xi_j\ell)\), the *exact derivative of the finite quadrature itself* is
+$$
+\begin{gathered}
+Q_{32}=\ell\sum_j p_j C(c+\xi_j\ell),\\
+\partial_bQ_{32}=\sum_jp_j[C_j+\ell\xi_j C'_j].
+\end{gathered}
+$$
+It generally differs from ideal \(C(b)\), even before floating-point/directed-rounding budgets. Its nodal BE Jacobian update is per-leg incidence-outer-product times \(\Delta(\partial Q_{32})/h\) [S], a sparse rank-one contribution per signed branch. At split knots/thermal abs/clip guards, qualify one-sided derivatives or interval slopes, not an unbroken smooth Hessian. The independent Fraction polynomial-quadrature oracle falsifies replacing this finite-panel derivative with ideal endpoint capacitance. Actual CAL4926 row9 q~8.592 and target6846 row41 q~4.991 are **preconditioned output rows**, not themselves thermal residual rows; before asserting any rescue of the PARKed self-map, a source-validated directed correction would need to cut the earlier failing q+eta-1 by at least 7.686 and 4.085 respectively (fixed old preconditioner/weights). No lawful saved per-step inverse-row fields sufficient for this numerical correction were obtained without visiting forbidden tmp. Regression: [existing source proof tests](../dpt_tools/test_paper_transfer_falsifiers.py). Status **SIDE_VERIFIED source-row algebra; actual full-root/goal outer OPEN**.

@@ -735,5 +735,139 @@ class PrefilterMemoryObservationRepair(unittest.TestCase):
         self.assertGreater(h[0]-h[1],1e-6)
         self.assertTrue(all(z>0 for z in h))
 
+
+class FullCalRCPersistentMemoryQuotient(unittest.TestCase):
+    """P44 exact full-record quotient, not an actual S150 all-branch claim."""
+
+    def test_nonuniform_rc_kernel_exact_and_shared_noise(self):
+        from fractions import Fraction as Q
+        alpha=(Q(2,3),Q(3,4),Q(4,5),Q(5,6))
+        def L(v):
+            r=[v[i+1]-alpha[i]*v[i] for i in range(4)]
+            return tuple((1-alpha[i])*r[i+1]-(1-alpha[i+1])*r[i]
+                         for i in range(3))
+        h=[Q(1)]
+        for a in alpha:
+            h.append(h[-1]*a)
+        one=(Q(1),)*5
+        m=tuple(map(Q,(2,5,7,4,8)))
+        shape=tuple(map(Q,(1,-1,1,-1,1)))
+        gamma,beta,xi,eta=Q(107,100),Q(1,50),Q(1,7),Q(1,1000)
+        y=tuple(gamma*a+beta+xi*b+eta*c
+                for a,b,c in zip(m,h,shape))
+        self.assertEqual(L(one),(0,0,0))
+        self.assertEqual(L(h),(0,0,0))
+        self.assertEqual(L(y),tuple(gamma*a+eta*b
+                                  for a,b in zip(L(m),L(shape))))
+        # For n rows, row i has last pivot column i+2 with coefficient
+        # (1-alpha[i])>0, hence rank n and nullity 2.
+        self.assertTrue(all(1-a>0 for a in alpha))
+        bad=list(y);bad[2]+=Q(1,1000)
+        d=tuple(a-gamma*b for a,b in zip(L(bad),L(m)))
+        q=L(shape)
+        self.assertTrue(any(d[i]*q[j]!=d[j]*q[i]
+                            for i in range(3) for j in range(i+1,3)))
+
+
+class ActualSourceThermalRayNecessaryGate(unittest.TestCase):
+    """S-L12 original accepted Rev6 R/C values, NOT full50 root."""
+
+    def test_fraction_exact_thermal_ray_and_heat_rejection(self):
+        from fractions import Fraction as Q
+        R=tuple(map(Q,('0.06378','0.1553','0.09942','0.1417')))
+        C=tuple(map(Q,('0.00131','0.006698','0.01941','0.07301')))
+        g=tuple(1/x for x in R)
+        K=[[Q(0)]*4 for _ in range(4)]
+        for i in range(4):
+            K[i][i]+=g[i]
+            if i<3:
+                K[i][i+1]-=g[i]
+                K[i+1][i]-=g[i]
+                K[i+1][i+1]+=g[i]
+        def solve(A,y):
+            a=[list(row)+[b] for row,b in zip(A,y)]
+            for i in range(4):
+                row=next(k for k in range(i,4) if a[k][i])
+                a[i],a[row]=a[row],a[i]
+                scale=a[i][i]
+                a[i]=[z/scale for z in a[i]]
+                for k in range(4):
+                    if k!=i:
+                        fac=a[k][i]
+                        a[k]=[x-fac*z for x,z in zip(a[k],a[i])]
+            return tuple(row[-1] for row in a)
+        for h,bound in ((Q('12.5e-12'),Q('9.5419833052694515e-9')),
+                        (Q('63.49206349224305e-12'),Q('4.8467187209060625e-8'))):
+            M=[[K[i][j]+(C[i]/h if i==j else 0)
+                for j in range(4)] for i in range(4)]
+            ray=solve(M,(Q(1),Q(0),Q(0),Q(0)))
+            self.assertTrue(all(z>0 for z in ray))
+            self.assertTrue(all(sum(M[i][j]*ray[j] for j in range(4))
+                                ==Q(int(i==0)) for i in range(4)))
+            self.assertLess(abs(float(ray[0]-bound)),1e-22)
+            # At old T=25C, a 3V gate drop through the actual 9-ohm
+            # resistor gives one watt, so a heat-free ray is impossible.
+            self.assertGreater(Q(25)+ray[0],Q(25))
+            self.assertGreater(Q(235)/ray[0],Q(10**9))
+
+
+class LiteralFiniteQuadratureEndpointDerivative(unittest.TestCase):
+    """S-L12 GL32 is literal finite quadrature, not ideal primitive."""
+
+    def test_moving_panel_formula_and_ideal_derivative_mismatch(self):
+        from fractions import Fraction as Q
+        nodes=(Q(1,4),Q(3,4));weights=(Q(1,2),Q(1,2))
+        left,right=Q(1,3),Q(5,3)
+        def cap(v):return 1+v*v
+        def capprime(v):return 2*v
+        length=right-left
+        literal_derivative=sum(p*(cap(left+xi*length)
+                                 +length*xi*capprime(left+xi*length))
+                               for p,xi in zip(weights,nodes))
+        second_moment=sum(p*xi*xi for p,xi in zip(weights,nodes))
+        first_moment=sum(p*xi for p,xi in zip(weights,nodes))
+        symbolic=(1+left*left+4*left*length*first_moment
+                  +3*length*length*second_moment)
+        self.assertEqual(literal_derivative,symbolic)
+        self.assertNotEqual(literal_derivative,cap(right))
+
+
+class FiniteFutureSignedWorkBellmanFixture(unittest.TestCase):
+    """D4 analytic BE toy and *trapezoidal* work, not S150 actual."""
+
+    def test_three_step_goal_interval_contains_nonlinear_electrothermal_root(self):
+        h,U,R,L=1e-10,2.0,1.0,1.2e-9
+        old,temp=0.0,0.0
+        currents=[old]
+        for _ in range(3):
+            def temp_next(i):
+                return (100*temp+i*i+.05*i*math.log1p(i))/(101+1e-4*i)
+            def residual(i):
+                return (L/h)*(i-old)+R*i+.05*math.log1p(i)-1e-4*temp_next(i)-U
+            lo,hi=0.0,2.0
+            self.assertLess(residual(lo),0.)
+            self.assertGreater(residual(hi),0.)
+            for _ in range(70):
+                m=(lo+hi)/2
+                if residual(m)<0:lo=m
+                else:hi=m
+            i=(lo+hi)/2
+            temp=temp_next(i);old=i;currents.append(i)
+        work_nJ=sum((h*U/2)*(currents[k]+currents[k+1])
+                    for k in range(3))/1e-9
+        a=L/(L+h*R)
+        lo=hi=lower=upper=0.0
+        for _ in range(3):
+            lo_next=a*lo+(1-a)*(U-.055)/R
+            hi_next=a*hi+(1-a)*U/R
+            lower+=(h*U/2)*(lo+lo_next)/1e-9
+            upper+=(h*U/2)*(hi+hi_next)/1e-9
+            lo,hi=lo_next,hi_next
+        self.assertAlmostEqual(lower,.12898793809740566,places=11)
+        self.assertAlmostEqual(upper,.13263541192535286,places=11)
+        self.assertLessEqual(lower,work_nJ)
+        self.assertLessEqual(work_nJ,upper)
+
+
 if __name__ == "__main__":
     unittest.main()
