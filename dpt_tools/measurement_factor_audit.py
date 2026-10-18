@@ -145,7 +145,7 @@ def three_sample_affine_phase_clock_gate(
     Since the phase term is pointwise bounded by A, its dual support is <= A.
     The clock-warped candidate contributes <= gain_abs_upper*B*delta.
     Therefore every admissible candidate must satisfy
-      |w.y| <= noise_sup_V + A + gain_abs_upper*B*delta.
+      |w.y| <= total_residual_sup_V + A + gain_abs_upper*B*delta.
 
     Stored binary64 samples are lifted exactly to Fractions; budgets are exact
     decimal rationals. The caller must qualify the common timeline, nuisance
