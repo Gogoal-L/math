@@ -1154,6 +1154,18 @@ class SourceG12EliminationAndL450Dual(unittest.TestCase):
         self.assertGreater(C-Q("1.1")*B*Q("0.001"),Q("0.30114"))
 
 
+class D15D16EvidenceLabelRegression(unittest.TestCase):
+    def test_d16_numeric_outputs_are_marked_not_reproduced(self):
+        from pathlib import Path
+
+        note = (
+            Path(__file__).resolve().parents[1]
+            / "dpt_research"
+            / "20261010_goal_stability_compositional_closure.md"
+        ).read_text(encoding="utf-8")
+        self.assertIn("D16_NUMERICS_REPORTED_NOT_REPRODUCED_FROM_REMOTE_INPUTS", note)
+
+
 class SetInversionTransferContractRegression(unittest.TestCase):
     def test_sivia_requires_observation_image_inclusion_and_branch_coverage(self):
         from pathlib import Path
