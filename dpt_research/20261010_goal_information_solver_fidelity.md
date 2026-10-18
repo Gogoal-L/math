@@ -624,7 +624,7 @@ This explicitly honors the actual 1V G11 final-state guard; the 84W whole-source
 ```math
 C_{gd}(u)\ge
 \frac{555\,{\rm pF}}
-{[1+46\operatorname{clip}(-u,.1,600)]^{3/5}}.
+{[1+46\mathrm{clip}(-u,.1,600)]^{3/5}}.
 ```
 Let c_low denote the lower right side. A bound on signed charge for shifted old u0 is |Q32(u0±1,u0)| >=(1-1e-12) c_low(min relevant shifted u)(1V). This includes the translated OLD charge; simply subtracting .03A from the NOMINAL signed face without rebounding charge is false (a −.01V old-control shift can change charge current >.068A). Saved binary64 values are lifted exactly to Fractions, c_low uses rational clip and a verified INTEGER q with q^5>=d^3 for d=1+46clip so 555pF/q is rigorously lower, and source Gauss-weight sum/2 is bounded below by (1-1e−12). The ohmic r0 variation is <=(3+1e−7)*.01A. This gives 23292 scalar w equations, 46584 guard-face signs, and exact-rational strictly positive min left/right margins, safely rounded DOWN in A:
 
