@@ -1098,15 +1098,15 @@ Direct focused test evidence: 14 tests, including 80 random independent weighted
 **Hypotheses and status.** Fix a source reference, legal PREP, the complete available pretarget recorded command, a closed compact metric world set $(\Theta,d)$, one qualified branch/guard and a genuine *joint* sensor-error set $E\subseteq\mathbb R^m$. Let $O:\Theta\to\mathbb R^m$ be the pretarget readout and $G_u:\Theta\to\mathbb R$ the frozen future scalar goal for each predeclared command $u$. Assume **source-validated uniform Lipschitz bounds** $\|O(\theta)-O(\theta')\|\le L_Od(\theta,\theta')$, $|G_u(\theta)-G_u(\theta')|\le L_{G,u}d(\theta,\theta')$ and a genuine $\rho$-net $\{\theta_i\}_{i=1}^N$ **covering the entire** legal $\Theta$ in this same metric, not merely a finite sample bank.
 
 **(P33) Conditional continuous goal interval.** For observed $y$, define $\mathcal C(y)=\{\theta\in\Theta:y-O(\theta)\in E\}$ and $B_\rho(y)=\{i:\mathrm{dist}(y-O(\theta_i),E)\le L_O\rho\}$. When $\mathcal C(y)\ne\varnothing$, the set $B_\rho(y)$ is nonempty and
-$$
+```math
 G_u(\mathcal C(y))\subseteq
 [\min_{i\in B_\rho(y)}G_u(\theta_i)-L_{G,u}\rho,\;
  \max_{i\in B_\rho(y)}G_u(\theta_i)+L_{G,u}\rho].
-$$
+```
 Consequently a scalar midpoint decoder based on the full pretarget $y$ has certified worst-case error
-$$
+```math
 R_{u,\rho}(y)=\frac{\max_{B_\rho(y)}G_u(\theta_i)-\min_{B_\rho(y)}G_u(\theta_i)}2+L_{G,u}\rho .
-$$
+```
 For any compatible $\theta$ choose a covered center with $d(\theta,\theta_i)\le\rho$. The **same joint** $e=y-O(\theta)\in E$ then witnesses $\mathrm{dist}(y-O(\theta_i),E)\le\|O(\theta)-O(\theta_i)\|\le L_O\rho$; the goal Lipschitz bound supplies the interval. A certified **stable accept-or-abstain subset** is the set of eligible $y$ for which $R_{u,\rho}(y)\le\tau_u$ for every frozen future $u$. Predictions outside it must be marked INCONCLUSIVE; the error bound is conditional on true $\theta\in\Theta$ and a valid source/observation budget. Multiple scalar midpoints need not correspond to one joint physical future trajectory.
 
 **Sharp negative and ordinary comparison.** For a compact nonempty fiber $\mathcal C(y)$, scalar minimax absolute error over unconstrained scalar decoders is exactly half its goal diameter $\frac12[\sup_{\mathcal C(y)}G_u-\inf_{\mathcal C(y)}G_u]$, achieved at the extremal midpoint. A single pair with goal gap $>2\tau_u$ rules out $\tau_u$-adequacy, provided both worlds are legal and compatible with the **same full recorded transcript**. Yet a finite bank can falsely appear stable: on $\Theta=[0,1]$, $O(\theta)=0$, $G(\theta)=4\theta(1-\theta)$, the bank $\{0,1\}$ has zero goal gap while the continuous fiber diameter is $1$. No finite-bank maximum is a full-source upper absent certified net coverage and the uniform Lipschitz constants. Compare first with a full-source, full-waveform, same-cost ordinary interval decoder: if it already meets $\tau_u$, extra compression or an I3 port has no demonstrated benefit.
@@ -1116,19 +1116,19 @@ For any compatible $\theta$ choose a covered center with $d(\theta,\theta_i)\le\
 ## 2026-10-17 sequential pretarget goal information with joint noise and optional stopping (P34)
 
 **Independent DPT set theorem, not Gaussian F140 transfer.** Fix one actual source reference, legally prepared full-information archive $D$ including its entire recorded digital PREP/CAL command and raw sensor samples, a finite frozen bank of unseen future words $w$, and their exact scalar signed terminal-work goals $W_w(h)$ with declared units J and tolerance $\tau_w$. Let $\Omega_0$ be the set of **all source-legal** prepared histories together with one jointly admissible nuisance/measurement trajectory consistent with $D$; new noninvasive *pretarget* sensor/action $j_t$ must be selected from information legitimately available through time $t$, with an explicit acquisition/clock cost and no future-goal data. For observed $y_1,\ldots,y_t$, define the feasible nested sets
-$$
+```math
 \begin{gathered}\Omega_t=\{\omega\in\Omega_0:\exists e\in E,\\\text{producing every }(j_s,y_s),~s\le t\}\end{gathered}
-$$
+```
 We use the same latent error trajectory across time: it is invalid to independently choose a new nuisance realization for each step or to infer a conditional noise bound from a marginal single-shot bound. The physical world is one fixed $\omega^\star$ over a stopped path; for all $t$, $\Omega_{t+1}\subseteq\Omega_t$ (after projecting the augmented source/error coordinates into the same full-history space). For each future word define the scalar minimax radius
-$$
+```math
 r_t(w)=\tfrac12(\sup_{\Omega_t}W_w-\inf_{\Omega_t}W_w),
-$$
+```
 with the midpoint as an exact optimal unconstrained scalar predictor over the feasible set. This formula is a *conditional mathematical equality*, not an executable number when $\Omega_t$ has not been source-certified.
 
 **(P34) Simultaneous validity at data-dependent stopping times.** Suppose **one joint coverage event** $A$ of probability at least $1-\alpha$ (uniformly for each legally prepared true world under the stated stochastic calibration model) guarantees the true joint error trajectory is inside $E$ for every admissible pretarget observation and every time at most the frozen finite horizon $T$. For any predictable sensor choices and any observation-based stopping time $\sigma\le T$, on the *same event* $A$ the true history stays in $\Omega_\sigma$; hence the midpoint errors simultaneously satisfy
-$$
+```math
 |\widehat W_{\sigma,w}-W_w(\omega^\star)|\le r_\sigma(w)\qquad\text{for every frozen word }w.
-$$
+```
 **Proof:** one joint trajectory is feasible at every prefix on $A$; apply interval midpoint geometry at the stopped feasible fiber for each goal. Because $A$ is simultaneous over the whole adaptive transcript, no extra optional-stopping penalty is needed. If only per-time/per-sensor marginal error probabilities are known, the argument fails: the claimed $1-\alpha$ must first be proved for all selected possibilities including stopping/selection dependence. No distribution-free new sample upper bound or measurement optimality is asserted.
 
 **(P34-a) Exact finite-library sensor repair gate.** At a current feasible set $\Omega_t$, a candidate legal pretarget measurement $j$ is guaranteed to reduce the worst-case radius for goal $w$ to $\le\tau_w$ after one further readout **if and only if** every pair of histories and admissible nuisance continuations that can produce the *same* next reading has goal difference $\le2\tau_w$ (for all frozen $w$). Necessity is the two-point minimax lower bound; sufficiency is the midpoint on each readout fiber. The full recorded-data ordinary predictor is the baseline: if the full history/command/raw source-law already meets tolerance, no compressed or extra-sensor advantage follows. When a physical CAL pulse changes the prepared state, its intervention effect must be included in **both** compared futures; only the value of releasing versus withholding the post-CAL readout on an identical executed pulse is pure information gain.
@@ -1140,25 +1140,25 @@ $$
 ## 2026-10-17 five-current affine calibration group versus projective goal information (P35)
 
 **Independent exact nuisance-equivalence theorem (mathematical, not actual-source certificate).** Fix a legally prepared same-source S150 family $\Theta$ with a deterministic noise-free five-current observation
-$$
+```math
 m(\theta)=(I_{12},I_{31},I_{42},I_{46},I_{60})^\top,\qquad D(\theta)=I_{60}-I_{12}>0
-$$
+```
 for every eligible world. Assume that each complete five-sample **record** has one arbitrary unknown common positive gain $a>0$ and one arbitrary common offset $b\in\mathbb R$ and that there are **no further constraints or independent calibration data**: $y=a\,m(\theta)+b\boldsymbol1$. Define
-$$
+```math
 q(m)=((I_{31}-I_{12})/D,\ (I_{42}-I_{12})/D,\ (I_{46}-I_{12})/D).
-$$
-Then $q(y)=q(m)$ and **two raw five-current records are related by such a positive affine transformation iff they have exactly the same normalized $q$**. For sufficiency take $a=(m'_5-m'_1)/(m_5-m_1)>0$ and $b=m'_1-a m_1$; equality of each $q$ component forces every other $m'_j=a m_j+b$. Hence $q$ labels the full orbits of the nuisance group: it is a **maximal invariant**, while full uncalibrated raw-five-current observations contain no further deterministic information that can distinguish physical worlds within a $q$ orbit.
+```
+Then $`q(y)=q(m)`$ and **two raw five-current records are related by such a positive affine transformation iff they have exactly the same normalized $`q`$**. For sufficiency take $`a=(m'_5-m'_1)/(m_5-m_1)>0`$ and $`b=m'_1-a m_1`$; equality of each $`q`$ component forces every other $`m'_j=a m_j+b`$. Hence $`q`$ labels the full orbits of the nuisance group: it is a **maximal invariant**, while full uncalibrated raw-five-current observations contain no further deterministic information that can distinguish physical worlds within a $`q`$ orbit.
 
 For a frozen scalar future work $G(\theta)$, the compatible set given any raw observation $y$ with arbitrary free affine nuisance is exactly $\{\theta:q(m(\theta))=q(y)\}$. Therefore the exact **all-decoder, worst-case goal minimax radius** is
-$$
+```math
 R_{\rm raw5,free-affine}=R_q
 =\tfrac12\sup_{\xi\in q(\Theta)}
 \Bigl(\sup_{\theta:q(m(\theta))=\xi}G(\theta)
 -\inf_{\theta:q(m(\theta))=\xi}G(\theta)\Bigr)
-$$
-whenever these suprema are finite; the scalar midpoint of each fiber is optimal. Proof: same raw observation is compatible with any two same-$q$ worlds via admissible $a,b$, so triangle inequality gives the lower bound; the midpoint of $q(y)$'s goal range attains it. The theorem is not a Gaussian/noise-induced mutual-information statement and does not require physical L uniquely recoverable. **The role of common gain across the five timestamps is essential**: time-varying gains, per-sensor offsets, mixed instrument chains, or cross-record shared calibration constraints change the observational quotient.
+```
+whenever these suprema are finite; the scalar midpoint of each fiber is optimal. Proof: same raw observation is compatible with any two same-$`q`$ worlds via admissible $`a,b`$, so triangle inequality gives the lower bound; the midpoint of $`q(y)`$'s goal range attains it. The theorem is not a Gaussian/noise-induced mutual-information statement and does not require physical L uniquely recoverable. **The role of common gain across the five timestamps is essential**: time-varying gains, per-sensor offsets, mixed instrument chains, or cross-record shared calibration constraints change the observational quotient.
 
-**Falsification / stronger ordinary.** The controller's Goal27 rational *proxy* has a certified exact same-$q$ pair with goal gap $\approx0.687175006510\,$nJ, implying $\approx0.343587503255\,$nJ minimax lower under this proxy and unconstrained shared-affine nuisance. A record with **known absolute gain/offset** or an independently calibrated denominator $D$ carries *additional* data and may have a smaller radius; the controller's corresponding proxy results $\approx0.003780563$ and $\approx0.0115878648465\,$nJ apply to those **different** budgets. If gain is constrained, e.g. $a\in[0.9,1.1]$, or noise/filter/clock budgets are nonzero, positive affine group orbits can be partially distinguished and the equality $R_{\rm raw5,free-affine}=R_q$ no longer follows without a new joint-compatibility proof. For example $m'=(3/2)m+(1/10)\boldsymbol1$ has the same $q$ but violates a same-record gain limit $a\le1.1$. The local actual nonlinear Goal27 source-wide $G-p(O)$ bound remains OPEN; exact equality of **proxy** information does not certify physically achievable sensor CAL or native work.
+**Falsification / stronger ordinary.** The controller's Goal27 rational *proxy* has a certified exact same-$`q`$ pair with goal gap $`\approx0.687175006510\,`$nJ, implying $`\approx0.343587503255\,`$nJ minimax lower under this proxy and unconstrained shared-affine nuisance. A record with **known absolute gain/offset** or an independently calibrated denominator $`D`$ carries *additional* data and may have a smaller radius; the controller's corresponding proxy results $`\approx0.003780563`$ and $`\approx0.0115878648465\,`$nJ apply to those **different** budgets. If gain is constrained, e.g. $`a\in[0.9,1.1]`$, or noise/filter/clock budgets are nonzero, positive affine group orbits can be partially distinguished and the equality $`R_{\rm raw5,free-affine}=R_q`$ no longer follows without a new joint-compatibility proof. For example $`m'=(3/2)m+(1/10)\boldsymbol1`$ has the same $`q`$ but violates a same-record gain limit $`a\le1.1`$. The local actual nonlinear Goal27 source-wide $`G-p(O)`$ bound remains OPEN; exact equality of **proxy** information does not certify physically achievable sensor CAL or native work.
 
 **Literature scope and next consumer.** F374's $1/3$-Hölder Brenier map result (Theorem 1.1) is under compact quadratic optimal-transport measures, **not** fixed DPT observations; F098's unembeddable doubling subset is infinite-dimensional; F094 permits freely chosen finite-point embeddings. P35 is an independently proven elementary affine quotient with explicit physical source ports/measurement roles, not a transfer of those papers. First audit the actual calibration contract (positive record-level gain, common offset, filter initial state, joint sensor noise, admissible parameter bank and denominator sign) and compare real full CAL+recorded command against projective q on **identical** information and cost, before buying I3 or an absolute-gain measurement. [Exact toy group-orbit tests](../dpt_tools/test_paper_transfer_falsifiers.py). **Status: conditional identity SIDE_VERIFIED, actual S150 full-nonlinear scope OPEN_RESEARCH.**
 
@@ -1250,7 +1250,7 @@ hold, with all $\sigma_j,\tau_j$ sums of squares, then each actual goal lies in 
 
 ## 2026-10-17 P39: full-record conditional experiment ordering, active-CAL target drift and no-new-hardware observation repair
 
-**New decision theorem beyond the P34 nested-set and P35 five-point quotient.** Condition on the FULL legal, already recorded S150 digital PREP/command/raw CAL/clock/calibration archive $D$, and let $\Theta_D$ contain all compatible same-source prepared histories together with the qualified *joint* gain/offset/filter/noise laws. For each candidate sensor/acquisition action $a$, define the probability law $P_\theta^a$ of its **complete** legally adaptive observation/action/stopping transcript. The action may itself alter the prepared state and the future finite-$\Delta L$ signed external-work curve $G_a(\theta,\ell)$, $\ell\in I$. For another action $b$, define **uniform** experiment deficiency
+**New decision theorem beyond the P34 nested-set and P35 five-point quotient.** Condition on the FULL legal, already recorded S150 digital PREP/command/raw CAL/clock/calibration archive $`D`$, and let $`\Theta_D`$ contain all compatible same-source prepared histories together with the qualified *joint* gain/offset/filter/noise laws. For each candidate sensor/acquisition action $`a`$, define the probability law $`P_\theta^a`$ of its **complete** legally adaptive observation/action/stopping transcript. The action may itself alter the prepared state and the future finite-$`\Delta L`$ signed external-work curve $`G_a(\theta,\ell)`$, $`\ell\in I`$. For another action $`b`$, define **uniform** experiment deficiency
 ```math
 \begin{gathered}\delta_D(a\to b)=\inf_{K\text{ independent of hidden }\theta}\\\sup_{\theta\in\Theta_D}\|KP_\theta^a-P_\theta^b\|_{\rm TV},\\\beta_{ab}=\frac1\tau\sup_{\theta,\ell\in I}\\|G_a(\theta,\ell)-G_b(\theta,\ell)|\end{gathered}
 ```
@@ -1277,7 +1277,7 @@ The original **joint** error support, filter/timebase and a positive denominator
 
 Synthetic two-world control: five fixed anchor currents $(m_{12},m_{31},m_{42},m_{46},m_{60})=(0,2,4,6,10)$ A match *exactly*, while one **already archived** additional current $m_{50}=8$ versus 9 A produces $q_{\rm full,50}=0.8$ versus 0.9. If frozen goals are $\mp(1+\ell)$ nJ, $\ell\in[-0.5,0.5]$, the five-point, command-matched restricted decoder has full-domain radius 1.5 nJ, but the full-record noiseless decoder identifies the two worlds and has radius 0. This is **not** an S150 source-legal pair; if the extra current has its own unqualified offset/drift or the gain collapses, the repair may disappear. In the existing **P36 six-axis affine proxy**, known digital PREP plus three ratios already has zero noise-free radius, so more CAL points cannot strictly improve that zero proxy lower; its practical relevance would be **actual nonlinear source stability or noisy gain**, both still OPEN.
 
-**Primary literature boundary.** Blackwell (1953), “Equivalent Comparisons of Experiments,” Ann. Math. Stat. 24:265–272, DOI 10.1214/aoms/1177729032, and Le Cam (1964), “Sufficiency and Approximate Sufficiency,” Ann. Math. Stat. 35:1419–1455, DOI 10.1214/aoms/1177700372, motivate experiment randomization/deficiency; the original historical full texts were **not independently rederived here**, so (P39) is explicitly proved from the TV definition above. A source-readable modern treatment is Fritz et al., [arXiv:2010.07416](https://arxiv.org/abs/2010.07416), Theorem 5.6/Proposition 5.19 on uniform versus state-dependent randomization; Howard et al., [arXiv:1810.08240](https://arxiv.org/abs/1810.08240), Theorem 1, requires valid nonnegative test-supermartingale assumptions for anytime confidence and does not license correlated biased sensor noise. Neither F140-B/C iid exact Gaussian message bounds nor a nominal 1mA budget are DPT physical information guarantees. **Status SIDE_VERIFIED conditional math; actual action laws/source/continuous finite-$\Delta L$ interval and instrument cost OPEN.**
+**Primary literature boundary.** Blackwell (1953), “Equivalent Comparisons of Experiments,” Ann. Math. Stat. 24:265–272, DOI 10.1214/aoms/1177729032, and Le Cam (1964), “Sufficiency and Approximate Sufficiency,” Ann. Math. Stat. 35:1419–1455, DOI 10.1214/aoms/1177700372, motivate experiment randomization/deficiency; the original historical full texts were **not independently rederived here**, so (P39) is explicitly proved from the TV definition above. A source-readable modern treatment is Fritz et al., [arXiv:2010.07416](https://arxiv.org/abs/2010.07416), Theorem 5.6/Proposition 5.19 on uniform versus state-dependent randomization; Howard et al., [arXiv:1810.08240](https://arxiv.org/abs/1810.08240), Theorem 1, requires valid nonnegative test-supermartingale assumptions for anytime confidence and does not license correlated biased sensor noise. Neither F140-B/C iid exact Gaussian message bounds nor a nominal 1mA budget are DPT physical information guarantees. **Status SIDE_VERIFIED conditional math; actual action laws/source/continuous finite-$`\Delta L`$ interval and instrument cost OPEN.**
 
 ## 2026-10-18 P40: first frozen-P36 replay on seven saved actual S150 source members; sharp postfilter sensor threshold
 
@@ -1286,14 +1286,14 @@ Synthetic two-world control: five fixed anchor currents $(m_{12},m_{31},m_{42},m
 **Seven-source numerical replay (not blind or global).** Apply P36 to each published source-current vector with that member's own known PREP amplitudes; evaluate signed predicted work minus the member's published source work. T00 through T06 errors (nJ) are approximately $-0.005577264590,\,-0.002567150216,\,-0.000747960435,\,-0.000139341460,\,-0.000744093746,\,-0.002568657160,\,-0.005601739350$; max absolute error is **0.005601739350126236 nJ** (T06). The same seven records give max absolute old command-blind fixed affine-q work error **0.173302707696352 nJ**, while command-only affine-proxy error is **0.136016350890536 nJ**. These are restricted decoders; the strongest **same-information** baseline uses each full recorded command AND all available raw CAL external traces. The hidden-parameter-known affine goal's max **0.001747198704425135 nJ** discrepancy is a separate information-richer oracle diagnostic, NOT a comparable full-CAL ordinary. Differences in PREP commands disqualify the seven records as a two-world full-record nonidentifiability witness.
 
 **(P40) Sharp one-SAVED-source-point goal robustness under a hypothetical joint sensor box.** Fix that source-solved filtered five-current vector $m$, source future work $G_s$ [J], the same recorded digital command $a$, and frozen P36 proxy $H(a),G_0,c_a,c_u$. Hypothesize one common **postfilter** gain $\gamma\ge\gamma_{\min}>0$, arbitrary common **postfilter** offset, and ONE deterministic joint error vector with components $|e_i|\le\epsilon$ A (no iid or Gaussian claim). Define $t(m)=(m_{60}-m_{12},m_{31}-m_{12},m_{42}-m_{12},m_{46}-m_{12})^\top$, $v=H(a)^{-1}t(m)$, $b_0=G_0+c_a^\top a-G_s$. For every sign vector $s\in\{-1,+1\}^5$, put $z_s=H(a)^{-1}t(s)$ and
-$$
+```math
 \begin{gathered}A=\gamma_{\min}(b_0v_0+c_u^\top v_u),\\C=\gamma_{\min}v_0,\\B_s=b_0z_{s,0}+c_u^\top z_{s,u},\\D_s=z_{s,0}\end{gathered}
-$$
+```
 At minimum gain, the exact signed goal error for the sign-corner perturbation is
-$$
+```math
 E_s(\epsilon)=\frac{A+\epsilon B_s}{C+\epsilon D_s}\quad[\mathrm J],
 \qquad C+\epsilon D_s>0 .
-$$
+```
 **Proof of exact box extrema:** with positive projective denominator, the decoder is linear-fractional in each sample error separately; extrema over the *entire continuous five-dimensional error box* occur at one of its 32 joint vertices. Any larger gain rescales the additive-error box to $\epsilon/\gamma\le\epsilon/\gamma_{\min}$, whose feasible error interval is nested inside that for the minimum gain. Thus the exact worst-case absolute goal error on this specified source point and measurement family is $\max_s|E_s(\epsilon)|$ while all denominators remain positive. For $\tau>0$ J, the sharp safe noise radius is obtained **algebraically**, not by sampling, as the first nonnegative crossing over all 32 signs of $A+\epsilon B_s=\pm\tau(C+\epsilon D_s)$ or the strict denominator positivity gate $C+\epsilon D_s=0$; if zero-noise already fails, return zero. This conditional theorem is specific to the fixed P36 decoder and uses **future actual work as input** for retrospective verification; it cannot be called a prospective calibrated predictor.
 
 **First source-connected quantitative consequence.** With the seven archived source outputs, $\gamma_{\min}=0.9$, **hypothetical** ±1mA per filtered current sample and common arbitrary postfilter offset, exactly $7\times32=224$ rational corners yield a worst absolute signed-work error of **2.928364786189582 nJ** (T06, signs $+,-,-,+,+$); all 224 denominator orientations remain positive. Therefore that **particular fixed five-sample decoder** fails a proposed 1nJ worst-case tolerance on the stated seven-source-point-plus-noise scenario, but no all-decoder impossibility or actual instrument noise statement follows. The precisely computed maximal common ε for all seven to have |work error|≤**1nJ** is about **0.340271015366445 mA**, attained at T06 with signs $+,-,-,+,+$ and a goal-lower crossing (not a denominator pole). An independent adversarial read-only replay reproduced the extrema and noise threshold to >10 decimals. Implementation: [posthoc exact archive gate](../dpt_tools/projective_command_proxy.py) known_source_point_noise_gate; [regression with accepted nonprotected saved numeric receipts](../dpt_tools/test_projective_command_proxy.py). Source path, date and SHA above; claim level VERIFIED_FRESH on saved-source-point rational calculations / not actual source-wide.
@@ -1303,42 +1303,42 @@ $$
 ## 2026-10-18 P41: a testable nonlinear S150 projective output-injectivity gate, stronger than center rank
 
 **New named actual-source proof obligation.** The proven P36 rank is the exact *stored proxy* $4\times4$ homogeneous $H(a)$ for the three normalized, digitally recorded PREP amplitudes $a$ and three remaining normalized unknowns $u=(L,\kappa,b)\in[-1,1]^3$; $b$ enters the shared RC filter, not the internal physical source. On a **single source-qualified smooth continuous branch** containing every $u$ in the convex cube, define the truly filtered actual anchor-difference map $t_{\rm src}(a,u)=(D,B_1,B_2,B_3)^\top$, using the **same** lawful PREP/50-state source/filter initialization and recorded current channel. Define
-$$
+```math
 \begin{gathered}r=t_{\rm src}-H(a)(1,u)^\top\quad[\mathrm A],\\w=H(a)^{-1}r=(w_0,w_u)\end{gathered}
-$$
+```
 The algebraic factorization is EXACT even for nonlinear source outputs:
-$$
+```math
 t_{\rm src}=(1+w_0)\,H(a)(1,T(u))^\top,\qquad
 T(u)=\frac{u+w_u}{1+w_0}.
-$$
+```
 A *second* independently qualified actual denominator $D_{\rm src}>0$ is required; $1+w_0>0$ is **not** equivalent to this physical positive-anchor gate. When both hold, $q_{\rm src}(u)=q_{\rm aff}(T(u))$ and the full-rank P36 homogeneous map maps equal normalized observations to equal $T$.
 
-**(P41) Conditional global source-output recovery, strengthened after adversarial two-world proof.** Assume outward interval source-root/guard/parameter continuation proves on the entire same-command, smooth, convex parameter branch that $\|r(a,u)\|_\infty\le R$ A and $\|D_u r(a,u)\|_\infty\le J$ A per normalized parameter. The original P36 $H(a)$ depends on the **fixed recorded a**, not on $u$. Split its exact eight-PREP-corner inverse norm into homogeneous first row and remaining three rows:
-$$
+**(P41) Conditional global source-output recovery, strengthened after adversarial two-world proof.** Assume outward interval source-root/guard/parameter continuation proves on the entire same-command, smooth, convex parameter branch that $`\|r(a,u)\|_\infty\le R`$ A and $`\|D_u r(a,u)\|_\infty\le J`$ A per normalized parameter. The original P36 $`H(a)`$ depends on the **fixed recorded a**, not on $`u`$. Split its exact eight-PREP-corner inverse norm into homogeneous first row and remaining three rows:
+```math
 k_0=\sup_a\|[H(a)^{-1}]_{0,:}\|_1
 =0.208253718136\ldots\ \mathrm{A}^{-1}<0.21\ \mathrm{A}^{-1},
-$$
-$$
+```
+```math
 \begin{gathered}k_v=\sup_a\max_{i=1,2,3}\|[H(a)^{-1}]_{i,:}\|_1\\=36.0458273992841\ldots\;\mathrm A^{-1}\\<36.1\;\mathrm A^{-1}\end{gathered}
-$$
-The supremum on the WHOLE original recorded-PREP cube occurs among its 8 corners because each signed inverse-row support is a linear-fractional function of $a$ with a certified fixed-sign affine denominator. Set $\rho_0=k_0R$, $\rho_v=k_vR$, $s_0=k_0J$, $s_v=k_vJ$ and $M_T=(1+\rho_v)/(1-\rho_0)$. For $\rho_0<1$, all actual homogeneous scales satisfy $1+w_0>0$, and $\|T\|_\infty\le M_T$. The **exact two-world identity**, which directly bounds globally separated worlds rather than checking merely a Jacobian, is
-$$
+```
+The supremum on the WHOLE original recorded-PREP cube occurs among its 8 corners because each signed inverse-row support is a linear-fractional function of $`a`$ with a certified fixed-sign affine denominator. Set $`\rho_0=k_0R`$, $`\rho_v=k_vR`$, $`s_0=k_0J`$, $`s_v=k_vJ`$ and $`M_T=(1+\rho_v)/(1-\rho_0)`$. For $`\rho_0<1`$, all actual homogeneous scales satisfy $`1+w_0>0`$, and $`\|T\|_\infty\le M_T`$. The **exact two-world identity**, which directly bounds globally separated worlds rather than checking merely a Jacobian, is
+```math
 \begin{gathered}(1+w_0(u))[T(u)-T(v)]\\=(u-v)+[w_v(u)-w_v(v)]\\-T(v)[w_0(u)-w_0(v)]\end{gathered}
-$$
+```
 Hence, by the whole-domain Lipschitz bounds on $w$ from the verified source derivatives,
-$$
+```math
 \boxed{
 \|T(u)-T(v)\|_\infty\ge
 \frac{1-s_v-M_T s_0}{1+\rho_0}\,\|u-v\|_\infty .
 }
-$$
+```
 Therefore a **strictly positive right-hand multiplier** is a sufficient *global* source-output univalence gate. Equivalently the independently qualified source derivative must satisfy
-$$
+```math
 k_0 R<1,\qquad
 J<\left[k_v+
 \frac{k_0(1+k_v R)}{1-k_0R}
 \right]^{-1}.
-$$
+```
 For example, using safe **outward proxy constants** $k_0<0.21,\ k_v<36.1\ \mathrm{A}^{-1}$ and hypothetical **whole-source** $R=0.010$ A, this permits $J<0.02748278711$ A/normalized parameter. The old near-identity Jacobian gate $\|DT-I\|_\infty\le [\rho(1-\rho)+2s]/(1-\rho)^2<1$, $\rho=\max(k_0,k_v)R,\ s=\max(k_0,k_v)J$, is also valid, but can be **strictly weaker** than this source-output two-world gate. A separate conservative $K(3R+2J)<1$ is sufficient, but not economical.
 
 **Explicit correction after independent adversarial review:** An earlier draft incorrectly stated that $2K(R+J)<1$ established only local Jacobian invertibility. Because $w$ is a **single-valued globally Lipschitz function on the convex parameter cube** (a crucial extra hypothesis!), the same two-world identity in fact shows $K(R+2J)<1$ is sufficient for global injection; $2K(R+J)<1$ is still a valid but conservative sufficient rule. A pointwise augmented-Jacobian nonsingularity WITHOUT a joint cross-world derivative/branch-domain bound is insufficient. Never transfer the global conclusion between distinct guard branches or disconnected PREP components without an all-branch pair certificate. Moreover actual $D_{\rm src}>0$ remains a **separate mandatory condition**: even global $T$ injection and $1+w_0>0$ do not rule out a source observation denominator zero.
@@ -1346,10 +1346,10 @@ For example, using safe **outward proxy constants** $k_0<0.21,\ k_v<36.1\ \mathr
 **Exact practical check and true-source scope.** The new [exact-rational source-Jet gate](../dpt_tools/projective_command_proxy.py) source_deviation_univalence_gate uses these separated inverse-row constants and returns a certified two-world lower Lipschitz multiplier or INCONCLUSIVE; [regressions](../dpt_tools/test_projective_command_proxy.py) show an $R=0.010$ A, $J=0.025$ A case where the older near-identity $\kappa_T\ge1$ fails but the valid global pair-bound succeeds. The historical seven actual numeric source records only show $\max_i\|r(a_i,u_i)\|_\infty\simeq6.6988783\times10^{-5}$ A at seven **different** PREP commands; these finite residuals are NOT upper bounds on the continuous $R$, on $J$, on all 50-state roots or on the physical sensor. For present Goal27, actual filter-state/GL32/thermal source-wide $J$ and true D-positive guard remain OPEN. P36 proxy invertibility and this conditional source theorem do not beat the strongest complete-CAL ordinary by information alone.
 
 **Why local rank is inadequate (analytic fold).** Let the actual-source-like output abstraction on a fixed $a$ be $t_{\rm fake}(u)=H(a)(1,T_{\rm fold}(u))^\top$, with
-$$
+```math
 T_{\rm fold}(u)=\left(\tfrac14e^{u_1/5}\cos(2\pi u_2),
 \tfrac14e^{u_1/5}\sin(2\pi u_2),u_3\right).
-$$
+```
 Every $u\in[-1,1]^3$ maps to the original proxy's positive-D domain and $\det DT_{\rm fold}=2\pi(1/5)(e^{u_1/5}/4)^2>0$ **everywhere**, yet $u_2=0$ and $u_2=1$ have the **same five-current positive-affine orbit** under the same recorded digital $a$. If the synthetic future goal is $G_{\rm aff}(a,u)$, the two corresponding goals differ by $|c_{\kappa}|=55.102110\ldots$ nJ, while $q$ is identical. This disproves the inference "nonvanishing determinant everywhere ⇒ globally unique future goal" even with positive denominator; it is **not an actual SiC source or same-4801-point-Full-CAL collision**. The true nonlinear source must have its own interval parameter-Jacobian or stronger Gale–Nikaidō-type hypotheses.
 
 **Original-paper theorem/proof locator.** Gale & Nikaidō, “The Jacobian Matrix and Global Univalence of Mappings,” *Math. Ann.* 159 (1965), 81–93, original author-era paper [scanned PDF](https://fig.if.usp.br/~marchett/fluidos/jacobian-matrix-global-univalence-mapping_gale-nikaido.pdf): Theorem 3 at print pp.85–86 proves an order-separation property by minimal-element induction; Theorem 4 and proof at **print p.86/PDF page 6** prove injectivity **if the full Jacobian is a P-matrix at every point of a rectangular domain**, by sign conjugation and Theorem 3. Print p.82 also gives a counterexample to nonvanishing *leading minors* implying global uniqueness. Here P41 is independently proved by a **uniform near-identity differential bound** and does not claim the actual switched DAE satisfies Gale–Nikaidō, which would require complete source branch/root, smoothness and domain checks.
@@ -1361,20 +1361,20 @@ Every $u\in[-1,1]^3$ maps to the original proxy's positive-D domain and $\det DT
 **Second genuinely different Goal27 positive closure candidate, beyond the P38 single-world SOS goal strip.** Freeze one **complete, identical digital PREP/command record**, all original source/guard/filter states, the entire 4801-point raw CAL record $y$, its true joint temporally persistent sensor error set $E$, and one predeclared unseen signed external work $G$. For a lawful complete S150 world $x$ let $F(x)=0$ include full 126 PREP stages and CAL/target forks with the common prepared endpoint and correct nonlinear 50-state law; $O(x)$ is the full externally recorded pretarget observation, not five $q$ samples. The compatible fiber is $\mathcal C(y)=\{x:F(x)=0,\;x\text{ source/guard legal},\;y-O(x)\in E\}$. The ideal strongest same-information scalar ordinary is its Chebyshev midpoint; its minimax absolute error is $\tfrac12\mathrm{diam}G(\mathcal C(y))$ and cannot be beaten without extra information.
 
 **(P42) Pairwise residual/measurement dual.** Let verified *exhaustive* bounded pair boxes $\mathcal B_j$ cover every ordered compatible root pair $(x_+,x_-)\in\mathcal C(y)^2$, including different legal root branches and noise dependence. For each box preselect a vector $\kappa_j$ of units J/observable-unit (one coefficient per declared full CAL sample, or a rigorously supported reduced projection) and physical row-scaled source residual multipliers $\lambda_{j,+},\lambda_{j,-}$. On all of $\mathcal B_j$ verify with directed arithmetic
-$$
+```math
 \begin{gathered}\Delta G=G(x_+)-G(x_-),\\\Delta O=O(x_+)-O(x_-),\\|\Delta G-\kappa_j^\top\Delta O\\-\lambda_{j,+}^\top F(x_+)\\-\lambda_{j,-}^\top F(x_-)|\le c_j\;[\mathrm J]\end{gathered}
-$$
+```
 Define the **one joint-error-difference** support
-$$
+```math
 s_j=\sup_{d\in E-E}|\kappa_j^\top d|
 =\max\{\sigma_{E-E}(\kappa_j),\sigma_{E-E}(-\kappa_j)\}\quad[\mathrm J].
-$$
+```
 At true compatible roots each residual vanishes, and because **the same recorded $y$** is matched by each world, $\Delta O=e_- -e_+\in E-E$, with the actual physical joint error models/initializations used consistently. Hence
-$$
+```math
 \mathrm{diam}G(\mathcal C(y))
 \le U:=\max_j(c_j+s_j),\qquad
 R_{\rm full}^{\star}(y)\le U/2.
-$$
+```
 A qualified real source pair with exactly the SAME complete PREP command/full CAL joint-error contract and future work gap $L$ independently gives $R_{\rm full}^{\star}(y)\ge L/2$. Thus an enclosing bracket $[L/2,U/2]$ is obtained **without solving the full-state inverse or using a fixed five-q predictor**. The pair-box proof is elementary residual substitution and support functions, NOT strong Lagrange duality: an interval/SOS search returning no useful $U$ is **inconclusive** and does not imply source ambiguity. The pair cover and acceptable source root/guard are the actual hard parts. The dual vector must be legal from the *pretarget archive*, never trained on hidden future outputs.
 
 **Exact nontrivial joint-calibration toy and a wrong-independent-noise falsifier.** A physical-style two-step causal filter has true source residual $F(z)=z^2-1$, two pretarget outputs $O(z)=(z/2,-z/4)$ from a COMMON prepared $z$, and a future signed synthetic goal $G(z)=z^3$. Suppose one persistent shared additive sensor drift $\eta\in[-1,1]$ produces the complete two-sample recording $y=O(z)+(\eta,\eta)$. With $\kappa=(4/3,-4/3)$, the exact signed source identity $G(z)-\kappa^\top O(z)=zF(z)$ holds **for every real z**, and $\kappa^\top(\eta,\eta)=0$ for every legal persistent drift. Taking pair residual multipliers $\lambda_+=z_+,\lambda_-=-z_-$ gives **$c=s=U=0$** even though the hidden source has two legal roots $\pm1$: the full correlated pretarget record uniquely determines the future goal, no hidden-state inversion required. For observed $y=(1/2,-1/4)$, $z=1$ with drift0 is legal, but $z=-1$ would require error $(1,-1/2)$, which is **not one shared drift**; incorrectly replacing the joint noise with independent two-sample boxes $[-1,1]^2$ adds a false compatible goal $-1$ and raises the minimax half-diameter to 1. This is an exact synthetic source/measurement counterexample, NOT actual S150 proof or another P34 stopping-time theorem.
@@ -1386,21 +1386,21 @@ A qualified real source pair with exactly the SAME complete PREP command/full CA
 **Physical operator issue found by adversarial source reading.** The local controller's canonical observation operator OBS-E06/E06A/E07 (dpt_r1_03_observation_operator.tex, original lines 272–313, source edited 2026-10-17) places a fixed postfilter channel bias **after** causal filtering/sampling, while separately keeping the prewindow/initialization response $r_{\rm pre}$. They are distinct physical/calibration objects. The five-current P36 affine orbit assumes one **postfilter** gain and a single constant postfilter offset. An unknown prefilter bias or a free filter initial condition generally yields the time-varying vector $h_t(b)=\exp[-(t-t_0)/\tau(b)]$ instead of a constant offset; for the 100 MHz source readout $\tau(b)=[2\pi b]^{-1}$. The controller's P36 producer initializes the stored RC recurrence from an inherited source state at CAL entry (goal27_projective_bank.py lines 55–65), but this does not prove an *instrument* initial-state uncertainty is absent or calibrated over the full raw record.
 
 **(P43) Exact local necessary information and minimal legal repair test.** On one source-qualified recorded PREP command $a$, write the observation family
-$$
+```math
 y_t=\gamma m_{{\rm src},t}(a,u,b)+\beta+\xi h_t(b)
-$$
+```
 for three unknown normalized source/filter coordinates $u$ (including bandwidth $b$), common record-level positive gain $\gamma$, postfilter constant offset $\beta$ and one optional unknown **shared** filter transient amplitude $\xi$. This is a *sensor-contract extension*, not an assertion that real S150 has an additional free initial state. Let the frozen five-point map at $\xi=0$ be $f_5(\eta,\xi)$ with $\eta=(u_1,u_2,u_3,\gamma,\beta)\in\mathbb R^5$. If the $5\times5$ Jacobian $J_5=D_\eta f_5(\eta_0,0)$ is nonsingular (as in the exact P36 affine-proxy homogeneity at $\gamma>0,D>0$), the **implicit function theorem** gives a unique local compensating curve $\eta(\xi)$ through the identical five sample readings, with
-$$
+```math
 \eta'(0)=-J_5^{-1}h_5,\qquad
 \frac{dG}{d\xi}(0)=D_\eta G\,\eta'(0)+\partial_\xi G .
-$$
+```
 Thus **five raw samples generically do not determine both the old three source unknowns AND an additional free filter-memory coordinate**, even though P36 was globally invertible for the smaller nuisance group. A nonzero goal derivative along this legal nuisance-compensation curve produces *local goal ambiguity for that extended five-sample measurement contract*. This result is not a statement about a full 4801-point CAL: with a sixth already archived pretarget sample the combined $6\times6$ derivative is nonsingular **iff**
-$$
+```math
 \boxed{\quad h_6-j_6 J_5^{-1}h_5\ne0,\quad j_6=D_\eta f_6(\eta_0,0).\quad}
-$$
+```
 This Schur-complement rank test supplies the **minimal one-more-observation local repair**, at zero additional hardware cost *if the sixth calibrated sample already belongs to the legally recorded raw CAL*. In the noisy source case require a verified **gap away from zero relative to joint noise** and all-branch/guard; otherwise extra samples do not establish robust goal resolution. If $b$ changes between worlds, $h_t(b)$ must be differentiated as such; treating $h$ as fixed away from $\xi=0$ is invalid unless the memory pole is independently fixed.
 
-**Numerical control on the exact frozen proxy, NOT actual source/full CAL.** Using the saved five-current coefficient matrix at centered $a=u=0,\gamma=1$, and 100 MHz sampled h at (12,31,42,46,60)ns, exact rational algebra for the recorded binary64 proxy coefficients and fixed sampled h gives a valid **separate-fixed-pole** five-sample compensation at $\xi=0.1$ A, with all five observed currents exactly identical, common gain about 1.00001106, common offset about $-5.31\times10^{-5}$ A and future *proxy* goal gap approximately **0.00942034413 nJ**. When h consistently depends on the shifted unknown b, an independently solved smooth finite-$\xi=0.1$ proxy+filter-initial-state equation still achieves numerical five-sample residual below $9\times10^{-16}$ A and goal gap about **0.00941956128 nJ**; this latter is a **floating numerical diagnostic, not an interval-certified two-world theorem**. The local derivative criterion at $\xi=0$ remains exact conditional mathematics for variable b, because terms proportional to $\xi D_bh$ vanish at the base point. No additional source roots, full 4801-point CAL collision, real hardware nuisance permission, or future measured work were established by this synthetic construction.
+**Numerical control on the exact frozen proxy, NOT actual source/full CAL.** Using the saved five-current coefficient matrix at centered $`a=u=0,\gamma=1`$, and 100 MHz sampled h at (12,31,42,46,60)ns, exact rational algebra for the recorded binary64 proxy coefficients and fixed sampled h gives a valid **separate-fixed-pole** five-sample compensation at $`\xi=0.1`$ A, with all five observed currents exactly identical, common gain about 1.00001106, common offset about $`-5.31\times10^{-5}`$ A and future *proxy* goal gap approximately **0.00942034413 nJ**. When h consistently depends on the shifted unknown b, an independently solved smooth finite-$`\xi=0.1`$ proxy+filter-initial-state equation still achieves numerical five-sample residual below $`9\times10^{-16}`$ A and goal gap about **0.00941956128 nJ**; this latter is a **floating numerical diagnostic, not an interval-certified two-world theorem**. The local derivative criterion at $`\xi=0`$ remains exact conditional mathematics for variable b, because terms proportional to $`\xi D_bh`$ vanish at the base point. No additional source roots, full 4801-point CAL collision, real hardware nuisance permission, or future measured work were established by this synthetic construction.
 
 **Strongest ordinary/next source requirement.** Before buying a new sensor, audit the ORIGINAL full CAL sample count and common filter-initialization receipt; calculate the Schur residual $h_t-j_tJ_5^{-1}h_5$ at several *already recorded* pretarget times from source/observation derivatives with units and one persistent joint gain/offset/noise. A verified nonzero robust residual can distinguish a free RC-init mode and shrink its goal fiber with ZERO new native/hardware; if it is zero for every legitimate extra sample, locate the specific unobserved mode and propose an independently legal reset/dwell calibration, always comparing the entire raw-record same-information ordinary. Original P35/P36 max-invariant claims remain valid under their narrower stated nuisance contracts; real instrument initialization, source guard, actual target signed work and noise legality all remain OPEN.
 
@@ -1409,37 +1409,37 @@ This Schur-complement rank test supplies the **minimal one-more-observation loca
 **Actual operator and domain.** Controller's nonprotected \`docs/derivations/dpt_r1_03_observation_operator.tex\` OBS-E06/E06A/E07 (L272–313) separately retains prewindow filter memory and postfilter offset; archived \`replay/goal27_projective_bank.py\` L55–65 uses one first-order RC recurrence. For one **fixed recorded digital PREP/command**, true 4801-timestamp filtered source trace $m$, unknown common positive record gain $\gamma$, constant postfilter offset $\beta$, optional single shared RC-init amplitude $\xi$, known candidate bandwidth $b>0$, and one *whole-record joint* deterministic noise $e\in E$, the declared observation extension is $y=\gamma m+\beta{\bf1}+\xi h_b+e$, where $h_{b,n}=\exp[-2\pi b(t_n-t_0)]$. The optional free $\xi$ is a **conditional nuisance enlargement**, NOT evidence that actual qualified preparation permits it. It is not a new independent per-time perturbation.
 
 **P44a (exact full-record quotient theorem).** For strict increasing timestamps, define
-$$
+```math
 \begin{gathered}
 r_n(v)=v_{n+1}-\alpha_n v_n,\\
 \alpha_n=e^{-2\pi b(t_{n+1}-t_n)}.
 \end{gathered}
-$$
+```
 For $n=0,\ldots,4798$ put
-$$
+```math
 \begin{gathered}
 (L_bv)_n=(1-\alpha_n)r_{n+1}(v)\\
 -(1-\alpha_{n+1})r_n(v).
 \end{gathered}
-$$
+```
 Then **exactly**, including nonuniform timebase,
-$$
+```math
 \begin{gathered}
 \ker L_b=\mathrm{span}\{{\bf1},h_b\},\\
 \mathrm{rank}L_b=4799.
 \end{gathered}
-$$
+```
 *Proof.* $L_bv=0$ forces $r_n(v)/(1-\alpha_n)$ to equal the same constant for every $n$, hence $v_n=\beta'+\xi' h_{b,n}$; conversely both generating vectors are annihilated. Each $\alpha_n\in(0,1)$, so the kernel generators are linearly independent. Thus if $\beta,\xi$ are unconstrained, at fixed candidate $b$ a complete CAL record is compatible precisely if some legal $\gamma,e$ obey
-$$
+```math
 L_by\in \Gamma L_bm+L_bE.
-$$
+```
 For compact positive gain interval $\Gamma$ and compact convex **joint** $E$, convex separation makes this equivalent to the support inequalities, for every $\kappa\in{\mathbb R}^{4799}$,
-$$
+```math
 \begin{gathered}
 \kappa^\top L_by\le \sigma_\Gamma(\kappa^\top L_bm)\\
 +\sigma_E(L_b^\top\kappa).
 \end{gathered}
-$$
+```
 A single outward strict violation **rejects a candidate source future goal** without a full-history inverse, source-wide denominator $D>0$, five-sample selection or future target label. If $\beta,\xi$ are bounded, physically prepared, or coupled to hidden source state, the quotient is only **necessary**; recover the discarded two coordinates and check their constraints. The candidate $b$ must vary with source world: never set all $b$ to a nominal 100 MHz.
 
 **Full-record local rank and cross-bandwidth pair geometry.** With source coordinates $(L,\kappa,b)$ and gain $\gamma$, let $J_4=[\gamma D_Lm,\gamma D_\kappa m,\gamma D_bm+\xi D_bh_b,m]$. The complete six-parameter observation Jacobian has rank six if and only if $\mathrm{rank}(L_bJ_4)=4$ on one smooth, branch-valid source chart. Both $D_bh_b$ and prepared-source/filter history derivative are mandatory. This is not a global root/guard result. For two worlds with possibly distinct $b_\pm$, choose any exact annihilator $Q$ of $\mathrm{span}\{{\bf1},h_{b_+},h_{b_-}\}$. Under independently free $\beta_\pm,\xi_\pm$, their **same-full-CAL** observation sets intersect if and only if $0\in\Gamma Qm_+-\Gamma Qm_-+Q(E-E)$. Every proposed pair with $|G_+-G_-|>2\tau$ must be excluded **on the same digital command and entire joint noise contract** before claiming an all-decoder $\tau$ goal upper. With constrained initial-state memory, projected intersection is not sufficient to establish a legal pair. The strongest ordinary remains the full-compatible-fiber Chebyshev half diameter, which this test cannot outperform.
@@ -1447,3 +1447,31 @@ A single outward strict violation **rejects a candidate source future goal** wit
 **Known-answer, evidence and missing input.** Independent Fraction five-point nonuniform $\alpha=(2/3,3/4,4/5,5/6)$ verifies both kernel generators, rank $3=5-2$, and one shared offset/RC/noise mode; a separate nonuniform 4801-point float check of the analytic invariants has maximum residual $3.28\times10^{-17}$ A. The nonprotected Pro18C evidence.json T00–T06 (L13616–14055) saves only five filtered currents for each **different** digital PREP command; the archived same-fiber NPZ has H/ports/parameters, not seven 4801-point currents. Thus no actual S150 full-CAL rank, same-command collision, goal-radius reduction or actual sensor contract has been numerically certified. Need the original $y[4801],t[4801]$, qualified one-record $\Gamma,E,\beta,\xi$ law, true RC initial receipt and all legal source candidate $m[4801]$/guards before using strict separation. Regression: [original-transfer tests](../dpt_tools/test_paper_transfer_falsifiers.py). Status **SIDE_VERIFIED exact conditional operator / actual whole-source goal OPEN**.
 
 **P45 conditional cross-branch certificate and anchor audit.** On a finite **exhaustively enumerated** disjoint union of compact $C^1$ three-dimensional lawful source/guard charts, if the continuous actual projective map $q=(B_1,B_2,B_3)/D$ has nonzero Jacobian determinant on every chart interior and $D\ne0$, then for any connected open $U$ disjoint from **all** chart and guard/root-birth boundary images, $q:q^{-1}(U)\to U$ is a proper local homeomorphism, hence a finite covering. Its cross-branch preimage count is constant on $U$; a **certified exhaustive seed count exactly one** propagates global injectivity over $U$. This is a project-owned application of Chung-Wu Ho, [*A Note on Proper Maps*](https://doi.org/10.1090/S0002-9939-1975-0370471-3), *Proc. AMS* 51 (1975), 237–241, Lemmas 2–3 (proper local homeomorphism/covering), not a proof that actual S150 meets the hypotheses. Two disjoint identical-output charts with $D=5$ A and $q=u$ have locally positive determinant yet two global sheets: point Jacobian positivity alone is insufficient. Separately, if the **same full-branch residual bound** of P41 includes $D_{\rm src}=D_{\rm aff}+r_D$ with $|r_D|\le R$, then $D_{\rm aff,min}=5.372685848430501$ A and $k_0R<1$, $k_0=0.2082537181359361\ {\rm A}^{-1}$, imply $D_{\rm src}>0.570850813$ A; actual $R$ is **not** known source-wide and any branch not covered remains open. The *measured* positive denominator independently requires $\gamma_{\min}D_{\min}>\sup_{e\in E}(e_{12}-e_{60})$. No 2K(R+J) local-Jacobian shortcut to global injectivity is used.
+
+
+
+## 2026-10-18 P46: PREP-linked bounded RC-memory support on the original full 4801-point S150 CAL
+
+**Actual saved observation found; previous seven-point limitation corrected.** Nonprotected Pro18E artifacts/run_E/core/e_saved_cal.npz contains time_s(4927), source state50(4927,50), original H_s(4801) and measurement_V_A(4801,2). Pro18F run_F/pro18f_arrays.npz::original_CAL_measurement_V_A is that SAME archived array (SHA256 d55cca1bf277a245186fd2156d23fef85150c2d0a39360ee621b5f4ad7306e91), not a second independent observation. A read-only replay of the full prepared x36 through the literal piecewise-linear 100-MHz RC, then common gain 1.02 and offset +0.01 A, matches the archived simulated CAL within 5.967e-11 A; the inherited filtered entrance current 0.0004651381474658461 A differs from instantaneous source 0.000492232878120678 A. Retaining that entrance exponent recovers the full filter to 7.4e-15 A, whereas unfiltered raw x36 can differ from archived measured current by 3.556272414 A. **These are one source-valid archived numerical path and synthetic calibrated readout, not seven same-command trajectories, true hardware raw sensor noise, or a whole S150 source-fiber interval.**
+
+**P46 new exact bounded-nuisance candidate rejection, not P44 free-memory annihilation.** For one complete lawful same-recorded-command source path theta, filtered m(theta,b) in R^4801 and h_b(t)=exp[-2pi b(t-t_CAL0)], let one common positive gain gamma in compact Gamma, postfilter constant beta in compact B, **PREP-tied pre-gain CAL initial-state deviation** xi in [l_theta,u_theta], and ONE complete-record joint compact convex noise set E. Every candidate reading is y=gamma*m+beta*1+gamma*xi*h_b+e. Defining zeta=gamma*xi and A_theta=[m,1,h_b], the finite polytope is:
+```math
+\begin{gathered}
+P_\theta=\{(\gamma,\beta,\zeta):
+\gamma\in\Gamma,\ \beta\in B,\\
+\gamma l_\theta\le\zeta\le\gamma u_\theta\}.
+\end{gathered}
+```
+Because gamma is strictly positive, the transformation is reversible. Thus this **entire 4801-point source candidate** is compatible iff y is in A_theta P_theta + E, and by compact convex separation iff all k in R^4801 satisfy:
+```math
+\begin{gathered}
+k^\top y\le
+\max_{v\in\mathrm{Vert}(P_\theta)}
+k^\top A_\theta v+\sigma_E(k).
+\end{gathered}
+```
+A single **strict outward violation** rejects that source candidate and any future goal attached to it WITHOUT a preselected five-current denominator or future label. If E is nonconvex, support violation still rejects but passing its convex hull is only necessary. Real PREP physical constraints may further correlate gamma,beta,xi and the source state; dropping them creates a conservative outer but never a false rejection. Where justified, an initial PREP discrepancy is attenuated by exp(-2pi*b*T_PREP), which can make h-direction discrepancies **detectable**, unlike the free-init annihilator P44. Only if every lawful, same-digital-PREP, all-root candidate with goal beyond [L,U] is excluded can this produce a prospective signed-work interval; P46 is not a theorem that such exhaustive candidate certificates currently exist.
+
+**Nontrivial archived CAL zero-native discriminator; hypothetical nuisance budgets.** Assume solely for a mathematical source-point gate that PREP input initial discrepancy <=0.1 A and a qualified 8-ns 100MHz relaxation gives |xi_CAL|<=0.000656142 A, gamma in [1,1.04], beta in [.005,.015] A, and joint E={eta*sin(2pi*25MHz*(H-H0))+d: |eta|<=10 microA, |d_i|<=1e-10 A}. A unit contrast k orthogonal to archived m, ones and this one shared noise mode has k·h=7.604323339 and **support upper** 0.005189099516 A. A synthetic **pretarget-only** +0.002 A*h deviation on the SAME archived record gives k·y~0.015208646209 A, exceeding the cap by 0.010019546693 A and rigorously rejecting that altered candidate under the declared example. The actual archived record gives k·y~-4.69e-10 A, as expected. No target truth is an online input; actual instrument E, other roots/guards and goal-radius reduction remain OPEN. The strongest same-information ordinary is the Chebyshev midpoint of goal values of all source-legal worlds compatible with **both complete original V/I CAL channels**, recorded digital PREP/command and one joint error/filter law; our current-only contrast cannot beat it.
+
+**P47 independent full-CAL branch/adversary caveat.** P45's Ho (1975, Lemmas 2–3 pp238–239) finite-sheet local-homeomorphism certificate needs an exhaustively compact union of all source branches/guards, their CLOSED guard/frontier images, all target continuations, and any extra sensor-memory coordinate. A strict-guard sheet u1>0 entering an open observation region has nonsingular local Jacobian yet changing sheet count when its missing closure boundary is ignored; point-Jacobian nonsingularity and P41 2K(R+J)<1 do NOT imply global injectivity. For a branch j, any full-CAL contrast v·1=0 with v·y greater than sup_(legal branch,gamma,b,xi)[gamma*v·m_j+gamma*xi*v·h_b]+sigma_E(v) is a strict cross-branch exclusion. A synthetic two-root causal RC example can exactly hide c(1-h_b), c=.05 A, by CAL offset -c and postgain initial shift +c over ALL 4801 samples while true source D remains ~5 A, producing two different future goals; this is **NOT actual S150 50D alias** and may cease to be indistinguishable when full analog PREP shares the same calibrated chain. The conditional Pro18C report permits pre-gain ±0.1 A init and gain<=1.1 (postgain init max .11 A), not a free actual physical initial state. Original-paper numbering correction: F325-A *Optimal metric* and *Common positive representation* are Theorems 1.2/1.3 (after Lemma1.1), F325-B fixed-operator theorem is 1.1, and F140-A main theorem is 1.2; their operator/geometry/iid assumptions do not establish any 50-state SiC source claim.

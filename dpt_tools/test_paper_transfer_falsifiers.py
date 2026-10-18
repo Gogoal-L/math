@@ -869,5 +869,68 @@ class FiniteFutureSignedWorkBellmanFixture(unittest.TestCase):
         self.assertLessEqual(work_nJ,upper)
 
 
+
+
+class ActualSourceRowReceiptControls(unittest.TestCase):
+    """Original S150 public archived decimal receipts; not full-source all-root tests."""
+
+    def test_d5_signed_two_coil_be_row_identity_exact(self):
+        from fractions import Fraction as Q
+        h=Q('6.349206349139601e-11')
+        Ls,LD=Q('4.3e-9'),Q('1e-4')
+        io,ii=Q('-0.0008779378064888938'),Q('-0.0010131195314972662')
+        jo,ji=Q('-5.19279725897433'),Q('-5.192794412505165')
+        vd,vsl=Q('154.48318893560577'),Q('-0.00915518232628826')
+        di,dj=ii-io,ji-jo
+        r36=-vsl+Ls*di/h
+        r37=-vd+150+LD*dj/h
+        dE=Ls*(ii*ii-io*io)/2
+        signed=h*(vd-vsl)*ii
+        rhs=150*h*ii+LD*ii*dj-Ls*di*di/2+h*(r36-r37)*ii
+        self.assertEqual(signed+dE,rhs)
+        self.assertLess(signed,0)
+        self.assertLess(abs(float(r36)),1e-9)
+        self.assertLess(abs(float(r37)),1e-8)
+
+    def test_nonlegal_delta_l_parameter_swap_loses_flux(self):
+        from fractions import Fraction as Q
+        omitted=Q('0.2e-9')*Q('-0.0008779378064888938')/Q('6.349206349139601e-11')
+        self.assertLess(float(omitted),-0.002)
+        self.assertGreater(abs(float(omitted))/3e-8,90000.)
+
+    def test_literal_prep_gl32_wrong_step_clock_exclusion(self):
+        from fractions import Fraction as Q
+        dq=Q('-5.31546947904e-15')
+        hprep,hcal=Q('63.492063491396e-12'),Q('12.5e-12')
+        excess=dq*(1/hcal-1/hprep)
+        self.assertLess(float(excess),-3e-4)
+        self.assertGreater(abs(float(excess)),100*3e-6)
+
+    def test_s_l13_centered_first_prep_receipt_gates(self):
+        from fractions import Fraction as Q
+        qr=Q('0.0014124419103243783')
+        qb=Q('83.66478388716234')
+        self.assertGreater(Q(84)-qr-qb,Q('0.3'))
+        self.assertLess(Q('-3.994778')+Q('1.960220'),Q('-2.034'))
+        self.assertLess(Q('25.062'),Q(26))
+        # Receipt arithmetic is not independent verification of interval source coefficients.
+
+    def test_p46_joint_gain_and_filter_amplitude_polytope(self):
+        from fractions import Fraction as Q
+        Gamma=(Q('.9'),Q('1.1'))
+        xi=(Q('-.1'),Q('.1'))
+        vertices=[(g,b,g*x) for g in Gamma for b in xi for x in xi]
+        m=tuple(map(Q,('0','2','4','3','5')))
+        h=tuple(map(Q,('1','.7','.5','.25','.1')))
+        k=tuple(map(Q,('1','-2','1','0','0')))
+        dot=lambda a,b:sum(x*y for x,y in zip(a,b))
+        support=max(g*dot(k,m)+b*sum(k)+z*dot(k,h) for g,b,z in vertices)
+        self.assertTrue(all(g*xi[0]<=z<=g*xi[1] for g,b,z in vertices))
+        y=tuple(Q('1.1')*a+Q('.1')*b for a,b in zip(m,h))
+        self.assertLessEqual(dot(k,y),support)
+        bad=list(y);bad[0]+=1
+        self.assertGreater(dot(k,bad),support)
+
+
 if __name__ == "__main__":
     unittest.main()
