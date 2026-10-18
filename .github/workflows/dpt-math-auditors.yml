@@ -44,12 +44,7 @@ jobs:
         working-directory: dpt_tools
         run: python -m unittest discover -v -p 'test_*.py'
 
-      - name: Set up Node for independent MathJax source rendering
-        uses: actions/setup-node@v4
-        with:
-          node-version: "22"
-      - name: Install MathJax engine (isolated CI dependency)
-        run: npm install --prefix /tmp/dpt-math-tex --no-save mathjax-full@3.2.2
+      # Fail fast on Python-only syntax errors before Node/npm setup; the gate itself is unchanged.
       - name: Audit GitHub-compatible math syntax and extract equations
         run: |
           python dpt_tools/markdown_math_audit.py \
@@ -57,6 +52,13 @@ jobs:
             dpt_research/*.md \
             dpt_tools/README.md \
             --dump-json /tmp/dpt-math-equations.json
+
+      - name: Set up Node for independent MathJax source rendering
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - name: Install MathJax engine (isolated CI dependency)
+        run: npm install --prefix /tmp/dpt-math-tex --no-save mathjax-full@3.2.2
       - name: Compile every math expression with MathJax
         run: NODE_PATH=/tmp/dpt-math-tex/node_modules node dpt_tools/compile_mathjax.js /tmp/dpt-math-equations.json
       - name: Inspect actual GitHub GFM Markdown API output
