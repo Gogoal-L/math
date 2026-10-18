@@ -690,3 +690,39 @@ For a compact convex source domain with uniform measure and compact target set, 
 **S150 transfer test.** Try to establish a source-specific modulus for the H841 signed-work scorer as a function of a rigorously defined distance between complete-CAL/command/`Delta L` worlds, and challenge it with certified legal pairs near every ETH, diode and thermal seam. It fails if a pair violates the proposed modulus or if the constant cannot be bounded uniformly over the legal source family. **Boundary:** Wasserstein distance between target measures is not a metric on S150 source histories; neither the exponent `1/3` nor its constant may be imported as a physical error bound.
 
 **Research decision.** These papers suggest three useful proof-design patterns—finite exact core plus tail control; strict interpolation margins on a fully covered regular domain; and an explicitly falsifiable stability modulus. None presently provides the missing S150 source arrays, 24-row directed residual/Jacobian receipt, legal full-CAL second world, or 6720-stage D15 thermal interval recurrence. Therefore they do not change the evidence ceiling: S-L26 remains `REPORTED_NOT_RECOMPUTED`, D15 remains unreproduced from committed stagewise receipts, and certified Goal27 full-source signed-work diameter reduction remains **0 nJ**.
+
+## 2026-10-18 verified numerics and set-inversion transfer matrix (three additional primary sources)
+
+**Evidence status: proof architecture only.** These original papers give a defensible route from candidate-point contractors to a complete guarded feasible-fiber outer cover. They do not establish an S150 root or reduce the Goal27 scorer diameter without the missing source arrays and interval receipts.
+
+### A. Rump (2010), Theorem 13.3, Eq. (13.8)
+
+- Original source: [“Verification methods: Rigorous results using floating-point arithmetic,” Acta Numerica 19 (2010), 287–449](https://www.tuhh.de/ti3/rump/intlab/ActaNumerica2010.pdf), DOI [10.1017/S096249291000005X](https://doi.org/10.1017/S096249291000005X).
+- Theorem 13.3 assumes a continuously differentiable square map f:D -> R^n, a center x-tilde and box X with x-tilde+X contained in D, a real preconditioner R, and an interval Jacobian enclosing every Jacobian over the box. Its Krawczyk image S(X,x-tilde)=-R f(x-tilde)+(I-R J_f(x-tilde+X))X must be strictly inside int(X); then the box contains a unique root.
+- **S150 transfer:** for each fixed smooth source branch b and legal parameter box P, use the 24-state square system F_b(x,p)=0 and prove the uniform image K_b(X,P)=x0-R F_b(x0,P)+(I-R J_x F_b(X,P))(X-x0) is contained in int(X). This is a parameter-uniform extension of the fixed-system theorem and must be proved uniformly for every p in P; do not simply append free parameters to the 24 unknowns and pretend the resulting underdetermined system is square. The interval Jacobian must enclose the true source derivative, and the branch guard must be valid throughout the box.
+- **Fail condition:** any Jacobian/remainder/parameter effect is not enclosed, the Krawczyk image touches or leaves the box, a guard changes mode without a split, or any parameter box is omitted. A failed inclusion is “unresolved,” not proof that no root exists.
+
+### B. Jaulin and Walter (1993), Theorem 1 and SIVIA
+
+- Original source: [“Set inversion via interval analysis for nonlinear bounded-error estimation,” Automatica 29(4) (1993), 1053–1064](https://webperso.ensta.fr/Jaulin/paper_automatica93.pdf), DOI [10.1016/0005-1098(93)90106-4](https://doi.org/10.1016/0005-1098(93)90106-4).
+- Theorem 1 in Section 5.2.1 proves convergence of the inner/outer SIVIA pavings as the box-width tolerance tends to zero, under the paper's continuity assumptions on the inverse-set map and a sound inclusion function whose width tends to zero with its input box. The inner convergence additionally assumes the feasible set is full (closure of its interior equals the set). The paper explicitly warns that runtime grows exponentially with parameter dimension.
+- **S150 transfer:** let P cover static L, legal PREP/old-state coordinates, common clock parameters, RC entrance state, gains/offsets, phase coefficients and the joint sensor-error set. A box can be excluded only when a sound interval enclosure proves a source residual or guard impossible; a box can be accepted as feasible only with a source-root certificate. Retain every ambiguous box in the outer paving and bisect/contract it. The P46 affine/polytope contractor and P48/P56 dual inequalities are cheap necessary contractors before expensive root verification.
+- **Fail condition:** the interval output does not enclose the true map, a feasible box is dropped, a nonempty boundary is omitted from the outer cover, or the stopping tolerance is presented as a root/goal certificate. Finite-width SIVIA boxes alone cannot establish a small future-work diameter.
+
+### C. Jaulin, Walter, Lévêque and Meizel (2000), chi-SIVIA
+
+- Original source: [“Set inversion for χ-algorithms, with application to guaranteed robot localization,” Mathematics and Computers in Simulation 52(3–4) (2000), 197–210](https://webperso.ensta.fr/jaulin/paper_chi.pdf), DOI [10.1016/S0378-4754(00)00150-6](https://doi.org/10.1016/S0378-4754(00)00150-6).
+- Section 2, Eq. (2.4) gives interval semantics for a conditional chi-algorithm: select a branch when the interval guard proves its predicate; when the guard is indeterminate, keep the union of both branch outputs. Section 3, Table 1 gives the recursive SIVIA classifier that accepts, rejects or bisects boxes.
+- **S150 transfer:** classify ETH, diode/clip and other hybrid predicates over each parameter/state box. If the interval guard straddles its threshold, split the box or include both branch images; never replace the ETH jump with one smooth derivative. The heat absolute-value kink can use its Lipschitz bound, but the ETH branch requires explicit branch coverage.
+- **Fail condition:** a straddling guard is assigned only one branch, branch outputs are hulled without a valid outer enclosure, or a discontinuity is differentiated as if it were smooth.
+
+### Combined executable acceptance contract
+
+1. Use the exact three-sample affine dual only as a necessary candidate/box contractor when the common gain/offset, phase-amplitude, noise, clock and source-slope bounds are all qualified. A candidate-point exclusion is not full-CAL identification.
+2. Contract gain/offset and joint-noise boxes using the existing P46 polytope constraints; preserve the same full-CAL data and nuisance contract for the baseline ordinary and any proposed added observation.
+3. Build a disjoint outer cover of every legal parameter box, with explicit branch labels and guard intervals. For each smooth branch box, prove the parameter-uniform 24D Krawczyk inclusion or retain the box as unresolved; do not silently drop it.
+4. Propagate all 6720 D15 stages with directed intervals, complete ETH/diode/clip/heat-sign coverage, and the clarified raw-versus-effective U units plus alpha-j/alpha-infinity contract. Missing source bytes mean this stage cannot currently be executed from the remote tree.
+5. Evaluate the fixed future H841 signed-work scorer on every retained compatible world. **Genuine goal reduction passes only if** the certified upper bound on the new same-target scorer diameter is strictly below a certified lower bound on the old diameter, D_new_upper < D_old_lower, under the identical information/noise budget. Any unresolved parameter box must contribute its full possible scorer range.
+
+This is the most defensible route suggested by the three methods. At the current evidence level, it is an implementation/test contract, not a reproduced full-source computation; the certified Goal27 diameter reduction remains 0 nJ.
+
