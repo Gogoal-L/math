@@ -1,7 +1,6 @@
 """Fail-closed tests for the S150 24-row center-receipt arithmetic interface."""
 from __future__ import annotations
 
-import copy
 import tempfile
 import unittest
 from fractions import Fraction
@@ -53,6 +52,7 @@ def synthetic_receipt() -> dict:
     return {
         "schema": SCHEMA,
         "mode": "synthetic",
+        "image_normalization": "coordinatewise_D_x",
         "row_order": rows,
         "column_order": list(EXPECTED_COLUMN_ORDER),
         "F_center_intervals": [["-1e-12", "1e-12"] for _ in range(24)],
@@ -60,8 +60,8 @@ def synthetic_receipt() -> dict:
         "D_F": df,
         "D_x": dx,
         "X1_radius": x1,
-        "noncenter_image_radius_upper": ["0.1" for _ in range(24)],
-        "claimed_final_image_margin_lower": ["0.8" for _ in range(24)],
+        "noncenter_image_radius_upper_normalized": ["0.1" for _ in range(24)],
+        "claimed_final_image_margin_lower_normalized": ["0.8" for _ in range(24)],
         "guard_intervals": guards,
     }
 
@@ -117,6 +117,29 @@ class S150Krawczyk24ReceiptTests(unittest.TestCase):
         self.assertEqual(result["status"], "SOURCE_INPUTS_UNAVAILABLE")
         self.assertNotEqual(result["status"], "SOURCE_RECEIPTS_HASHED_CENTER_ARITHMETIC_PASS_ONLY")
         self.assertIn("source_artifact_check", result)
+
+    def test_ambiguous_or_legacy_physical_unit_fields_fail_closed(self):
+        receipt = synthetic_receipt()
+        receipt.pop("image_normalization")
+        with self.assertRaisesRegex(ValueError, "image_normalization must be"):
+            audit_receipt(receipt)
+
+        receipt = synthetic_receipt()
+        receipt["noncenter_image_radius_upper"] = receipt.pop(
+            "noncenter_image_radius_upper_normalized"
+        )
+        with self.assertRaisesRegex(ValueError, "noncenter_image_radius_upper_normalized"):
+            audit_receipt(receipt)
+
+    def test_normalized_radii_are_explicitly_dimensionless(self):
+        receipt = synthetic_receipt()
+        self.assertEqual(receipt["image_normalization"], "coordinatewise_D_x")
+        self.assertIn("noncenter_image_radius_upper_normalized", receipt)
+        self.assertIn("claimed_final_image_margin_lower_normalized", receipt)
+        result = audit_receipt(receipt)
+        self.assertTrue(all(
+            Fraction(x) > 0 for x in result["computed_image_margin_lower_normalized"]
+        ))
 
 
 if __name__ == "__main__":

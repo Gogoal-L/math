@@ -19,7 +19,7 @@ from fractions import Fraction
 from pathlib import Path
 from typing import Any
 
-SCHEMA = "s150.krawczyk24-center/v1"
+SCHEMA = "s150.krawczyk24-center/v2"
 NONCENTER_SCHEMA = "s150.krawczyk24-noncenter/v1"
 
 EXPECTED_COLUMN_ORDER = (
@@ -341,6 +341,11 @@ def audit_receipt(receipt: dict, *, root: str | Path | None = None) -> dict:
     mode = receipt.get("mode")
     if mode not in ("synthetic", "source"):
         raise ValueError("mode must be synthetic or source")
+    if receipt.get("image_normalization") != "coordinatewise_D_x":
+        raise ValueError(
+            "image_normalization must be 'coordinatewise_D_x'; "
+            "noncenter radii and image margins must be dimensionless after division by D_x[i]"
+        )
 
     _, row_units = _validate_rows(receipt.get("row_order"))
     column_order = receipt.get("column_order")
@@ -364,15 +369,15 @@ def audit_receipt(receipt: dict, *, root: str | Path | None = None) -> dict:
         raise ValueError("X1_radius must be 1 microV for each retained predecessor coordinate")
 
     noncenter = _vector(
-        receipt.get("noncenter_image_radius_upper"),
-        "noncenter_image_radius_upper",
+        receipt.get("noncenter_image_radius_upper_normalized"),
+        "noncenter_image_radius_upper_normalized",
         _fraction,
     )
     if any(value < 0 for value in noncenter):
         raise ValueError("noncenter image radii must be nonnegative")
     claimed_margin = _vector(
-        receipt.get("claimed_final_image_margin_lower"),
-        "claimed_final_image_margin_lower",
+        receipt.get("claimed_final_image_margin_lower_normalized"),
+        "claimed_final_image_margin_lower_normalized",
         _fraction,
     )
     if any(value <= 0 for value in claimed_margin):
