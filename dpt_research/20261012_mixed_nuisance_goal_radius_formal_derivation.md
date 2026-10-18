@@ -1621,11 +1621,11 @@ At the declared hypothetical **130ps** common skew, this implies epsilonV+1.1rho
 
 ## 2026-10-18 P56: bounded-phase / bounded-clock three-sample affine dual (conditional stored-point result)
 
-**New reusable necessary condition, not a P54 archive replay.** For three candidate source voltages \(m_i\), observations \(y_i\), and the exact affine annihilator \(w=(m_2-m_3,m_3-m_1,m_1-m_2)/\|w\|_1\), one has \(w^T1=w^Tm=0\), \(\|w\|_1=1\). Suppose the sampled observation model is
+**New reusable necessary condition, not a P54 archive replay.** For three candidate source voltages `m_i`, observations `y_i`, and the exact affine annihilator `w=(m_2-m_3,m_3-m_1,m_1-m_2)/||w||_1`, one has `w^T 1 = w^T m = 0`, `||w||_1 = 1`. Suppose the sampled observation model is
 `y_i=\gamma m(t_i+\delta_i)+\beta+A_V(\eta_s\sin\phi_i+\eta_c\cos\phi_i)+e_i`,
 with `|gamma|<=G`, `|| (eta_s,eta_c) ||_2<=1`, `|delta_i|<=delta`, a source-trace Lipschitz bound `|m(t_i+delta)-m(t_i)|<=B*|delta|` on every full clock tube, and `||e||_infinity<=epsilon`. Then, for arbitrary common phase and even arbitrary per-sample clock offsets inside the bound,
 `|w^T y| <= epsilon + A_V + G B delta`.
-The sinusoid contributes at most \(A_V\) because its normalized two-coefficient pointwise amplitude is at most one; no phase-origin assumption or numerical trigonometry is needed. A hybrid jump or uncovered mode makes the assumed finite B invalid and the gate must return inconclusive.
+The sinusoid contributes at most `A_V` because its normalized two-coefficient pointwise amplitude is at most one; no phase-origin assumption or numerical trigonometry is needed. A hybrid jump or uncovered mode makes the assumed finite B invalid and the gate must return inconclusive.
 
 The implementation extends the existing `measurement_factor_audit.py` three-sample quotient and is tested against the existing P48 stored Pro19A/Pro18E triple (contrast `0.3836246616438119 V` to the recorded precision). Under the **illustrative conditional** bounds `epsilon=0.1 V`, `A_V=0.02 V`, `G=1.1`, `B=1e11 V/s`, `delta=150 fs`, the exact dual leaves a positive margin about `0.2471 V`. It yields a source-slope threshold about `1.598e12 V/s` for the stated epsilon and amplitude, and a phase-amplitude threshold about `0.2671 V` for the stated B. These are thresholds of this three-sample stored-value gate, **not** qualified hardware bounds and not a same-full-CAL future-work diameter result. The amplitude/noise assumptions are deliberately supplied inputs; they must not be silently merged into P54's different candidate/noise contract.
 
