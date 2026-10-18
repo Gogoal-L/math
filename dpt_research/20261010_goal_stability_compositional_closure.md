@@ -508,3 +508,33 @@ Here P_j=V_j I_j and omega_k are exact trapezoid H weights; the second line is a
 **New archived original S150 numerical evaluation, without source solver/native.** Allowed analysis/acceptance/pro18c_prediction_extension.npz SHA256 af7299434d7dcde687da3bf56b5ce31babbc4e0c12b1a849b5f5530ae8fd supplies target_t(6721),target_y(6721x50),target_H(841),target_ports(841x2) at distinct original-source query a=(.23,.37,.23) V, static L=4.16 nH, kappa=1.009, b=95 MHz (do NOT splice into historical centered q row9/41). Source QA reports 6720 accepted numerical steps. Rebuilding both portfolios gives W_H=1.1161291889185969e-05 J and W_BE,right=1.1161314481383648e-05 J; signed Q_H **=-2.259219767949234e-11 J = -0.02259219767949234 nJ**. Two different decompositions check the sign: W_H−fine-BE-trap=+0.00130350318010 nJ, fine-BE-trap−BE-right=−0.0238957008596 nJ; exact coarse-H product correction alone would be +0.26001725265 nJ, nearly canceled by fine-to-coarse PL remapping of −0.25465011624 nJ. Archived H[841] matches t[0,8,...,6720] within 8.5e-22 s. An outward IEEE64 arithmetic-only error receipt <2.56e-7 nJ supports the **stored-number interval** Q_H in [-0.022593,-0.022591] nJ; this excludes neither source solver/truncation nor another compatible future. Signed per-H-block terms have sum absolute 21.47816498 nJ versus net .0225922 nJ: an independent-block unsigned error budget destroys cancellation.
 
 One candidate's stored Q_H is a **RETROSPECTIVE actual-source-point scorer correction**, NOT a prospective all-source Q_H interval. For any source-compatible trajectory set C, the D5 future Bellman upper and lower can be transferred only after validating sup/inf of the joint expression Q_H(C) with common old-state, guards, BE voltages/currents and the original future scorer. The stronger same-information full-record ordinary can use this identical exact scorer. The model still defines only static-L own-PREP branches; post-CAL finite DeltaL requires a new physical flux/reset/actuator-work contract, not numerical coefficient substitution. Reference: [source-row D5 identity](#2026-10-18-d5-actual-s150-two-coil-signed-work-be-gate-and-finite-deltal-legality), [existing work regression](../dpt_tools/test_paper_transfer_falsifiers.py).
+
+
+## 2026-10-18 D7: source-coupled two-copy frozen scorer and 50D coil-residual support
+
+**New exact conditional family form, not a certified future fiber.** Let A be the actual H841-by-source-time(6721) piecewise-linear sampling matrix, Omega the H trapezoid diagonal in seconds, and D the source BE-right diagonal diag(0,h1,...,h6720) in seconds. For a *single common source time grid and frozen H* define K=A^T Omega A-D, so the real-valued binary-grid scorer correction is Q_H(V,I)=V^T K I [J]. Unlike treating the coarse H grid as a new continuum, K retains tiny off-diagonal interpolation weights when H differs from source t[8k] by binary64 rounding. For any TWO putatively legal future paths a,b on that SAME t/H grid, polarize exactly:
+```math
+\begin{gathered}
+Q_H^a-Q_H^b=
+(V_a-V_b)^T K\,\overline I
++\overline V^T K\,(I_a-I_b),\\
+\overline I=(I_a+I_b)/2,\qquad
+\overline V=(V_a+V_b)/2 .
+\end{gathered}
+```
+There is NO independent delta-V times delta-I term in this centered two-copy difference. This exact identity can be optimized by a P42 two-copy objective bound **only after** a correlated, root- and history-qualified source-compatible current/voltage relation has been supplied. No all-source set is presently enclosed.
+
+**Actual two-coil BE source rows turn Q into a goal-only current/residual form.** Original actual_law.py L200–202,235–240,276–295 gives r36=-vsl+Ls Delta I/h and r37=-vD+150+LD Delta j/h, where j=state[37], Ls static per own PREP, LD=100 microH and V=vD-vsl. For w=K I, exact algebra at ANY candidate BE stage pair is:
+```math
+\begin{gathered}
+Q_H=w_0V_0+150\sum_{n\ge1}w_n
+-L_s\sum_{n\ge1}\frac{w_n\Delta I_n}{h_n}\\
++L_D\sum_{n\ge1}\frac{w_n\Delta j_n}{h_n}
++\sum_{n\ge1}w_n(r_{36,n}-r_{37,n}).
+\end{gathered}
+```
+This preserves the same stored source current path, bus/load cancellation, and correlated residuals. In particular, if the *full* I and j paths are FIXED and each source coil voltage residual independently belongs to [-eps,eps] V, the residual contribution is a signed support interval of radius 2 eps sum_{n>=1}|w_n| [J]. This is sharp for the declared rectangular residual set, not a root/continuous-source/error guarantee.
+
+**Named actual S150 numerical receipt.** Nonprotected analysis/acceptance/pro18c_prediction_extension.npz SHA256 af7299434d7dcde687da3bf56b5ce31babbc4e0c12b1a849b5f5530ae8fd supplies target6721x50 and H841 with a=(.23,.37,.23)V, static Ls=4.16nH, kappa1.009, b95MHz. Fresh independent original-array recomputation yields Q_H≈−0.02259219766 nJ, with signed source-coil terms in nJ: initial +.0038003812478, bus −4.850786424625, external coil +.003221094127, load coil +4.821172735126, residual +1.64636e−8. Source-row closure <1e−12 nJ; max |r36-r37|≈3.55212e−9 V. Here sum_{n>=1}|w_n|≈5.52286436823e−7 A s, so under independently supplied **hypothetical** |r36|,|r37|<=3e−8V, the FIXED-path Q_H coil-substitution interval centered near −0.02259221413 nJ has radius **3.313718621e−5 nJ**, approximately [−0.02262535131,−0.02255907694] nJ. A 0.000033nJ residual allowance must NOT be advertised as complete nonlinear BE/source discretization error, and a single stored current path cannot bound the whole original Goal27 source-compatible future fiber. [Reusable coefficient-based API](../dpt_tools/goal_defect_transport.py) and [regressions](../dpt_tools/test_goal_defect_transport.py) preserve the original scorer.
+
+**Fixed-L/source-law limitation.** The source does not define post-CAL L switching or flux reset; only a fixed L chosen before its own-PREP and reused by CAL/future can enter the above equalities. The strong same-information ordinary consumes all original legal PREP/full V-I CAL and uses exactly K; no five-sample comparison, direct future-label feed, or broken history handoff is allowed.

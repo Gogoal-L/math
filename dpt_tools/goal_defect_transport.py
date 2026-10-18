@@ -147,6 +147,104 @@ def audit(updates, observation, goal, initial_radius, defect_radii,
     return output
 
 
+
+def s150_two_coil_scorer_bridge(t_s, H_s, voltage_V, current_A,
+                                load_current_A, Ls_H, LD_H,
+                                *, coil_residual_each_V=None):
+    """Source BE-right versus frozen PL(H) signed-work, preserving correlations.
+
+    K=A(H,t)^T diag(trapezoid_H) A(H,t)-diag(0,dt_source), Q=V^T K I.
+    Source coil rows give V_j=150+LD*d(load_i)/h-Ls*d(I)/h+r36-r37
+    for j>0. If |r36|,|r37|<=eps, and the COMPLETE source currents
+    are fixed, |Q-Q_coil|<=2 eps ||(K I)[1:]||_1. NOT full fiber.
+    """
+    t=np.asarray(t_s,float); H=np.asarray(H_s,float)
+    V=np.asarray(voltage_V,float); s=np.asarray(current_A,float)
+    d=np.asarray(load_current_A,float)
+    if (t.ndim!=1 or H.ndim!=1 or len(t)<2 or len(H)<2
+        or any(a.shape!=t.shape for a in (V,s,d))):
+        raise ValueError("times and source currents must align")
+    if (not all(np.isfinite(a).all() for a in (t,H,V,s,d))
+        or not np.all(np.diff(t)>0) or not np.all(np.diff(H)>0)
+        or H[0]<t[0] or H[-1]>t[-1]):
+        raise ValueError("ordered finite source and H seconds without extrapolation required")
+    Ls=float(Ls_H);Ld=float(LD_H)
+    if not np.isfinite(Ls+Ld) or min(Ls,Ld)<=0:
+        raise ValueError("positive source inductances required")
+    h=np.diff(t)
+    omega=np.empty_like(H)
+    omega[0]=(H[1]-H[0])/2; omega[-1]=(H[-1]-H[-2])/2
+    omega[1:-1]=(H[2:]-H[:-2])/2
+    right=np.clip(np.searchsorted(t,H,side="right"),1,len(t)-1)
+    left=right-1
+    alpha=np.clip((H-t[left])/(t[right]-t[left]),0,1)
+    Hs=(1-alpha)*s[left]+alpha*s[right]
+    Hv=(1-alpha)*V[left]+alpha*V[right]
+    Ks=np.zeros_like(t);Ks[1:]=-h*s[1:]
+    np.add.at(Ks,left,omega*(1-alpha)*Hs)
+    np.add.at(Ks,right,omega*alpha*Hs)
+    W_H=float(omega@(Hs*Hv));W_BE=float(np.sum(h*V[1:]*s[1:]))
+    Vcoil=np.empty_like(V);Vcoil[0]=V[0]
+    Vcoil[1:]=150-Ls*np.diff(s)/h+Ld*np.diff(d)/h
+    residual=V[1:]-Vcoil[1:]
+    out={"status":"POINT_SOURCE_CURRENT_COIL_BRIDGE","W_H_J":W_H,
+         "W_BE_right_J":W_BE,"Q_H_J":float(V@Ks),
+         "Q_H_direct_J":W_H-W_BE,"Q_coil_J":float(Vcoil@Ks),
+         "Q_residual_J":float(residual@Ks[1:]),
+         "r36_minus_r37_maxabs_V":float(np.max(abs(residual))),
+         "residual_support_A_s":float(np.sum(abs(Ks[1:]))),
+         "claim_ceiling":"Source-row algebra at one supplied full current path, not source-wide 50D future-work/root interval."}
+    if coil_residual_each_V is not None:
+        eps=float(coil_residual_each_V)
+        if not np.isfinite(eps) or eps<0:
+            raise ValueError("nonnegative residual voltage budget needed")
+        out["conditional_Q_radius_J"]=2*eps*out["residual_support_A_s"]
+        out["residual_qualified_at_point"]=bool(out["r36_minus_r37_maxabs_V"]<=2*eps)
+    return out
+
+
+
+def s150_load_current_from_raw_ports(t_s, port_V, port_I, *, source_Ls_H,
+                                      load_Ld_H=100e-6, seed_load_A,
+                                      residual_r36_V=None, residual_r37_V=None,
+                                      voltage_error_V=0.0, current_error_A=0.0,
+                                      seed_error_A=0.0,
+                                      coil_residual_error_V=0.0):
+    """Use exact fixed-L two-coil BE rows to eliminate one hidden load history.
+
+    PRECONDITION: V and I are SOURCE-RAW V=x0-x1 and I=x36, NOT the
+    observed 100MHz-filtered I before lawful deconvolution. Both L values
+    are constant through own PREP/future, seed_load_A is the SAME source
+    load-current sign convention state[37], not a post-CAL reset.
+    """
+    t=np.asarray(t_s,float);v=np.asarray(port_V,float);i=np.asarray(port_I,float)
+    if (t.ndim!=1 or len(t)<2 or v.shape!=t.shape or i.shape!=t.shape
+        or not all(np.isfinite(x).all() for x in (t,v,i))
+        or not np.all(np.diff(t)>0)):
+        raise ValueError("aligned finite raw V/I and increasing seconds required")
+    Ls=float(source_Ls_H);Ld=float(load_Ld_H);j0=float(seed_load_A)
+    eV=float(voltage_error_V);eI=float(current_error_A)
+    ej=float(seed_error_A);er=float(coil_residual_error_V)
+    if (not all(np.isfinite(x) for x in (Ls,Ld,j0,eV,eI,ej,er))
+        or min(Ls,Ld)<=0 or min(eV,eI,ej,er)<0):
+        raise ValueError("positive inductances and finite error allowances required")
+    n=len(t)
+    r36=np.zeros(n) if residual_r36_V is None else np.asarray(residual_r36_V,float)
+    r37=np.zeros(n) if residual_r37_V is None else np.asarray(residual_r37_V,float)
+    if r36.shape!=t.shape or r37.shape!=t.shape or not all(np.isfinite(a).all() for a in (r36,r37)):
+        raise ValueError("coil residual arrays must align with source time")
+    h=np.diff(t)
+    j=j0+(Ls/Ld)*(i-i[0])
+    j[1:]+=np.cumsum(h*(v[1:]-150+r37[1:]-r36[1:]))/Ld
+    T=t-t[0]
+    bound=ej+(T*eV+2*Ls*eI+2*T*er)/Ld
+    return {"status":"CONDITIONAL_RAW_PORT_LOAD_HISTORY",
+            "j_A":j.tolist(),
+            "uniform_error_bound_A":bound.tolist(),
+            "claim_ceiling":"RAW source ports and known source L/seed/coil errors only. "
+              "Not a recovery from filtered CAL with unknown b/xi, not future scorer or 50D root coverage."}
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("input", type=Path, help="NPZ: updates, observation, goal, initial_radius, defect_radii")

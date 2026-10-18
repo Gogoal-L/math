@@ -95,5 +95,56 @@ class StageBoxTests(unittest.TestCase):
         with self.assertRaises(ValueError): audit(*args[:-1], [[0,0]], atol=-1)
 
 
+
+class S150G11GuardedPartialTests(unittest.TestCase):
+    """Two actual saved source *rows*, not full 50D root existence tests."""
+
+    def test_named_archived_target_q1_guard_face(self):
+        from stage_box_reachability import s150_g11_guarded_w_fiber
+        x=np.zeros((2,50))
+        x[0,6],x[0,7]=129.74605937135485,142.1413477808394
+        x[1,6],x[1,3]=129.5965704807869,143.57686678307795
+        r=s150_g11_guarded_w_fiber([6.946425e-6,6.946437499999999e-6],x)
+        self.assertTrue(r["legs"][0]["strict_opposing_faces"])
+        self.assertGreater(float(r["legs"][0]["lower_left_A"]),.3)
+        self.assertEqual(r["status"],"CONDITIONAL_UNIQUE_GUARDED_G11_SCALAR_ROOTS")
+
+    def test_named_archived_target_q2_guard_face(self):
+        from stage_box_reachability import s150_g11_guarded_w_fiber
+        x=np.zeros((2,50))
+        x[0,18],x[0,19]=-11.892524976449714,.036539288141262456
+        x[1,18],x[1,15]=-11.954191759915119,-1.7578110621945489
+        r=s150_g11_guarded_w_fiber([6.9509375e-6,6.95095e-6],x)
+        self.assertTrue(r["legs"][1]["strict_opposing_faces"])
+        self.assertGreater(float(r["legs"][1]["lower_right_A"]),.22)
+
+    def test_original_first_prep_old_diode_not_static_equilibrium(self):
+        # Archival initial50 values and literal original source diode law.
+        import math
+        kB,qe=1.380649e-23,1.602176634e-19
+        T,Tnom,n=298.15,300.15,5.4
+        Is=.88e-12*(T/Tnom)**(3/n)*math.exp(
+            qe*1.11*(T-Tnom)/(kB*n*T*Tnom))
+        av=n*kB*T/qe
+        ib_old=5.193079316339365
+        vj_old=4.087729751223548
+        eta0=Is*math.exp(vj_old/av)-Is-ib_old
+        self.assertGreater(eta0, .000249)
+        self.assertLess(eta0,.000251)
+        # Source BE identity is delta ib=(1+TT/h) delta z+eta0.
+        # Dropping eta0 invalidates the claimed radial monotonic product.
+
+    def test_bad_source_face_and_old_charge_shift_fail_closed(self):
+        from stage_box_reachability import s150_g11_guarded_w_fiber as gate
+        x=np.zeros((2,50));x[1,3]=500.
+        self.assertEqual(gate([0,1e-11],x)["status"],"INCONCLUSIVE_GUARD_FACES")
+        # An old-u shift changes the GL32 *charge*, not just the Ohmic KCL.
+        x[:]=0.;x[0,6]=-.5;x[1,3]=-41.06956801685769
+        self.assertEqual(gate([0,12.5e-12],x)["status"],"INCONCLUSIVE_GUARD_FACES")
+        for t,state,eps in (([0,0],x,.01),([0,1],x,1),
+                            ([0,1],np.zeros((2,49)),.01)):
+            with self.assertRaises(ValueError):gate(t,state,radius_V=eps)
+
+
 if __name__=='__main__':
     unittest.main()

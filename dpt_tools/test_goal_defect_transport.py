@@ -103,5 +103,61 @@ class GoalDefectTransportTests(unittest.TestCase):
         self.assertLessEqual(w['initial_norm'], 0.4 + 1e-11)
         self.assertTrue(all(norm <= lim+1e-11 for norm, lim in zip(w['defect_norms'], [0.1, 0.03, 0.2])))
 
+
+class S150TwoCoilSignedWorkTests(unittest.TestCase):
+    """Independent finite-mesh source-row controls, not future fiber truth."""
+
+    def test_exact_two_mesh_coil_bridge_and_residual_budget(self):
+        from goal_defect_transport import s150_two_coil_scorer_bridge as bridge
+        t=np.linspace(0,1e-9,11);H=t[::2]
+        s=np.sin(np.linspace(0,2,11));j=np.cos(np.linspace(0,1,11))
+        V=np.empty_like(t);V[0]=12
+        V[1:]=150-4.16e-9*np.diff(s)/np.diff(t)+1e-4*np.diff(j)/np.diff(t)
+        r=bridge(t,H,V,s,j,4.16e-9,1e-4,coil_residual_each_V=3e-8)
+        self.assertTrue(r['residual_qualified_at_point'])
+        self.assertLess(abs(r['Q_H_J']-r['Q_H_direct_J']),1e-18)
+        self.assertLess(abs(r['Q_H_J']-r['Q_coil_J']-r['Q_residual_J']),1e-18)
+
+    def test_nonaligned_interpolation_cross_term_not_dropped(self):
+        from goal_defect_transport import s150_two_coil_scorer_bridge as bridge
+        t=np.linspace(0,1e-9,11);H=np.array([.03,.17,.35,.83,1.])*1e-9
+        s=np.sin(np.linspace(0,2,11));j=np.cos(np.linspace(0,1,11))
+        V=np.linspace(5,30,11)
+        r=bridge(t,H,V,s,j,4.16e-9,1e-4,coil_residual_each_V=3e-8)
+        self.assertFalse(r['residual_qualified_at_point'])
+        self.assertLess(abs(r['Q_H_J']-r['Q_H_direct_J']),1e-18)
+        self.assertLess(abs(r['Q_H_J']-r['Q_coil_J']-r['Q_residual_J']),1e-18)
+
+    def test_unordered_times_and_negative_residual_budget(self):
+        from goal_defect_transport import s150_two_coil_scorer_bridge as bridge
+        with self.assertRaises(ValueError):
+            bridge([0,0],[0,1],[0,0],[0,0],[0,0],1,1)
+        with self.assertRaises(ValueError):
+            bridge([0,1],[0,1],[0,0],[0,0],[0,0],1,1,coil_residual_each_V=-1)
+
+
+
+    def test_two_coil_raw_port_reconstruct_load_current(self):
+        from goal_defect_transport import s150_load_current_from_raw_ports as recover
+        t=np.linspace(0,1e-9,11);i=np.sin(np.linspace(0,2,11))
+        j=-.04+np.cos(np.linspace(0,1,11))
+        h=np.diff(t);v=np.empty_like(t);v[0]=145
+        v[1:]=150-4.16e-9*np.diff(i)/h+1e-4*np.diff(j)/h
+        r=recover(t,v,i,source_Ls_H=4.16e-9,seed_load_A=j[0])
+        np.testing.assert_allclose(r["j_A"],j,atol=1e-13,rtol=0)
+        self.assertEqual(r["status"],"CONDITIONAL_RAW_PORT_LOAD_HISTORY")
+
+    def test_raw_port_recovery_error_radius_and_invalid(self):
+        from goal_defect_transport import s150_load_current_from_raw_ports as recover
+        t=[0,1e-8,2e-8]
+        r=recover(t,[150]*3,[0]*3,source_Ls_H=4e-9,seed_load_A=0,
+                  voltage_error_V=.1,current_error_A=.01,
+                  seed_error_A=.001,coil_residual_error_V=3e-8)
+        expected=.001+(2e-8*.1+2*4e-9*.01+2*2e-8*3e-8)/1e-4
+        self.assertAlmostEqual(r["uniform_error_bound_A"][-1],expected)
+        with self.assertRaises(ValueError):
+            recover(t,[150]*3,[0]*3,source_Ls_H=-4e-9,seed_load_A=0)
+
+
 if __name__ == '__main__':
     unittest.main()

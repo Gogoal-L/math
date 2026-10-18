@@ -607,3 +607,61 @@ Source actual_law.py L207–224 splits across -600,-20,-0.1 V; source tanh uses 
 \end{gathered}
 ```
 Thus a source-qualified cell with both gates within 0.01 V of the seam and pairwise |delta vj|,|delta d|<=0.1 V and |delta ib|<=1 A cannot contain exact roots on BOTH ETH sides: the left side is <0.288 V. This is a rigorous conditional **branch-separation necessary gate**, not a finding that the actual archived 150 V trajectory reaches the seam or that another root exists. Temperature-varying cells require their own intervalized jump and branch slopes. The practical first falsifier is whether a proposed complete source/guard outer intersects g-net3(T)=0; otherwise a smooth separate chart remains legitimate. Original Abdelfattah–Eisa–Stechlinski IEEE Control Systems Letters 9 (2025) pp2507–2512 DOI 10.1109/LCSYS.2025.3630241, arXiv 2508.18476v2 Thm III.3 preprint PDF p2, requires locally Lipschitz regular index-one hypotheses and gives LOCAL observability, not a global source-root certificate.
+
+## 2026-10-18 S-L16: guarded scalar KCL elimination across actual PREP/CAL/target
+
+**New source-positive partial implicit solve after S-L13.** In original 50D actual_law.py SHA256 51b78f729393d29745f59ca150adfef69e1847bf26a8853c6cef3d6be9e2083d, lines 184–220,445–455, each transistor w node has w-d=1 Ohm, g-w=1e7 Ohm and the signed literal split-GL32 charge. Fix ALL OTHER new-stage coordinates, the OLD control u0=g_old-w_old and step h>0, put u=g_new-w_new. Its exact w KCL is:
+```math
+\begin{gathered}
+F_w(u)=\frac{g_{\rm new}-u-d_{\rm new}}{1\,\Omega}
+-\frac{u}{10^7\,\Omega}-\frac{Q_{32}(u,u_0)}h,\\
+u\in[u_0-1\ {\rm V},u_0+1\ {\rm V}] .
+\end{gathered}
+```
+This explicitly honors the actual 1V G11 final-state guard; the 84W whole-source ellipse alone did not. If F_w(u0-1V)>0>F_w(u0+1V), IVT gives one inside-guard scalar real root. It is UNIQUE: source Cgd(u) positive, nondecreasing and has logarithmic slope <=.818 /V on all literal smooth panels (the tanh argument remains UNCLIPPED where the prefactor clips). The lower-moving source GL32 32-node positive-weight panel derivative therefore remains positive even for 1V changes; the upper-moving derivative is positive. Continuous split integration across -600,-20,-.1 V preserves monotonicity. Consequently F_w strictly decreases with u throughout the guard. This is an exact elimination of TWO scalar KCL coordinates CONDITIONAL on the remaining 48 source state coordinates and old shared state, not a 50D legal root.
+
+**All-source-step arithmetic qualification from one archived source path.** Nonprotected acceptance/pro18c_prediction_extension.npz SHA256 af7299434d7dcde687da3bf56b5ce31babbc4e0c12b1a849b5f5530ae8fd holds separate PREP127/CAL4801/target6721 state50/time arrays, with identical legal prepared terminal state, query a=(.23,.37,.23)V,Ls4.16nH,kappa1.009,b95MHz. Each of 126+4800+6720 source steps gets a rectangle allowing INDEPENDENT |delta g_new|,|delta d_new|,|delta old control u0|<=.01V around SAVED centers, not arbitrary coupled 50D state changes. Source charge uses positive GL32 weights and actual G11 Cgd. Without floating tanh or power, for ANY panel:
+```math
+C_{gd}(u)\ge
+\frac{555\,{\rm pF}}
+{[1+46\operatorname{clip}(-u,.1,600)]^{3/5}}.
+```
+Let c_low denote the lower right side. A bound on signed charge for shifted old u0 is |Q32(u0±1,u0)| >=(1-1e-12) c_low(min relevant shifted u)(1V). This includes the translated OLD charge; simply subtracting .03A from the NOMINAL signed face without rebounding charge is false (a −.01V old-control shift can change charge current >.068A). Saved binary64 values are lifted exactly to Fractions, c_low uses rational clip and a verified INTEGER q with q^5>=d^3 for d=1+46clip so 555pF/q is rigorously lower, and source Gauss-weight sum/2 is bounded below by (1-1e−12). The ohmic r0 variation is <=(3+1e−7)*.01A. This gives 23292 scalar w equations, 46584 guard-face signs, and exact-rational strictly positive min left/right margins, safely rounded DOWN in A:
+
+| fork | Q1 (left/right) | Q2 (left/right) |
+|---|---:|---:|
+| PREP126 | >2.0625 / >3.8837 | >1.0116 / >1.0111 |
+| CAL4800 | >0.3091 / >0.7619 | >1.1824 / >0.2253 |
+| target6720 | >0.3099 / >0.7619 | >1.1824 / >0.2239 |
+
+Thus for EVERY fixed remaining-48-coordinate input respecting these three-coordinate tubes, each of the two original G11 w KCL equations admits EXACTLY ONE |delta(g-w)|<1V real solution. This is a *source-row guarded Schur elimination with a reproducible numerical necessary domain*, not a coupled 48D existence/unique/all-root source certificate, native Newton-iterates guarantee, full Goal27 history propagation or future work enclosure. Archive producer/model numerical uncertainty is not included by lifting its saved binary64 values. An all-world extension needs a true guard-stable 48D full root outer, denominator and predecessor-history inclusion. Reusable [stage audit API](../dpt_tools/stage_box_reachability.py), [independent archived source-row tests](../dpt_tools/test_stage_box_reachability.py).
+
+
+**S-L17 prospective 48D/50D sparse verification route, original theorem checked.** Rump, *Verified Error Bounds for Sparse Systems Part II* (2026 author manuscript, **not** yet independently assigned a journal DOI), Section 8 **Theorem 8.2 and Eq.(8.7), printed p.21/PDF page index20**, https://www.tuhh.de/ti3/paper/rump/sparselss_II_final.pdf, explicitly reprises Rump's earlier *Acta Numerica* 19 (2010) Theorem 13.3, DOI 10.1017/S096249291000005X; the new useful method is a sparse verified **POINT matrix with one interval right-hand side**, not a new root theorem. For a source-consistent C1 branch F on xhat+X, and a fully outward interval Jacobian J subset of M+[-Delta,Delta], rigorously enclose **all** solutions of My=-F(xhat)-E x, |E|<=Delta, x in X in an interval Y; Y subset int(X) proves existence and uniqueness **within X** and avoids forming a dense inverse. The branch/diode/GL32/heat guards, full old-state/parameter forcing, and the union over competing S150 roots remain mandatory independent proofs. Counterexample falsifying the old criterion "q_infty >1 implies impossibility": f(x1,x2)=(x1+1.1 sin x2,x2+.1 sin x1), centered at0, X=[-2,2]x[-1,1], M=I and Delta_12=1.1,Delta_21=.1 give unweighted q_infty=1.1>1 but sparse Y=[-1.1,1.1]x[-.2,.2] strictly inside X. A weighted infinity norm on these radii has defect .55<1. In S150 the frozen center CAL/target ETH branch margins (reported separately as 1.748919/1.013285 mV) exceed node ±.0001V plus thermal ±.001C seam shift .205702 mV, giving conditional local clearances 1.543217/.807583 mV; this ONLY removes that ETH seam from such ALREADY qualified local boxes. To apply the sparse theorem source-wide still requires jointly directed interval Jacobians/charge split, diode, G11, thermal, predecessor and source error on all legal branches; a failed unweighted q-infinity test proves nothing about physical nonexistence. Source archive and published-original theorem page identities were independently checked; this is a next executable certificate *design*, not a produced verified 50D Krawczyk enclosure.
+
+
+**S-L18 independent first-PREP diode-history mismatch falsifier of an attempted FULL50 root repair.** Original source actual_law.py L241–242,276–288 uses D1 diffusion storage in the BE stage, not an assumption that the public initial state lies exactly on the static diode equilibrium manifold. Let z=Is exp(vj/aV), tau=2 ns and define
+```math
+\begin{gathered}
+\eta_0=z_{\rm old}-I_s-i_{b,\rm old},\\
+\Delta i_b=(1+\tau/h)(z-z_{\rm old})+\eta_0,\\
+\Delta v_j(\Delta i_b-\eta_0)\ge0,
+\end{gathered}
+```
+for the source-compatible monotone exponential. A proposed Schur/Brouwer proof that substitutes Delta ib=(1+tau/h)(z-z_old) and declares Delta vj Delta ib>=0 for EVERY first-PREP state is therefore **incorrect unless eta0=0 has been independently qualified**. Fresh read-only first archived Pro18E source seed x[38:40]=(5.193079316339365,1.727274097021394e-08) A, x[40:42]=(4.087729751223548,-154.4820273950659)V, original law Is≈8.312221736852897e-13A, aV≈.13873992725386358V yields eta0≈(+2.499602568218e-4,-1.727357219239e-8)A, NOT zero. Q2's exp has near-underflow scale in binary64, but its mismatch sign/magnitude is robust. Actual first-seed admissible scalar diode perturbation delta vj_Q1=-1e-7 V yields delta ib_Q1≈+0.000128305918 A and delta vj*delta ib≈-1.28305918e-11 W <0, an explicit signed counterexample to the previously assumed product nonnegativity on the actual source history. Thus the root-level Schur body relation acquires an actual signed eta0 correction and the radial lower bound must retain Delta vj eta0, with diode-domain nonzero storage and bracket qualification. **Critical scope correction:** a consistently reference-centered Schur construction may instead define beta=i_b,new−(z_old−I_s), in which case Delta v_j * beta>=0 and a KCL residual centered at i_b,ref=z_old−I_s cancels the eta0 correction exactly. The true-source negative product refutes using the *physical old-state increment* as the sign-monotone coordinate, but does NOT by itself refute a correctly beta-referenced Schur identity. A full first-PREP 50D guarded-root existence upgrade remains **not independently accepted this round** because its rational 32×8 coefficient extrema, fixed convex source-wide map and diode/thermal selfmap have not been fully reproduced by the independent counterauditor; no all-equation source-root/solver result is claimed merely from the successful G11 scalar faces. This is a new SOURCE-SPECIFIC falsifier, not a synthetic toy or an assertion that physical roots do not exist. To repair: recompute bordered transfers, signed radial/diode endpoint bounds and Brouwer thermal/electrical selfmap with this measured eta0, then independently direct-evaluate all original coefficients before upgrading.
+
+
+**S-L19 new actual-first-PREP root-CONDITIONAL Schur G11 gate, not accepted root existence.** Independently reconstructed original 26-node G,B,GS,GD,DS,XO stamps (actual_law.py L184–203) and all 32 coefficient corners for L_s∈[4.02,4.58]nH, literal segmented cG11∈[1.7,527]pF, noncollocated G12 cG12∈[56.8,1016]pF; independent floating sanity confirmed Sii>=.0592349115ohm, |Soff|<=.0075537492ohm, |Poff|<=.0073550911ohm, Sii−|Pii|>=.0016973449ohm. The separate worker used rational-residual corner correction and conservative stated bounds Sii>.059234910, |Soff|<.007553750, |Poff|<.007355092, Sii−|Pii|>.001697343; *independent re-execution of all directed certificates is not supplied*. Let beta_i=i_b,new−(z_old−Is), NOT the physical Delta i_b; this reference ensures Delta vj_i * beta_i>=0 despite S-L18's nonzero eta0. For any ACTUAL exact real root satisfying the declared OFF/T25–25.07 branch/tube and charge coefficient ranges, elimination gives (S+diag(r+k))beta=t−b, k>=0, S=DS^T A^-1DS, P=GD^T A^-1DS, t=DS^T A^-1rho_ref, q=GD^T A^-1rho_ref and Delta GD=−q+P beta. If independently justified |b|<.57V, |t|<.028508396V, |q|<.027735716V, and r>=.0699ohm, then
+```math
+\begin{gathered}
+\|\beta\|_\infty<
+\frac{.57+.028508396}
+{.0699+.059234910-.007553750}
+<4.923\ {\rm A},\\
+\|\Delta GD\|_\infty<
+.027735716+.598508396\\
++(.007553750+.007355092)\,4.923
+<.700\ {\rm V}<1\ {\rm V}.
+\end{gathered}
+```
+The inequality proves that **IF** the proposed real-lifted 50D OFF/cool first-step root exists inside that source-centered branch and all listed source coefficient/transfer bounds are valid, its FINAL G11 control satisfies the accepted 1V ROOT guard; it does **not** show the entire 84W ellipse lies inside guard or that the actual source Newton TRIALS converge legally. Verifying continuous fixed-SPD Brouwer selfmap, thermal/diode evaluator brackets, source input exactness, initial diode-reference beta and all legal root branches is a logically separate existence obligation. Thus the withdrawn S-L13 unconditional accepted-root existence wording is NOT restored here. An inconsistent replacement of beta with physical Delta ib is explicitly falsified by S-L18. This is a materially stronger prospective root-only GUARD exclusion, not proof of an accepted 50D source run.
