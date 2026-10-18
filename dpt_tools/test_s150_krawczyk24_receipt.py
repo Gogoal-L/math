@@ -99,7 +99,7 @@ class S150Krawczyk24ReceiptTests(unittest.TestCase):
 
     def test_overstated_image_margin_fails_closed(self):
         receipt = synthetic_receipt()
-        receipt["claimed_final_image_margin_lower"] = ["0.95" for _ in range(24)]
+        receipt["claimed_final_image_margin_lower_normalized"] = ["0.95" for _ in range(24)]
         with self.assertRaisesRegex(ValueError, "overstates exact arithmetic"):
             audit_receipt(receipt)
 
