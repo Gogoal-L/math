@@ -37,9 +37,8 @@ jobs:
         with:
           python-version: "3.11"
 
-
       # Fail fast: this checker uses only the Python standard library.
-- name: Audit GitHub-compatible math syntax and extract equations
+      - name: Audit GitHub-compatible math syntax and extract equations
         run: |
           python dpt_tools/markdown_math_audit.py \
             DPT_MATH_RESEARCH_MAP.md \
