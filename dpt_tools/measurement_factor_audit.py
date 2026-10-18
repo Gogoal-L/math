@@ -126,7 +126,7 @@ def three_sample_affine_voltage_gate(observed_V, candidate_raw_V, indices, noise
     }
 
 def three_sample_affine_phase_clock_gate(
-    observed_V, candidate_raw_V, indices, noise_sup_V, *,
+    observed_V, candidate_raw_V, indices, total_residual_sup_V, *,
     phase_amplitude_sup_V, gain_abs_upper,
     source_slope_bound_V_per_s, clock_offset_bound_s,
 ):
@@ -137,9 +137,11 @@ def three_sample_affine_phase_clock_gate(
             + A*(eta_s*sin(phi_i) + eta_c*cos(phi_i)) + e_i,
     with |gamma| <= gain_abs_upper, ||(eta_s,eta_c)||_2 <= 1,
     |delta_i| <= clock_offset_bound_s, |m(t_i+delta)-m(t_i)| <= B*|delta|,
-    and ||e||_infinity <= noise_sup_V.
+    and ||e||_infinity <= total_residual_sup_V.
 
     The exact three-point affine dual w satisfies w.1=w.m=0 and ||w||_1=1.
+    total_residual_sup_V must include instrument noise plus source-value, interpolation,
+    solver and observation-production uncertainty; instrument noise alone is insufficient.
     Since the phase term is pointwise bounded by A, its dual support is <= A.
     The clock-warped candidate contributes <= gain_abs_upper*B*delta.
     Therefore every admissible candidate must satisfy
@@ -171,7 +173,7 @@ def three_sample_affine_phase_clock_gate(
             raise ValueError(f"negative {name}")
         return parsed
 
-    epsilon = nonnegative_fraction(noise_sup_V, "voltage noise budget")
+    epsilon = nonnegative_fraction(total_residual_sup_V, "total residual budget")
     phase_amp = nonnegative_fraction(phase_amplitude_sup_V, "phase amplitude bound")
     gain = nonnegative_fraction(gain_abs_upper, "absolute gain bound")
     slope = nonnegative_fraction(source_slope_bound_V_per_s, "source slope bound")
@@ -198,7 +200,7 @@ def three_sample_affine_phase_clock_gate(
         ),
         "strict_reject": bool(margin > 0),
         "contrast_V_exact": f"{contrast.numerator}/{contrast.denominator}",
-        "noise_sup_V_exact": f"{epsilon.numerator}/{epsilon.denominator}",
+        "total_residual_sup_V_exact": f"{epsilon.numerator}/{epsilon.denominator}",
         "phase_amplitude_sup_V_exact": f"{phase_amp.numerator}/{phase_amp.denominator}",
         "clock_source_term_V_exact": f"{clock_term.numerator}/{clock_term.denominator}",
         "nuisance_upper_V_exact": f"{nuisance_upper.numerator}/{nuisance_upper.denominator}",
@@ -217,7 +219,7 @@ def three_sample_affine_phase_clock_gate(
         ),
         "claim_ceiling": (
             "Exact stored-binary64 three-sample affine dual plus supplied deterministic "
-            "phase-amplitude, gain, source-slope, clock-offset and noise bounds only. "
+            "phase-amplitude, gain, source-slope, clock-offset and total-residual bounds only. "
             "The source slope must hold on each complete clock tube and across all "
             "reachable modes; an unbounded ETH/clip jump invalidates this gate. "
             "No archive identity, source-root, all-CAL fiber, hardware-noise or "
