@@ -238,5 +238,38 @@ class D12CausalGoalDualTests(unittest.TestCase):
 
 
 
+class D13TwoLCausalGoalTests(unittest.TestCase):
+    def test_different_prepared_seeds_finite_L_and_coil_residuals(self):
+        from goal_defect_transport import s150_two_l_causal_goal_identity as f
+        for seed in (0,1,2):
+            rng=np.random.default_rng(seed);n=201;t=np.linspace(0,84e-9,n)
+            H=np.linspace(0,84e-9,46)
+            H[1:-1]+=.13*(t[1]-t[0])*np.sin(np.arange(1,45)*1.7)
+            slA=rng.normal(0,.3,n);slB=slA+rng.normal(0,.02,n)
+            vA=slA+100+2*np.sin(np.linspace(0,3,n))
+            vB=vA+rng.normal(0,.003,n)
+            rA=np.r_[0.,rng.normal(0,2e-8,n-1)]
+            rB=np.r_[0.,rng.normal(0,3e-8,n-1)]
+            La=4.16e-9;Lb=4.5e-9;h=np.diff(t)
+            iA=np.r_[.01,.01+np.cumsum(h*(slA[1:]+rA[1:])/La)]
+            iB=np.r_[.012,.012+np.cumsum(h*(slB[1:]+rB[1:])/Lb)]
+            for score in ("frozen","signed_correction"):
+                z=f(t,H,vA,slA,iA,La,vB,slB,iB,Lb,score=score)
+                self.assertLess(z["closure_abs_J"],1e-17)
+                self.assertGreater(abs(z["terms_J"]["static_L_J"]),1e-13)
+                self.assertGreater(abs(z["terms_J"]["prepared_current_J"]),1e-13)
+                self.assertEqual(z["status"],"CONDITIONAL_TWO_L_BE_GOAL_IDENTITY")
+
+    def test_two_l_contract_rejects_invalid_source_arguments(self):
+        from goal_defect_transport import s150_two_l_causal_goal_identity as f
+        t=[0.,1e-9,2e-9];q=[0.,.1,.3];z=[.01,.02,.03]
+        for La,Lb,score in ((-1,4e-9,"frozen"),(4e-9,0,"frozen"),(4e-9,5e-9,"invalid")):
+            with self.assertRaises(ValueError):
+                f(t,t,q,q,z,La,q,q,z,Lb,score=score)
+        with self.assertRaises(ValueError):
+            f([0,0,1e-9],t,q,q,z,4e-9,q,q,z,5e-9)
+
+
+
 if __name__ == '__main__':
     unittest.main()

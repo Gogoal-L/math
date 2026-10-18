@@ -368,6 +368,71 @@ def s150_causal_coil_signed_goal_bound(t_s, H_s, vD_V, vsl_V, source_current_A,
                 "sensor E or actual Goal27 goal-diameter certification."}
 
 
+
+def s150_two_l_causal_goal_identity(t_s, H_s, vD_a_V, vsl_a_V, current_a_A,
+                                    La_H, vD_b_V, vsl_b_V, current_b_A,
+                                    Lb_H, *, score="frozen"):
+    """Exact two-static-L BE coil identity for a frozen signed PL(H) goal.
+
+    Accept supplied aligned full source paths ONLY; do not generate futures.
+    Both own-PREP current seeds, actual coil residual and the finite
+    voltage-current bilinear term remain explicit. Floating coefficients,
+    not verified 50D source roots, common CAL fiber, or hardware error.
+    """
+    t=np.asarray(t_s,float);H=np.asarray(H_s,float)
+    va=np.asarray(vD_a_V,float);sa=np.asarray(vsl_a_V,float)
+    ia=np.asarray(current_a_A,float);vb=np.asarray(vD_b_V,float)
+    sb=np.asarray(vsl_b_V,float);ib=np.asarray(current_b_A,float)
+    paths=(t,H,va,sa,ia,vb,sb,ib)
+    La=float(La_H);Lb=float(Lb_H)
+    if (any(x.ndim!=1 or not np.isfinite(x).all() for x in paths)
+        or len(t)<2 or len(H)<2 or any(x.shape!=t.shape for x in (va,sa,ia,vb,sb,ib))
+        or np.any(np.diff(t)<=0) or np.any(np.diff(H)<=0)
+        or H[0]<t[0] or H[-1]>t[-1]
+        or not np.isfinite(La) or not np.isfinite(Lb) or min(La,Lb)<=0
+        or score not in ("frozen","signed_correction")):
+        raise ValueError("finite same-grid paths, positive static L and known goal required")
+    h=np.diff(t);om=np.empty(len(H))
+    om[0]=(H[1]-H[0])/2;om[-1]=(H[-1]-H[-2])/2
+    om[1:-1]=(H[2:]-H[:-2])/2
+    right=np.clip(np.searchsorted(t,H,side="right"),1,len(t)-1)
+    left=right-1;alpha=(H-t[left])/(t[right]-t[left])
+    def apply(z):
+        zh=(1-alpha)*z[left]+alpha*z[right];out=np.zeros(len(t))
+        np.add.at(out,left,om*(1-alpha)*zh)
+        np.add.at(out,right,om*alpha*zh)
+        if score=="signed_correction":out[1:]-=h*z[1:]
+        return out
+    v=va-sa;vnext=vb-sb;dv=vnext-v;di=ib-ia
+    rA=-sa[1:]+La*np.diff(ia)/h
+    rB=-sb[1:]+Lb*np.diff(ib)/h
+    g=apply(ia);a=apply(v);b=h/Lb*np.cumsum(a[1:][::-1])[::-1]
+    terms={"voltage_J":float(np.dot(g,dv)),
+           "prepared_current_J":float(np.sum(a)*di[0]),
+           "static_L_J":float((La/Lb-1)*np.dot(a,ia-ia[0])),
+           "sl_feedback_J":float(np.dot(b,sb[1:]-sa[1:])),
+           "coil_residual_J":float(np.dot(b,rB-rA)),
+           "bilinear_J":float(np.dot(dv,apply(di)))}
+    vhA=(1-alpha)*v[left]+alpha*v[right]
+    vhB=(1-alpha)*vnext[left]+alpha*vnext[right]
+    ihA=(1-alpha)*ia[left]+alpha*ia[right]
+    ihB=(1-alpha)*ib[left]+alpha*ib[right]
+    direct=float(np.dot(om,vhB*ihB-vhA*ihA))
+    if score=="signed_correction":
+        direct-=float(np.dot(h,vnext[1:]*ib[1:]-v[1:]*ia[1:]))
+    calc=sum(terms.values())
+    return {"status":"CONDITIONAL_TWO_L_BE_GOAL_IDENTITY","score":score,
+            "direct_J":direct,"algebra_J":float(calc),
+            "closure_abs_J":float(abs(calc-direct)),
+            "terms_J":terms,
+            "reference_coil_residual_max_abs_V":float(max(abs(rA))),
+            "alternative_coil_residual_max_abs_V":float(max(abs(rB))),
+            "initial_flux_difference_Wb":float(Lb*ib[0]-La*ia[0]),
+            "claim_ceiling":"An algebraic source-row identity for TWO SUPPLIED paths; "
+                "not full50 legality, common full-CAL fiber, sensor error "
+                "qualification or any signed-work diameter."}
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("input", type=Path, help="NPZ: updates, observation, goal, initial_radius, defect_radii")
