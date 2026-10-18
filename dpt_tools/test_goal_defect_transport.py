@@ -271,5 +271,52 @@ class D13TwoLCausalGoalTests(unittest.TestCase):
 
 
 
+class D16PackageTwoCoilGoalTests(unittest.TestCase):
+    def test_positive_two_coil_synthetic_nonzero_both_prepared_seeds(self):
+        from goal_defect_transport import s150_package_two_coil_goal_bound as bound
+        t=np.linspace(0,10e-9,101);h=np.diff(t);H=np.linspace(t[0],t[-1],27)
+        H[1:-1]+=0.2*h[0]*np.sin(np.arange(1,len(H)-1))
+        L=4.16e-9;Lp=3.435e-9;R=.003322;Rp=100.
+        sv=.5+.04*np.sin(np.linspace(0,3,len(t)))
+        sv2=sv+1e-6*np.sin(np.linspace(0,5,len(t)))
+        def run(inp,s0,j0):
+            s=np.empty(len(t));j=np.empty(len(t));s[0],j[0]=s0,j0
+            for k in range(1,len(t)):
+                A=np.array([[L/h[k-1]+R+Rp,-Rp],
+                            [-Rp,Lp/h[k-1]+Rp]])
+                rhs=np.array([L/h[k-1]*s[k-1]+inp[k],Lp/h[k-1]*j[k-1]])
+                s[k],j[k]=np.linalg.solve(A,rhs)
+            sl=inp+Rp*j-(R+Rp)*s
+            sa=sl+R*s
+            return s,j,sl,sa
+        s,j,sl,sa=run(sv,.001,.003)
+        sb,jb,slb,sab=run(sv2,.0010004,.0030008)
+        vport=3+.2*np.cos(np.linspace(0,4,len(t)))
+        vp2=vport+2e-6*np.sin(np.linspace(0,7,len(t)))
+        report=bound(t,H,sl+vport,sl,sa,sv,s,-j,L,
+                     port_radius_V=2e-6,sv_radius_V=1e-6,
+                     seed_s_radius_A=4e-7,seed_j_radius_A=8e-7)
+        def goal(v,i):
+            vv=np.interp(H,t,v);ii=np.interp(H,t,i)
+            return float(np.sum(np.diff(H)*(vv[:-1]*ii[:-1]+vv[1:]*ii[1:])/2))
+        direct=goal(vp2,sb)-goal(vport,s)
+        self.assertLess(abs(direct),report["goal_radius_J"])
+        self.assertLess(report["source_residual_maxabs"]["schur_forcing_V"],2e-12)
+        self.assertTrue(all(x>0 for x in report["prepared_adjoint_J_per_A"]))
+        self.assertGreater(report["sv_adjoint_L1_J_per_V"],0)
+        self.assertEqual(report["status"],"CONDITIONAL_PACKAGE_2COIL_GOAL")
+
+    def test_reject_wrong_history_grid_and_negative_input_contract(self):
+        from goal_defect_transport import s150_package_two_coil_goal_bound as f
+        t=[0.,1e-9,2e-9];a=[.01,.02,.03];z=[0.,0.,0.]
+        def call(t0=t,L=4e-9,rad=1e-6):
+            return f(t0,t,a,a,a,z,a,z,L,port_radius_V=rad,
+                     sv_radius_V=1e-6,seed_s_radius_A=1e-6,
+                     seed_j_radius_A=1e-6)
+        with self.assertRaises(ValueError):call(t0=[0.,0.,2e-9])
+        with self.assertRaises(ValueError):call(L=-1)
+        with self.assertRaises(ValueError):call(rad=-1e-6)
+
+
 if __name__ == '__main__':
     unittest.main()

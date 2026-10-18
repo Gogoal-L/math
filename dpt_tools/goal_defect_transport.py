@@ -433,6 +433,104 @@ def s150_two_l_causal_goal_identity(t_s, H_s, vD_a_V, vsl_a_V, current_a_A,
                 "qualification or any signed-work diameter."}
 
 
+
+def s150_package_two_coil_goal_bound(t_s, H_s, vD_V, vsl_V, vsa_V, vsv_V,
+                                    source_current_A, package_i34_A, L_H, *,
+                                    port_radius_V, sv_radius_V,
+                                    seed_s_radius_A, seed_j_radius_A,
+                                    alt_forcing_residual_V=0.0):
+    """Conditional H841 signed-work radius from the exact 2-coil package Schur.
+
+    Source rows 1,25,34,36 eliminate sl/sa KCL and Ls2 package coil.
+    x=(i36,-i34) follows an SPD 2x2 M-matrix BE recurrence driven
+    by Q2:sv (original node22). Both PREP current seeds are retained.
+    Requires supplied source-raw paths and independently bounded
+    alternative electric node22, port voltage and residual forcing;
+    floating coefficients are NOT source-wide/50D interval enclosures.
+    """
+    t=np.asarray(t_s,float);H=np.asarray(H_s,float)
+    vd=np.asarray(vD_V,float);sl=np.asarray(vsl_V,float)
+    sa=np.asarray(vsa_V,float);sv=np.asarray(vsv_V,float)
+    s=np.asarray(source_current_A,float);j=-np.asarray(package_i34_A,float)
+    vals=(t,H,vd,sl,sa,sv,s,j)
+    radius=np.asarray([port_radius_V,sv_radius_V,seed_s_radius_A,
+                       seed_j_radius_A,alt_forcing_residual_V],float)
+    if (any(a.ndim!=1 or not np.isfinite(a).all() for a in vals)
+        or len(t)<2 or len(H)<2
+        or any(a.shape!=t.shape for a in (vd,sl,sa,sv,s,j))
+        or np.any(np.diff(t)<=0) or np.any(np.diff(H)<=0)
+        or H[0]<t[0] or H[-1]>t[-1]
+        or radius.shape!=(5,) or not np.isfinite(radius).all()
+        or np.any(radius<0) or not np.isfinite(float(L_H)) or float(L_H)<=0):
+        raise ValueError("finite aligned source rows, positive L and nonnegative radii required")
+    L=float(L_H);L2=3.435e-9;R=.003322;Rp=100.
+    h=np.diff(t);n=len(t)
+    # Literal original source row residuals; KCL is in A, coils in V.
+    r1=(sl[1:]-sa[1:])/R+s[1:]
+    r25=(sa[1:]-sl[1:])/R+(sa[1:]-sv[1:])/Rp-j[1:]
+    r34=-(sa[1:]-sv[1:])-L2*np.diff(j)/h
+    r36=-sl[1:]+L*np.diff(s)/h
+    f1=r36+(R+Rp)*r1+Rp*r25
+    f2=-r34-Rp*(r1+r25)
+    d11=L/h+R+Rp;d22=L2/h+Rp;det=d11*d22-Rp**2
+    inv00=d22/det;inv01=Rp/det;inv11=d11/det
+    p00=inv00*(L/h);p01=inv01*(L2/h)
+    p10=inv01*(L/h);p11=inv11*(L2/h)
+    right=np.clip(np.searchsorted(t,H,side="right"),1,n-1);left=right-1
+    alpha=(H-t[left])/(t[right]-t[left])
+    omega=np.empty(len(H))
+    omega[0]=(H[1]-H[0])/2;omega[-1]=(H[-1]-H[-2])/2
+    omega[1:-1]=(H[2:]-H[:-2])/2
+    def apply(z):
+        hz=(1-alpha)*z[left]+alpha*z[right]
+        a=np.zeros(n)
+        np.add.at(a,left,omega*(1-alpha)*hz)
+        np.add.at(a,right,omega*alpha*hz)
+        return a
+    v=vd-sl;a=apply(v);g=apply(s)
+    z0=np.zeros(2);zz=np.array([a[-1],0.])
+    c_sv=0.;c_f=0.
+    er=float(radius[4])
+    for i in range(n-2,-1,-1):
+        w0=zz[0]*inv00[i]+zz[1]*inv01[i]
+        w1=zz[0]*inv01[i]+zz[1]*inv11[i]
+        c_sv+=abs(w0)
+        c_f+=abs(w0)*(abs(f1[i])+er)+abs(w1)*(abs(f2[i])+er)
+        zz=np.array([a[i]+p00[i]*zz[0]+p10[i]*zz[1],
+                     p01[i]*zz[0]+p11[i]*zz[1]])
+    z0=zz
+    # Positive comparison for the future source-current infinity outer.
+    us,uj=float(radius[2]),float(radius[3]);umax=us
+    for i in range(n-1):
+        ef1=abs(f1[i])+er;ef2=abs(f2[i])+er
+        ns=p00[i]*us+p01[i]*uj+inv00[i]*(radius[1]+ef1)+inv01[i]*ef2
+        nj=p10[i]*us+p11[i]*uj+inv01[i]*(radius[1]+ef1)+inv11[i]*ef2
+        us,uj=ns,nj;umax=max(umax,us)
+    linear=(float(radius[0])*float(np.sum(abs(g)))
+            +float(radius[2])*abs(z0[0])+float(radius[3])*abs(z0[1])
+            +float(radius[1])*c_sv+c_f)
+    cross=float(radius[0])*(H[-1]-H[0])*umax
+    return {"status":"CONDITIONAL_PACKAGE_2COIL_GOAL",
+            "point_signed_work_J":float(np.dot(omega,
+                ((1-alpha)*v[left]+alpha*v[right])*
+                ((1-alpha)*s[left]+alpha*s[right]))),
+            "goal_radius_J":float(linear+cross),
+            "linear_radius_J":float(linear),
+            "bilinear_radius_J":float(cross),
+            "prepared_adjoint_J_per_A":z0.tolist(),
+            "sv_adjoint_L1_J_per_V":float(c_sv),
+            "max_source_current_difference_A":float(umax),
+            "source_residual_maxabs":{"r1_A":float(max(abs(r1))),
+                "r25_A":float(max(abs(r25))),"r34_V":float(max(abs(r34))),
+                "r36_V":float(max(abs(r36))),
+                "schur_forcing_V":float(max(np.max(abs(f1)),np.max(abs(f2))))},
+            "claim_ceiling":"Finite-H original signed-work radius ONLY for the "
+               "supplied reference and a source-legal SAME STATIC L, same-grid "
+               "future family with separately certified node22/port/seed/forcing "
+               "radii. Source row residuals and coefficients are float64. "
+               "Not a future 50D root tube, certified sensor model, "
+               "interventional DeltaL response, or Goal27 fiber diameter."}
+
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("input", type=Path, help="NPZ: updates, observation, goal, initial_radius, defect_radii")
