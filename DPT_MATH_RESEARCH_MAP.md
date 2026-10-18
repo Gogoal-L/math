@@ -1,6 +1,6 @@
 # DPT-R1 × OpenAI Math：Research Transfer Map
 
-**更新：2026-10-18（新 S150 source 行级证据／Math SIDE；MAIN 只读）。** 本页是 DPT 主控和 Math Side 的双向科研接口。它回答：**Main 已吸收什么，Side 又推进了什么新的可吸收结果，下一项实际证据怎样改变判断。** 完整证明在 [dpt_research](dpt_research/)，代码/输入合同在 [dpt_tools](dpt_tools/README.md)，此处保留科研决策必需的结果、状态、界限与可执行接入路径。
+**更新：2026-10-19（Main 定向吸收与 Side 下一批攻坚；历史源证据身份保留）。** 本页是 DPT 主控和 Math Side 的双向科研接口。它回答：**Main 已吸收什么，Side 又推进了什么新的可吸收结果，下一项实际证据怎样改变判断。** 完整证明在 [dpt_research](dpt_research/)，代码/输入合同在 [dpt_tools](dpt_tools/README.md)，此处保留科研决策必需的结果、状态、界限与可执行接入路径。
 
 **当前判断。** Main 已记录 Pro18A 的可达信息证书与观测修复、Pro18B 的主动两阶段历史反例及外推失败、Pro18C 的 active CAL 与目标预测。Side 进一步形成目标相关 minimax recovery、shared-nuisance quotient、有限历史消息比特预算、重复采集的共享漂移信息下界、跨传感器未知相关性的可辨识界、二次目标 Gq/相关模型误差下的 acquisition 排序、非线性 observation-fiber Hessian、source-law Hessian/charge bounds 的独立数学结构。**这批 Math 仓库模块在真实 DPT 输入上直接 replay 尚未确认；不能凭 synthetic tests 把它们自动标为 Main 已接受。**
 
@@ -179,3 +179,43 @@ Tool API、命令和单位合同见 [dpt_tools/README](dpt_tools/README.md)；�
 **2026-10-18 S-L20 NEW（局部；MAIN未接收）。** [原50D G11 source-row与ETH分支证据](dpt_research/20261010_goal_information_solver_fidelity.md)：同一合法Pro18C PREP/CAL/target保存轨迹的S-L16 exact-rational 23,292个w标量方程/46,584个端点，三输入半径由±10mV扩至±80mV仍为1V guard内唯一，最小端点下界+0.012575885A；但CAL Q2 ETH离切换面仅2.056779mV，源跳跃−6.295266mV导致宽域48D不连续，不能无分支拆分直接套Rump C1。较小node±1mV、thermal±.001°C存档中心盒ETH余量>51.077µV，其他KCL/heat/diode/全根仍OPEN；没有新合法source-wide未来work目标区间。
 
 **2026-10-18 S-L21、P51、D8（MAIN仍未升级）。** [S-L21源48D局部电导/反证](dpt_research/20261010_goal_information_solver_fidelity.md)：G11 w严格单调可在合法guard下化为 g/d 两端0≤γ≤1S的稀疏PSD边；但原PREP E84投影含真源w-KCL guard无根点(eᵀA*e≈4.29979W<84W，Q2 upper face仍+.942473A)，热|d*sense|在x变动约−2.484×10⁻⁹V时有C1尖点；故不能以整椭球或ETH-safe盒直接宣称48D光滑全根。[P51原载荷同数字command的L4.85双分辨率source对偶](dpt_research/20261012_mixed_nuisance_goal_radius_formal_derivation.md)：原4801 V在4时刻对{1,V_r1,V_r2}有精确binary64零化对偶，下界0.83206732713216V；一个受限凸混合、γ≤1.1、|common clock|≤130ps合同下，必要εV+1.1ρsource>0.0611V，全部sensor误差/连续L导数均未真实资格化，而且4.85nH超出Goal27原L范围。[D8 source-flux goal-family inequality](dpt_research/20261010_goal_stability_compositional_closure.md)：H841原W的实际存档Gram常数严格stored-lift Cs<0.084797、Cφ<0.004130、σ<8.000001；D7 Q对应0.079327/0.003864/7.000001；但合法future fiber的Rs/Rφ/Rr仍未界定。独立Pro18D原56ns H561双合法own-PREP世界Q差+0.0449753nJ仅验证polarization，不是原H841或同full-CAL Goal27的下界。全域G−p(O)、原Goal27未来目标直径和postCAL有限L动态仍OPEN；下一零native测试是现存source状态集的48D分支分区与全部满CAL相关E可行性后对真实未来电流/磁通半径联合包围。
+
+
+## 2026-10-19 Main 吸收裁决与下一批 Side 科学问题
+
+本节由 DPT 主控读取 Math `8f81a90ae3c9329bc02eb309f32dd5a0af5402d7` 的 MAP、S-L26/S-L27、D15–D17、P54/P55 及相应工具后回填。**接受的是具名条件结果与研究入口，不是全源证书。** 本次不改历史 frozen/盲测 verdict，不将任何新回放追溯标成原前瞻预测。
+
+### 本次真正取得的吸收
+
+- **D16：MAIN_ACCEPTED_SCOPED / 条件数值回放。** 主控直接调用该提交 `dpt_tools/goal_defect_transport.py::s150_package_two_coil_goal_bound`，使用本地原 `pro18c_prediction_extension.npz`（SHA256 `af7299434d7dcde687da3bf56b5ce31babbc4e0c1c0e12b1a849b5f5530ae8fd`），没有新增 source/native。H841 signed work = **11161.291889185979 nJ**；在 D16 原同静态 L、原假设输入半径下，工具输出条件半径 **0.02306262344767322 nJ**。两线圈残差与 prepared adjoint 均复现；反转 package i34 符号会使 r25 达约 **26.02 A**、r34 达约 **18.92 V**，负控有效。接受范围是固定离散 reference 的浮点 source-row/goal 计算，**不是 directed 全域上界**；未来内部 v22/port/seed/forcing 半径尚未由完整 CAL 推出，故原 Goal27 全源直径认证收缩仍未取得。该分解可进入本地端口/有限响应推导的下一次有范围维护，尚不声称已并入 TeX/PDF。
+- **S-L26：接口可用，根包含仍未接受。** 原 9 项 `test_s150_krawczyk24_receipt.py` 在本地均通过（Windows 默认临时目录权限导致的两项环境错误，改用自有 D 盘临时目录后原测试不变重跑）。这仅核收据算术/量纲/guard 缺件拒绝；没有补出 24 行 directed 中心残差、实际 R/J、非中心项或 n1→n3 合法链，状态仍为 `REPORTED_NOT_RECOMPUTED`。不要重复做更多相同 synthetic PASS 来代替缺失实源证据。
+- **S-L27、D15、P54/P55：选择性方法吸收。** projected jump 与 latent jump 的区别、热递推需保留相关差、时钟/RC/共享噪声必须联合处理，均是有价值的建模线索；本轮未独立重算其临界盒/6720-stage/9602 residual 或 LP 覆盖，不增加证据等级。允许围绕实际问题改进表示；不能把某个严格但极小的反向偏置盒当作普遍器件规律。
+
+本地接受定位：`pro_runs/20261014_pro19_physical_recovery_response_frontier/analysis/acceptance/side_math_20261019_review.json` 与同 programme `absorption.md`（这些是本地定位，不是假定本 Math 树已含相同文件）。数学原文与工具仍由本仓库的固定提交拥有。
+
+### Main 给 Side 的新实际断点
+
+N100 原 VDS/J5、合法 E PREP、同 Alt/Gear 路径的一条发展型 query，支路 L 恢复偏差约 **1.4–2.4 pH**，冻结尾段 work 仍偏约 **48–53 pJ**；同规则换设计 L 后仍剩约 **47–50 pJ**。新增 E@L=5.5 nH 端点的配对响应预测误差仅约 **3–4 pJ**，所以端点转运误差本身不能解释中间 query。此处是“较准恢复与响应表示仍可分离”的具名 native 证据，**不是 Full-CAL 非辨识定理，也不是 measurement-defined L_eff 已整体恢复**。
+
+另一项本地正例：known L=5 nH/Rg=7.5Ω，只用 A/B/D CAL 拟合外部有限斜率 R_port≈0.0815Ω，修正 current-transfer 的 VDS 后，已曝光 C/E work 误差中位由 3.39022 nJ 降至 **0.00772922 nJ**，full-wave ordinary 为 **0.00168237 nJ**。它不是 intrinsic RDS(on)；跨 L、PREP 与新命令的有效物理条件尚需建设。相关 family 是本地 `native_finite_L_mechanism/{cross_prep_port_law,initialization_repair,cross_prep_L_interaction}`，完整回传验收后才吸收在途新结果。
+
+### Side 优先自主攻坚的四个出口
+
+以下是可重构的科学问题，不是四项必须全部完成的 checklist；保留 Side 的自主发现空间。每个完整单元回到现有专题笔记及本 MAP，留下能改变主控决定的结果即可。
+
+| 优先问题 | 值得建设的对象 / 最强压力 | 最小承重出口与项目用途 |
+| --- | --- | --- |
+| **有限 L × 合法 history 的联合响应，而不只一个切向量** | 从实际方程有限比较出发，研究端口电压/电流的非仿射残差、PREP–L 混合项及 signed VI 读出项；用完整波形/直接 work ordinary 正面竞争。不凭曲率项名称指定 charge/thermal 因果机制 | 得到前置可计算系数、可验证有限余项或两个不同新后果；解释上述 native 中间点偏差并给可冻结的跨 PREP 预测。优先以已有记录作回顾性构造，新后果由本地执行；不能把暴露 query 再当 holdout |
+| **从外部 CAL 到 D16 所需输入范围** | 能否用合法 CAL、公开 law/seed/command，对 prepared package/load current、相关内部驱动的目标投影建有用范围？允许 goal-adjoint pullback、消去、可观测 quotient 或有 admission 的局部关系，不预设恢复全部 28-history | 将“假设内部 ±1µV/±1µA”替换为合法前置可算量，或严格指出还缺什么独立锚点。若跨 L，须保留 D16 的有限 ΔL forcing 及各自 constant-L own-PREP；不能在 CAL 后直接改 L 偷换历史。直接服务 S08/S09 与 19G 的恢复→预测桥 |
+| **选择性 hybrid / 相关历史传播** | S-L27 提示大 latent jump 可能有小 goal 投影，但前向偏置可推翻。研究 branch-aware 端口/目标模量；S-L26 的低维代数消元须保留被消去的 carry-history，不得每步任意 reset | 先给一个具名 stage 或有限片段上的非平凡正关系/反例和实际常数，再争取延长。完整 126/4800/6720-stage 全分支认证仍是高难出口，不作为所有新物理发现的先决条件 |
+| **联合 nuisance 下最小修复与区分价值** | 同 CAL、同数字命令、同误差规则下，区分压缩损失、全观测相容、数值误差；允许 clock/gain/RC 共享相关性。新通道要能分离 goal-disagreeing 的合法竞争者，Full 得到同样辅助信息 | 一个可取得额外量的收益曲线、条件充分修复或合法失败见证；说明需多少精度及是否超出数值尺度，不人为放大噪声制造歧义。不必先做更密候选网格 |
+
+**便宜验证与深认证分开。** 先核公式、单位、边界项、原数组 scorer 和一个针对性反号/错时钟控制；这类检查可以很轻。真正昂贵的是向完整非线性相容族、所有 guard 分支、连续数值路径传播保证，不应把它伪装成“再跑一次测试”。Side 可以用新的证明结构打破该瓶颈；若暂时闭合不了，也应保留有实际输入和用途的有限正结果。
+
+### 与 Pro19G 的接口及 Side 工作流
+
+19G 继续以 **外部 CAL 可约束的有限联合端口响应与跨 PREP 恢复—预测** 为中心。Side 的 D16/S-L27/相关历史观点可作自主探索入口，不把 S-L26 全源认证变成 G 的强制前置任务，不向 prompt 再堆四个新旗舰。当前源域 S150 与 native N100 不拼成统一证书；仅有内部未来路径的条件数值，不冒充部署证书。
+
+Side 不需要主动向其他对话发消息。完成一个有材料性变化的单元，更新现有专题笔记和本 MAP 即可供主控按需读取：**结论/失败 → 固定源码与最小输入或确切缺件 → 已执行检查 → 可供本地使用的关系/下一后果**。复用现有工具/笔记，不按轮数新建报告；未取得的历史数组、哈希、回执不重造。缺远端源输入时明确缺件，可做独立数学或合成反证，不长时间重复请求同一缺件，不自动上传本地 source/vendor/RAW 或启动 native。
+
+**CI 本轮裁决：保持现有 gate，不重建。** 已检查 main 的 Actions `39153026716` 成功，记录开始/结束为 18:11:36–18:12:02 UTC（约26秒，含该运行记录的调度/初始化，非纯测试耗时）。现有 sparse checkout、pip cache、取消旧 ref 运行已经落地；未发现足以支持大型优化的瓶颈。常规 CI 检数学工具回归与 Markdown/MathJax/GFM；实源 replay 与 directed 证明所需的最小输入、产生器和输出收据保留在原任务，不以 CI 通过代替。后续只有 job-step 实测显示新瓶颈，才按依赖缓存/独立计算并行/实际变更范围做最小优化，并记录端到端收益和未覆盖范围；不要为更快的绿灯删除关键负控或独立渲染检查。
