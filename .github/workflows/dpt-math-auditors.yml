@@ -1,19 +1,29 @@
 name: DPT mathematics auditors
 
 on:
+  # Validate feature branches once through pull_request; main pushes still get a full run.
   push:
+    branches:
+      - main
     paths:
       - "dpt_tools/**"
       - "DPT_MATH_RESEARCH_MAP.md"
       - "dpt_research/**"
       - ".github/workflows/dpt-math-auditors.yml"
   pull_request:
+    branches:
+      - main
     paths:
       - "dpt_tools/**"
       - "DPT_MATH_RESEARCH_MAP.md"
       - "dpt_research/**"
       - ".github/workflows/dpt-math-auditors.yml"
   workflow_dispatch:
+
+# Cancel obsolete runs for the same PR/ref when a newer commit arrives.
+concurrency:
+  group: dpt-math-auditors-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
 
 permissions:
   contents: read
@@ -36,15 +46,8 @@ jobs:
         uses: actions/setup-python@v5
         with:
           python-version: "3.11"
-      - name: Install auditor dependencies
-        run: python -m pip install -r dpt_tools/requirements.txt
-      - name: Compile audit modules
-        run: python -m compileall -q dpt_tools
-      - name: Run entire discovered DPT auditor regression suite
-        working-directory: dpt_tools
-        run: python -m unittest discover -v -p 'test_*.py'
 
-      # Fail fast on Python-only syntax errors before Node/npm setup; the gate itself is unchanged.
+      # Fail fast: this checker uses only the Python standard library.
       - name: Audit GitHub-compatible math syntax and extract equations
         run: |
           python dpt_tools/markdown_math_audit.py \
@@ -52,6 +55,14 @@ jobs:
             dpt_research/*.md \
             dpt_tools/README.md \
             --dump-json /tmp/dpt-math-equations.json
+
+      - name: Install auditor dependencies
+        run: python -m pip install -r dpt_tools/requirements.txt
+      - name: Compile audit modules
+        run: python -m compileall -q dpt_tools
+      - name: Run entire discovered DPT auditor regression suite
+        working-directory: dpt_tools
+        run: python -m unittest discover -v -p 'test_*.py'
 
       - name: Set up Node for independent MathJax source rendering
         uses: actions/setup-node@v4
