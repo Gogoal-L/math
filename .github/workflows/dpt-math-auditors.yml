@@ -36,6 +36,17 @@ jobs:
         uses: actions/setup-python@v5
         with:
           python-version: "3.11"
+
+
+      # Fail fast: this checker uses only the Python standard library.
+- name: Audit GitHub-compatible math syntax and extract equations
+        run: |
+          python dpt_tools/markdown_math_audit.py \
+            DPT_MATH_RESEARCH_MAP.md \
+            dpt_research/*.md \
+            dpt_tools/README.md \
+            --dump-json /tmp/dpt-math-equations.json
+
       - name: Install auditor dependencies
         run: python -m pip install -r dpt_tools/requirements.txt
       - name: Compile audit modules
@@ -43,15 +54,6 @@ jobs:
       - name: Run entire discovered DPT auditor regression suite
         working-directory: dpt_tools
         run: python -m unittest discover -v -p 'test_*.py'
-
-      # Fail fast on Python-only syntax errors before Node/npm setup; the gate itself is unchanged.
-      - name: Audit GitHub-compatible math syntax and extract equations
-        run: |
-          python dpt_tools/markdown_math_audit.py \
-            DPT_MATH_RESEARCH_MAP.md \
-            dpt_research/*.md \
-            dpt_tools/README.md \
-            --dump-json /tmp/dpt-math-equations.json
 
       - name: Set up Node for independent MathJax source rendering
         uses: actions/setup-node@v4
