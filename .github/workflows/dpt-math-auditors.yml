@@ -1,19 +1,29 @@
 name: DPT mathematics auditors
 
 on:
+  # Validate feature branches once through pull_request; main pushes still get a full run.
   push:
+    branches:
+      - main
     paths:
       - "dpt_tools/**"
       - "DPT_MATH_RESEARCH_MAP.md"
       - "dpt_research/**"
       - ".github/workflows/dpt-math-auditors.yml"
   pull_request:
+    branches:
+      - main
     paths:
       - "dpt_tools/**"
       - "DPT_MATH_RESEARCH_MAP.md"
       - "dpt_research/**"
       - ".github/workflows/dpt-math-auditors.yml"
   workflow_dispatch:
+
+# Cancel obsolete runs for the same PR/ref when a newer commit arrives.
+concurrency:
+  group: dpt-math-auditors-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
 
 permissions:
   contents: read

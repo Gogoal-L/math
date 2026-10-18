@@ -1,15 +1,20 @@
 """Fail-closed tests for the S150 24-row center-receipt arithmetic interface."""
 from __future__ import annotations
 
+import hashlib
+import json
 import tempfile
 import unittest
 from fractions import Fraction
+from pathlib import Path
 
 from s150_krawczyk24_receipt import (
     EXPECTED_COLUMN_ORDER,
+    NONCENTER_SCHEMA,
     REQUIRED_GUARDS,
     SCHEMA,
     audit_receipt,
+    _verify_noncenter_receipt,
 )
 
 
@@ -140,6 +145,34 @@ class S150Krawczyk24ReceiptTests(unittest.TestCase):
         self.assertTrue(all(
             Fraction(x) > 0 for x in result["computed_image_margin_lower_normalized"]
         ))
+
+    def test_noncenter_receipt_requires_v2_normalized_field(self):
+        normalized = ["0.1" for _ in range(24)]
+        with tempfile.TemporaryDirectory() as root:
+            path = Path(root) / "noncenter.json"
+            payload = {
+                "schema": NONCENTER_SCHEMA,
+                "noncenter_image_radius_upper_normalized": normalized,
+            }
+            path.write_text(json.dumps(payload), encoding="utf-8")
+            digest = hashlib.sha256(path.read_bytes()).hexdigest()
+            receipt = {"noncenter_receipt": {"path": "noncenter.json", "sha256": digest}}
+            self.assertEqual(
+                _verify_noncenter_receipt(receipt, Path(root), [Fraction(1, 10)] * 24),
+                "NONCENTER_RECEIPT_HASHED",
+            )
+
+            payload = {
+                "schema": NONCENTER_SCHEMA,
+                "noncenter_image_radius_upper": normalized,
+            }
+            path.write_text(json.dumps(payload), encoding="utf-8")
+            digest = hashlib.sha256(path.read_bytes()).hexdigest()
+            receipt = {"noncenter_receipt": {"path": "noncenter.json", "sha256": digest}}
+            self.assertEqual(
+                _verify_noncenter_receipt(receipt, Path(root), [Fraction(1, 10)] * 24),
+                "NONCENTER_RECEIPT_INVALID",
+            )
 
 
 if __name__ == "__main__":

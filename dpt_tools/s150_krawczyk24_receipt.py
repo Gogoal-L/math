@@ -20,7 +20,7 @@ from pathlib import Path
 from typing import Any
 
 SCHEMA = "s150.krawczyk24-center/v2"
-NONCENTER_SCHEMA = "s150.krawczyk24-noncenter/v1"
+NONCENTER_SCHEMA = "s150.krawczyk24-noncenter/v2"
 
 EXPECTED_COLUMN_ORDER = (
     0, 1, 2, 3, 4, 5, 6, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18,
@@ -323,8 +323,8 @@ def _verify_noncenter_receipt(receipt: dict, root: Path, expected_values: list[F
         return "NONCENTER_RECEIPT_INVALID"
     try:
         values = _vector(
-            payload.get("noncenter_image_radius_upper"),
-            "noncenter_receipt.noncenter_image_radius_upper",
+            payload.get("noncenter_image_radius_upper_normalized"),
+            "noncenter_receipt.noncenter_image_radius_upper_normalized",
             _fraction,
         )
     except ValueError:
