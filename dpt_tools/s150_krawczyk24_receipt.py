@@ -35,7 +35,7 @@ X1_RADIUS = Fraction(1, 1_000_000)
 # allowed to run until their exact bytes are made available to the cloud runner.
 SOURCE_ARTIFACT_SHA256 = {
     "source_inputs/s150/original_submission.zip":
-        "250aa4ea17514ffded a3a51d95bedf8e034b181f97bdc254db29ddc36281b9c8".replace(" ", ""),
+        "250aa4ea17514ffdeda3a51d95bedf8e034b181f97bdc254db29ddc36281b9c8",
     "source_inputs/s150/pro18c_prediction_extension.npz":
         "af7299434d7dcde687da3bf56b5ce31babbc4e0c1c0e12b1a849b5f5530ae8fd",
 }
