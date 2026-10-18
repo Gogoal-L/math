@@ -71,3 +71,56 @@ def audit(do, dg, dp, *, radius: float, c_obs=None, c_goal=None,
         "noise_contribution": noise_term,
         "assumptions": "All map remainders on the same state ball are independently bounded, input/output units and norms fixed; user-supplied bounds not checked by this function.",
     }
+
+
+
+def three_sample_affine_voltage_gate(observed_V, candidate_raw_V, indices, noise_sup_V):
+    """Reject one ARCHIVED same-command source candidate under one joint voltage error.
+
+    Both arrays must refer to the SAME recorded CAL times, voltage port and
+    source law. The caller must validate these identities, legal PREP/guards,
+    source/truncation error, and the complete record-level noise contract.
+    Independent common gain/offset are eliminated exactly at THREE samples;
+    this is a necessary candidate test, not a full-fiber goal certificate.
+
+    Treat stored binary64 values as exact rationals, so rounding in source
+    and measurement production is NOT included in this calculation.
+    """
+    from fractions import Fraction
+    from math import isfinite, nextafter, inf
+
+    if len(observed_V) != len(candidate_raw_V) or len(observed_V) < 3:
+        raise ValueError("a common >=3-sample CAL timeline is required")
+    if len(indices) != 3 or len(set(indices)) != 3 or any(
+        type(i) is not int or i < 0 or i >= len(observed_V) for i in indices
+    ):
+        raise ValueError("three distinct sample indices required")
+    samples = ([float(observed_V[i]) for i in indices]
+               + [float(candidate_raw_V[i]) for i in indices])
+    if not all(map(isfinite, samples)):
+        raise ValueError("nonfinite sample")
+    try:
+        epsilon = Fraction(str(noise_sup_V))
+    except (ValueError, TypeError, ZeroDivisionError) as exc:
+        raise ValueError("invalid voltage noise budget") from exc
+    if epsilon < 0:
+        raise ValueError("negative voltage noise budget")
+    y = tuple(map(Fraction.from_float, samples[:3]))
+    m = tuple(map(Fraction.from_float, samples[3:]))
+    w = (m[1]-m[2], m[2]-m[0], m[0]-m[1])
+    norm = sum(map(abs, w))
+    if norm == 0:
+        raise ValueError("chosen candidate samples are all equal")
+    assert sum(w) == 0 and sum(v*x for v, x in zip(w, m)) == 0
+    necessary = abs(sum(v*x for v, x in zip(w, y))) / norm
+    return {
+        "status": "STRICT_CANDIDATE_EXCLUDED" if epsilon < necessary else "INCONCLUSIVE",
+        "strict_reject": bool(epsilon < necessary),
+        "min_necessary_error_V_ratio": (
+            str(necessary.numerator), str(necessary.denominator)),
+        "min_necessary_error_V_float_lower": nextafter(float(necessary), -inf),
+        "stored_binary64_contrast_V": float(necessary),
+        "evidence": ("Exact archived binary64 THREE-voltage affine quotient. "
+                     "Not actual sensor E, source-rounding, root/guard coverage, "
+                     "all-goal-fiber certification, or future-work prediction."),
+    }

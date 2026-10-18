@@ -932,5 +932,59 @@ class ActualSourceRowReceiptControls(unittest.TestCase):
         self.assertGreater(dot(k,bad),support)
 
 
+
+
+class SecondRoundSourceStrictGates(unittest.TestCase):
+    """Pure mathematical source receipts; NOT a nonlinear/full-root oracle."""
+
+    def test_same_command_pro18e_pro19a_three_voltage_exclusion(self):
+        from measurement_factor_audit import three_sample_affine_voltage_gate
+        measured = (136.63553408431386, -1.1418213588596062, 7.700426513248537)
+        candidate = (136.7755303684663, -1.74323589650744, 7.914605249728017)
+        result = three_sample_affine_voltage_gate(measured, candidate, (0, 1, 2), "0.1")
+        self.assertTrue(result["strict_reject"])
+        self.assertEqual(result["status"], "STRICT_CANDIDATE_EXCLUDED")
+        self.assertTrue(.381950218797 < result["stored_binary64_contrast_V"] < .381950218799)
+        self.assertGreater(result["min_necessary_error_V_float_lower"], .381950218797)
+        self.assertFalse(
+            three_sample_affine_voltage_gate(measured, candidate, (0, 1, 2), "0.4")["strict_reject"])
+
+    def test_stronger_full_record_voltage_dual_witness(self):
+        from measurement_factor_audit import three_sample_affine_voltage_gate
+        measured = (133.1570827108408, 7.778267680238221, -1.1418213588596062)
+        candidate = (133.23152198984246, 7.992853605366054, -1.74323589650744)
+        r = three_sample_affine_voltage_gate(measured, candidate, (0, 1, 2), "0.1")
+        self.assertTrue(r["strict_reject"])
+        self.assertGreater(r["min_necessary_error_V_float_lower"], .38362466164380)
+        self.assertLess(r["stored_binary64_contrast_V"], .38362466164383)
+
+    def test_affine_gain_offset_and_joint_error_negative_controls(self):
+        from measurement_factor_audit import three_sample_affine_voltage_gate as gate
+        m = [1., 3., 4.]
+        y = [.5*x+.125 for x in m]  # exact dyadic affine transform
+        self.assertFalse(gate(y, m, (0, 1, 2), 0)["strict_reject"])
+        self.assertTrue(gate([0., 1., 3.], [0., 1., 2.], (0, 1, 2), "0.2")["strict_reject"])
+        self.assertFalse(gate([0., 1., 3.], [0., 1., 2.], (0, 1, 2), "1")["strict_reject"])
+        for indices, noise in (((0, 1, 1), 0), ((0, 1, 2), -1)):
+            with self.assertRaises(ValueError):
+                gate(m, m, indices, noise)
+
+    def test_s_l13_solver_g11_guard_not_implied_by_84W_energy(self):
+        from fractions import Fraction as Q
+        h = Q("63.492063492e-12")
+        # Change Q1:w alone by +2 V: delta GS=0, delta GD=-2V.
+        upper_energy_W = Q(4) + Q(4)/Q("1e7") + Q(4)*Q("555e-12")/h
+        self.assertLess(upper_energy_W, Q(84))
+        self.assertGreater(abs(Q(-2)), Q(1))
+        # This counterexample is an ellipse member, not a second source root.
+
+    def test_d6_exact_signed_trapezoid_to_pl_product_bridge(self):
+        from fractions import Fraction as Q
+        h, v0, v1, i0, i1 = map(Q, (".1", "1", "3", "4", "9"))
+        frozen_h = h*(v0*i0+v1*i1)/2
+        signed_pl = h*(v0*i0+(v0*(i1-i0)+i0*(v1-v0))/2+(v1-v0)*(i1-i0)/3)
+        self.assertEqual(frozen_h-signed_pl, h*(v1-v0)*(i1-i0)/6)
+        self.assertGreater(frozen_h-signed_pl, 0)
+
 if __name__ == "__main__":
     unittest.main()
