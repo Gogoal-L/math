@@ -306,6 +306,68 @@ def s150_goal_family_weighted_bound(t_s, H_s, voltage_V, current_A,
                 "point source outputs cannot certify a full Goal27 goal diameter."}
 
 
+
+def s150_causal_coil_signed_goal_bound(t_s, H_s, vD_V, vsl_V, source_current_A,
+                                      source_Ls_H, node_radius_V, *, score="frozen",
+                                      alt_r36_residual_V=0.0):
+    """Conditional H841 signed W or BE-to-H Q radius from the exact BE coil row.
+
+    All legal compared futures must have the SAME initial prepared full
+    node state and current, same fixed L, source grid and H. Every later
+    D/sl node voltage must be within node_radius_V of the supplied
+    saved source reference, and alternative r36 within the declared bound.
+    Point IEEE64 coefficient calculation only: not a verified root tube.
+    """
+    t=np.asarray(t_s,float); H=np.asarray(H_s,float)
+    vd=np.asarray(vD_V,float); sl=np.asarray(vsl_V,float)
+    s=np.asarray(source_current_A,float)
+    if (t.ndim!=1 or H.ndim!=1 or len(t)<2 or len(H)<2 or
+            any(z.shape!=t.shape for z in (vd,sl,s)) or
+            not all(np.isfinite(z).all() for z in (t,H,vd,sl,s)) or
+            np.any(np.diff(t)<=0) or np.any(np.diff(H)<=0) or
+            H[0]<t[0] or H[-1]>t[-1]):
+        raise ValueError("aligned finite source t/H and raw D/sl/current required")
+    L=float(source_Ls_H);rho=float(node_radius_V);er=float(alt_r36_residual_V)
+    if (not all(np.isfinite(z) for z in (L,rho,er)) or
+            L<=0 or min(rho,er)<0 or score not in ("frozen","signed_correction")):
+        raise ValueError("positive L, nonnegative radii and valid scorer required")
+    h=np.diff(t);n=len(t)
+    omega=np.empty_like(H)
+    omega[0]=(H[1]-H[0])/2;omega[-1]=(H[-1]-H[-2])/2
+    omega[1:-1]=(H[2:]-H[:-2])/2
+    right=np.clip(np.searchsorted(t,H,side="right"),1,n-1);left=right-1
+    alpha=np.clip((H-t[left])/(t[right]-t[left]),0,1)
+
+    def apply(z):
+        hz=(1-alpha)*z[left]+alpha*z[right]
+        out=np.zeros(n)
+        np.add.at(out,left,omega*(1-alpha)*hz)
+        np.add.at(out,right,omega*alpha*hz)
+        if score=="signed_correction":out[1:]-=h*z[1:]
+        return out
+
+    v=vd-sl;g=apply(s);a=apply(v)
+    b=np.zeros(n);b[1:]=h/L*np.cumsum(a[1:][::-1])[::-1]
+    r36=-sl[1:]+L*np.diff(s)/h
+    linear=rho*(np.sum(abs(g[1:]))+np.sum(abs(b[1:]-g[1:])))
+    center_bias=abs(float(np.dot(b[1:],r36)))
+    alternate_error=er*float(np.sum(abs(b[1:])))
+    cross=2*rho*(rho+float(np.max(abs(r36)))+er)/L*(
+        float(np.dot(omega,H-t[0]))+float(np.dot(h,t[1:]-t[0])))
+    return {"status":"CONDITIONAL_CAUSAL_COIL_GOAL",
+            "score":score,
+            "point_goal_J":float(np.dot(v,g)),
+            "linear_radius_J":float(linear),
+            "reference_coil_bias_abs_J":center_bias,
+            "alternate_coil_residual_radius_J":alternate_error,
+            "bilinear_radius_J":float(cross),
+            "delta_goal_abs_upper_J":float(linear+center_bias+alternate_error+cross),
+            "claim_ceiling":"Only supplied IEEE64 source point plus independently CERTIFIED "
+                "all-legal same-prepared-full-state, same-grid fixed-L node tube and "
+                "source coil residual; not interval rounding, full50 root/fiber, "
+                "sensor E or actual Goal27 goal-diameter certification."}
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("input", type=Path, help="NPZ: updates, observation, goal, initial_radius, defect_radii")

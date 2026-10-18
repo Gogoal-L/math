@@ -201,5 +201,42 @@ class D8CorrelatedFutureFamilyBoundTests(unittest.TestCase):
                 bound(t,H,[2,3],[0,1],rs,0,0)
 
 
+class D12CausalGoalDualTests(unittest.TestCase):
+    def test_frozen_and_correction_match_independent_pl_coil_paths(self):
+        from goal_defect_transport import s150_causal_coil_signed_goal_bound as bound
+        t=np.arange(9,dtype=float)*1e-9
+        H=np.array([0,.5,2.3,4.2,6.6,8])*1e-9
+        sl=np.array([.6,.8,.9,1.4,1.1,.7,.4,.6,1.])
+        vd=np.array([3.,5.,4.,6.,7.,1.,2.,4.,3.])
+        L=4e-9;rho=.01
+        s=np.r_[.3,.3+np.cumsum(np.diff(t)*sl[1:]/L)]
+        # Same prepared full node/current at t0, both alternative coil rows exact.
+        dvd=np.array([0,1,-1,1,-1,1,1,-1,1])*rho
+        dsl=np.array([0,-1,1,1,1,-1,1,-1,1])*rho
+        vdp=vd+dvd;slp=sl+dsl
+        sp=np.r_[s[0],s[0]+np.cumsum(np.diff(t)*slp[1:]/L)]
+        def score(v,i):
+            hv=np.interp(H,t,v);hi=np.interp(H,t,i)
+            return float(np.dot(np.diff(H),(hv[:-1]*hi[:-1]+hv[1:]*hi[1:])/2))
+        for kind in ("frozen","signed_correction"):
+            report=bound(t,H,vd,sl,s,L,rho,score=kind)
+            delta=score(vdp-slp,sp)-score(vd-sl,s)
+            if kind=="signed_correction":
+                delta-=np.sum(np.diff(t)*((vdp-slp)[1:]*sp[1:]-(vd-sl)[1:]*s[1:]))
+            self.assertLess(abs(delta),report["delta_goal_abs_upper_J"])
+            self.assertEqual(report["status"],"CONDITIONAL_CAUSAL_COIL_GOAL")
+            self.assertGreater(report["linear_radius_J"],0)
+
+    def test_reject_unqualified_inputs(self):
+        from goal_defect_transport import s150_causal_coil_signed_goal_bound as bound
+        t=[0.,1e-9,2e-9];H=t;vd=[1.,2.,3.];sl=[0.,0.,0.];s=[1.,1.,1.]
+        for rho,er,kind in ((-1,0,"frozen"),(0,-1,"frozen"),(0,0,"bad")):
+            with self.assertRaises(ValueError):
+                bound(t,H,vd,sl,s,4e-9,rho,score=kind,alt_r36_residual_V=er)
+        with self.assertRaises(ValueError):
+            bound(t,H,vd,sl,s,0,1e-3)
+
+
+
 if __name__ == '__main__':
     unittest.main()
