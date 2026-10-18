@@ -1154,6 +1154,35 @@ class SourceG12EliminationAndL450Dual(unittest.TestCase):
         self.assertGreater(C-Q("1.1")*B*Q("0.001"),Q("0.30114"))
 
 
+class SetInversionTransferContractRegression(unittest.TestCase):
+    def test_sivia_requires_observation_image_inclusion_and_branch_coverage(self):
+        from pathlib import Path
+
+        note = (
+            Path(__file__).resolve().parents[1]
+            / "dpt_research"
+            / "20261010_goal_stability_compositional_closure.md"
+        ).read_text(encoding="utf-8")
+        self.assertIn("full predicted CAL image", note)
+        self.assertIn("contained in the admissible observation set", note)
+        self.assertIn("otherwise retain it as undecided", note)
+        self.assertIn("Excluding one branch must not discard another branch", note)
+        self.assertIn("image [-0.5,0.5] is", note)
+        self.assertIn("image [0.5,1.5] is", note)
+        self.assertIn("image [2,3] is", note)
+        self.assertIn("UNDECIDED because overlap is not containment", note)
+        self.assertIn("REJECT because the sets are disjoint", note)
+
+    def test_phase_clock_residual_contract_states_voltage_units_and_gain_scaling(self):
+        from pathlib import Path
+
+        source = (Path(__file__).resolve().parent / "measurement_factor_audit.py").read_text(
+            encoding="utf-8"
+        )
+        self.assertIn("observed/output-voltage units", source)
+        self.assertIn("multiplied by the applicable absolute-gain upper bound", source)
+
+
 
 if __name__ == "__main__":
     unittest.main()

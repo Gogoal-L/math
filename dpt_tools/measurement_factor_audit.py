@@ -140,8 +140,11 @@ def three_sample_affine_phase_clock_gate(
     and ||e||_infinity <= total_residual_sup_V.
 
     The exact three-point affine dual w satisfies w.1=w.m=0 and ||w||_1=1.
-    total_residual_sup_V must include instrument noise plus source-value, interpolation,
-    solver and observation-production uncertainty; instrument noise alone is insufficient.
+    total_residual_sup_V is a bound in observed/output-voltage units. It must include
+    instrument noise plus source-value, interpolation, solver and observation-production
+    uncertainty; instrument noise alone is insufficient. Any source-value error stated
+    before gain must first be multiplied by the applicable absolute-gain upper bound before
+    inclusion. Do not double-count a term already included in the total residual.
     Since the phase term is pointwise bounded by A, its dual support is <= A.
     The clock-warped candidate contributes <= gain_abs_upper*B*delta.
     Therefore every admissible candidate must satisfy
