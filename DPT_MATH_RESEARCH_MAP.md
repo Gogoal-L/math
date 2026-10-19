@@ -36,16 +36,21 @@
 
 | 对象 | Main 已做什么、当前接受什么 | 进入项目的位置 / 下一实际动作 |
 | --- | --- | --- |
-| **D16 两线圈/目标伴随** | 原 Pro18C H841、同静态 L、原假设内部输入半径下实跑：W=11161.291889185979nJ，条件半径0.02306262344767322nJ；残差/伴随复现，i34反号负控有效。**接受条件浮点计算，不接受全源范围** | 本地 `analysis/acceptance/side_math_20261019_review.json`；用于 S02 有限响应与 S08/S09 目标传播接口。该 Luna 单元已修订完成并由主控实际重放接受：D4 两L4.3/7nH、H561，package2×2 finite comparison 的目标和为−198.097204299532nJ，实际差−198.097204299528nJ，明确保留独立PREP s/j及finiteΔL forcing。已实现项绝对和/目标绝对值约41.37×仅为描述性抵消；所有未来内部驱动仍是oracle，不是CAL-only预测或认证范围。正在按accepted范围整合02/05推导 |
+| **D16 两线圈/目标伴随** | 原 Pro18C H841、同静态 L、原假设内部输入半径下实跑：W=11161.291889185979nJ，条件半径0.02306262344767322nJ；残差/伴随复现，i34反号负控有效。**接受条件浮点计算，不接受全源范围** | 本地 `analysis/acceptance/side_math_20261019_review.json`；用于 S02 有限响应与 S08/S09 目标传播接口。该 Luna 单元已修订完成并由主控实际重放接受：D4 两L4.3/7nH、H561，package2×2 finite comparison 的目标和为−198.097204299532nJ，实际差−198.097204299528nJ，明确保留独立PREP s/j及finiteΔL forcing。已实现项绝对和/目标绝对值约41.37×仅为描述性抵消；所有未来内部驱动仍是oracle，不是CAL-only预测或认证范围。已按accepted范围写入02/05推导并完成PDF构建/主控定向视觉验收 |
 | **S-L26 根包含/历史** | 原9项收据测试本地通过；**未接受 source 根包含**，混合量纲、完整 R/J、非中心 directed 项与历史链仍缺 | 已吸收“代数少变量不等于少动态状态、不得reset carry”的科学限制；不重复 synthetic PASS，不将全认证前置到19G |
-| **S-L27 分支投影** | **Main已实际复算并限定接受源局部标量关系**：原Pro18C row1842 held d/T/oldstorage，ETH约−6.295mV，body current变化4.379e−489A；d=0标量失效约15.396µA，非full50第二世界 | primary hybrid_projection/controller_acceptance.json。KCL两内部节点/单步隔离热投影复算，未取得外端口总误差界或deployment admission；真实相邻状态变化不归因于held-state jump。已进入02推导增量整合，非硬件/全CAL不足结论 |
+| **S-L27 分支投影** | **Main已实际复算并限定接受源局部标量关系**：原Pro18C row1842 held d/T/oldstorage，ETH约−6.295mV，body current变化4.379e−489A；d=0标量失效约15.396µA，非full50第二世界 | primary hybrid_projection/controller_acceptance.json。KCL两内部节点/单步隔离热投影复算，未取得外端口总误差界或deployment admission；真实相邻状态变化不归因于held-state jump。已写入02推导及PDF并经定向视觉验收，非硬件/全CAL不足结论 |
 | **D15 / P54–P55** | 相关误差和联合时钟/RC思路已进入研究问题；完整stage/候选原始回执仍未接受 | 由具体误差或CAL修复需要触发，暂不为补齐名单启动昂贵全链；不宣称连续goal直径已经收缩 |
 | **N100 新native恢复→预测** | 同Alt/Gear/合法PREP query的L误差1.4–2.4pH，work仍偏48–53pJ；known-L同规则余偏47–50pJ。新增E@5.5端点预测只偏3–4pJ，均已限定接受 | 这是Original R1/S03–S04→S09的实际断点，提供Side有限L×history问题；不是Full-CAL歧义或原compound gate关闭 |
 | **N100 CAL有限端口斜率** | known L5nH/Rg7.5，A/B/D CAL拟合R_port≈.0815Ω；C/E回顾性误差median3.39022→.00772922nJ，fullwaveordinary .00168237nJ更强 | 有物理用途的低参数positive已接受；用于跨PREP端口机制/新关系构造，不命名intrinsic Rds，不宣称已跨L |
 | **Pro19G 的实质接入** | 六项合同加入可选两线圈goal投影/相关history/latent与端口后果分离路线；原固定母版不改。actual-source完整CAL消费者、Full、未来计算及库外包复算已通过 | 研究者准备手动发送。当前仅优化上传分片，科学合同不再扩大；不会为了等Side全源证明而阻塞G |
 
-两条 Math→Main 单元的本地写域为 `pro_runs/20261014_pro19_physical_recovery_response_frontier/analysis/math_side_bridge/{two_coil,hybrid_projection}/`。**two_coil 与 hybrid_projection 均已由主控实际重放并限定接受**；首轮把单external-coil两L恒等式误称package D16的结果已同Goal返修，原正确数值保留。最终replay不再依赖临时目录，固定Math原工具已保存为本地可复算来源。主控另核首矩阵属于PREP约31.746ps而非future10ps。02/05 TeX/PDF增量整合已派发，尚不能称正文已完成更新；主控接受记录为 two_coil/controller_acceptance.json。
+两条 Math→Main 单元的本地写域为 `pro_runs/20261014_pro19_physical_recovery_response_frontier/analysis/math_side_bridge/{two_coil,hybrid_projection}/`。**two_coil 与 hybrid_projection 均已由主控实际重放并限定接受**；首轮把单external-coil两L恒等式误称package D16的结果已同Goal返修，原正确数值保留。最终replay不再依赖临时目录，固定Math原工具已保存为本地可复算来源。主控另核首矩阵属于PREP约31.746ps而非future10ps。02/05 TeX/PDF增量整合现已完成并由主控验收，分别35/93页，定向检查新增公式页/邻接页；主控接受记录为 two_coil/controller_acceptance.json、hybrid_projection/controller_acceptance.json 和 math_side_bridge/reader_integration_acceptance.json。
 
+
+
+**2026-10-19 验收后继续实际派发。** 主控已在同一 D 盘 main tree、非重叠写域续派三条 Luna Max 完整科学单元：`fullcal_geometry/` 用 Pro19D 实际切向模型和原误差/参数合同比较完整 CAL、压缩读出及目标读出，并由同合同低维 LP/ordinary 检查；`feature_repair/` 用 Pro18G 实际有限 bank 检验目标相关的既有特征/额外 release 收益，区分候选库最小性和硬件/连续族结论；`native_weakform/` 用已保存 N100 同步线圈电压/J5 配对记录，研究已知剂量、共同 gain 消去和 drift/filter/clock 脆弱性，保持 augmented 观测与原两通道信息预算分层。三项当前是**在执行**，不是新接受结果；本轮均零新增 source/native/RAW/adjoint。完成后的实际关系/反例再回填本节，避免只增长日志。
+
+**错误修订约定。** 主控确认错误后，在原专题/工具及本 MAP 的承重条目说明原命题/假设、最小可复算反例、影响范围、修正关系和仍成立部分。明确区分数学命题错误、实现错误、数据身份错误和超出原假设的 DPT 迁移错误；local caller 将单线圈 identity 误称 package D16 并不证明上游定理错误。不能因没有闭合完整物理保证而将有效条件命题标为错误，也不能只加一个 FAIL 标签而保留旧的强宣称。
 
 ### 2026-10-17 本地主控只读回填：新证据如何改变 Side 问题
 
