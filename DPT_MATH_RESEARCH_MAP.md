@@ -38,13 +38,13 @@
 | --- | --- | --- |
 | **D16 两线圈/目标伴随** | 原 Pro18C H841、同静态 L、原假设内部输入半径下实跑：W=11161.291889185979nJ，条件半径0.02306262344767322nJ；残差/伴随复现，i34反号负控有效。**接受条件浮点计算，不接受全源范围** | 本地 `analysis/acceptance/side_math_20261019_review.json`；用于 S02 有限响应与 S08/S09 目标传播接口。该 Luna 单元已修订完成并由主控实际重放接受：D4 两L4.3/7nH、H561，package2×2 finite comparison 的目标和为−198.097204299532nJ，实际差−198.097204299528nJ，明确保留独立PREP s/j及finiteΔL forcing。已实现项绝对和/目标绝对值约41.37×仅为描述性抵消；所有未来内部驱动仍是oracle，不是CAL-only预测或认证范围。正在按accepted范围整合02/05推导 |
 | **S-L26 根包含/历史** | 原9项收据测试本地通过；**未接受 source 根包含**，混合量纲、完整 R/J、非中心 directed 项与历史链仍缺 | 已吸收“代数少变量不等于少动态状态、不得reset carry”的科学限制；不重复 synthetic PASS，不将全认证前置到19G |
-| **S-L27 分支投影** | 原式/反例作为有价值候选；本轮尚未独立重算其tiny-current临界盒 | Luna 已获派实际source局部标量/存储/端口与热投影复核，含deep-reverse admission与失效反例；不是全50D新轨迹/硬件保证 |
+| **S-L27 分支投影** | **Main已实际复算并限定接受源局部标量关系**：原Pro18C row1842 held d/T/oldstorage，ETH约−6.295mV，body current变化4.379e−489A；d=0标量失效约15.396µA，非full50第二世界 | primary hybrid_projection/controller_acceptance.json。KCL两内部节点/单步隔离热投影复算，未取得外端口总误差界或deployment admission；真实相邻状态变化不归因于held-state jump。已进入02推导增量整合，非硬件/全CAL不足结论 |
 | **D15 / P54–P55** | 相关误差和联合时钟/RC思路已进入研究问题；完整stage/候选原始回执仍未接受 | 由具体误差或CAL修复需要触发，暂不为补齐名单启动昂贵全链；不宣称连续goal直径已经收缩 |
 | **N100 新native恢复→预测** | 同Alt/Gear/合法PREP query的L误差1.4–2.4pH，work仍偏48–53pJ；known-L同规则余偏47–50pJ。新增E@5.5端点预测只偏3–4pJ，均已限定接受 | 这是Original R1/S03–S04→S09的实际断点，提供Side有限L×history问题；不是Full-CAL歧义或原compound gate关闭 |
 | **N100 CAL有限端口斜率** | known L5nH/Rg7.5，A/B/D CAL拟合R_port≈.0815Ω；C/E回顾性误差median3.39022→.00772922nJ，fullwaveordinary .00168237nJ更强 | 有物理用途的低参数positive已接受；用于跨PREP端口机制/新关系构造，不命名intrinsic Rds，不宣称已跨L |
 | **Pro19G 的实质接入** | 六项合同加入可选两线圈goal投影/相关history/latent与端口后果分离路线；原固定母版不改。actual-source完整CAL消费者、Full、未来计算及库外包复算已通过 | 研究者准备手动发送。当前仅优化上传分片，科学合同不再扩大；不会为了等Side全源证明而阻塞G |
 
-两条 Math→Main 单元的本地写域为 `pro_runs/20261014_pro19_physical_recovery_response_frontier/analysis/math_side_bridge/{two_coil,hybrid_projection}/`。**two_coil 已限定接受，hybrid_projection 仍在执行**；首轮把单external-coil两L恒等式误称package D16的结果已同Goal返修，原正确数值保留。最终replay不再依赖临时目录，固定Math原工具已保存为本地可复算来源。主控另核首矩阵属于PREP约31.746ps而非future10ps。02/05 TeX/PDF增量整合已派发，尚不能称正文已完成更新；主控接受记录为 two_coil/controller_acceptance.json。
+两条 Math→Main 单元的本地写域为 `pro_runs/20261014_pro19_physical_recovery_response_frontier/analysis/math_side_bridge/{two_coil,hybrid_projection}/`。**two_coil 与 hybrid_projection 均已由主控实际重放并限定接受**；首轮把单external-coil两L恒等式误称package D16的结果已同Goal返修，原正确数值保留。最终replay不再依赖临时目录，固定Math原工具已保存为本地可复算来源。主控另核首矩阵属于PREP约31.746ps而非future10ps。02/05 TeX/PDF增量整合已派发，尚不能称正文已完成更新；主控接受记录为 two_coil/controller_acceptance.json。
 
 
 ### 2026-10-17 本地主控只读回填：新证据如何改变 Side 问题
@@ -207,7 +207,7 @@ Tool API、命令和单位合同见 [dpt_tools/README](dpt_tools/README.md)；�
 
 - **D16：MAIN_ACCEPTED_SCOPED / 条件数值回放。** 主控直接调用该提交 `dpt_tools/goal_defect_transport.py::s150_package_two_coil_goal_bound`，使用本地原 `pro18c_prediction_extension.npz`（SHA256 `af7299434d7dcde687da3bf56b5ce31babbc4e0c1c0e12b1a849b5f5530ae8fd`），没有新增 source/native。H841 signed work = **11161.291889185979 nJ**；在 D16 原同静态 L、原假设输入半径下，工具输出条件半径 **0.02306262344767322 nJ**。两线圈残差与 prepared adjoint 均复现；反转 package i34 符号会使 r25 达约 **26.02 A**、r34 达约 **18.92 V**，负控有效。接受范围是固定离散 reference 的浮点 source-row/goal 计算，**不是 directed 全域上界**；未来内部 v22/port/seed/forcing 半径尚未由完整 CAL 推出，故原 Goal27 全源直径认证收缩仍未取得。该分解可进入本地端口/有限响应推导的下一次有范围维护，尚不声称已并入 TeX/PDF。
 - **S-L26：接口可用，根包含仍未接受。** 原 9 项 `test_s150_krawczyk24_receipt.py` 在本地均通过（Windows 默认临时目录权限导致的两项环境错误，改用自有 D 盘临时目录后原测试不变重跑）。这仅核收据算术/量纲/guard 缺件拒绝；没有补出 24 行 directed 中心残差、实际 R/J、非中心项或 n1→n3 合法链，状态仍为 `REPORTED_NOT_RECOMPUTED`。不要重复做更多相同 synthetic PASS 来代替缺失实源证据。
-- **S-L27、D15、P54/P55：选择性方法吸收。** projected jump 与 latent jump 的区别、热递推需保留相关差、时钟/RC/共享噪声必须联合处理，均是有价值的建模线索；本轮未独立重算其临界盒/6720-stage/9602 residual 或 LP 覆盖，不增加证据等级。允许围绕实际问题改进表示；不能把某个严格但极小的反向偏置盒当作普遍器件规律。
+- **S-L27 局部实算、D15/P54/P55 选择性方法吸收。** S-L27 现已Main独立运行原source/保存state上的Decimal标量复算：4.379e−489A与d=0约15.396µA反例支持具名reverse chart；KCL/heat只按局部forcing解释，不是全外端口误差界、可达第二世界或deployment admission。完整临界盒directed证明、D15的6720-stage与P54/P55的9602 residual/LP覆盖本轮仍未补齐；不能将该点计算扩大为普遍器件规律或完整CAL不足。
 
 本地接受定位：`pro_runs/20261014_pro19_physical_recovery_response_frontier/analysis/acceptance/side_math_20261019_review.json` 与同 programme `absorption.md`（这些是本地定位，不是假定本 Math 树已含相同文件）。数学原文与工具仍由本仓库的固定提交拥有。
 
