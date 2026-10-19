@@ -48,7 +48,18 @@
 
 
 
-**2026-10-19 验收后继续实际派发。** 主控已在同一 D 盘 main tree、非重叠写域续派三条 Luna Max 完整科学单元：`fullcal_geometry/` 用 Pro19D 实际切向模型和原误差/参数合同比较完整 CAL、压缩读出及目标读出，并由同合同低维 LP/ordinary 检查；`feature_repair/` 用 Pro18G 实际有限 bank 检验目标相关的既有特征/额外 release 收益，区分候选库最小性和硬件/连续族结论；`native_weakform/` 用已保存 N100 同步线圈电压/J5 配对记录，研究已知剂量、共同 gain 消去和 drift/filter/clock 脆弱性，保持 augmented 观测与原两通道信息预算分层。三项当前是**在执行**，不是新接受结果；本轮均零新增 source/native/RAW/adjoint。完成后的实际关系/反例再回填本节，避免只增长日志。
+**2026-10-19 新一批 Main 实际验收与续派。** 以下均由主控运行真实保存数组/消费者，不是仅派单或 synthetic CI：
+
+| 单元 | 已接受结果与实际用途 | 边界 / 下一动作 |
+| --- | --- | --- |
+| Full-CAL / 目标读出 | Pro19D 实际 D3 盒域、同一 deterministic joint L2 error ball，η=1e−6：完整 CAL 支持宽 2.3446489422e−5 nJ，χ+ψ 为 6.7626242969e−4 nJ；从已有 CAL 派生 goal row 可恢复完整记录的该目标支持宽。支持 S08/S09 的信息压缩设计 | 固定 tangent 的正η数值可行 supports，不是认证 extrema/真实非线性外包；派生 row 不算新增测量。主控已接受并归档完成四个 Goal 的 owner |
+| Pro18G 实际有限 C6 / release | 目标直径44.7704485516 nJ；旧+repair CAL未激活动态支路，成员同观测。额外 G_CAL22_RR release 经正仿射 gain/offset 不变形状处理，六成员在保存数组上可分（最小 joint shape 距离4.17804e−4） | finite-bank、noise-free数值分离；单点最小8.9675mA不证明连续阈值族充分。Side两个原API的误差几何不直接匹配共享仿射+历史滤波，本单审合同，没有伪称直接调用或发现其错误 |
+| N100 augmented Vcoil/J5 弱式 | 已知CAL剂量5→5.25nH，独立已曝光4.95→5.075nH query：fine记录级 B/A 比值恢复0.125004021921nH；每记录常数相对gain可消去，共同支路R由已知剂量校准。同信息full-record ordinary也成功 | 原两通道之外的augmented观测、retrospective branch-L；非L_eff/硬件gate。确定性gain压力下shared拟合偏103.419pH，比值约0.00402pH；相对通道错时62.5ps却偏−750.722pH，提示同步/算子资格而非更多理想精度。0新native/RAW |
+| 实际 Side 椭球工具消费 | 已续派原pack/feature owner第四个Goal，实际调用 goal_ellipsoid_recovery 处理真实D3，并独立验证decoder/primal/dual | 当前在执行，尚未接受；unit球为原盒的内集合、sqrt(3)球为外集合，不能偷换prior。低秩映射保留联合误差，不生成9602²矩阵 |
+
+本地实际接受入口位于 `pro_runs/20261014_pro19_physical_recovery_response_frontier/analysis/math_side_bridge/{fullcal_geometry,feature_repair,native_weakform}/controller_acceptance.json`。既有02/05 reader整合已接受；原G小上传包/prompt不因本轮增量改变。
+
+**已确认并修复的本地消费者问题（不是 Side 定理错误）。** 冻结 Pro19D `pro19d_work/full/full_profile.py` 的 LocalProfile 在η=0时以浮点 `perp_norm>eta` 筛掉合法face支持点，可能只剩中心、报零宽度；原输出已有 `numerical_boundary_unresolved=True` 与 `witness_only=True`，不能解释成已认证充分性。主控用精确二进制有理数解释的严格rank-2例 `B=[[.13,.23,.31],[.71,.53,.37]]`、盒[-1,1]^3、g=(1,1,-1)、零残差复现：真宽2.1767441860465113，旧helper为0；第二例真宽2.3636363636363638也返回0。维护版在本地 `fullcal_geometry/zero_radius_profile.py` 用原始因子的精确乘加、RREF和小维盒顶点支持，真实D3 χψ宽度修正为1.9668232434418997e−6 nJ；FullCAL与补goal row仍为零。主控实际7项控制及真实D3 replay通过，正η三组输出保持不变。**原冻结helper和输入SHA不改、不扩大η**；修复只保证所声明binary64有理线性模型，不是roundoff/interval或actual-law非线性证书。Side后续若复用旧本地零宽度必须改用该维护路径/独立支持证明。
 
 **错误修订约定。** 主控确认错误后，在原专题/工具及本 MAP 的承重条目说明原命题/假设、最小可复算反例、影响范围、修正关系和仍成立部分。明确区分数学命题错误、实现错误、数据身份错误和超出原假设的 DPT 迁移错误；local caller 将单线圈 identity 误称 package D16 并不证明上游定理错误。不能因没有闭合完整物理保证而将有效条件命题标为错误，也不能只加一个 FAIL 标签而保留旧的强宣称。
 
