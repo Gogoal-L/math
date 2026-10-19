@@ -36,7 +36,7 @@
 
 | 对象 | Main 已做什么、当前接受什么 | 进入项目的位置 / 下一实际动作 |
 | --- | --- | --- |
-| **D16 两线圈/目标伴随** | 原 Pro18C H841、同静态 L、原假设内部输入半径下实跑：W=11161.291889185979nJ，条件半径0.02306262344767322nJ；残差/伴随复现，i34反号负控有效。**接受条件浮点计算，不接受全源范围** | 本地 `analysis/acceptance/side_math_20261019_review.json`；用于 S02 有限响应与 S08/S09 目标传播接口。Luna 已获派有限ΔL/各自own-PREP两世界的实际比较、关联forcing/独立盒差别与CAL可获得性分析，尚未完成 |
+| **D16 两线圈/目标伴随** | 原 Pro18C H841、同静态 L、原假设内部输入半径下实跑：W=11161.291889185979nJ，条件半径0.02306262344767322nJ；残差/伴随复现，i34反号负控有效。**接受条件浮点计算，不接受全源范围** | 本地 `analysis/acceptance/side_math_20261019_review.json`；用于 S02 有限响应与 S08/S09 目标传播接口。该 Luna 单元已修订完成并由主控实际重放接受：D4 两L4.3/7nH、H561，package2×2 finite comparison 的目标和为−198.097204299532nJ，实际差−198.097204299528nJ，明确保留独立PREP s/j及finiteΔL forcing。已实现项绝对和/目标绝对值约41.37×仅为描述性抵消；所有未来内部驱动仍是oracle，不是CAL-only预测或认证范围。正在按accepted范围整合02/05推导 |
 | **S-L26 根包含/历史** | 原9项收据测试本地通过；**未接受 source 根包含**，混合量纲、完整 R/J、非中心 directed 项与历史链仍缺 | 已吸收“代数少变量不等于少动态状态、不得reset carry”的科学限制；不重复 synthetic PASS，不将全认证前置到19G |
 | **S-L27 分支投影** | 原式/反例作为有价值候选；本轮尚未独立重算其tiny-current临界盒 | Luna 已获派实际source局部标量/存储/端口与热投影复核，含deep-reverse admission与失效反例；不是全50D新轨迹/硬件保证 |
 | **D15 / P54–P55** | 相关误差和联合时钟/RC思路已进入研究问题；完整stage/候选原始回执仍未接受 | 由具体误差或CAL修复需要触发，暂不为补齐名单启动昂贵全链；不宣称连续goal直径已经收缩 |
@@ -44,7 +44,7 @@
 | **N100 CAL有限端口斜率** | known L5nH/Rg7.5，A/B/D CAL拟合R_port≈.0815Ω；C/E回顾性误差median3.39022→.00772922nJ，fullwaveordinary .00168237nJ更强 | 有物理用途的低参数positive已接受；用于跨PREP端口机制/新关系构造，不命名intrinsic Rds，不宣称已跨L |
 | **Pro19G 的实质接入** | 六项合同加入可选两线圈goal投影/相关history/latent与端口后果分离路线；原固定母版不改。actual-source完整CAL消费者、Full、未来计算及库外包复算已通过 | 研究者准备手动发送。当前仅优化上传分片，科学合同不再扩大；不会为了等Side全源证明而阻塞G |
 
-两条 Math→Main Luna 单元的本地写域为 `pro_runs/20261014_pro19_physical_recovery_response_frontier/analysis/math_side_bridge/{two_coil,hybrid_projection}/`，这是**派发状态**，不是已交付结论；完成后由主控核承重数值并更新原推导/absorption。原推导 TeX/PDF 此刻尚未因此全部更新，不能把MAP同步等同于正文已吸收。
+两条 Math→Main 单元的本地写域为 `pro_runs/20261014_pro19_physical_recovery_response_frontier/analysis/math_side_bridge/{two_coil,hybrid_projection}/`。**two_coil 已限定接受，hybrid_projection 仍在执行**；首轮把单external-coil两L恒等式误称package D16的结果已同Goal返修，原正确数值保留。最终replay不再依赖临时目录，固定Math原工具已保存为本地可复算来源。主控另核首矩阵属于PREP约31.746ps而非future10ps。02/05 TeX/PDF增量整合已派发，尚不能称正文已完成更新；主控接受记录为 two_coil/controller_acceptance.json。
 
 
 ### 2026-10-17 本地主控只读回填：新证据如何改变 Side 问题
