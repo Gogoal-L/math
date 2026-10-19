@@ -54,10 +54,10 @@
 | --- | --- | --- |
 | Full-CAL / 目标读出 | Pro19D 实际 D3 盒域、同一 deterministic joint L2 error ball，η=1e−6：完整 CAL 支持宽 2.3446489422e−5 nJ，χ+ψ 为 6.7626242969e−4 nJ；从已有 CAL 派生 goal row 可恢复完整记录的该目标支持宽。支持 S08/S09 的信息压缩设计 | 固定 tangent 的正η数值可行 supports，不是认证 extrema/真实非线性外包；派生 row 不算新增测量。主控已接受并归档完成四个 Goal 的 owner |
 | Pro18G 实际有限 C6 / release | 目标直径44.7704485516 nJ；旧+repair CAL未激活动态支路，成员同观测。额外 G_CAL22_RR release 经正仿射 gain/offset 不变形状处理，六成员在保存数组上可分（最小 joint shape 距离4.17804e−4） | finite-bank、noise-free数值分离；单点最小8.9675mA不证明连续阈值族充分。Side两个原API的误差几何不直接匹配共享仿射+历史滤波，本单审合同，没有伪称直接调用或发现其错误 |
-| N100 augmented Vcoil/J5 弱式 | 已知CAL剂量5→5.25nH，独立已曝光4.95→5.075nH query：fine记录级 B/A 比值恢复0.125004021921nH；每记录常数相对gain可消去，共同支路R由已知剂量校准。同信息full-record ordinary也成功 | 原两通道之外的augmented观测、retrospective branch-L；非L_eff/硬件gate。确定性gain压力下shared拟合偏103.419pH，比值约0.00402pH；相对通道错时62.5ps却偏−750.722pH，提示同步/算子资格而非更多理想精度。0新native/RAW |
+| N100 augmented Vcoil/J5 弱式 | 已知CAL剂量5→5.25nH，独立已曝光4.95→5.075nH query：fine记录级 B/A 比值恢复0.125004021921nH；每记录常数相对gain可消去，共同支路R由已知剂量校准。同信息full-record ordinary也成功 | 原两通道之外的augmented观测、retrospective branch-L；非L_eff/硬件gate。确定性gain压力下shared拟合偏103.419pH，比值约0.00402pH；原+62.5ps压力偏−750.722pH包含裁剪H末端clamp，仅为软件扰动，不能当真实完整history错时或硬件灵敏度；后续严格profile见下。0新native/RAW |
 | 实际 Side 椭球工具消费 | **Main已实际调用原API并重放接受**：D3、η1e−6，χψ box半宽upper3.38131214852e−4nJ；加goal-aligned原CAL行降至1.17232447050e−5，加相同一条正交行仅至3.37824769186e−4（约0.09%收益）。独立重算dual/l1 box支持与可行lower；说明方向而非行数重要 | unit球只给内集合见证，sqrt(3)球覆盖原盒；低秩映射保留联合误差。仅centered tangent，浮点非directed rounding证书；绝对consumer尚缺named inputs中的nominal Y0，全域非线性remainder仍缺。primary ellipsoid_recovery/controller_acceptance.json；第四Goal owner已归档 |
 
-**验收后下一单元：** N100原weakform owner已续第四Goal，实际建设CAL-only共享时延profile，区分query独有delay，并与同信息Full竞争；当前在执行，0新增solver。不得以query真实ΔL反调同步，不将软件压力解释为硬件精度。
+**N100 clock Goal4已接受、当前交接新主控。** 主控实际完整replay通过，CAL-only weak与Full的离散残差最低均0ps；完整滤波history支持的CAL共同正向校正仅2.944ps，严格禁止外插，保留原4801 H节点。query-only delay的grid envelope不属于兼容集合（无noise/admission阈值），没有独立非零delay恢复资格；不能将CAL选中0ps称普遍同步修复。原+62.5ps clamped-H扰动解释已纠正。0新增solver/RAW，原owner第四Goal已归档；用户要求更换Main controller，旧controller停止续派，科研路线未关闭。
 
 本地实际接受入口位于 `pro_runs/20261014_pro19_physical_recovery_response_frontier/analysis/math_side_bridge/{fullcal_geometry,feature_repair,native_weakform}/controller_acceptance.json`。既有02/05 reader整合已接受；原G小上传包/prompt不因本轮增量改变。
 
