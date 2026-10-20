@@ -486,5 +486,31 @@ class E150StrongOrdinaryProfileControls(unittest.TestCase):
                       profile_quadratic_nJ=0,current_ratio=1,work_ratio=1)
 
 
+class E150AbsoluteHessianContractorNoGoTests(unittest.TestCase):
+    def test_three_archived_source_curvatures_forbid_naive_absolute_hessian_triangle(self):
+        from fractions import Fraction as F
+        from goal_defect_transport import absolute_hessian_triangle_resolution_gate as check
+        for mode, mids, gap, factor in (
+            ("fine",("46.8635215205125","48.290091856445","29.5904595061475"),
+             "9.872633344656",19),
+            ("h2",("43.9381406012025","45.21851853427","27.985570177243"),
+             "8.898416286779",20),
+        ):
+            got=check(mids,gap,per_archived_work_error_pJ=F(gap)/2,
+                      endpoint_span_nH=F(1,2))
+            self.assertEqual(got["status"],"ABSOLUTE_HESSIAN_TRIANGLE_CANNOT_RESOLVE")
+            self.assertGreater(got["minimum_known_hessian_sum_nJ_per_nH2"],
+                               F(factor)*got["six_way_resolution_threshold_nJ_per_nH2"])
+            self.assertFalse(got["joint_interaction_curvature_qualified"])
+
+    def test_zero_curvature_or_wide_archived_errors_must_not_forge_no_go(self):
+        from goal_defect_transport import absolute_hessian_triangle_resolution_gate as check
+        self.assertEqual(check((0,0,0),"1",0)["status"],"NOT_EXCLUDED_BY_THIS_BOUND")
+        self.assertEqual(check((1,1,1),"10","100")["status"],"NOT_EXCLUDED_BY_THIS_BOUND")
+        for bad in (-1,"NaN",True):
+            with self.assertRaises(ValueError):
+                check((1,2,3),"1",bad)
+
+
 if __name__ == '__main__':
     unittest.main()
