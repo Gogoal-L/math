@@ -107,6 +107,7 @@
 - **决定：** 有限CAL支持的是哪个measurement-defined对象，以及它对新history/condition的未来goal是否足够？
 - **构造/挑战：** 保留L/Rser/gain/clock相容关系和实际观测预算；与同信息frequency/whole-wave/scalar-work ordinary正面比较，不能把有效对象命名为独立PCB/package参数。
 - **有用出口：** 前置可算有限系数/余项、一个新的独立条件预测、可取得的最小信息repair。解释已接受N100曲率关系后要给新后果，不重买相邻L点。
+- **Q4最新信息门：** B100/E100/B150三角实际存档值无法唯一识别E150：任意history×load交互均匹配三角。若另有合法全域混合导数上界M，E150严格位于additive±M；r/q所需交互fine约−2.406/−3.994 nJ，source未证明M。精确算子及负控见[Q4 interaction](dpt_research/20261012_second_order_goal_fiber.md)和goal_defect_transport；新条件端点/clock/TOTAL_ERROR仍OPEN。
 - **Q4定量未冻结候选：** B100/E100/B150已有历史work给出E150三个候选预目标值（fine 35.285/32.879/31.291 nJ），尚无E150合法端点、blackout与TOTAL_ERROR。不得当作前瞻source胜出。见[second-order fiber Q4](dpt_research/20261012_second_order_goal_fiber.md)。
 - **2026-10-20 N100新判别：** 已冻结100V B-history实际保存fine/H2数据呈现全H与leading子窗shared/current-scaled profile排名反转；只在现有条件属于retrospective，不能宣称window-uniform充分或L_eff恢复。下个新条件为100V E-history×150uH×L_ext5.25nH，须先具备E-history 150uH source-valid 5.0/5.5nH端点、冻结scorer和joint TOTAL_ERROR。详见[second-order fiber Q4](dpt_research/20261012_second_order_goal_fiber.md)。
 - **缺件：** reference/端口/单位/同步与合法PREP input contract由Main提供；没有这些时保留条件关系。
