@@ -124,3 +124,109 @@ def three_sample_affine_voltage_gate(observed_V, candidate_raw_V, indices, noise
                      "Not actual sensor E, source-rounding, root/guard coverage, "
                      "all-goal-fiber certification, or future-work prediction."),
     }
+
+def three_sample_affine_phase_clock_gate(
+    observed_V, candidate_raw_V, indices, total_residual_sup_V, *,
+    phase_amplitude_sup_V, gain_abs_upper,
+    source_slope_bound_V_per_s, clock_offset_bound_s,
+):
+    """Three-sample necessary exclusion robust to bounded phase and clock warp.
+
+    Model contract on the selected sample tube:
+      y_i = gamma*m(t_i + delta_i) + beta
+            + A*(eta_s*sin(phi_i) + eta_c*cos(phi_i)) + e_i,
+    with |gamma| <= gain_abs_upper, ||(eta_s,eta_c)||_2 <= 1,
+    |delta_i| <= clock_offset_bound_s, |m(t_i+delta)-m(t_i)| <= B*|delta|,
+    and ||e||_infinity <= total_residual_sup_V.
+
+    The exact three-point affine dual w satisfies w.1=w.m=0 and ||w||_1=1.
+    total_residual_sup_V is a bound in observed/output-voltage units. It must include
+    instrument noise plus source-value, interpolation, solver and observation-production
+    uncertainty; instrument noise alone is insufficient. Any source-value error stated
+    before gain must first be multiplied by the applicable absolute-gain upper bound before
+    inclusion. Do not double-count a term already included in the total residual.
+    Since the phase term is pointwise bounded by A, its dual support is <= A.
+    The clock-warped candidate contributes <= gain_abs_upper*B*delta.
+    Therefore every admissible candidate must satisfy
+      |w.y| <= total_residual_sup_V + A + gain_abs_upper*B*delta.
+
+    Stored binary64 samples are lifted exactly to Fractions; budgets are exact
+    decimal rationals. The caller must qualify the common timeline, nuisance
+    contract, gain bound, and a Lipschitz bound B over every complete clock
+    tube. A hybrid jump or uncovered branch invalidates B. This is a point
+    candidate test, not a full-CAL fiber or future-goal proof.
+    """
+    from fractions import Fraction
+    from math import nextafter, inf
+
+    base = three_sample_affine_voltage_gate(
+        observed_V, candidate_raw_V, indices, "0"
+    )
+    contrast = Fraction(
+        int(base["min_necessary_error_V_ratio"][0]),
+        int(base["min_necessary_error_V_ratio"][1]),
+    )
+
+    def nonnegative_fraction(value, name):
+        try:
+            parsed = Fraction(str(value))
+        except (ValueError, TypeError, ZeroDivisionError, OverflowError) as exc:
+            raise ValueError(f"invalid {name}") from exc
+        if parsed < 0:
+            raise ValueError(f"negative {name}")
+        return parsed
+
+    epsilon = nonnegative_fraction(total_residual_sup_V, "total residual budget")
+    phase_amp = nonnegative_fraction(phase_amplitude_sup_V, "phase amplitude bound")
+    gain = nonnegative_fraction(gain_abs_upper, "absolute gain bound")
+    slope = nonnegative_fraction(source_slope_bound_V_per_s, "source slope bound")
+    delta = nonnegative_fraction(clock_offset_bound_s, "clock offset bound")
+
+    clock_term = gain * slope * delta
+    nuisance_upper = epsilon + phase_amp + clock_term
+    margin = contrast - nuisance_upper
+    phase_limit = contrast - epsilon - clock_term
+    slope_numerator = contrast - epsilon - phase_amp
+    slope_denominator = gain * delta
+    slope_limit = (
+        slope_numerator / slope_denominator
+        if slope_denominator > 0 and slope_numerator > 0 else None
+    )
+
+    def lower_float(value):
+        return nextafter(float(value), -inf)
+
+    return {
+        "status": (
+            "STRICT_CANDIDATE_EXCLUDED_UNDER_SUPPLIED_PHASE_CLOCK_BOUNDS"
+            if margin > 0 else "INCONCLUSIVE"
+        ),
+        "strict_reject": bool(margin > 0),
+        "contrast_V_exact": f"{contrast.numerator}/{contrast.denominator}",
+        "total_residual_sup_V_exact": f"{epsilon.numerator}/{epsilon.denominator}",
+        "phase_amplitude_sup_V_exact": f"{phase_amp.numerator}/{phase_amp.denominator}",
+        "clock_source_term_V_exact": f"{clock_term.numerator}/{clock_term.denominator}",
+        "nuisance_upper_V_exact": f"{nuisance_upper.numerator}/{nuisance_upper.denominator}",
+        "margin_lower_V_exact": f"{margin.numerator}/{margin.denominator}",
+        "margin_lower_V_float": lower_float(margin),
+        "max_phase_amplitude_V_for_exclusion_exact": (
+            f"{phase_limit.numerator}/{phase_limit.denominator}"
+        ),
+        "max_phase_amplitude_V_for_exclusion_float_lower": lower_float(phase_limit),
+        "max_source_slope_V_per_s_for_exclusion_exact": (
+            f"{slope_limit.numerator}/{slope_limit.denominator}"
+            if slope_limit is not None else None
+        ),
+        "max_source_slope_V_per_s_for_exclusion_float_lower": (
+            lower_float(slope_limit) if slope_limit is not None else None
+        ),
+        "claim_ceiling": (
+            "Exact stored-binary64 three-sample affine dual plus supplied deterministic "
+            "phase-amplitude, gain, source-slope, clock-offset and total-residual bounds only. "
+            "The source slope must hold on each complete clock tube and across all "
+            "reachable modes; an unbounded ETH/clip jump invalidates this gate. "
+            "No archive identity, source-root, all-CAL fiber, hardware-noise or "
+            "future signed-work diameter claim is implied."
+        ),
+    }
+

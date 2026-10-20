@@ -958,6 +958,56 @@ class SecondRoundSourceStrictGates(unittest.TestCase):
         self.assertGreater(r["min_necessary_error_V_float_lower"], .38362466164380)
         self.assertLess(r["stored_binary64_contrast_V"], .38362466164383)
 
+    def test_three_sample_affine_gate_survives_bounded_phase_and_clock_warp(self):
+        from measurement_factor_audit import three_sample_affine_phase_clock_gate
+        measured = (133.1570827108408, 7.778267680238221, -1.1418213588596062)
+        candidate = (133.23152198984246, 7.992853605366054, -1.74323589650744)
+        r = three_sample_affine_phase_clock_gate(
+            measured, candidate, (0, 1, 2), "0.1",
+            phase_amplitude_sup_V="0.02", gain_abs_upper="1.1",
+            source_slope_bound_V_per_s="1e11", clock_offset_bound_s="150e-15",
+        )
+        self.assertEqual(
+            r["status"], "STRICT_CANDIDATE_EXCLUDED_UNDER_SUPPLIED_PHASE_CLOCK_BOUNDS"
+        )
+        self.assertGreater(r["margin_lower_V_float"], .247)
+        self.assertLess(r["margin_lower_V_float"], .248)
+        self.assertGreater(r["max_phase_amplitude_V_for_exclusion_float_lower"], .267)
+        self.assertLess(r["max_phase_amplitude_V_for_exclusion_float_lower"], .268)
+        self.assertGreater(r["max_source_slope_V_per_s_for_exclusion_float_lower"], 1.59e12)
+        self.assertLess(r["max_source_slope_V_per_s_for_exclusion_float_lower"], 1.61e12)
+        print(
+            "PHASE_CLOCK_STORED_POINT_GATE",
+            r["contrast_V_exact"], r["margin_lower_V_exact"],
+            r["max_phase_amplitude_V_for_exclusion_exact"],
+            r["max_source_slope_V_per_s_for_exclusion_exact"],
+        )
+
+    def test_three_sample_affine_phase_clock_gate_fails_closed(self):
+        from measurement_factor_audit import three_sample_affine_phase_clock_gate
+        measured = (133.1570827108408, 7.778267680238221, -1.1418213588596062)
+        candidate = (133.23152198984246, 7.992853605366054, -1.74323589650744)
+        args = dict(
+            phase_amplitude_sup_V="0.02", gain_abs_upper="1.1",
+            source_slope_bound_V_per_s="2e12", clock_offset_bound_s="150e-15",
+        )
+        r = three_sample_affine_phase_clock_gate(
+            measured, candidate, (0, 1, 2), "0.1", **args
+        )
+        self.assertFalse(r["strict_reject"])
+        for bad in (
+            {"phase_amplitude_sup_V": "-0.1"},
+            {"gain_abs_upper": "-1"},
+            {"source_slope_bound_V_per_s": "NaN"},
+            {"clock_offset_bound_s": "-1e-15"},
+        ):
+            kwargs = dict(args)
+            kwargs.update(bad)
+            with self.assertRaises(ValueError):
+                three_sample_affine_phase_clock_gate(
+                    measured, candidate, (0, 1, 2), "0.1", **kwargs
+                )
+
     def test_affine_gain_offset_and_joint_error_negative_controls(self):
         from measurement_factor_audit import three_sample_affine_voltage_gate as gate
         m = [1., 3., 4.]
@@ -1102,6 +1152,50 @@ class SourceG12EliminationAndL450Dual(unittest.TestCase):
         B = sum(abs(ww)*mm for ww,mm in zip(w,M))
         self.assertLess(B,Q("4.9041"))
         self.assertGreater(C-Q("1.1")*B*Q("0.001"),Q("0.30114"))
+
+
+class D15D16EvidenceLabelRegression(unittest.TestCase):
+    def test_d16_numeric_outputs_are_marked_not_reproduced(self):
+        from pathlib import Path
+
+        note = (
+            Path(__file__).resolve().parents[1]
+            / "dpt_research"
+            / "20261010_goal_stability_compositional_closure.md"
+        ).read_text(encoding="utf-8")
+        self.assertIn("D16_NUMERICS_REPORTED_NOT_REPRODUCED_FROM_REMOTE_INPUTS", note)
+
+
+class SetInversionTransferContractRegression(unittest.TestCase):
+    def test_sivia_requires_observation_image_inclusion_and_branch_coverage(self):
+        from pathlib import Path
+
+        note = (
+            Path(__file__).resolve().parents[1]
+            / "dpt_research"
+            / "20261010_goal_stability_compositional_closure.md"
+        ).read_text(encoding="utf-8")
+        self.assertIn("full predicted CAL image", note)
+        self.assertIn("contained in the admissible observation set", note)
+        self.assertIn("otherwise retain it as undecided", note)
+        self.assertIn("Excluding one branch must not discard another branch", note)
+        self.assertIn("[-0.5,0.5]", note)
+        self.assertIn("`ACCEPT`", note)
+        self.assertIn("[0.5,1.5]", note)
+        self.assertIn("`UNDECIDED`", note)
+        self.assertIn("[2,3]", note)
+        self.assertIn("`REJECT`", note)
+        self.assertIn("overlap is not containment", note)
+        self.assertIn("the sets are disjoint", note)
+
+    def test_phase_clock_residual_contract_states_voltage_units_and_gain_scaling(self):
+        from pathlib import Path
+
+        source = (Path(__file__).resolve().parent / "measurement_factor_audit.py").read_text(
+            encoding="utf-8"
+        )
+        self.assertIn("observed/output-voltage units", source)
+        self.assertIn("multiplied by the applicable absolute-gain upper bound", source)
 
 
 

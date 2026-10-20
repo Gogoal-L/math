@@ -4,9 +4,13 @@ from __future__ import annotations
 import hashlib
 import json
 import tempfile
+import zipfile
+from unittest.mock import patch
 import unittest
 from fractions import Fraction
 from pathlib import Path
+
+import s150_krawczyk24_receipt as receipt_module
 
 from s150_krawczyk24_receipt import (
     EXPECTED_COLUMN_ORDER,
@@ -120,8 +124,44 @@ class S150Krawczyk24ReceiptTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as root:
             result = audit_receipt(receipt, root=root)
         self.assertEqual(result["status"], "SOURCE_INPUTS_UNAVAILABLE")
-        self.assertNotEqual(result["status"], "SOURCE_RECEIPTS_HASHED_CENTER_ARITHMETIC_PASS_ONLY")
+        self.assertNotEqual(result["status"], "SOURCE_INPUTS_HASHED_CENTER_ARITHMETIC_PASS_ONLY")
         self.assertIn("source_artifact_check", result)
+
+    def test_source_mode_needs_s150_archive_not_unrelated_d15_target_and_disclaims_provenance(self):
+        with tempfile.TemporaryDirectory() as root:
+            root_path = Path(root)
+            archive_path = root_path / "source_inputs/s150/original_submission.zip"
+            archive_path.parent.mkdir(parents=True)
+            with zipfile.ZipFile(archive_path, "w"):
+                pass
+            archive_sha = hashlib.sha256(archive_path.read_bytes()).hexdigest()
+
+            noncenter_path = root_path / "noncenter.json"
+            noncenter_payload = {
+                "schema": NONCENTER_SCHEMA,
+                "noncenter_image_radius_upper_normalized": ["0.1" for _ in range(24)],
+            }
+            noncenter_path.write_text(json.dumps(noncenter_payload), encoding="utf-8")
+            noncenter_sha = hashlib.sha256(noncenter_path.read_bytes()).hexdigest()
+
+            receipt = synthetic_receipt()
+            receipt["mode"] = "source"
+            receipt["noncenter_receipt"] = {
+                "path": "noncenter.json",
+                "sha256": noncenter_sha,
+            }
+            with patch.dict(
+                receipt_module.SOURCE_ARTIFACT_SHA256,
+                {"source_inputs/s150/original_submission.zip": archive_sha},
+                clear=True,
+            ), patch.dict(receipt_module.SOURCE_ARCHIVE_MEMBER_SHA256, {}, clear=True):
+                result = audit_receipt(receipt, root=root)
+
+        self.assertEqual(result["status"], "SOURCE_INPUTS_HASHED_CENTER_ARITHMETIC_PASS_ONLY")
+        self.assertEqual(result["noncenter_receipt_status"], "NONCENTER_RECEIPT_HASHED")
+        self.assertEqual(result["source_interval_provenance"], "NOT_VALIDATED")
+        self.assertEqual(result["source_artifact_check"]["missing"], [])
+        self.assertIn("does not derive or validate", result["claim_ceiling"])
 
     def test_ambiguous_or_legacy_physical_unit_fields_fail_closed(self):
         receipt = synthetic_receipt()
