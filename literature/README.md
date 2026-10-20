@@ -1,25 +1,29 @@
-# DPT 当前核心文献
+# OpenAI Math：完成原始论文深度精读的来源库
 
-主控从 [MAP](../DPT_MATH_RESEARCH_MAP.md) 开始。这里放当前课题重要、尚需落实 DPT 推导/验证或确认主控理解的 **7 份 PDF**；每次只读当前问题对应的 2–4 份。已经形成方法分析的材料，也可以因 transfer 尚未落实而留在这里。
+本目录按**论文阅读成熟度**组织，不再是“下一批重点论文”队列。收录标准：已直接读取原始 PDF 全文，按页核实承重定理/量词/假设及证明主链，记录必要的源版本和可检验 DPT 迁移边界。**深读完成并不表示独立重证作者整篇论文、运行 Lean/原计算归档，更不表示 DPT/Goal27 完整认证。**
 
-主控吸收状态尚未确认。论文位于核心区不表示“从未分析”，也不表示定理已能直接用于 native DPT。核心队列可按 evidence 调整；不会自动改变冻结证据、scientific claim 或仿真预算。
-
-| 核心 PDF | 本次优先落实任务 |
+| 论文 | 已核实的证明机制与严格使用边界 |
 |---|---|
-| [F116-A_noncommutative_hitting_point.pdf](F116-A_noncommutative_hitting_point.pdf) | 把当前 command representation 与独立 finite lift / detection 条件对应；确认 theorem 条件是否真正满足。 |
-| [F116-B_rational_hitting_lists.pdf](F116-B_rational_hitting_lists.pdf) | 落实每个 inverse occurrence 的 definedness；判断 hitting-list 类是否适用于当前 command，而非直接借用 headline。 |
-| [F266_dimension_six_MUB_certificate.pdf](F266_dimension_six_MUB_certificate.pdf) | 把已有 numerical result 的 center/tangent/remainder/readout/provenance 收成可检查证书；确认资源失败仍为 unresolved。 |
-| [F365-B_smooth_anisotropic_Calderon.pdf](F365-B_smooth_anisotropic_Calderon.pdf) | 判断简单 inverse/constant-rank theorem 是否已足够；若不足，再迁移 finite-probe / first-order cancellation 的 proof pattern。 |
-| [F357_regular_RCD_bi_Lipschitz_coordinates.pdf](F357_regular_RCD_bi_Lipschitz_coordinates.pdf) | 把 rank persistence、gain 和 remainder 接到同一声明邻域；检查 tangent-to-finite-radius 升级是否成立。 |
-| [F329_metric_entropy_duality_counterexample.pdf](F329_metric_entropy_duality_counterexample.pdf) | 在 matched history/command bank 上执行 noise-fiber goal-gap 检查；区分压缩 readout 与 archived raw feature。 |
-| [F140-A_Gaussian_regression_memory_precision.pdf](F140-A_Gaussian_regression_memory_precision.pdf) | 先落实 elementary goal-packing 下界与信息预算；只在 Gaussian/memory 假设匹配时考虑 source-specific sharp bound。 |
+| [F116-A](F116-A_noncommutative_hitting_point.pdf) | 原文 13 页；统一有理矩阵 hitting point、迭代积分与消失阶。**不**覆盖物理 command。 |
+| [F116-B](F116-B_rational_hitting_lists.pdf) | 原文 25 页；逆门 definedness、affine pencils 与 rational hitting lists。 |
+| [F125](F125_metric_k_median_recovery.pdf) | 原文 53 页；k-median anchor/proxy、预算严格性。独立 fork SHA。 |
+| [F229](F229_three_state_reconstruction.pdf) | 原文 60 页；三态重构、Blackwell experiment order、严格有限条件。 |
+| [F266](F266_dimension_six_MUB_certificate.pdf) | 原文 76 页；连续 cell 排除与计算证书流程。全部计算归档**未独立重放**。 |
+| [F329](F329_metric_entropy_duality_counterexample.pdf) | 原文 15 页；metric-entropy 极性对偶普适界反例，审查 Lemma 2.1/Props 3.2,4.2,4.3。 |
+| [F357](F357_regular_RCD_bi_Lipschitz_coordinates.pdf) | 原文 43 页；RCD 多尺度方向控制和双 Lipschitz 图，不能移植 Bochner 假设。 |
+| [F365-A](F365-A_metric_connection_partial_boundary.pdf) | 原文 50 页；metric+unitary connection 全连续边界算子、规范等价。 |
+| [F365-B](F365-B_smooth_anisotropic_Calderon.pdf) | 原文 43 页；Calderón 全局部 DN 唯一性、finite probe 的强前提。 |
+| [F365-C](F365-C_rough_scalar_conductivity_nonuniqueness.pdf) | 原文 33 页；有界可测标量电导率 full DN 非唯一性，正则性边界。 |
+| [F372](F372_smooth_isotropic_elasticity_uniqueness.pdf) | 原文 24 页；静态各向同性弹性全边界算子与系数唯一性。 |
+| [F374](F374_Brenier_one_third_stability.pdf) | 原文 18 页；Brenier 映射 1/3 稳定性与三原子 sharp 反例复算。 |
+| [F376-A](F376-A_solenoidal_shear_instructions.pdf) | 原文 14 页；solenoidal shear 的连续时刻计算模拟与历史保持；**F376 Lean scope 不覆盖此 companion**。 |
 
-## 对应与维护
+**数量与来源身份：**上表共 13 篇，其中 12 篇来自固定 OpenAI `openai/math` snapshot commit `fd4aeeb2ee4fc729c18d98444fed42fd0529eeeb`；F125 来自独立 fork `Gogoal-L/math` commit `014f3ab440592123fafa5c6b67b5e3105587f0f8`、原文件 SHA256 `823fdb284a7d3c0e3089869ba2da3d394db4f19b1c2ab56477ce6ae1b232614b`，不可把它算入固定 snapshot 的 33 篇。全部源身份与 SHA 对照以 [registry.json](registry.json) 为准，所涉 PDF 原字节未修改。
 
-- [literature_archive/](../literature_archive/README.md) 保存其余 26 份 PDF、原有方法分析的来源及完整论文对照表。归档材料按 reopen condition 调用。
-- [registry.json](registry.json) 是两个目录共用的来源索引，记录 reading tier、pending task、未确认的主控吸收状态与精确 source commit/hash。
-- 核心 Lean 阅读快照仅保留 F116 的两个 selected statement、F266 的 MUB statement、F329 的反例 statement，以及 F140 的 memory/precision statement和相关 scope。scope 中其他 companion 链接可指向归档。F365-B 无对应 selected coverage；F357 在 pinned commit 无 scope，不给它们借用 sibling 的形式化背书。
-- Selected-statement `.lean` 是 Comparator 命题声明，不是独立证明包；完整 Lean proof、imports 和 comparator 配置继续位于原仓库 [lean/](../lean/)。
-- [完整来源对照、手动增量检查和校验命令](../literature_archive/README.md#手动增量检查) 保留在归档说明。默认 `watch_paths` 只检查核心队列，重开归档时使用 `archive_watch_paths`。
+**阅读证据：**F116-A/B、F125、F229、F266、F357、F365-A/B/C、F372、F374、F376-A 具有项目只读研究库中的 `DEEP_READ_V1` 逐页、证明链和适用条件笔记。本次还直接检查 F329 的完整 15 页原始 PDF（Theorem 1.1、Lemma 2.1、Propositions 3.2/4.2/4.3 及 §5 依赖顺序）。未把本地原始 archive/vendor 或私有研究笔记上传 GitHub。
 
-快照源：OpenAI `openai/math` commit `fd4aeeb2ee4fc729c18d98444fed42fd0529eeeb`。PDF 与 selected statement 的内容字节保持不变；scope 仅调整归档链接。[LICENSE](LICENSE) 保留原许可。
+**Lean 范围：**[lean/](lean/) 的 `Fxxx_scope.md` 和 `Fxxx_*.lean` 是**原文选定 statement 的阅读快照**，不等于本目录里的 PDF 已有完整可复验 Lean 证明。F266 的 selected at-most-five **不能**支持论文 headline at-most-three；F365 scope 仅覆盖 C 的 nonuniqueness（不覆盖 A/B）；F376-A 对应的家族 companion Lean scope 仍留 archive。
+
+**DPT 使用：**文献机制只能在额外证明原问题的 model class、guard/branch、连续参数域、误差 enclosure 和合法 PREP→CAL history 后迁移。F266 的穷尽证书思想与 Q1 source-root/interval cover 最相关，但其论文原计算归档缺件仍不构成本项目所有 50D roots 的证书。新的读论文工作从 [literature_archive/](../literature_archive/README.md) 进入，只有补齐全文及证明审读证据才转入本目录。完整 pinned source、书目和手动更新流程保留在归档 README。
+
+来源许可原样保留：[LICENSE](LICENSE)。

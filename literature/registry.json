@@ -21,7 +21,10 @@
       "reading_tier": "core",
       "controller_absorption": "Unconfirmed; no controller acknowledgement supplied.",
       "dpt_implementation": "Existing MAP analysis / synthetic tool support where recorded; native transfer not established by this migration.",
-      "pending_task": "把当前 command representation 与独立 finite lift / detection 条件对应；确认 theorem 条件是否真正满足。"
+      "pending_task": "把当前 command representation 与独立 finite lift / detection 条件对应；确认 theorem 条件是否真正满足。",
+      "reading_status": "DEEP_READ_PRIMARY_SOURCE_PROOF_CHAIN_SCOPED",
+      "reading_evidence": "Independent project read-only DEEP_READ_V1 full-PDF page-grounded source study; key theorem/proof hypotheses and DPT non-transfer boundaries recorded, not full independent formal verification",
+      "dpt_transfer_status": "Separate proof required: no paper status implies full source S150/Goal27 history outer or hardware claim."
     },
     {
       "id": "F116-B",
@@ -38,24 +41,30 @@
       "reading_tier": "core",
       "controller_absorption": "Unconfirmed; no controller acknowledgement supplied.",
       "dpt_implementation": "Existing MAP analysis / synthetic tool support where recorded; native transfer not established by this migration.",
-      "pending_task": "落实每个 inverse occurrence 的 definedness；判断 hitting-list 类是否适用于当前 command，而非直接借用 headline。"
+      "pending_task": "落实每个 inverse occurrence 的 definedness；判断 hitting-list 类是否适用于当前 command，而非直接借用 headline。",
+      "reading_status": "DEEP_READ_PRIMARY_SOURCE_PROOF_CHAIN_SCOPED",
+      "reading_evidence": "Independent project read-only DEEP_READ_V1 full-PDF page-grounded source study; key theorem/proof hypotheses and DPT non-transfer boundaries recorded, not full independent formal verification",
+      "dpt_transfer_status": "Separate proof required: no paper status implies full source S150/Goal27 history outer or hardware claim."
     },
     {
       "id": "F229",
       "family": "229",
       "title": "The exact reconstruction threshold for the three-state symmetric channel",
       "question": "acquisition",
-      "pdf": "literature_archive/F229_three_state_reconstruction.pdf",
+      "pdf": "literature/F229_three_state_reconstruction.pdf",
       "upstream_path": "preprints/The-exact-reconstruction-threshold-for-the-three-state-symmetric-channel-September-25-2026/paper.pdf",
       "version_notes": "preprints/The-exact-reconstruction-threshold-for-the-three-state-symmetric-channel-September-25-2026/README.md",
       "map_locator": "F229",
       "theorem_transfer": "Independent DPT derivation or proof-pattern use; see MAP, not a native claim.",
-      "lean_scope": "literature_archive/lean/F229_scope.md",
+      "lean_scope": "literature/lean/F229_scope.md",
       "lean_coverage": "有 family selected scope；对应原模型与 selected statement，DPT transfer 另行证明。",
-      "reading_tier": "archive",
+      "reading_tier": "core",
       "controller_absorption": "Unconfirmed; no controller acknowledgement supplied.",
       "dpt_implementation": "Existing MAP analysis / synthetic tool support where recorded; native transfer not established by this migration.",
-      "pending_task": "按原 MAP 的 reopen condition 调用；不在当前默认落实队列。"
+      "pending_task": "按原 MAP 的 reopen condition 调用；不在当前默认落实队列。",
+      "reading_status": "DEEP_READ_PRIMARY_SOURCE_PROOF_CHAIN_SCOPED",
+      "reading_evidence": "Independent project read-only DEEP_READ_V1 full-PDF page-grounded source study; key theorem/proof hypotheses and DPT non-transfer boundaries recorded, not full independent formal verification",
+      "dpt_transfer_status": "Separate proof required: no paper status implies full source S150/Goal27 history outer or hardware claim."
     },
     {
       "id": "F266",
@@ -72,24 +81,30 @@
       "reading_tier": "core",
       "controller_absorption": "Unconfirmed; no controller acknowledgement supplied.",
       "dpt_implementation": "Existing MAP analysis / synthetic tool support where recorded; native transfer not established by this migration.",
-      "pending_task": "把已有 numerical result 的 center/tangent/remainder/readout/provenance 收成可检查证书；确认资源失败仍为 unresolved。"
+      "pending_task": "把已有 numerical result 的 center/tangent/remainder/readout/provenance 收成可检查证书；确认资源失败仍为 unresolved。",
+      "reading_status": "DEEP_READ_PRIMARY_SOURCE_PROOF_CHAIN_SCOPED",
+      "reading_evidence": "Independent project read-only DEEP_READ_V1 full-PDF page-grounded source study; key theorem/proof hypotheses and DPT non-transfer boundaries recorded, not full independent formal verification",
+      "dpt_transfer_status": "Separate proof required: no paper status implies full source S150/Goal27 history outer or hardware claim."
     },
     {
       "id": "F365-A",
       "family": "365",
       "title": "Determination of a metric and a unitary connection from one boundary patch",
       "question": "identifiability",
-      "pdf": "literature_archive/F365-A_metric_connection_partial_boundary.pdf",
+      "pdf": "literature/F365-A_metric_connection_partial_boundary.pdf",
       "upstream_path": "preprints/Determination-of-a-metric-and-a-unitary-connection-from-one-boundary-patch-October-5-2026/paper.pdf",
       "version_notes": "preprints/Determination-of-a-metric-and-a-unitary-connection-from-one-boundary-patch-October-5-2026/README.md",
       "map_locator": "F365-A",
       "theorem_transfer": "Independent DPT derivation or proof-pattern use; see MAP, not a native claim.",
-      "lean_scope": "literature_archive/lean/F365_scope.md",
+      "lean_scope": "literature/lean/F365_scope.md",
       "lean_coverage": "未覆盖：365 scope 仅覆盖 F365-C。",
-      "reading_tier": "archive",
+      "reading_tier": "core",
       "controller_absorption": "Unconfirmed; no controller acknowledgement supplied.",
       "dpt_implementation": "Existing MAP analysis / synthetic tool support where recorded; native transfer not established by this migration.",
-      "pending_task": "按原 MAP 的 reopen condition 调用；不在当前默认落实队列。"
+      "pending_task": "按原 MAP 的 reopen condition 调用；不在当前默认落实队列。",
+      "reading_status": "DEEP_READ_PRIMARY_SOURCE_PROOF_CHAIN_SCOPED",
+      "reading_evidence": "Independent project read-only DEEP_READ_V1 full-PDF page-grounded source study; key theorem/proof hypotheses and DPT non-transfer boundaries recorded, not full independent formal verification",
+      "dpt_transfer_status": "Separate proof required: no paper status implies full source S150/Goal27 history outer or hardware claim."
     },
     {
       "id": "F365-B",
@@ -101,63 +116,75 @@
       "version_notes": "preprints/Smooth-Anisotropic-Uniqueness-in-the-Calderon-Problem-from-One-Boundary-Patch-September-24-2026/README.md",
       "map_locator": "F365-B",
       "theorem_transfer": "Independent DPT derivation or proof-pattern use; see MAP, not a native claim.",
-      "lean_scope": "literature_archive/lean/F365_scope.md",
+      "lean_scope": "literature/lean/F365_scope.md",
       "lean_coverage": "未覆盖：365 scope 仅覆盖 F365-C。",
       "reading_tier": "core",
       "controller_absorption": "Unconfirmed; no controller acknowledgement supplied.",
       "dpt_implementation": "Existing MAP analysis / synthetic tool support where recorded; native transfer not established by this migration.",
-      "pending_task": "判断简单 inverse/constant-rank theorem 是否已足够；若不足，再迁移 finite-probe / first-order cancellation 的 proof pattern。"
+      "pending_task": "判断简单 inverse/constant-rank theorem 是否已足够；若不足，再迁移 finite-probe / first-order cancellation 的 proof pattern。",
+      "reading_status": "DEEP_READ_PRIMARY_SOURCE_PROOF_CHAIN_SCOPED",
+      "reading_evidence": "Independent project read-only DEEP_READ_V1 full-PDF page-grounded source study; key theorem/proof hypotheses and DPT non-transfer boundaries recorded, not full independent formal verification",
+      "dpt_transfer_status": "Separate proof required: no paper status implies full source S150/Goal27 history outer or hardware claim."
     },
     {
       "id": "F365-C",
       "family": "365",
       "title": "Nonuniqueness for Bounded Measurable Scalar Conductivities in Three Dimensions",
       "question": "identifiability",
-      "pdf": "literature_archive/F365-C_rough_scalar_conductivity_nonuniqueness.pdf",
+      "pdf": "literature/F365-C_rough_scalar_conductivity_nonuniqueness.pdf",
       "upstream_path": "preprints/Nonuniqueness-for-Bounded-Measurable-Scalar-Conductivities-in-Three-Dimensions-September-23-2026/paper.pdf",
       "version_notes": "preprints/Nonuniqueness-for-Bounded-Measurable-Scalar-Conductivities-in-Three-Dimensions-September-23-2026/README.md",
       "map_locator": "F365-C",
       "theorem_transfer": "Independent DPT derivation or proof-pattern use; see MAP, not a native claim.",
-      "lean_scope": "literature_archive/lean/F365_scope.md",
+      "lean_scope": "literature/lean/F365_scope.md",
       "lean_coverage": "覆盖 selected scalar-conductivity nonuniqueness statement。",
-      "reading_tier": "archive",
+      "reading_tier": "core",
       "controller_absorption": "Unconfirmed; no controller acknowledgement supplied.",
       "dpt_implementation": "Existing MAP analysis / synthetic tool support where recorded; native transfer not established by this migration.",
-      "pending_task": "按原 MAP 的 reopen condition 调用；不在当前默认落实队列。"
+      "pending_task": "按原 MAP 的 reopen condition 调用；不在当前默认落实队列。",
+      "reading_status": "DEEP_READ_PRIMARY_SOURCE_PROOF_CHAIN_SCOPED",
+      "reading_evidence": "Independent project read-only DEEP_READ_V1 full-PDF page-grounded source study; key theorem/proof hypotheses and DPT non-transfer boundaries recorded, not full independent formal verification",
+      "dpt_transfer_status": "Separate proof required: no paper status implies full source S150/Goal27 history outer or hardware claim."
     },
     {
       "id": "F372",
       "family": "372",
       "title": "Global Uniqueness for the Smooth Isotropic Elasticity Inverse Problem",
       "question": "identifiability",
-      "pdf": "literature_archive/F372_smooth_isotropic_elasticity_uniqueness.pdf",
+      "pdf": "literature/F372_smooth_isotropic_elasticity_uniqueness.pdf",
       "upstream_path": "preprints/Global-Uniqueness-for-the-Smooth-Isotropic-Elasticity-Inverse-Problem-September-24-2026/article.pdf",
       "version_notes": "preprints/Global-Uniqueness-for-the-Smooth-Isotropic-Elasticity-Inverse-Problem-September-24-2026/README.md",
       "map_locator": "F372",
       "theorem_transfer": "Independent DPT derivation or proof-pattern use; see MAP, not a native claim.",
-      "lean_scope": "literature_archive/lean/F372_scope.md",
+      "lean_scope": "literature/lean/F372_scope.md",
       "lean_coverage": "有 family selected scope；对应原模型与 selected statement，DPT transfer 另行证明。",
-      "reading_tier": "archive",
+      "reading_tier": "core",
       "controller_absorption": "Unconfirmed; no controller acknowledgement supplied.",
       "dpt_implementation": "Existing MAP analysis / synthetic tool support where recorded; native transfer not established by this migration.",
-      "pending_task": "按原 MAP 的 reopen condition 调用；不在当前默认落实队列。"
+      "pending_task": "按原 MAP 的 reopen condition 调用；不在当前默认落实队列。",
+      "reading_status": "DEEP_READ_PRIMARY_SOURCE_PROOF_CHAIN_SCOPED",
+      "reading_evidence": "Independent project read-only DEEP_READ_V1 full-PDF page-grounded source study; key theorem/proof hypotheses and DPT non-transfer boundaries recorded, not full independent formal verification",
+      "dpt_transfer_status": "Separate proof required: no paper status implies full source S150/Goal27 history outer or hardware claim."
     },
     {
       "id": "F374",
       "family": "374",
       "title": "SHARP ONE-THIRD STABILITY OF BRENIER MAPS",
       "question": "stability",
-      "pdf": "literature_archive/F374_Brenier_one_third_stability.pdf",
+      "pdf": "literature/F374_Brenier_one_third_stability.pdf",
       "upstream_path": "preprints/Sharp-One-Third-Stability-of-Brenier-Maps-September-25-2026/article.pdf",
       "version_notes": "preprints/Sharp-One-Third-Stability-of-Brenier-Maps-September-25-2026/README.md",
       "map_locator": "F374",
       "theorem_transfer": "Independent DPT derivation or proof-pattern use; see MAP, not a native claim.",
-      "lean_scope": "literature_archive/lean/F374_scope.md",
+      "lean_scope": "literature/lean/F374_scope.md",
       "lean_coverage": "有 family selected scope；对应原模型与 selected statement，DPT transfer 另行证明。",
-      "reading_tier": "archive",
+      "reading_tier": "core",
       "controller_absorption": "Unconfirmed; no controller acknowledgement supplied.",
       "dpt_implementation": "Existing MAP analysis / synthetic tool support where recorded; native transfer not established by this migration.",
-      "pending_task": "按原 MAP 的 reopen condition 调用；不在当前默认落实队列。"
+      "pending_task": "按原 MAP 的 reopen condition 调用；不在当前默认落实队列。",
+      "reading_status": "DEEP_READ_PRIMARY_SOURCE_PROOF_CHAIN_SCOPED",
+      "reading_evidence": "Independent project read-only DEEP_READ_V1 full-PDF page-grounded source study; key theorem/proof hypotheses and DPT non-transfer boundaries recorded, not full independent formal verification",
+      "dpt_transfer_status": "Separate proof required: no paper status implies full source S150/Goal27 history outer or hardware claim."
     },
     {
       "id": "F357",
@@ -174,7 +201,10 @@
       "reading_tier": "core",
       "controller_absorption": "Unconfirmed; no controller acknowledgement supplied.",
       "dpt_implementation": "Existing MAP analysis / synthetic tool support where recorded; native transfer not established by this migration.",
-      "pending_task": "把 rank persistence、gain 和 remainder 接到同一声明邻域；检查 tangent-to-finite-radius 升级是否成立。"
+      "pending_task": "把 rank persistence、gain 和 remainder 接到同一声明邻域；检查 tangent-to-finite-radius 升级是否成立。",
+      "reading_status": "DEEP_READ_PRIMARY_SOURCE_PROOF_CHAIN_SCOPED",
+      "reading_evidence": "Independent project read-only DEEP_READ_V1 full-PDF page-grounded source study; key theorem/proof hypotheses and DPT non-transfer boundaries recorded, not full independent formal verification",
+      "dpt_transfer_status": "Separate proof required: no paper status implies full source S150/Goal27 history outer or hardware claim."
     },
     {
       "id": "F330",
@@ -191,7 +221,10 @@
       "reading_tier": "archive",
       "controller_absorption": "Unconfirmed; no controller acknowledgement supplied.",
       "dpt_implementation": "Existing MAP analysis / synthetic tool support where recorded; native transfer not established by this migration.",
-      "pending_task": "按原 MAP 的 reopen condition 调用；不在当前默认落实队列。"
+      "pending_task": "按原 MAP 的 reopen condition 调用；不在当前默认落实队列。",
+      "reading_status": "ACTIVE_OR_CANDIDATE_NOT_DEEP_VERIFIED",
+      "reading_evidence": "No verified completed full-PDF proof-chain record in the current audit; may have selected statement/partial method notes.",
+      "dpt_transfer_status": "Separate proof required: no paper status implies full source S150/Goal27 history outer or hardware claim."
     },
     {
       "id": "F094",
@@ -208,7 +241,10 @@
       "reading_tier": "archive",
       "controller_absorption": "Unconfirmed; no controller acknowledgement supplied.",
       "dpt_implementation": "Existing MAP analysis / synthetic tool support where recorded; native transfer not established by this migration.",
-      "pending_task": "按原 MAP 的 reopen condition 调用；不在当前默认落实队列。"
+      "pending_task": "按原 MAP 的 reopen condition 调用；不在当前默认落实队列。",
+      "reading_status": "ACTIVE_OR_CANDIDATE_NOT_DEEP_VERIFIED",
+      "reading_evidence": "No verified completed full-PDF proof-chain record in the current audit; may have selected statement/partial method notes.",
+      "dpt_transfer_status": "Separate proof required: no paper status implies full source S150/Goal27 history outer or hardware claim."
     },
     {
       "id": "F098",
@@ -225,7 +261,10 @@
       "reading_tier": "archive",
       "controller_absorption": "Unconfirmed; no controller acknowledgement supplied.",
       "dpt_implementation": "Existing MAP analysis / synthetic tool support where recorded; native transfer not established by this migration.",
-      "pending_task": "按原 MAP 的 reopen condition 调用；不在当前默认落实队列。"
+      "pending_task": "按原 MAP 的 reopen condition 调用；不在当前默认落实队列。",
+      "reading_status": "ACTIVE_OR_CANDIDATE_NOT_DEEP_VERIFIED",
+      "reading_evidence": "No verified completed full-PDF proof-chain record in the current audit; may have selected statement/partial method notes.",
+      "dpt_transfer_status": "Separate proof required: no paper status implies full source S150/Goal27 history outer or hardware claim."
     },
     {
       "id": "F289-A",
@@ -242,7 +281,10 @@
       "reading_tier": "archive",
       "controller_absorption": "Unconfirmed; no controller acknowledgement supplied.",
       "dpt_implementation": "Existing MAP analysis / synthetic tool support where recorded; native transfer not established by this migration.",
-      "pending_task": "按原 MAP 的 reopen condition 调用；不在当前默认落实队列。"
+      "pending_task": "按原 MAP 的 reopen condition 调用；不在当前默认落实队列。",
+      "reading_status": "ACTIVE_OR_CANDIDATE_NOT_DEEP_VERIFIED",
+      "reading_evidence": "No verified completed full-PDF proof-chain record in the current audit; may have selected statement/partial method notes.",
+      "dpt_transfer_status": "Separate proof required: no paper status implies full source S150/Goal27 history outer or hardware claim."
     },
     {
       "id": "F289-B",
@@ -259,7 +301,10 @@
       "reading_tier": "archive",
       "controller_absorption": "Unconfirmed; no controller acknowledgement supplied.",
       "dpt_implementation": "Existing MAP analysis / synthetic tool support where recorded; native transfer not established by this migration.",
-      "pending_task": "按原 MAP 的 reopen condition 调用；不在当前默认落实队列。"
+      "pending_task": "按原 MAP 的 reopen condition 调用；不在当前默认落实队列。",
+      "reading_status": "ACTIVE_OR_CANDIDATE_NOT_DEEP_VERIFIED",
+      "reading_evidence": "No verified completed full-PDF proof-chain record in the current audit; may have selected statement/partial method notes.",
+      "dpt_transfer_status": "Separate proof required: no paper status implies full source S150/Goal27 history outer or hardware claim."
     },
     {
       "id": "F251",
@@ -276,7 +321,10 @@
       "reading_tier": "archive",
       "controller_absorption": "Unconfirmed; no controller acknowledgement supplied.",
       "dpt_implementation": "Existing MAP analysis / synthetic tool support where recorded; native transfer not established by this migration.",
-      "pending_task": "按原 MAP 的 reopen condition 调用；不在当前默认落实队列。"
+      "pending_task": "按原 MAP 的 reopen condition 调用；不在当前默认落实队列。",
+      "reading_status": "ACTIVE_OR_CANDIDATE_NOT_DEEP_VERIFIED",
+      "reading_evidence": "No verified completed full-PDF proof-chain record in the current audit; may have selected statement/partial method notes.",
+      "dpt_transfer_status": "Separate proof required: no paper status implies full source S150/Goal27 history outer or hardware claim."
     },
     {
       "id": "F325-A",
@@ -293,7 +341,10 @@
       "reading_tier": "archive",
       "controller_absorption": "Unconfirmed; no controller acknowledgement supplied.",
       "dpt_implementation": "Existing MAP analysis / synthetic tool support where recorded; native transfer not established by this migration.",
-      "pending_task": "按原 MAP 的 reopen condition 调用；不在当前默认落实队列。"
+      "pending_task": "按原 MAP 的 reopen condition 调用；不在当前默认落实队列。",
+      "reading_status": "ACTIVE_OR_CANDIDATE_NOT_DEEP_VERIFIED",
+      "reading_evidence": "No verified completed full-PDF proof-chain record in the current audit; may have selected statement/partial method notes.",
+      "dpt_transfer_status": "Separate proof required: no paper status implies full source S150/Goal27 history outer or hardware claim."
     },
     {
       "id": "F363",
@@ -310,7 +361,10 @@
       "reading_tier": "archive",
       "controller_absorption": "Unconfirmed; no controller acknowledgement supplied.",
       "dpt_implementation": "Existing MAP analysis / synthetic tool support where recorded; native transfer not established by this migration.",
-      "pending_task": "按原 MAP 的 reopen condition 调用；不在当前默认落实队列。"
+      "pending_task": "按原 MAP 的 reopen condition 调用；不在当前默认落实队列。",
+      "reading_status": "ACTIVE_OR_CANDIDATE_NOT_DEEP_VERIFIED",
+      "reading_evidence": "No verified completed full-PDF proof-chain record in the current audit; may have selected statement/partial method notes.",
+      "dpt_transfer_status": "Separate proof required: no paper status implies full source S150/Goal27 history outer or hardware claim."
     },
     {
       "id": "F129",
@@ -327,7 +381,10 @@
       "reading_tier": "archive",
       "controller_absorption": "Unconfirmed; no controller acknowledgement supplied.",
       "dpt_implementation": "Existing MAP analysis / synthetic tool support where recorded; native transfer not established by this migration.",
-      "pending_task": "按原 MAP 的 reopen condition 调用；不在当前默认落实队列。"
+      "pending_task": "按原 MAP 的 reopen condition 调用；不在当前默认落实队列。",
+      "reading_status": "ACTIVE_OR_CANDIDATE_NOT_DEEP_VERIFIED",
+      "reading_evidence": "Scoped conditional DPT transfer proof and synthetic regression recorded, but this audit lacks completed primary full-PDF reading proof chain.",
+      "dpt_transfer_status": "Independently proved/tested CONDITIONAL finite-domain DPT method in dpt_research/20261011_F119_F129_F132_proof_level_DPT_bridge.md and dpt_tools/test_paper_transfer_falsifiers.py; paper not full primary deep-read, original SiC 50D/hardware unchanged OPEN"
     },
     {
       "id": "F332",
@@ -344,7 +401,10 @@
       "reading_tier": "archive",
       "controller_absorption": "Unconfirmed; no controller acknowledgement supplied.",
       "dpt_implementation": "Existing MAP analysis / synthetic tool support where recorded; native transfer not established by this migration.",
-      "pending_task": "按原 MAP 的 reopen condition 调用；不在当前默认落实队列。"
+      "pending_task": "按原 MAP 的 reopen condition 调用；不在当前默认落实队列。",
+      "reading_status": "ACTIVE_OR_CANDIDATE_NOT_DEEP_VERIFIED",
+      "reading_evidence": "No verified completed full-PDF proof-chain record in the current audit; may have selected statement/partial method notes.",
+      "dpt_transfer_status": "Separate proof required: no paper status implies full source S150/Goal27 history outer or hardware claim."
     },
     {
       "id": "F324",
@@ -361,7 +421,10 @@
       "reading_tier": "archive",
       "controller_absorption": "Unconfirmed; no controller acknowledgement supplied.",
       "dpt_implementation": "Existing MAP analysis / synthetic tool support where recorded; native transfer not established by this migration.",
-      "pending_task": "按原 MAP 的 reopen condition 调用；不在当前默认落实队列。"
+      "pending_task": "按原 MAP 的 reopen condition 调用；不在当前默认落实队列。",
+      "reading_status": "ACTIVE_OR_CANDIDATE_NOT_DEEP_VERIFIED",
+      "reading_evidence": "No verified completed full-PDF proof-chain record in the current audit; may have selected statement/partial method notes.",
+      "dpt_transfer_status": "Separate proof required: no paper status implies full source S150/Goal27 history outer or hardware claim."
     },
     {
       "id": "F329",
@@ -378,24 +441,30 @@
       "reading_tier": "core",
       "controller_absorption": "Unconfirmed; no controller acknowledgement supplied.",
       "dpt_implementation": "Existing MAP analysis / synthetic tool support where recorded; native transfer not established by this migration.",
-      "pending_task": "在 matched history/command bank 上执行 noise-fiber goal-gap 检查；区分压缩 readout 与 archived raw feature。"
+      "pending_task": "在 matched history/command bank 上执行 noise-fiber goal-gap 检查；区分压缩 readout 与 archived raw feature。",
+      "reading_status": "DEEP_READ_PRIMARY_SOURCE_PROOF_CHAIN_SCOPED",
+      "reading_evidence": "15-page original PDF fully inspected; Theorem 1.1, Lemma 2.1, Props 3.2/4.2/4.3 and Section 5 source-to-proof bridge checked on 2026-10-20",
+      "dpt_transfer_status": "Separate proof required: no paper status implies full source S150/Goal27 history outer or hardware claim."
     },
     {
       "id": "F376-A",
       "family": "376",
       "title": "Finite Instructions and Solenoidal Shear Flows",
       "question": "command-algebra",
-      "pdf": "literature_archive/F376-A_solenoidal_shear_instructions.pdf",
+      "pdf": "literature/F376-A_solenoidal_shear_instructions.pdf",
       "upstream_path": "preprints/Finite-Instructions-and-Solenoidal-Shear-Flows-September-27-2026/manuscript.pdf",
       "version_notes": "preprints/Finite-Instructions-and-Solenoidal-Shear-Flows-September-27-2026/README.md",
       "map_locator": "F376-A",
       "theorem_transfer": "Independent DPT derivation or proof-pattern use; see MAP, not a native claim.",
       "lean_scope": "literature_archive/lean/F376_scope.md",
       "lean_coverage": "family scope 指向其他 sheet/detector papers；本 companion 的 exact statement 对应未独立核验。",
-      "reading_tier": "archive",
+      "reading_tier": "core",
       "controller_absorption": "Unconfirmed; no controller acknowledgement supplied.",
       "dpt_implementation": "Existing MAP analysis / synthetic tool support where recorded; native transfer not established by this migration.",
-      "pending_task": "按原 MAP 的 reopen condition 调用；不在当前默认落实队列。"
+      "pending_task": "按原 MAP 的 reopen condition 调用；不在当前默认落实队列。",
+      "reading_status": "DEEP_READ_PRIMARY_SOURCE_PROOF_CHAIN_SCOPED",
+      "reading_evidence": "Independent project read-only DEEP_READ_V1 full-PDF page-grounded source study; key theorem/proof hypotheses and DPT non-transfer boundaries recorded, not full independent formal verification",
+      "dpt_transfer_status": "Separate proof required: no paper status implies full source S150/Goal27 history outer or hardware claim."
     },
     {
       "id": "F376-B",
@@ -412,7 +481,10 @@
       "reading_tier": "archive",
       "controller_absorption": "Unconfirmed; no controller acknowledgement supplied.",
       "dpt_implementation": "Existing MAP analysis / synthetic tool support where recorded; native transfer not established by this migration.",
-      "pending_task": "按原 MAP 的 reopen condition 调用；不在当前默认落实队列。"
+      "pending_task": "按原 MAP 的 reopen condition 调用；不在当前默认落实队列。",
+      "reading_status": "ACTIVE_OR_CANDIDATE_NOT_DEEP_VERIFIED",
+      "reading_evidence": "No verified completed full-PDF proof-chain record in the current audit; may have selected statement/partial method notes.",
+      "dpt_transfer_status": "Separate proof required: no paper status implies full source S150/Goal27 history outer or hardware claim."
     },
     {
       "id": "F132",
@@ -429,7 +501,10 @@
       "reading_tier": "archive",
       "controller_absorption": "Unconfirmed; no controller acknowledgement supplied.",
       "dpt_implementation": "Existing MAP analysis / synthetic tool support where recorded; native transfer not established by this migration.",
-      "pending_task": "按原 MAP 的 reopen condition 调用；不在当前默认落实队列。"
+      "pending_task": "按原 MAP 的 reopen condition 调用；不在当前默认落实队列。",
+      "reading_status": "ACTIVE_OR_CANDIDATE_NOT_DEEP_VERIFIED",
+      "reading_evidence": "Scoped conditional DPT transfer proof and synthetic regression recorded, but this audit lacks completed primary full-PDF reading proof chain.",
+      "dpt_transfer_status": "Independently proved/tested CONDITIONAL finite-domain DPT method in dpt_research/20261011_F119_F129_F132_proof_level_DPT_bridge.md and dpt_tools/test_paper_transfer_falsifiers.py; paper not full primary deep-read, original SiC 50D/hardware unchanged OPEN"
     },
     {
       "id": "F122-A",
@@ -446,7 +521,10 @@
       "reading_tier": "archive",
       "controller_absorption": "Unconfirmed; no controller acknowledgement supplied.",
       "dpt_implementation": "Existing MAP analysis / synthetic tool support where recorded; native transfer not established by this migration.",
-      "pending_task": "按原 MAP 的 reopen condition 调用；不在当前默认落实队列。"
+      "pending_task": "按原 MAP 的 reopen condition 调用；不在当前默认落实队列。",
+      "reading_status": "ACTIVE_OR_CANDIDATE_NOT_DEEP_VERIFIED",
+      "reading_evidence": "No verified completed full-PDF proof-chain record in the current audit; may have selected statement/partial method notes.",
+      "dpt_transfer_status": "Separate proof required: no paper status implies full source S150/Goal27 history outer or hardware claim."
     },
     {
       "id": "F122-B",
@@ -463,7 +541,10 @@
       "reading_tier": "archive",
       "controller_absorption": "Unconfirmed; no controller acknowledgement supplied.",
       "dpt_implementation": "SIDE_VERIFIED: goal_ambiguity_audit.py --gaussian-repeat-goal (shared drift / exact two-hypothesis Gaussian repeats), --marginal-only-fusion (sharp finite categorical dependence and optional Hall support leakage), test_goal_ceiling_tools.py, conditional mathematical only. Native SiC hardware/source calibration and absorption pending.",
-      "pending_task": "Provide same-reference legal history pair, complete predictor-visible digital commands, physically justified pretarget sensor/noise correlation or joint categorical PMF/support/tail bounds, goal tolerance, source-scored holdout; compare best single sensor and full command ordinary before any Main acceptance."
+      "pending_task": "Provide same-reference legal history pair, complete predictor-visible digital commands, physically justified pretarget sensor/noise correlation or joint categorical PMF/support/tail bounds, goal tolerance, source-scored holdout; compare best single sensor and full command ordinary before any Main acceptance.",
+      "reading_status": "ACTIVE_OR_CANDIDATE_NOT_DEEP_VERIFIED",
+      "reading_evidence": "No verified completed full-PDF proof-chain record in the current audit; may have selected statement/partial method notes.",
+      "dpt_transfer_status": "Separate proof required: no paper status implies full source S150/Goal27 history outer or hardware claim."
     },
     {
       "id": "F355",
@@ -480,24 +561,30 @@
       "reading_tier": "archive",
       "controller_absorption": "Unconfirmed; no controller acknowledgement supplied.",
       "dpt_implementation": "Existing MAP analysis / synthetic tool support where recorded; native transfer not established by this migration.",
-      "pending_task": "按原 MAP 的 reopen condition 调用；不在当前默认落实队列。"
+      "pending_task": "按原 MAP 的 reopen condition 调用；不在当前默认落实队列。",
+      "reading_status": "ACTIVE_OR_CANDIDATE_NOT_DEEP_VERIFIED",
+      "reading_evidence": "No verified completed full-PDF proof-chain record in the current audit; may have selected statement/partial method notes.",
+      "dpt_transfer_status": "Separate proof required: no paper status implies full source S150/Goal27 history outer or hardware claim."
     },
     {
       "id": "F140-A",
       "family": "140",
       "title": "Memory and precision in noiseless Gaussian regression",
       "question": "information",
-      "pdf": "literature/F140-A_Gaussian_regression_memory_precision.pdf",
+      "pdf": "literature_archive/F140-A_Gaussian_regression_memory_precision.pdf",
       "upstream_path": "preprints/Memory-and-precision-in-noiseless-Gaussian-regression-September-27-2026/paper.pdf",
       "version_notes": "preprints/Memory-and-precision-in-noiseless-Gaussian-regression-September-27-2026/README.md",
       "map_locator": "F140-A",
       "theorem_transfer": "Independent DPT derivation or proof-pattern use; see MAP, not a native claim.",
-      "lean_scope": "literature/lean/F140_scope.md",
+      "lean_scope": "literature_archive/lean/F140_scope.md",
       "lean_coverage": "有 family selected scope；对应原模型与 selected statement，DPT transfer 另行证明。",
-      "reading_tier": "core",
+      "reading_tier": "archive",
       "controller_absorption": "Unconfirmed; no controller acknowledgement supplied.",
       "dpt_implementation": "Existing MAP analysis / synthetic tool support where recorded; native transfer not established by this migration.",
-      "pending_task": "先落实 elementary goal-packing 下界与信息预算；只在 Gaussian/memory 假设匹配时考虑 source-specific sharp bound。"
+      "pending_task": "先落实 elementary goal-packing 下界与信息预算；只在 Gaussian/memory 假设匹配时考虑 source-specific sharp bound。",
+      "reading_status": "ACTIVE_OR_CANDIDATE_NOT_DEEP_VERIFIED",
+      "reading_evidence": "No verified completed full-PDF proof-chain record in the current audit; may have selected statement/partial method notes.",
+      "dpt_transfer_status": "Separate proof required: no paper status implies full source S150/Goal27 history outer or hardware claim."
     },
     {
       "id": "F140-B",
@@ -509,12 +596,15 @@
       "version_notes": "preprints/Posterior-replicas-and-conditional-information-in-Gaussian-regression-September-27-2026/README.md",
       "map_locator": "F140-B",
       "theorem_transfer": "Independent DPT derivation or proof-pattern use; see MAP, not a native claim.",
-      "lean_scope": "literature/lean/F140_scope.md",
+      "lean_scope": "literature_archive/lean/F140_scope.md",
       "lean_coverage": "有 family selected scope；对应原模型与 selected statement，DPT transfer 另行证明。",
       "reading_tier": "archive",
       "controller_absorption": "Unconfirmed; no controller acknowledgement supplied.",
       "dpt_implementation": "Existing MAP analysis / synthetic tool support where recorded; native transfer not established by this migration.",
-      "pending_task": "按原 MAP 的 reopen condition 调用；不在当前默认落实队列。"
+      "pending_task": "按原 MAP 的 reopen condition 调用；不在当前默认落实队列。",
+      "reading_status": "ACTIVE_OR_CANDIDATE_NOT_DEEP_VERIFIED",
+      "reading_evidence": "No verified completed full-PDF proof-chain record in the current audit; may have selected statement/partial method notes.",
+      "dpt_transfer_status": "Separate proof required: no paper status implies full source S150/Goal27 history outer or hardware claim."
     },
     {
       "id": "F140-C",
@@ -526,12 +616,15 @@
       "version_notes": "preprints/Localization-costs-and-information-growth-for-exact-Gaussian-observations-September-27-2026/README.md",
       "map_locator": "F140-C",
       "theorem_transfer": "Independent DPT derivation or proof-pattern use; see MAP, not a native claim.",
-      "lean_scope": "literature/lean/F140_scope.md",
+      "lean_scope": "literature_archive/lean/F140_scope.md",
       "lean_coverage": "有 family selected scope；对应原模型与 selected statement，DPT transfer 另行证明。",
       "reading_tier": "archive",
       "controller_absorption": "Unconfirmed; no controller acknowledgement supplied.",
       "dpt_implementation": "Existing MAP analysis / synthetic tool support where recorded; native transfer not established by this migration.",
-      "pending_task": "按原 MAP 的 reopen condition 调用；不在当前默认落实队列。"
+      "pending_task": "按原 MAP 的 reopen condition 调用；不在当前默认落实队列。",
+      "reading_status": "ACTIVE_OR_CANDIDATE_NOT_DEEP_VERIFIED",
+      "reading_evidence": "No verified completed full-PDF proof-chain record in the current audit; may have selected statement/partial method notes.",
+      "dpt_transfer_status": "Separate proof required: no paper status implies full source S150/Goal27 history outer or hardware claim."
     },
     {
       "id": "F119",
@@ -548,7 +641,10 @@
       "reading_tier": "archive",
       "controller_absorption": "Unconfirmed; no controller acknowledgement supplied.",
       "dpt_implementation": "Existing MAP analysis / synthetic tool support where recorded; native transfer not established by this migration.",
-      "pending_task": "按原 MAP 的 reopen condition 调用；不在当前默认落实队列。"
+      "pending_task": "按原 MAP 的 reopen condition 调用；不在当前默认落实队列。",
+      "reading_status": "ACTIVE_OR_CANDIDATE_NOT_DEEP_VERIFIED",
+      "reading_evidence": "Scoped conditional DPT transfer proof and synthetic regression recorded, but this audit lacks completed primary full-PDF reading proof chain.",
+      "dpt_transfer_status": "Independently proved/tested CONDITIONAL finite-domain DPT method in dpt_research/20261011_F119_F129_F132_proof_level_DPT_bridge.md and dpt_tools/test_paper_transfer_falsifiers.py; paper not full primary deep-read, original SiC 50D/hardware unchanged OPEN"
     },
     {
       "id": "F325-B",
@@ -565,7 +661,33 @@
       "reading_tier": "archive",
       "controller_absorption": "Unconfirmed; no controller acknowledgement supplied.",
       "dpt_implementation": "Existing MAP analysis / synthetic tool support where recorded; native transfer not established by this migration.",
-      "pending_task": "按原 MAP 的 reopen condition 调用；不在当前默认落实队列。"
+      "pending_task": "按原 MAP 的 reopen condition 调用；不在当前默认落实队列。",
+      "reading_status": "ACTIVE_OR_CANDIDATE_NOT_DEEP_VERIFIED",
+      "reading_evidence": "No verified completed full-PDF proof-chain record in the current audit; may have selected statement/partial method notes.",
+      "dpt_transfer_status": "Separate proof required: no paper status implies full source S150/Goal27 history outer or hardware claim."
+    },
+    {
+      "id": "F125",
+      "family": "125",
+      "title": "Single-exponential recovery and bounded-price strictness for metric k-median",
+      "question": "information",
+      "pdf": "literature/F125_metric_k_median_recovery.pdf",
+      "upstream_path": "literature/F125_metric_k_median_recovery.pdf",
+      "source_repository_override": "Gogoal-L/math",
+      "source_commit_override": "014f3ab440592123fafa5c6b67b5e3105587f0f8",
+      "git_blob_sha": "91f0e0cbd049fa5abfc88e6c86e761e411c7d702",
+      "sha256": "823fdb284a7d3c0e3089869ba2da3d394db4f19b1c2ab56477ce6ae1b232614b",
+      "map_locator": "F125",
+      "theorem_transfer": "Anchor/proxy and fixed-price budget strictness read in complete 53-page PDF, no DPT approximation guarantees.",
+      "lean_scope": null,
+      "lean_coverage": "No corresponding selected Lean scope in pinned canonical 33-paper snapshot.",
+      "reading_tier": "core",
+      "reading_status": "DEEP_READ_PRIMARY_SOURCE_PROOF_CHAIN_SCOPED",
+      "reading_evidence": "Full PDF pp.1-53 reviewed with anchor/recovery and price strictness proof mechanisms in DEEP_READ_V1 local read-only note; not full reimplementation.",
+      "controller_absorption": "Unconfirmed.",
+      "dpt_implementation": "Candidate DPT ordinary anchor; no native guarantee.",
+      "pending_task": "Require independently legitimate target-visible source budget/exception chart before DPT theorem claim.",
+      "dpt_transfer_status": "Method-only, independent DPT proof OPEN."
     }
   ],
   "formalization": [
@@ -730,11 +852,11 @@
     },
     {
       "family": "140",
-      "scope": "literature/lean/F140_scope.md",
+      "scope": "literature_archive/lean/F140_scope.md",
       "scope_status": "Upstream selected statements; no local Lean compilation",
       "selected_statements": [
         {
-          "snapshot": "literature/lean/F140_MemoryPrecision.lean",
+          "snapshot": "literature_archive/lean/F140_MemoryPrecision.lean",
           "source_path": "lean/ComparatorChallenges/MemoryPrecision.lean",
           "comparator_config": "lean/ComparatorChallenges/MemoryPrecision.json",
           "solution_module": "OAI.Probability.MemoryPrecision.Main",
@@ -822,11 +944,11 @@
     },
     {
       "family": "229",
-      "scope": "literature_archive/lean/F229_scope.md",
+      "scope": "literature/lean/F229_scope.md",
       "scope_status": "Upstream selected statements; no local Lean compilation",
       "selected_statements": [
         {
-          "snapshot": "literature_archive/lean/F229_ThreeStateSupercritical.lean",
+          "snapshot": "literature/lean/F229_ThreeStateSupercritical.lean",
           "source_path": "lean/ComparatorChallenges/ThreeStateSupercritical.lean",
           "comparator_config": "lean/ComparatorChallenges/ThreeStateSupercritical.json",
           "solution_module": "OAI.Probability.ThreeState.Main",
@@ -836,7 +958,7 @@
           ]
         },
         {
-          "snapshot": "literature_archive/lean/F229_ThreeStateTreeClauses.lean",
+          "snapshot": "literature/lean/F229_ThreeStateTreeClauses.lean",
           "source_path": "lean/ComparatorChallenges/ThreeStateTreeClauses.lean",
           "comparator_config": "lean/ComparatorChallenges/ThreeStateTreeClauses.json",
           "solution_module": "OAI.Probability.ThreeStateClauses.Main",
@@ -1071,11 +1193,11 @@
     },
     {
       "family": "365",
-      "scope": "literature_archive/lean/F365_scope.md",
+      "scope": "literature/lean/F365_scope.md",
       "scope_status": "Upstream selected statements; no local Lean compilation",
       "selected_statements": [
         {
-          "snapshot": "literature_archive/lean/F365_Conductivity.lean",
+          "snapshot": "literature/lean/F365_Conductivity.lean",
           "source_path": "lean/ComparatorChallenges/Conductivity.lean",
           "comparator_config": "lean/ComparatorChallenges/Conductivity.json",
           "solution_module": "OAI.Analysis.Conductivity.Main",
@@ -1087,11 +1209,11 @@
     },
     {
       "family": "372",
-      "scope": "literature_archive/lean/F372_scope.md",
+      "scope": "literature/lean/F372_scope.md",
       "scope_status": "Upstream selected statements; no local Lean compilation",
       "selected_statements": [
         {
-          "snapshot": "literature_archive/lean/F372_ElasticityUniqueness.lean",
+          "snapshot": "literature/lean/F372_ElasticityUniqueness.lean",
           "source_path": "lean/ComparatorChallenges/ElasticityUniqueness.lean",
           "comparator_config": "lean/ComparatorChallenges/ElasticityUniqueness.json",
           "solution_module": "OAI.MathematicalPhysics.Elasticity.Uniqueness",
@@ -1103,11 +1225,11 @@
     },
     {
       "family": "374",
-      "scope": "literature_archive/lean/F374_scope.md",
+      "scope": "literature/lean/F374_scope.md",
       "scope_status": "Upstream selected statements; no local Lean compilation",
       "selected_statements": [
         {
-          "snapshot": "literature_archive/lean/F374_Brenier.lean",
+          "snapshot": "literature/lean/F374_Brenier.lean",
           "source_path": "lean/ComparatorChallenges/Brenier.lean",
           "comparator_config": "lean/ComparatorChallenges/Brenier.json",
           "solution_module": "OAI.Analysis.Brenier.Stability",
@@ -1306,9 +1428,9 @@
     {
       "kind": "pdf",
       "source_path": "preprints/The-exact-reconstruction-threshold-for-the-three-state-symmetric-channel-September-25-2026/paper.pdf",
-      "snapshot_path": "literature_archive/F229_three_state_reconstruction.pdf",
+      "snapshot_path": "literature/F229_three_state_reconstruction.pdf",
       "sha256": "e87d0854f29320d5b8ddd3015f3f89964e32231eec54a609aa1a9567d582f71a",
-      "reading_tier": "archive"
+      "reading_tier": "core"
     },
     {
       "kind": "pdf",
@@ -1320,9 +1442,9 @@
     {
       "kind": "pdf",
       "source_path": "preprints/Determination-of-a-metric-and-a-unitary-connection-from-one-boundary-patch-October-5-2026/paper.pdf",
-      "snapshot_path": "literature_archive/F365-A_metric_connection_partial_boundary.pdf",
+      "snapshot_path": "literature/F365-A_metric_connection_partial_boundary.pdf",
       "sha256": "8e1bdd3a9067234842406dba45efc9e8efae5be0cd72a6c09f6dceee8793badb",
-      "reading_tier": "archive"
+      "reading_tier": "core"
     },
     {
       "kind": "pdf",
@@ -1334,23 +1456,23 @@
     {
       "kind": "pdf",
       "source_path": "preprints/Nonuniqueness-for-Bounded-Measurable-Scalar-Conductivities-in-Three-Dimensions-September-23-2026/paper.pdf",
-      "snapshot_path": "literature_archive/F365-C_rough_scalar_conductivity_nonuniqueness.pdf",
+      "snapshot_path": "literature/F365-C_rough_scalar_conductivity_nonuniqueness.pdf",
       "sha256": "35017573c88b681f3f029ffb443091aa6fd55d31f6bc7a1b3566e5a6675aa7bb",
-      "reading_tier": "archive"
+      "reading_tier": "core"
     },
     {
       "kind": "pdf",
       "source_path": "preprints/Global-Uniqueness-for-the-Smooth-Isotropic-Elasticity-Inverse-Problem-September-24-2026/article.pdf",
-      "snapshot_path": "literature_archive/F372_smooth_isotropic_elasticity_uniqueness.pdf",
+      "snapshot_path": "literature/F372_smooth_isotropic_elasticity_uniqueness.pdf",
       "sha256": "5cadfeb6eb45bea20b6ceb4879266d49938154c38dbf34a6531b47b4f3cfbff9",
-      "reading_tier": "archive"
+      "reading_tier": "core"
     },
     {
       "kind": "pdf",
       "source_path": "preprints/Sharp-One-Third-Stability-of-Brenier-Maps-September-25-2026/article.pdf",
-      "snapshot_path": "literature_archive/F374_Brenier_one_third_stability.pdf",
+      "snapshot_path": "literature/F374_Brenier_one_third_stability.pdf",
       "sha256": "e9821deea8e836aaae6ed84cfb489e3695e1d6ce36add7e14c54100d2209f184",
-      "reading_tier": "archive"
+      "reading_tier": "core"
     },
     {
       "kind": "pdf",
@@ -1446,9 +1568,9 @@
     {
       "kind": "pdf",
       "source_path": "preprints/Finite-Instructions-and-Solenoidal-Shear-Flows-September-27-2026/manuscript.pdf",
-      "snapshot_path": "literature_archive/F376-A_solenoidal_shear_instructions.pdf",
+      "snapshot_path": "literature/F376-A_solenoidal_shear_instructions.pdf",
       "sha256": "0cdc2abd5b1a3d152fe55f7793ccc3f49ec6e7a79d0f5b4893e10c1b2c061e8d",
-      "reading_tier": "archive"
+      "reading_tier": "core"
     },
     {
       "kind": "pdf",
@@ -1488,9 +1610,9 @@
     {
       "kind": "pdf",
       "source_path": "preprints/Memory-and-precision-in-noiseless-Gaussian-regression-September-27-2026/paper.pdf",
-      "snapshot_path": "literature/F140-A_Gaussian_regression_memory_precision.pdf",
+      "snapshot_path": "literature_archive/F140-A_Gaussian_regression_memory_precision.pdf",
       "sha256": "a46ccc95821da00954309e8fe793099ff82f03eaa4b6c060d5eac5406571decc",
-      "reading_tier": "core"
+      "reading_tier": "archive"
     },
     {
       "kind": "pdf",
@@ -1663,9 +1785,9 @@
     {
       "kind": "lean-selected-statement",
       "source_path": "lean/ComparatorChallenges/MemoryPrecision.lean",
-      "snapshot_path": "literature/lean/F140_MemoryPrecision.lean",
+      "snapshot_path": "literature_archive/lean/F140_MemoryPrecision.lean",
       "sha256": "40651237473d67fdf4d48ac04f4a3294768cf75c867ee34334a96f9dfc293271",
-      "reading_tier": "core"
+      "reading_tier": "archive"
     },
     {
       "kind": "lean-selected-statement",
@@ -1719,32 +1841,32 @@
     {
       "kind": "lean-scope-links-adjusted",
       "source_path": "lean/docs/140.md",
-      "snapshot_path": "literature/lean/F140_scope.md",
+      "snapshot_path": "literature_archive/lean/F140_scope.md",
       "source_sha256": "71f6b45431c698c92960574de306b727271ea53b7b9e6b6a099d22f5a2336dd3",
       "sha256": "845d9d8619f9dc4e6c411e360aaa3bbab28fdc5f50a73adeb77ed8d0e62031f0",
-      "reading_tier": "core"
+      "reading_tier": "archive"
     },
     {
       "kind": "lean-selected-statement",
       "source_path": "lean/ComparatorChallenges/ThreeStateSupercritical.lean",
-      "snapshot_path": "literature_archive/lean/F229_ThreeStateSupercritical.lean",
+      "snapshot_path": "literature/lean/F229_ThreeStateSupercritical.lean",
       "sha256": "ba58eb22214f0b654fd1d5b4ca26b69b395c61409084e63c486f593c7e5330f8",
-      "reading_tier": "archive"
+      "reading_tier": "core"
     },
     {
       "kind": "lean-selected-statement",
       "source_path": "lean/ComparatorChallenges/ThreeStateTreeClauses.lean",
-      "snapshot_path": "literature_archive/lean/F229_ThreeStateTreeClauses.lean",
+      "snapshot_path": "literature/lean/F229_ThreeStateTreeClauses.lean",
       "sha256": "70eabccad9babe51e425cbdceef6be93c00b12771ea6eb6102296c15a64353f5",
-      "reading_tier": "archive"
+      "reading_tier": "core"
     },
     {
       "kind": "lean-scope-links-adjusted",
       "source_path": "lean/docs/229.md",
-      "snapshot_path": "literature_archive/lean/F229_scope.md",
+      "snapshot_path": "literature/lean/F229_scope.md",
       "source_sha256": "58030cb8b8a8b994f80e24a9d3f34788081ef8a1bcc90d7bb777ade0ba25d5bb",
       "sha256": "7506993b5e284198b0de263c3f479cf9cb26bdb3ac6928bb1da1c4badfa8c1b4",
-      "reading_tier": "archive"
+      "reading_tier": "core"
     },
     {
       "kind": "lean-selected-statement",
@@ -1925,47 +2047,47 @@
     {
       "kind": "lean-selected-statement",
       "source_path": "lean/ComparatorChallenges/Conductivity.lean",
-      "snapshot_path": "literature_archive/lean/F365_Conductivity.lean",
+      "snapshot_path": "literature/lean/F365_Conductivity.lean",
       "sha256": "646bf2f842e2a169865e984174b96b855e6a368deff70ec7e916cfafa4cf6557",
-      "reading_tier": "archive"
+      "reading_tier": "core"
     },
     {
       "kind": "lean-scope-links-adjusted",
       "source_path": "lean/docs/365.md",
-      "snapshot_path": "literature_archive/lean/F365_scope.md",
+      "snapshot_path": "literature/lean/F365_scope.md",
       "source_sha256": "6f0cf7314968e12c2ad323d6f4a91fb5ae7a1f545a6c78043527d130f546c4e2",
       "sha256": "123e6a221c0515aad31c8dbd181c172eed53db142db592a10f4b3f69fcc0a8b3",
-      "reading_tier": "archive"
+      "reading_tier": "core"
     },
     {
       "kind": "lean-selected-statement",
       "source_path": "lean/ComparatorChallenges/ElasticityUniqueness.lean",
-      "snapshot_path": "literature_archive/lean/F372_ElasticityUniqueness.lean",
+      "snapshot_path": "literature/lean/F372_ElasticityUniqueness.lean",
       "sha256": "c4c928a811cce5bd5bc46642e8dbf7e6ffd698856f1bf6ff12a511dddfaccb20",
-      "reading_tier": "archive"
+      "reading_tier": "core"
     },
     {
       "kind": "lean-scope-links-adjusted",
       "source_path": "lean/docs/372.md",
-      "snapshot_path": "literature_archive/lean/F372_scope.md",
+      "snapshot_path": "literature/lean/F372_scope.md",
       "source_sha256": "5c6a8e21366181a580d561cfdc50d32306ac2f428ea487084db21bc5d603e3d6",
       "sha256": "47a7392cfcdbd31d914e43553ac915004fbb6bb6ee17854fca1b49f5a7c10945",
-      "reading_tier": "archive"
+      "reading_tier": "core"
     },
     {
       "kind": "lean-selected-statement",
       "source_path": "lean/ComparatorChallenges/Brenier.lean",
-      "snapshot_path": "literature_archive/lean/F374_Brenier.lean",
+      "snapshot_path": "literature/lean/F374_Brenier.lean",
       "sha256": "f8ab00911bc6b6716cc47acdde3e40044d99b5c826abc9aa31d00536c2c9b7bb",
-      "reading_tier": "archive"
+      "reading_tier": "core"
     },
     {
       "kind": "lean-scope-links-adjusted",
       "source_path": "lean/docs/374.md",
-      "snapshot_path": "literature_archive/lean/F374_scope.md",
+      "snapshot_path": "literature/lean/F374_scope.md",
       "source_sha256": "db319fc02b2a12ef2e60b7322c24b50f1ff41c16366da563da9dc9b3f11d0fa5",
       "sha256": "ed2e0f39070528ce8835fe7a386a0c28a2bc7d90ad89888e25530e668e4ae5d0",
-      "reading_tier": "archive"
+      "reading_tier": "core"
     },
     {
       "kind": "lean-selected-statement",
@@ -2030,6 +2152,15 @@
       "snapshot_path": "literature_archive/LICENSE",
       "sha256": "c71d239df91726fc519c6eb72d318ec65820627232b2f796219e87dcf35d0ab4",
       "reading_tier": "archive"
+    },
+    {
+      "kind": "pdf",
+      "source_path": "literature/F125_metric_k_median_recovery.pdf",
+      "source_repository": "Gogoal-L/math",
+      "source_commit": "014f3ab440592123fafa5c6b67b5e3105587f0f8",
+      "snapshot_path": "literature/F125_metric_k_median_recovery.pdf",
+      "sha256": "823fdb284a7d3c0e3089869ba2da3d394db4f19b1c2ab56477ce6ae1b232614b",
+      "reading_tier": "core"
     }
   ],
   "watch_paths": [
@@ -2037,8 +2168,6 @@
     "lean/ComparatorChallenges/FormulaHitting.lean",
     "lean/ComparatorChallenges/MUBSix.json",
     "lean/ComparatorChallenges/MUBSix.lean",
-    "lean/ComparatorChallenges/MemoryPrecision.json",
-    "lean/ComparatorChallenges/MemoryPrecision.lean",
     "lean/ComparatorChallenges/MetricEntropyDuality.json",
     "lean/ComparatorChallenges/MetricEntropyDuality.lean",
     "lean/ComparatorChallenges/RationalHitting.json",
@@ -2047,9 +2176,7 @@
     "lean/OAI/Analysis/MetricEntropy/Main.lean",
     "lean/OAI/Analysis/MutuallyUnbiased/Main.lean",
     "lean/OAI/Computability/RationalHitting/Main.lean",
-    "lean/OAI/Probability/MemoryPrecision/Main.lean",
     "lean/docs/116.md",
-    "lean/docs/140.md",
     "lean/docs/266.md",
     "lean/docs/329.md",
     "lean/docs/357.md",
@@ -2059,31 +2186,58 @@
     "lean/lean-toolchain",
     "preprints/Bi-Lipschitz-Coordinates-at-Regular-Points-of-Noncollapsed-RCD-Spaces-September-25-2026/",
     "preprints/Counterexamples-to-the-duality-conjecture-for-metric-entropy-September-24-2026/",
-    "preprints/Memory-and-precision-in-noiseless-Gaussian-regression-September-27-2026/",
     "preprints/One-Rational-Matrix-Hitting-Point-for-Noncommutative-Formulas-September-24-2026/",
     "preprints/Polynomial-Hitting-Lists-for-Noncommutative-Rational-Formulas-September-24-2026/",
     "preprints/Smooth-Anisotropic-Uniqueness-in-the-Calderon-Problem-from-One-Boundary-Patch-September-24-2026/",
-    "preprints/The-maximum-number-of-mutually-unbiased-bases-in-dimension-six-September-24-2026/"
+    "preprints/The-maximum-number-of-mutually-unbiased-bases-in-dimension-six-September-24-2026/",
+    "lean/ComparatorChallenges/Brenier.json",
+    "lean/ComparatorChallenges/Brenier.lean",
+    "lean/ComparatorChallenges/Conductivity.json",
+    "lean/ComparatorChallenges/Conductivity.lean",
+    "lean/ComparatorChallenges/ElasticityUniqueness.json",
+    "lean/ComparatorChallenges/ElasticityUniqueness.lean",
+    "lean/ComparatorChallenges/HadamardCubeFiber.json",
+    "lean/ComparatorChallenges/HadamardCubeFiber.lean",
+    "lean/ComparatorChallenges/ThreeStateSupercritical.json",
+    "lean/ComparatorChallenges/ThreeStateSupercritical.lean",
+    "lean/ComparatorChallenges/ThreeStateTreeClauses.json",
+    "lean/ComparatorChallenges/ThreeStateTreeClauses.lean",
+    "lean/docs/229.md",
+    "lean/docs/372.md",
+    "lean/docs/374.md",
+    "preprints/Determination-of-a-metric-and-a-unitary-connection-from-one-boundary-patch-October-5-2026/",
+    "preprints/Finite-Instructions-and-Solenoidal-Shear-Flows-September-27-2026/",
+    "preprints/Global-Uniqueness-for-the-Smooth-Isotropic-Elasticity-Inverse-Problem-September-24-2026/",
+    "preprints/Nonuniqueness-for-Bounded-Measurable-Scalar-Conductivities-in-Three-Dimensions-September-23-2026/",
+    "preprints/Sharp-One-Third-Stability-of-Brenier-Maps-September-25-2026/",
+    "preprints/The-exact-reconstruction-threshold-for-the-three-state-symmetric-channel-September-25-2026/",
+    "lean/OAI/Analysis/Brenier/Stability.lean",
+    "lean/OAI/Analysis/Conductivity/Main.lean",
+    "lean/OAI/LinearAlgebra/Hadamard/Main.lean",
+    "lean/OAI/MathematicalPhysics/Elasticity/Uniqueness.lean",
+    "lean/OAI/Probability/ThreeState/Main.lean",
+    "lean/OAI/Probability/ThreeStateClauses/Main.lean"
   ],
   "watch_scope": "Default paths follow the core queue; archive_watch_paths retains the complete prior watch list for explicit reopening. CONTENTS.md/history.md remain the upstream discovery pass.",
   "lean_dependency_policy": "Keep full Lean proofs/imports in canonical lean/. Read copied scope and comparator statements first; any proof-level reuse requires following the solution module and its imports at source_commit and running the canonical comparator setup. Imported-library edits alone do not reopen independently proved DPT lemmas.",
   "archive_watch_paths": [
+    "lean/ComparatorChallenges/MemoryPrecision.json",
+    "lean/ComparatorChallenges/MemoryPrecision.lean",
+    "lean/OAI/Probability/MemoryPrecision/Main.lean",
+    "lean/docs/140.md",
+    "preprints/Memory-and-precision-in-noiseless-Gaussian-regression-September-27-2026/",
     "lean/ComparatorChallenges/BalancedBoxRouting.json",
     "lean/ComparatorChallenges/BalancedBoxRouting.lean",
     "lean/ComparatorChallenges/BalancedThreeStack.json",
     "lean/ComparatorChallenges/BalancedThreeStack.lean",
     "lean/ComparatorChallenges/BoltzmannNonuniqueness.json",
     "lean/ComparatorChallenges/BoltzmannNonuniqueness.lean",
-    "lean/ComparatorChallenges/Brenier.json",
-    "lean/ComparatorChallenges/Brenier.lean",
     "lean/ComparatorChallenges/C0Absorption.json",
     "lean/ComparatorChallenges/C0Absorption.lean",
     "lean/ComparatorChallenges/CompactBanach.json",
     "lean/ComparatorChallenges/CompactBanach.lean",
     "lean/ComparatorChallenges/CompleteCrouzeix.json",
     "lean/ComparatorChallenges/CompleteCrouzeix.lean",
-    "lean/ComparatorChallenges/Conductivity.json",
-    "lean/ComparatorChallenges/Conductivity.lean",
     "lean/ComparatorChallenges/CourtadeKumar.json",
     "lean/ComparatorChallenges/CourtadeKumar.lean",
     "lean/ComparatorChallenges/CrouzeixHilbert.json",
@@ -2098,30 +2252,18 @@
     "lean/ComparatorChallenges/DixmierAllDiscrete.lean",
     "lean/ComparatorChallenges/DoublingHilbert.json",
     "lean/ComparatorChallenges/DoublingHilbert.lean",
-    "lean/ComparatorChallenges/ElasticityUniqueness.json",
-    "lean/ComparatorChallenges/ElasticityUniqueness.lean",
     "lean/ComparatorChallenges/ForcedNavierStokesComputation.json",
     "lean/ComparatorChallenges/ForcedNavierStokesComputation.lean",
-    "lean/ComparatorChallenges/FormulaHitting.json",
-    "lean/ComparatorChallenges/FormulaHitting.lean",
     "lean/ComparatorChallenges/GaussianFiniteEntropy.json",
     "lean/ComparatorChallenges/GaussianFiniteEntropy.lean",
     "lean/ComparatorChallenges/GaussianInformation.json",
     "lean/ComparatorChallenges/GaussianInformation.lean",
     "lean/ComparatorChallenges/GaussianReplacement.json",
     "lean/ComparatorChallenges/GaussianReplacement.lean",
-    "lean/ComparatorChallenges/HadamardCubeFiber.json",
-    "lean/ComparatorChallenges/HadamardCubeFiber.lean",
     "lean/ComparatorChallenges/HilbertCrouzeix.json",
     "lean/ComparatorChallenges/HilbertCrouzeix.lean",
     "lean/ComparatorChallenges/LipschitzEquivalence.json",
     "lean/ComparatorChallenges/LipschitzEquivalence.lean",
-    "lean/ComparatorChallenges/MUBSix.json",
-    "lean/ComparatorChallenges/MUBSix.lean",
-    "lean/ComparatorChallenges/MemoryPrecision.json",
-    "lean/ComparatorChallenges/MemoryPrecision.lean",
-    "lean/ComparatorChallenges/MetricEntropyDuality.json",
-    "lean/ComparatorChallenges/MetricEntropyDuality.lean",
     "lean/ComparatorChallenges/NavierStokesAlternating.json",
     "lean/ComparatorChallenges/NavierStokesAlternating.lean",
     "lean/ComparatorChallenges/NavierStokesVelocity.json",
@@ -2134,8 +2276,6 @@
     "lean/ComparatorChallenges/PosteriorReplicas.lean",
     "lean/ComparatorChallenges/ProjectionMoments.json",
     "lean/ComparatorChallenges/ProjectionMoments.lean",
-    "lean/ComparatorChallenges/RationalHitting.json",
-    "lean/ComparatorChallenges/RationalHitting.lean",
     "lean/ComparatorChallenges/RealL1Renorming.json",
     "lean/ComparatorChallenges/RealL1Renorming.lean",
     "lean/ComparatorChallenges/SensitivitySeparation.json",
@@ -2152,10 +2292,6 @@
     "lean/ComparatorChallenges/SubpolynomialLp.lean",
     "lean/ComparatorChallenges/SubsphereCurrent.json",
     "lean/ComparatorChallenges/SubsphereCurrent.lean",
-    "lean/ComparatorChallenges/ThreeStateSupercritical.json",
-    "lean/ComparatorChallenges/ThreeStateSupercritical.lean",
-    "lean/ComparatorChallenges/ThreeStateTreeClauses.json",
-    "lean/ComparatorChallenges/ThreeStateTreeClauses.lean",
     "lean/ComparatorChallenges/TraceReconstruction.json",
     "lean/ComparatorChallenges/TraceReconstruction.lean",
     "lean/ComparatorChallenges/TwoWayComplementation.json",
@@ -2164,69 +2300,41 @@
     "lean/ComparatorChallenges/TwoWayDeterminization.lean",
     "lean/docs/094.md",
     "lean/docs/098.md",
-    "lean/docs/116.md",
     "lean/docs/119.md",
     "lean/docs/122.md",
     "lean/docs/129.md",
     "lean/docs/132.md",
-    "lean/docs/140.md",
-    "lean/docs/229.md",
     "lean/docs/251.md",
-    "lean/docs/266.md",
     "lean/docs/289.md",
     "lean/docs/324.md",
     "lean/docs/325.md",
-    "lean/docs/329.md",
     "lean/docs/330.md",
     "lean/docs/332.md",
     "lean/docs/355.md",
-    "lean/docs/357.md",
     "lean/docs/363.md",
-    "lean/docs/365.md",
-    "lean/docs/372.md",
-    "lean/docs/374.md",
     "lean/docs/376.md",
-    "lean/lake-manifest.json",
-    "lean/lakefile.lean",
-    "lean/lean-toolchain",
     "preprints/A-direct-proof-of-the-complete-Crouzeix-inequality-September-26-2026/",
     "preprints/A-doubling-Hilbert-subset-with-no-finite-dimensional-bi-Lipschitz-embedding-September-25-2026/",
     "preprints/A-superquadratic-separation-between-sensitivity-and-block-sensitivity-September-25-2026/",
     "preprints/An-exponential-two-way-deterministic-state-lower-bound-for-one-way-liveness-September-25-2026/",
-    "preprints/Bi-Lipschitz-Coordinates-at-Regular-Points-of-Noncollapsed-RCD-Spaces-September-25-2026/",
-    "preprints/Counterexamples-to-the-duality-conjecture-for-metric-entropy-September-24-2026/",
-    "preprints/Determination-of-a-metric-and-a-unitary-connection-from-one-boundary-patch-October-5-2026/",
     "preprints/Failure-of-Bounded-Approximation-in-a-Lipschitz-Free-Space-over-a-Uniformly-Discrete-Metric-Space-September-26-2026/",
-    "preprints/Finite-Instructions-and-Solenoidal-Shear-Flows-September-27-2026/",
-    "preprints/Global-Uniqueness-for-the-Smooth-Isotropic-Elasticity-Inverse-Problem-September-24-2026/",
     "preprints/Incompressible-Box-Transport-and-Finite-Computation-October-6-2026/",
     "preprints/Lipschitz-Equivalent-Separable-Banach-Spaces-Need-Not-Be-Linearly-Isomorphic-September-24-2026/",
     "preprints/Localization-costs-and-information-growth-for-exact-Gaussian-observations-September-27-2026/",
-    "preprints/Memory-and-precision-in-noiseless-Gaussian-regression-September-27-2026/",
     "preprints/Metric-Markov-Cotype-Two-of-l1-October-5-2026/",
     "preprints/Near-Inclusions-of-von-Neumann-Algebras-Without-Small-Spatial-Embeddings-October-5-2026/",
-    "preprints/Nonuniqueness-for-Bounded-Measurable-Scalar-Conductivities-in-Three-Dimensions-September-23-2026/",
     "preprints/Nonuniqueness-with-local-conservation-for-the-hard-sphere-Boltzmann-equation-October-5-2026/",
-    "preprints/One-Rational-Matrix-Hitting-Point-for-Noncommutative-Formulas-September-24-2026/",
-    "preprints/Polynomial-Hitting-Lists-for-Noncommutative-Rational-Formulas-September-24-2026/",
     "preprints/Posterior-replicas-and-conditional-information-in-Gaussian-regression-September-27-2026/",
-    "preprints/Sharp-One-Third-Stability-of-Brenier-Maps-September-25-2026/",
     "preprints/Sharp-binary-information-contraction-on-the-discrete-cube-September-24-2026/",
-    "preprints/Smooth-Anisotropic-Uniqueness-in-the-Calderon-Problem-from-One-Boundary-Patch-September-24-2026/",
     "preprints/Strong-Ulam-Stability-Characterizes-Amenability-October-5-2026/",
     "preprints/Subpolynomial-dimension-reduction-in-Lp-September-23-2026/",
     "preprints/Tangent-flow-uniqueness-2026-09-24/",
     "preprints/The-complete-Crouzeix-theorem-September-23-2026/",
-    "preprints/The-exact-reconstruction-threshold-for-the-three-state-symmetric-channel-September-25-2026/",
-    "preprints/The-maximum-number-of-mutually-unbiased-bases-in-dimension-six-September-24-2026/",
     "preprints/Uniform-quasipolynomial-time-trace-reconstruction-October-5-2026/",
     "preprints/Universal-strong-Kadison-Kastler-stability-September-23-2026/",
     "preprints/quantitative-lower-bounds-for-trace-reconstruction-September-24-2026/",
-    "lean/OAI/Algebra/FormulaHitting/Hitting.lean",
     "lean/OAI/Analysis/BoxTransport/Routing.lean",
-    "lean/OAI/Analysis/Brenier/Stability.lean",
     "lean/OAI/Analysis/C0Absorption/Main.lean",
-    "lean/OAI/Analysis/Conductivity/Main.lean",
     "lean/OAI/Analysis/Crouzeix/Main.lean",
     "lean/OAI/Analysis/DirectCrouzeix/Main.lean",
     "lean/OAI/Analysis/HilbertCrouzeix/Main.lean",
@@ -2235,8 +2343,6 @@
     "lean/OAI/Analysis/LipschitzFree/Main.lean",
     "lean/OAI/Analysis/LipschitzFree/Renorming.lean",
     "lean/OAI/Analysis/LpDimension/Main.lean",
-    "lean/OAI/Analysis/MetricEntropy/Main.lean",
-    "lean/OAI/Analysis/MutuallyUnbiased/Main.lean",
     "lean/OAI/Analysis/NumericalRange/Main.lean",
     "lean/OAI/Analysis/StructuralCrouzeix/Endpoint.lean",
     "lean/OAI/Analysis/Unitarizability/AllDiscrete.lean",
@@ -2245,15 +2351,12 @@
     "lean/OAI/Combinatorics/Sensitivity/Separation.lean",
     "lean/OAI/Combinatorics/TwoWayAutomata/ExplicitFamily.lean",
     "lean/OAI/Combinatorics/TwoWayAutomata/Main.lean",
-    "lean/OAI/Computability/RationalHitting/Main.lean",
     "lean/OAI/Geometry/DoublingHilbert/CompactBanach.lean",
     "lean/OAI/Geometry/DoublingHilbert/Main.lean",
     "lean/OAI/InformationTheory/BooleanNoise/Main.lean",
     "lean/OAI/InformationTheory/SoftChannel/Main.lean",
-    "lean/OAI/LinearAlgebra/Hadamard/Main.lean",
     "lean/OAI/MathematicalPhysics/AlternatingFlow/Development.lean",
     "lean/OAI/MathematicalPhysics/Boltzmann/Main.lean",
-    "lean/OAI/MathematicalPhysics/Elasticity/Uniqueness.lean",
     "lean/OAI/MathematicalPhysics/NavierStokes/BalancedTransport/MainResult.lean",
     "lean/OAI/MathematicalPhysics/NavierStokes/VelocityDetection/Main.lean",
     "lean/OAI/MathematicalPhysics/SheetFlows/SheetProgram.lean",
@@ -2261,13 +2364,44 @@
     "lean/OAI/Probability/GaussianRegression/Main.lean",
     "lean/OAI/Probability/GaussianReplacement/FiberEquality.lean",
     "lean/OAI/Probability/Localization/Main.lean",
-    "lean/OAI/Probability/MemoryPrecision/Main.lean",
     "lean/OAI/Probability/PosteriorReplicas/Main.lean",
     "lean/OAI/Probability/ProjectionMoments/Main.lean",
     "lean/OAI/Probability/Subsphere/Main.lean",
-    "lean/OAI/Probability/ThreeState/Main.lean",
-    "lean/OAI/Probability/ThreeStateClauses/Main.lean",
     "lean/OAI/Probability/TraceReconstruction.lean"
   ],
-  "reading_policy": "literature = current implementation/understanding queue (7 PDFs), literature_archive = conditional/background references (26 PDFs). Read 2-4 relevant papers per question; current importance is not evidence of unread status or controller understanding. No scientific claim promotion."
+  "reading_policy": "literature/ = primary PDF full-text + page-grounded load-bearing proof-chain DEEP_READ scoped, not independently formal-proven; literature_archive/ = in-progress/candidate/not yet deep-verified; DPT transfer remains a distinct proof obligation. Canonical fixed snapshot 33 PDFs: 12 completed and 21 candidates; F125 independently pinned fork +1 completed.",
+  "deep_read_verification_scope": "12 of canonical OpenAI/math pinned PDFs have independent local read-only DEEP_READ_V1 page-grounded manuscript notes or, for F329, a fresh 15-page primary text/proof audit. External fork F125 adds a separate 53-page deep-reading note. This is a reading-status audit, not independent full proof/Lean/native S150 verification.",
+  "read_classification_date": "2026-10-20",
+  "prospective_sources": [
+    {
+      "title": "A sharp Fourier certificate for planar circle packing",
+      "source_commit": "1581d4cbdd69a0faf34b2089614fe2a814316a6a",
+      "source_repository": "openai/math",
+      "pdf_url": "https://github.com/openai/math/blob/1581d4cbdd69a0faf34b2089614fe2a814316a6a/preprints/A-sharp-Fourier-certificate-for-planar-circle-packing-September-23-2026/paper.pdf",
+      "primary_tex_url": "https://github.com/openai/math/blob/1581d4cbdd69a0faf34b2089614fe2a814316a6a/preprints/A-sharp-Fourier-certificate-for-planar-circle-packing-September-23-2026/build/sections/certificates.tex",
+      "reading_status": "SOURCE_SCOUT_ONLY",
+      "dpt_transfer_status": "NOT_PROVEN_SOURCE_50D",
+      "scope": "Arb/192-bit interval, N=256 finite quadrature and separate analytic moment/tail remainders; no independent full checker run"
+    },
+    {
+      "title": "An atomic certificate for triangular-lattice universal optimality",
+      "source_commit": "1581d4cbdd69a0faf34b2089614fe2a814316a6a",
+      "source_repository": "openai/math",
+      "pdf_url": "https://github.com/openai/math/blob/1581d4cbdd69a0faf34b2089614fe2a814316a6a/preprints/An-atomic-certificate-for-triangular-lattice-universal-optimality-September-26-2026/paper.pdf",
+      "primary_tex_url": "https://github.com/openai/math/blob/1581d4cbdd69a0faf34b2089614fe2a814316a6a/preprints/An-atomic-certificate-for-triangular-lattice-universal-optimality-September-26-2026/build/main.tex",
+      "reading_status": "SOURCE_SCOUT_ONLY",
+      "dpt_transfer_status": "NOT_PROVEN_SOURCE_50D",
+      "scope": "stdlib exact finite integer checks of 20x20 blocks and Bernstein data; infinite analytic propagation is a separate proof obligation"
+    },
+    {
+      "title": "Exact Fourier certificates for complex Hadamard matrices of order six",
+      "source_commit": "1581d4cbdd69a0faf34b2089614fe2a814316a6a",
+      "source_repository": "openai/math",
+      "pdf_url": "https://github.com/openai/math/blob/1581d4cbdd69a0faf34b2089614fe2a814316a6a/preprints/Exact-Fourier-certificates-for-complex-Hadamard-matrices-of-order-six-September-24-2026/Exact-Fourier-certificates-for-complex-Hadamard-matrices-of-order-six-September-24-2026.pdf",
+      "primary_tex_url": "https://github.com/openai/math/blob/1581d4cbdd69a0faf34b2089614fe2a814316a6a/preprints/Exact-Fourier-certificates-for-complex-Hadamard-matrices-of-order-six-September-24-2026/build/sections/05-verification.tex",
+      "reading_status": "SOURCE_SCOUT_ONLY",
+      "dpt_transfer_status": "NOT_PROVEN_SOURCE_50D",
+      "scope": "exact integer/rational moment + PSD identities and program wrapper; supports at-most-five MUB, not F266's computer-assisted at-most-three"
+    }
+  ]
 }
