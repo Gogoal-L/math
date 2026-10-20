@@ -1164,3 +1164,27 @@ worker 的 read-only 原始 source adversarial replay 找到**公开合成旧线
 仅在四个端面反号 **且** g2/w/x 关联重构全部包含于相应声明原源 chart 时，状态 `ORIGINAL_SOURCE_BOTH_GATES_UNIQUE_SIX_TO_FOUR_LIFT` 与 `source_50d_to_four_nonlinear_nodes_conditional=True` 才可返回；否则即使 gate-only 仍有唯一根也返回 `RETAIN_BOTH_GATES_SOURCE_CHART_PREIMAGE_UNRESOLVED`，并分开标注 `simultaneous_both_gate_roots_unique_per_four_fiber=True`、`source_ten_node_chart_preimage_certified=False`。单独 S-L47 算子不会未检查整个源十节点 chart 就将 gate-only 根提升为 source 50D↔5D。
 
 公开回归同时涵盖：旧线圈全零/两个 g2 出图严格失败、用**公开合成**两 old coil 电流 -0.288A 和 +0.843A 创造真实源方程十节点内带的正例、将 gate 扩大到 ±35mV 后，尽管相关 w 仍在合格 panel，重构 g2 的整盒外包越过更严源内带而仅保留 gate-only，以及缺少四面反号时仍 UNKNOWN。公开合成旧线圈配置不是某个合法 PREP126 历史的证明。实际保存 n3615 旧线圈各±1mA 的原 S-L48 两 gate 各±125µV 条件盒经**本地只读**原 NPZ 的前驱回归仍可成立，未上传原始 bytes。任何 `50D→4D` 声明都严格局限于这一经过交叉认证的源模型原 ten-node/guard 局部子域，剩余4D KCL/所有历史/E/Goal27继续 OPEN。
+
+
+### S-L49 — 源原始 S150 剩余 4D 的完整连续闭盒排除：五节点 KCL/BE 流量恒等式（2026-10-21）
+
+在原始 \`actual_law.py\` SHA256 \`51b78f729393d29745f59ca150adfef69e1847bf26a8853c6cef3d6be9e2083d\` 的 n3616、15V、\`h=0x1.b7cdfd9d80000p-37\` 秒、\`Rg=7.5Ω\` 源电路中，对每条腿将原 KCL 行 \`Q1=(3,6,7,8,9)\`、\`Q2=(15,18,19,20,21)\` 相加。原 source G2 电流在 d/s 反号，原 D1 diodes 的 \`-D ib\` 在 d/s 反号，原 \`charge_delta\` 的 GS、GD、G12、1pF DS 电荷在五节点内部守恒；原 G 矩阵中 d/s、g/d、g/s、g/w、w/d、x/d、x/s 电阻也内部抵消，温度只经 G2/diode 耦合而不留下直接 KCL 项。原 source Q1 150V、Q1−4V、Q2 +15V forcing 均不直接进入这五行，但保留在 P16 reconstruction。将原两只 package Ld(4.3659nH)/Lv(.2nH) 的 BE 线圈电流代回，所有 root 必须满足：
+
+\`\`\`text
+C_k = (1/5 + h/4.3659e-9)*(d_k-da_k)
+    + (1/100 + h/.2e-9)*(s_k-sv_k)
+    + (g_k-g2_k)/9 - old_i_Ld,k - old_i_Lv,k = 0 .
+\`\`\`
+
+\`da,sv,g2\` 由 S-L45 source P16 exact SPD 从**一个共享的 old12 predecessor** 矩阵求解，严格验证 w/x 四个端口在此流量上零系数；\`C_1,C_2\` 对六个 current(d,g,s) 与 old12 线圈电流均为同一个 exact Fraction affine map。新 \`certify_original_source_four_node_kcl_conservation_cell\` 先要求 S-L48a 两 gate 单根和完整 g2/w/x source chart/preimage 成立，否则直接返回 \`RETAIN\`；再对 **18 维共同闭盒**计算两行 exact rational signed support 上下界。如果任意一行严格不含零，排除所有当前余下四个 d/s 取值的完整原 source stage 根。
+
+只读本地 sha-256 已重新核验 Pro18E E NPZ \`baafdd8cb489adb186677658c4a8031130cc53a9a1854c4997211d437daf8b3e\`；实际原 n3615 old50 的 12 个 BE 电流各保存值±0.001A，Q1 current d3 在保存值+[0.013,0.039]V（**连续 26mV 非零宽**），Q1/Q2 g6/g18 在各保存值±0.001V，其他 Q1:s9,Q2:d15,s21 在各保存值±0.0001V。所有 S-L48a 两门根、原 g2/W/X/源 chart 与 guard preimage 通过。精确 Fraction 的 Q1 原始五行之和为
+
+\`\`\`text
+C_Q1 in [+0.0004495672421352916, +0.010099126376501458] A,
+C_Q2 in [-0.003106471779935494, +0.003106471729001115] A.
+\`\`\`
+
+**因此整个指定原 4D 电压盒对该真实 old-coil 条件区间都严格无 stage 根，最低带符号裕度0.449567mA。** 这是前一节 gate 单根以外，对**剩余 4D KCL/补集**的新直接 source 数学推进，不是仅重述 G11/x exclusion，也不需要以原 ETH/G2/diode/thermal 数值商替代原源表达式。独立原 native source \`make_source_operator().residual\` 在将全部 16 package 节点和 12 当前 coil currents 依原 BE 方程**同时**重构后，对五行求和的 saved/6组非零扰动验证保守绝对差小于 \`5×10^(-10)\` A。零旧电流合成 source chart 强负控、old Ld 电流符号 ±0.01A 变动和错误源 h 负控均为公开测试；公开测试使用不同的**合成** old currents，不含本地 protected old50 任何数值字节。
+
+最高证明等级仍是：**原 source 模型实数代数、原单阶段 n3616、指定旧电流/节点 guard 内连续闭子域的全根排除**。实际 old12±1mA 子域的每一点是否来自完整 PREP126 合法历史尚无证书；G11 finite Gauss32 的 NumPy 浮点权重、source SciPy \`hyp2f1\`/clip/ABS rounding 及所有 hybrid/thermal 分支并未做严格 native outward 计算；余下 4D 全体 chart 补集、完整 CAL4801×2 共同 E、H841 signed-work 目标直径均**OPEN**。Source ZIP SHA256 \`250aa4ea17514ffdeda3a51d95bedf8e034b181f97bdc254db29ddc36281b9c8\`，adapter SHA256 \`7f03e36809caf3dea1295cf58d7dd70c413ef7991472a5e6eec3405da18f5669\`，ZIP、adapter 与 protected NPZ 均不上传仓库。

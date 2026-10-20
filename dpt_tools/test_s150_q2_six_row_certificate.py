@@ -822,5 +822,80 @@ class OriginalSourceTwoGuardedGateFourDimensionalBridgeTests(unittest.TestCase):
         self.assertEqual(trial(F(".01"),F(".012"))["status"],
                          "RETAIN_TWO_GATES_UNRESOLVED")
 
+
+class OriginalSourceFourNodeConservationExclusionTests(unittest.TestCase):
+    def test_true_source_five_kcl_sum_excludes_4d_cell_after_gate_lift(self):
+        from fractions import Fraction as F
+        from s150_q2_six_row_certificate import (
+            certify_original_source_four_node_kcl_conservation_cell,
+            _SOURCE_X_SPECS,_SOURCE_G11_W_SPECS)
+        H=lambda x:F.from_float(float.fromhex(x))
+        c=tuple(map(H,(
+            _SOURCE_X_SPECS["Q1"]["d"],_SOURCE_G11_W_SPECS["Q1"]["g"],
+            _SOURCE_X_SPECS["Q1"]["s"],_SOURCE_X_SPECS["Q2"]["d"],
+            _SOURCE_G11_W_SPECS["Q2"]["g"],_SOURCE_X_SPECS["Q2"]["s"])))
+        box=tuple((v+F(".013"),v+F(".039")) if j==0 else
+                  (v-F(".001"),v+F(".001")) if j in (1,4) else
+                  (v-F(".0001"),v+F(".0001"))
+                  for j,v in enumerate(c))
+        old=[F(0)]*12
+        old[1]=-F(".288")
+        old[6]=F(".843")
+        old[0]=F(".01")  # nonzero old Ld sign mutation witness
+        old[5]=-F(".02")
+        ob=tuple((v-F(".001"),v+F(".001")) for v in old)
+        auth=dict(h_s=original_dt(),source_law_sha256=LAW,
+                  source_adapter_sha256=ADAPTER,saved_cal_sha256=ARCHIVE)
+        fn=certify_original_source_four_node_kcl_conservation_cell
+        r=fn(six_current_node_boxes_V=box,old_coil12_boxes_A=ob,**auth)
+        self.assertEqual(r["status"],
+            "ORIGINAL_SOURCE_FOUR_NODE_KCL_CONSERVATION_CELL_EXCLUDED")
+        self.assertTrue(r["source_full_g2_w_x_ten_chart_preimage_qualified"])
+        self.assertIn("Q1",r["strictly_excluded_leg_names"])
+        self.assertGreater(r["exact_original_five_kcl_flux_intervals_A"][0][0],
+                           F(".02"))
+        self.assertFalse(r["original_remaining_4D_root_existence_certified"])
+        self.assertFalse(r["goal27_certified"])
+        # Independent original BE sign check: raising old Q1 Ld current
+        # must DECREASE the five-KCL boundary flux near -1 A/A.
+        change=list(old)
+        change[0]+=F(".01")
+        updated=fn(
+            six_current_node_boxes_V=box,
+            old_coil12_boxes_A=tuple(
+                (v-F(".001"),v+F(".001")) for v in change),**auth)
+        delta=(updated["exact_original_five_kcl_flux_intervals_A"][0][0]-
+               r["exact_original_five_kcl_flux_intervals_A"][0][0])
+        self.assertLess(delta,-F(".0099"))
+        self.assertGreater(delta,-F(".0101"))
+
+    def test_unguarded_predecessor_cannot_promote_row_sum(self):
+        from fractions import Fraction as F
+        from s150_q2_six_row_certificate import (
+            certify_original_source_four_node_kcl_conservation_cell,
+            _SOURCE_X_SPECS,_SOURCE_G11_W_SPECS)
+        H=lambda x:F.from_float(float.fromhex(x))
+        c=tuple(map(H,(
+            _SOURCE_X_SPECS["Q1"]["d"],_SOURCE_G11_W_SPECS["Q1"]["g"],
+            _SOURCE_X_SPECS["Q1"]["s"],_SOURCE_X_SPECS["Q2"]["d"],
+            _SOURCE_G11_W_SPECS["Q2"]["g"],_SOURCE_X_SPECS["Q2"]["s"])))
+        box=tuple((v-F(".025"),v+F(".025")) if j in (1,4) else
+                  (v-F(".0001"),v+F(".0001")) for j,v in enumerate(c))
+        auth=dict(h_s=original_dt(),source_law_sha256=LAW,
+                  source_adapter_sha256=ADAPTER,saved_cal_sha256=ARCHIVE)
+        q=certify_original_source_four_node_kcl_conservation_cell(
+            six_current_node_boxes_V=box,
+            old_coil12_boxes_A=tuple((-F(".001"),F(".001"))
+                                    for _ in range(12)),**auth)
+        self.assertEqual(q["status"],
+            "RETAIN_SOURCE_FOUR_KCL_STAGE_GUARD_UNRESOLVED")
+        self.assertFalse(q["source_four_kcl_complement_certified"])
+        with self.assertRaisesRegex(ValueError,"UNRESOLVED_SOURCE_DOMAIN"):
+            certify_original_source_four_node_kcl_conservation_cell(
+                six_current_node_boxes_V=box,
+                old_coil12_boxes_A=tuple((-F(".001"),F(".001"))
+                                        for _ in range(12)),
+                **dict(auth,h_s=F("1e-9")))
+
 if __name__=="__main__":
     unittest.main()
