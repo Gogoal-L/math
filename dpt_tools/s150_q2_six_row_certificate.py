@@ -1301,3 +1301,73 @@ def certify_atomic_shared_nuisance_tail_cell(
         all_legal_hybrid_cells_covered=False,
         goal27_certified=False,
     )
+
+
+# S-L45: original 12-coil passive source Schur stage (D, sl, package14).
+# The last D-coil KVL contains +150 V; its BE-affine stamp is
+# old_iD + h*(D-150)/100uH, NOT old_iD + h*D/100uH.
+def certify_original_source_passive16_port_lift(
+    *, retained_node10_V, old_coil12_A, command_V,
+    h_s, source_law_sha256, source_adapter_sha256, saved_cal_sha256
+):
+    """Exact source-real 16-node lift, conditional on original stage domain.
+
+    Original retained order: Q1(d,g,w,x,s),Q2(d,g,w,x,s).
+    External source rows D,sl have no charge/G2/diode/thermal terms.
+    The package14 and exact 2x2 Schur complement are SPD; the full
+    eliminated original 50D equation requires S-L40 and all guards.
+    """
+    if (source_law_sha256!=LAW_SHA or source_adapter_sha256!=ADAPTER_SHA
+            or saved_cal_sha256!=SAVED_SHA or
+            _fraction(h_s)!=_STAGE3616_H or
+            _fraction(command_V)!=F(15) or
+            len(retained_node10_V)!=10 or len(old_coil12_A)!=12):
+        raise ValueError("UNRESOLVED_SOURCE_DOMAIN: original 16-node source identity")
+    v=tuple(map(_fraction,retained_node10_V))
+    old=tuple(map(_fraction,old_coil12_A))
+    auth=dict(h_s=h_s,source_law_sha256=source_law_sha256,
+              source_adapter_sha256=source_adapter_sha256,
+              saved_cal_sha256=saved_cal_sha256,command_V=command_V)
+    def residual_ports(D,sl):
+        P=certify_original_source_package14_linear_lift(
+            boundary_node12_V=(D,sl)+v,old_package_coil10_A=old[:10],
+            **auth)
+        pp=dict(zip(P["package_node_indices"],P["node_voltage14_V"]))
+        rD=(D-pp[14])/F("87.416e-6")+(D-pp[13])/F(".003322")+old[11]+(
+            _STAGE3616_H/F("100e-6"))*(D-F(150))
+        rsl=(sl-pp[25])/F(".003322")+old[10]+(
+            _STAGE3616_H/F("4.3e-9"))*sl
+        return (rD,rsl),P
+    zero,_=residual_ports(F(0),F(0))
+    ex,_=residual_ports(F(1),F(0))
+    ey,_=residual_ports(F(0),F(1))
+    S=((ex[0]-zero[0],ey[0]-zero[0]),
+       (ex[1]-zero[1],ey[1]-zero[1]))
+    if S[0][1]!=S[1][0] or S[0][0]<=0 or (
+        S[0][0]*S[1][1]-S[0][1]*S[1][0]<=0):
+        raise ArithmeticError("original 16-node Schur not SPD")
+    port=_solve(S,(-zero[0],-zero[1]))
+    rr,P=residual_ports(*port)
+    if rr!=(F(0),F(0)):
+        raise ArithmeticError("original passive port residual not exactly zero")
+    return dict(
+        status="ORIGINAL_SOURCE_PASSIVE16_UNIQUE_EXACT_LINEAR_LIFT",
+        eliminated_node_indices=(0,1)+_SOURCE_PACKAGE_P,
+        retained_node_indices=(3,6,7,8,9,15,18,19,20,21),
+        port_D_sl_V=port,
+        package_voltage14_V=P["node_voltage14_V"],
+        strict_package_ldl_pivots_S=P["strict_positive_ldl_pivots_S"],
+        strict_schur_pivots_S=(S[0][0],
+          S[1][1]-S[1][0]*S[0][1]/S[0][0]),
+        original_two_port_residual_A=rr,
+        old_external_sl_current_A=old[10],
+        old_external_D_current_A=old[11],
+        original_D_coil_150V_offset_A=F(150)*_STAGE3616_H/F("100e-6"),
+        conditional_full50_to_eight_node_reduction=True,
+        conditional_to_six_nonlinear_node_reduction_after_G11_G12=True,
+        complete_original_six_node_roots_certified=False,
+        original_full_predecessor_chart_qualified_in_ci=False,
+        original_native_ieee_outward_enclosed=False,
+        all_cal_joint_E_certified=False,
+        goal27_certified=False
+    )
