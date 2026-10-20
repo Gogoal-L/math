@@ -1631,3 +1631,19 @@ The implementation extends the existing `measurement_factor_audit.py` three-samp
 
 **Decision boundary.** This closes one mathematical gap in how an affine point witness can be challenged by unknown phase and bounded clock perturbation, but it does not change the current P54/P55 provenance ceiling: the cited L4.50 archive and full 4801-point arrays remain absent from the remote tree. The strongest next use is to apply the same gate to five or more verified same-full-CAL samples and a certified piecewise-Lipschitz source trace, then compare against the strongest ordinary using identical nuisance constraints. Genuine Goal27 diameter reduction still requires a uniform future signed-work range over the full compatible fiber.
 
+
+## 2026-10-20 Q3: sharp joint-error charge-goal radius (conditional theorem, not S09 source data)
+
+**Contract and stake.** On the normalized interval 0<=t<=1 let r(t)=Q_true(t)-Q_ref(t) be absolutely continuous with |r'(t)|<=D, D>0. Observe just the two endpoint charges y0=y1=0, under one persistent offset b with |b|<=B and two individual errors |e0|,|e1|<=rho: yi=r(i)+b+ei. Define the *signed* goal correction L=integral_0^1 (2t-1)r(t)dt. The independent error budget is deterministic (not an assumed Gaussian prior). The strongest same-information midpoint decoder may use all these hypotheses.
+
+**Exact theorem.** Put z=min(1,2rho/D) and a=(1-z)/4. The compatible signed-goal interval is exactly [-R,R], where
+
+```text
+R = D * (1/6 - 2*a*a + 4*a*a*a/3),  a=(1-min(1,2*rho/D))/4.
+```
+
+*Proof.* Write u=r'. The endpoint observation difference gives |integral_0^1 u|<=2rho; every such measurable |u|<=D is realizable by choosing b=0, r(0)=-(integral u)/2, e0=-r(0), e1=-r(1), which lie within the individual budgets. Integration by parts gives L=integral_0^1 t(1-t)u(t)dt; r's constant component and common bias cancel because the signed kernel has zero mean. Maximizing this linear functional over |u|<=D and |integral u|<=2rho is an exact bathtub/rearrangement problem: since t(1-t) increases toward the midpoint, select u=-D on [0,a] and [1-a,1], and u=+D on (a,1-a). This has total integral D*(1-4a)=D*z and evaluates to the stated R. Its negative is an admissible second world with the same observations, yielding the sharp lower as well as upper minimax bound. The formula is piecewise: rho=0 gives D/16; rho>=D/2 gives D/6. Any pointwise charge-envelope integration which discards endpoint correlation can be looser, but the same-information ordinary with this joint contract attains R.
+
+**Zero-gain checkpoint and correlated-error falsifier.** Both bang-bang extremizers satisfy r(1/2)=0 when b=0. Thus an additional exact midpoint checkpoint y_mid=0 (even with zero error) retains both extrema and does not reduce the sharp minimax radius. If endpoint error itself is one perfectly common additive drift, the difference error is exactly zero, forcing integral u=0 and R=D/16 for any marginal drift magnitude. This proves that a marginal charge error bar or checkpoint count alone cannot determine future signed-goal information; the *joint error geometry and goal kernel* matter.
+
+**Dimensional transfer and stop condition.** For a real window duration T, D_phys in C/s and rho in C, the signed goal integral in C*s has radius D_phys*T*T*f(min(1,2rho/(D_phys*T))). Converting it to original external work requires a qualified source-specific work sensitivity, electrical/guard/root continuations and a uniform nonlinear remainder. The actual S09 checkpoint center and rho may be oracle/expository; no physical sensor or original Goal27 work diameter is certified here. Use this as a conditional Q3 measurement-value falsifier alongside the ordinary two-sided cones + finite-PL baseline. Scientific level SIDE_VERIFIED exact synthetic theorem; Main NOT_CONSUMED.

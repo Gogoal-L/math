@@ -520,5 +520,47 @@ class MarginalDependenceSensorFusionTests(unittest.TestCase):
                              "CONDITIONAL_FINITE_CATEGORICAL_ONLY")
 
 
+class JointChargeSignedGoalTheoremTests(unittest.TestCase):
+    def test_sharp_endpoint_joint_error_signed_goal_radii(self):
+        from fractions import Fraction as F
+
+        def primitive(x):
+            x = F(x)
+            return x*x/2 - x*x*x/3
+
+        for rho, expected in (
+            (F(0), F(1, 16)),
+            (F(1, 8), F(323, 3072)),
+            (F(1, 4), F(53, 384)),
+            (F(1, 2), F(1, 6)),
+        ):
+            a = (1-min(F(1), 2*rho))/4
+            radius = F(1, 6)-2*a*a+4*a*a*a/3
+            self.assertEqual(radius, expected)
+            # Independently integrate the sign-switched derivative with exact fractions.
+            signed = (primitive(1-a)-primitive(a)) - primitive(a) - (primitive(1)-primitive(1-a))
+            self.assertEqual(signed, expected)
+            net = 1-4*a
+            self.assertLessEqual(abs(net)/2, rho)
+            # Pick r(0)=-net/2. Symmetry forces r(mid)=0 even with exact mid readout.
+            self.assertEqual(-net/2 + F(1, 2)-2*a, 0)
+
+    def test_ordered_goal_gap_survives_strictly_contracting_updates(self):
+        from fractions import Fraction as F
+        import numpy as np
+        a = np.eye(3)*.5
+        b = np.eye(3)*.5
+        a[1, 2] = b[0, 1] = .25
+        c = np.array([[1., 0., 0.]])
+        self.assertLessEqual(np.linalg.norm(a, 2), .75 + 1e-15)
+        self.assertLessEqual(np.linalg.norm(b, 2), .75 + 1e-15)
+        x = np.array([0., 0., 1.])
+        self.assertEqual(float((c @ a @ x)[0]), 0.)
+        self.assertEqual(float((c @ b @ x)[0]), 0.)
+        self.assertEqual(float((c @ b @ a @ x)[0]), float(F(1, 16)))
+        self.assertEqual(float(2*(c @ b @ a @ x)[0]), float(F(1, 8)))
+        report = word_audit({"A": a, "B": b}, c, c)
+        self.assertEqual([s["goal_rank"] for s in report["horizons"]], [1, 2, 3, 3])
+
 if __name__ == "__main__":
     unittest.main()

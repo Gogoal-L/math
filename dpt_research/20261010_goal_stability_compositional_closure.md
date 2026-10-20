@@ -730,3 +730,7 @@ For a compact convex source domain with uniform measure and compact target set, 
 
 This is the most defensible route suggested by the three methods. At the current evidence level, it is an implementation/test contract, not a reproduced full-source computation; the certified Goal27 diameter reduction remains 0 nJ.
 
+
+## 2026-10-20 Q2: strict contraction does not imply ordered-word goal closure
+
+A strengthening of the already tested D1/D2 triangular two-step counterexample: take three hidden linear coordinates, observation/goal C=(1,0,0), and two command updates A=(1/2)I+(1/4)E_23 and B=(1/2)I+(1/4)E_12. Both operators are strictly contracting in Euclidean norm because ||A||_2,||B||_2 <= sqrt(||.||_1||.||_infinity)=3/4. The two admissible *synthetic* hidden states x_+=e3 and x_-=-e3 have identical initial external record and individually zero C A x and C B x, while the ordered future B A produces C B A x_+=1/16 and C B A x_-=-1/16. Thus the future-goal gap is 1/8 (arbitrary goal units), and any scalar state inferred only from the one-command observation has minimax error at least 1/16 on this supplied pair. Exact row-closure ranks across ordered words remain [1,2,3,3], as in the prior noncontracting test. The result establishes that ordinary dissipative contraction alone cannot replace a right-congruence/goal-relevant memory test; it does not assert that both trajectories are complete legal DPT source roots with the same full CAL. Regression reuses `goal_word_quotient.audit` in `test_goal_ceiling_tools.py`.
