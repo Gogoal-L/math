@@ -1672,10 +1672,10 @@ def certify_original_source_two_gate_unique_bracket(
             g2hi+=max(F(0),diff)
         wds=tuple(((leak+cc)*(g-dd)-cc*old_u)/(1+leak+cc)
                   for dd in cur[3] for cc in k)
-        lower=(g-g2hi)/9+leak*(g-cur[5][1])+
+        lower=((g-g2hi)/9+leak*(g-cur[5][1])+
                leak*(g-cur[3][1])+min(wds)+
                gs*((g-cur[5][1])-(oldg-olds)))
-        upper=(g-g2lo)/9+leak*(g-cur[5][0])+
+        upper=((g-g2lo)/9+leak*(g-cur[5][0])+
                leak*(g-cur[3][0])+max(wds)+
                gs*((g-cur[5][0])-(oldg-olds)))
         if lower>upper:

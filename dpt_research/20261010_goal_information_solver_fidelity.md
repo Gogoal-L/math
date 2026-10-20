@@ -1101,20 +1101,41 @@ Fresh independent read-only original saved-predecessor test: old source voltage 
 ### S-L47 — 原始 Q1 g6 guarded 单根：条件性源 50D→5D (2026-10-21)
 
 与上节不同，本节证明的是一条**余下 KCL 的实际存在/唯一性**，不是只排除一个候选盒。原 n3616 Q1 G11 signed finite Gauss32 的合法单一 smooth panel 有 H'(u)=1+10^{-7}+ΔQ'_{32}(u)/h>1。故沿 r7=0 的唯一 w(g,d) 有 0<dw/dg=1−1/H'(u)<1。P16 SPD 仿射 lift 对 gate 的严格原 source 斜率
-\`a_g=∂g2/∂g=0.9553822356017335...\`，保留其精确 Fraction 表示。对于固定的另外五个 Q1/Q2(d,g,s) 坐标及共同 old12 线圈记忆：
+`a_g=∂g2/∂g=0.9553822356017335...`，保留其精确 Fraction 表示。对于固定的另外五个 Q1/Q2(d,g,s) 坐标及共同 old12 线圈记忆：
 
-\`dr6/dg=(1−a_g)/9+2×10^(-7)+dw/dg+(1388e−12/h) > 111.04495772913411 A/V\`。
+`dr6/dg=(1−a_g)/9+2×10^(-7)+dw/dg+(1388e−12/h) > 111.04495772913411 A/V`。
 
 以原始保存 n3615 的旧 Q1 g/s/w 精确 binary64 电压为锚、12 个 old coil 电流在**各自保存值±1mA** 及其余五个 current 电压在各自保存值±0.1mV 为条件，经过本轮 read-only Pro18E NPZ SHA 校验与精确 P16/G11/G12 计算，原 Q1 gate 保存值左右 125µV 的**全 17D face slab** 给出：
-- 左 face \`g=g_saved−0.000125V\` 时 \`r6_upper=−0.0010508671630896351A<0\`；
-- 右 face \`g=g_saved+0.000125V\` 时 \`r6_lower=+0.0010223486726103875A>0\`。
+- 左 face `g=g_saved−0.000125V` 时 `r6_upper=−0.0010508671630896351A<0`；
+- 右 face `g=g_saved+0.000125V` 时 `r6_lower=+0.0010223486726103875A>0`。
 
-因此在上述声明参数盒的**每一条固定 fiber** 上，原始 gated r6=0 对 g 有且仅有一根，位于 saved±125µV。两侧是严格有向全盒端点界，导数是独立由源 G11 charge-positive 和 P16 仿射传递给出的下界，不是 Newton 保存点的一次测试。新 \`certify_original_source_q1_gate_unique_bracket\` 会在斜率/两端反号/原始 panel 任一不合格时 **RETAIN/UNKNOWN**，不能错误地把单个端点证书升级为根存在。因而在 source chart/guard 重构 preimage 上，先前 S-L45 条件性的六节点电路求根，还可条件性消去一个 Q1 g 自由度变成**五节点**。
+因此在上述声明参数盒的**每一条固定 fiber** 上，原始 gated r6=0 对 g 有且仅有一根，位于 saved±125µV。两侧是严格有向全盒端点界，导数是独立由源 G11 charge-positive 和 P16 仿射传递给出的下界，不是 Newton 保存点的一次测试。新 `certify_original_source_q1_gate_unique_bracket` 会在斜率/两端反号/原始 panel 任一不合格时 **RETAIN/UNKNOWN**，不能错误地把单个端点证书升级为根存在。因而在 source chart/guard 重构 preimage 上，先前 S-L45 条件性的六节点电路求根，还可条件性消去一个 Q1 g 自由度变成**五节点**。
 
 这并非其余五条 KCL 及 old thermal/diode/G2/ETH/ABS source branches 的全根覆盖；保存 PREP 周围任意 old coil boxes 的所有 50D history 可达性、完整 CAL E、native GL32/SciPy IEEE outward 和 H841 signed-work 直径继续 OPEN。GitHub 公开 tests 使用 synthetic old12 因而不包含任何 protected n3615 旧电流原始字节。只有原始保存 NPZ 的本地只读计算支持本节上述 ±125µV 定量值。
 
 ### 原始 F122-A 思路的新 DPT 数学边界：PSD moments 的严格 slack 不可直接平移
 
-原论文 OpenAI *Uniform quasipolynomial-time trace reconstruction*，固定 \`openai/math@fd4aeeb2ee4fc729c18d98444fed42fd0529eeeb\`，原 TeX \`build/manuscript/setup.tex\` 的 \`eq:moment-matrix\` / \`thm:separation\` 和 \`decoding.tex\` 的 \`lem:prefix-slack\` / \`lem:rational-feasibility\`：正确二元 trace 前缀通过混入均匀符号分布获得 \`M(m*)≽ζ/8 I\`，在**可容纳统计误差**的可行性问题中给出 bounded rational iteration。它不自动成为精确 DPT KCL 根的内点验收法。严格反迁移定理：若非零多项式源残差 r 的度数不大于 moment degree D，并施加精确等式 \`E[r²]=0\`，则 PSD Gram 矩阵必有非零系数零向量，\`M_D c(r)=0\`，从而无任何 \`M_D≻0\` 的物理可行 moment completion。Exact Fraction 例：\`r=x−1/2\`, \`E[x]=1/2,E[x²]=1/4\`，其 2×2 moment matrix det=0；以 1/8 的均匀 \`x∈[0,1]\` 分布混合后 det>0，却造成 \`E[r²]=1/96>0\`，破坏原等式。此结论不否定正半定 moment outer 排除，它只阻止把 F122-A 的 strict-slack 存在保证误用到硬 KCL equality。
+原论文 OpenAI *Uniform quasipolynomial-time trace reconstruction*，固定 `openai/math@fd4aeeb2ee4fc729c18d98444fed42fd0529eeeb`，原 TeX `build/manuscript/setup.tex` 的 `eq:moment-matrix` / `thm:separation` 和 `decoding.tex` 的 `lem:prefix-slack` / `lem:rational-feasibility`：正确二元 trace 前缀通过混入均匀符号分布获得 `M(m*)≽ζ/8 I`，在**可容纳统计误差**的可行性问题中给出 bounded rational iteration。它不自动成为精确 DPT KCL 根的内点验收法。严格反迁移定理：若非零多项式源残差 r 的度数不大于 moment degree D，并施加精确等式 `E[r²]=0`，则 PSD Gram 矩阵必有非零系数零向量，`M_D c(r)=0`，从而无任何 `M_D≻0` 的物理可行 moment completion。Exact Fraction 例：`r=x−1/2`, `E[x]=1/2,E[x²]=1/4`，其 2×2 moment matrix det=0；以 1/8 的均匀 `x∈[0,1]` 分布混合后 det>0，却造成 `E[r²]=1/96>0`，破坏原等式。此结论不否定正半定 moment outer 排除，它只阻止把 F122-A 的 strict-slack 存在保证误用到硬 KCL equality。
 
-一种互补方法是 **SOS 先排除、Bernstein 再自适应分裂**：\`p(x)=x²−x+5/16=(x−1/2)²+1/16\` 对 |e|≤1/32 有整个 [0,1] 的严格 gap=1/32，而原 degree-2 Bernstein parent coefficients (5/16,-3/16,5/16) 无法直接排除。Exact Fraction 及去掉常数项的真根突变均已独立通过。这目前是 source-agnostic conditional 算法，不是经 source G11/ETH native 承包的 S150 root certificate；F122 原始主论文未完成全页 DEEP_READ_V1，不移动至 literature/。
+一种互补方法是 **SOS 先排除、Bernstein 再自适应分裂**：`p(x)=x²−x+5/16=(x−1/2)²+1/16` 对 |e|≤1/32 有整个 [0,1] 的严格 gap=1/32，而原 degree-2 Bernstein parent coefficients (5/16,-3/16,5/16) 无法直接排除。Exact Fraction 及去掉常数项的真根突变均已独立通过。这目前是 source-agnostic conditional 算法，不是经 source G11/ETH native 承包的 S150 root certificate；F122 原始主论文未完成全页 DEEP_READ_V1，不移动至 literature/。
+
+
+### S-L48 — 原始 S150 Q1/Q2 两条 guarded gate KCL 的独立单根：条件性 50D→4D（2026-10-21）
+
+新操作符 `certify_original_source_two_gate_unique_bracket` 严格从 S-L45 的完整 source 被动16节点 SPD/12 个 old coil BE 方程重构两腿 `g2`。原 P16 的精确 Fraction gate 交叉矩阵（行分别 Q1:g2、Q2:g2，列分别 Q1:g、Q2:g）为
+
+```text
+[[0.9553822356017335..., 0],
+ [0, 0.9573134006235400...]]
+```
+
+**两个交叉系数严格是零，并非小数近似。** 因此对于固定的原四个当前 `(Q1:d,s,Q2:d,s)` 电压和**共同** 12 个旧线圈电流，两条已经用原 r7/r19 有限 Gauss32 消去 w 的 gate KCL 相互独立，各自对 g 严格递增，导数下界分别超过 `111.04495772913411 A/V` 与 `111.04474315524280 A/V`。Source law ZIP SHA256 `250aa4ea17514ffdeda3a51d95bedf8e034b181f97bdc254db29ddc36281b9c8`、原 `actual_law.py` SHA256 `51b78f729393d29745f59ca150adfef69e1847bf26a8853c6cef3d6be9e2083d`、保存 Pro18E NPZ SHA256 `baafdd8cb489adb186677658c4a8031130cc53a9a1854c4997211d437daf8b3e`。原 stage n3616、命令 15V、step `0x1.b7cdfd9d80000p-37` 秒，old12 电流来自 n3615 保存前驱，在所有 oldcoil 保存值±0.001A 及两个 gate 的保存值±0.000125V、四个其余 d/s 电压保存值±0.0001V 的整闭盒上，直接源 SHAs 检查及精确 Fraction 得到四个完整参数端面：
+
+```text
+Q1 gate lower face: r6 upper = -0.0010508671630896351 A < 0
+Q1 gate upper face: r6 lower = +0.0010223486726103875 A > 0
+Q2 gate lower face: r18 upper = -0.0014583722156841952 A < 0
+Q2 gate upper face: r18 lower = +0.0014637660927983114 A > 0
+```
+
+G11 signed source branch/hypothesis、G12 capacitance branch，two passive g2 的 w/x 零系数和跨 gate 零系数按源 real expression 核验。因此对每条固定四节点与 old12 的合法 guard/preimage fiber，这两条 gate 根都存在且唯一，原 50D 电路节点条件性 root correspondence 进一步到**4D**。这项证明**没有**说明剩余 4D KCL 有解、该 12D predecessor slab 都是历史可达、其他 G2/ETH/diode/thermal/ABS/clip guard 分支被覆盖，或源 NumPy GL32/SciPy 的 binary64 evaluator 被 directed outward 包住，更不是 Goal27。公开 CI 测试只能检验 source-code Fraction 定理及负控；原始 protected NPZ 在本地只读 SHA 检验，不上传。缺少对 full PREP126→CAL4800 的任意历史/共同 E 联合观测闭合证书。
