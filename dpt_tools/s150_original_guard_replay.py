@@ -257,6 +257,95 @@ def certify_original_eth_seam_band():
         "full_CAL_goal27_status": "NOT_CERTIFIED",
     }
 
+
+def classify_original_eth_guard_rectangle(temperature_C, gate_minus_source_V):
+    """All-point exact-decimal source guard proof on one T/g box; NOT 50D roots."""
+    from fractions import Fraction as F
+
+    def limits(value, label):
+        if not isinstance(value, (tuple, list)) or len(value) != 2 or any(
+                not isinstance(v, str) for v in value):
+            raise ValueError(label + " requires two exact rational strings")
+        try:
+            lo, hi = [F(v) for v in value]
+        except (ValueError, ZeroDivisionError):
+            raise ValueError(label + " has invalid rational bounds") from None
+        if lo > hi:
+            raise ValueError(label + " has reversed bounds")
+        return lo, hi
+
+    def clip(v, lo, hi):
+        return min(hi, max(lo, v))
+
+    Tl, Th = limits(temperature_C, "T")
+    Gl, Gh = limits(gate_minus_source_V, "g-s")
+    Tl, Th = clip(Tl, F(-60), F(260)), clip(Th, F(-60), F(260))
+    Gl, Gh = clip(Gl, F(-8), F(19)), clip(Gh, F(-8), F(19))
+
+    def net3(T):
+        return clip(F("8.381e-6")*T*T-F("4.696e-3")*T+F("2.8224"),
+                    F("1.7"), F("3.2"))
+
+    assert (2*F("8.381e-6")*F(-60)-F("4.696e-3") < 0
+            and 2*F("8.381e-6")*F(260)-F("4.696e-3") < 0)
+    th_lo, th_hi = net3(Th), net3(Tl)
+    if Gh < th_lo:
+        mode, margin = "STRICT_LOW", th_lo-Gh
+    elif Gl > th_hi:
+        mode, margin = "STRICT_HIGH", Gl-th_hi
+    else:
+        mode, margin = "RETAIN_BOTH_FRONTIER", F(0)
+    return {
+        "status": "SOURCE_DECIMAL_GUARD_ONLY_NOT_50D_ROOT",
+        "actual_law_member_sha256": ACTUAL_LAW_SHA256,
+        "temperature_C": [str(Tl), str(Th)],
+        "gate_minus_source_V": [str(Gl), str(Gh)],
+        "threshold_V": [str(th_lo), str(th_hi)],
+        "mode": mode,
+        "strict_margin_V": str(margin),
+        "all_roots": False,
+        "goal27": "NOT_CERTIFIED",
+    }
+
+
+def bisect_original_eth_guard_rectangle(temperature_C, gate_minus_source_V,
+                                        *, depth=0):
+    """A complete closed 2D rectangular guard partition, with all undecided kept."""
+    from fractions import Fraction as F
+    if type(depth) is not int or not 0 <= depth <= 12:
+        raise ValueError("depth must be an integer in [0,12]")
+    leaves = []
+
+    def go(t, g, n):
+        report = classify_original_eth_guard_rectangle(t, g)
+        if n == 0 or report["mode"] != "RETAIN_BOTH_FRONTIER":
+            leaves.append(report)
+            return
+        gl, gh = map(F, g)
+        if gl < gh:
+            mid = (gl+gh)/2
+            go(t, (str(gl), str(mid)), n-1)
+            go(t, (str(mid), str(gh)), n-1)
+        else:
+            tl, th = map(F, t)
+            if tl < th:
+                mid = (tl+th)/2
+                go((str(tl), str(mid)), g, n-1)
+                go((str(mid), str(th)), g, n-1)
+            else:
+                leaves.append(report)
+
+    go(temperature_C, gate_minus_source_V, depth)
+    return {
+        "status": "CLOSED_2D_GUARD_COVER_NOT_ROOT_COVER",
+        "leaves": leaves,
+        "count_by_mode": {mode: sum(x["mode"] == mode for x in leaves)
+                          for mode in ("STRICT_LOW", "STRICT_HIGH",
+                                       "RETAIN_BOTH_FRONTIER")},
+        "all_roots": False,
+        "goal27": "NOT_CERTIFIED",
+    }
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--original-zip", required=True)
