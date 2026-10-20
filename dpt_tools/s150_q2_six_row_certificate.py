@@ -1584,3 +1584,132 @@ def certify_original_source_q1_gate_unique_bracket(
         all_cal_joint_E_certified=False,
         goal27_certified=False,
     )
+
+
+# S-L48: rigorous independent Q1/Q2 gate fiber brackets after passive16.
+def certify_original_source_two_gate_unique_bracket(
+    *,six_current_node_boxes_V,old_coil12_boxes_A,h_s,
+    source_law_sha256,source_adapter_sha256,saved_cal_sha256
+):
+    """Original S150 n3616, paired strict gate faces yield conditional 50D->4D.
+
+    Four remaining current coordinates are Q1/Q2 (d,s). For every fixed
+    four-coordinate/one-shared-old12 predecessor fiber, P16 exact source
+    response has zero cross-gate g2 coefficients; each G11 guarded gate
+    row is independently strictly increasing in its own g. If all four
+    faces bracket, both gate roots exist uniquely. Every other KCL,
+    unknown history, native IEEE and Goal27 remain OPEN.
+    """
+    cur=tuple(map(_source_x_box,six_current_node_boxes_V))
+    old=tuple(map(_source_x_box,old_coil12_boxes_A))
+    if len(cur)!=6 or len(old)!=12 or any(
+            cur[j][0]>=cur[j][1] for j in (1,4)):
+        raise ValueError("UNRESOLVED_SOURCE_DOMAIN: source two-gate boxes")
+    auth=dict(h_s=h_s,source_law_sha256=source_law_sha256,
+              source_adapter_sha256=source_adapter_sha256,
+              saved_cal_sha256=saved_cal_sha256)
+    q1=certify_original_source_q1_gate_unique_bracket(
+        six_current_node_boxes_V=cur,old_coil12_boxes_A=old,**auth)
+    if q1["status"]=="RETAIN_Q1_GATE_MONOTONICITY_UNRESOLVED":
+        return dict(status="RETAIN_TWO_GATES_UNRESOLVED",q1_gate=q1,
+                    goal27_certified=False)
+    kw=dict(auth,command_V=15)
+    def passive_g2(six,prev,w_x_unit=None):
+        b=[six[0],six[1],F(0),F(0),six[2],
+           six[3],six[4],F(0),F(0),six[5]]
+        if w_x_unit is not None:
+            b[w_x_unit]=F(1)
+        p=certify_original_source_passive16_port_lift(
+            retained_node10_V=b,old_coil12_A=prev,**kw)
+        idx=dict(zip(_SOURCE_PACKAGE_P,p["package_voltage14_V"]))
+        return idx[5],idx[17]
+    base6=tuple(a[0] for a in cur)
+    base12=tuple(a[0] for a in old)
+    base=passive_g2(base6,base12)
+    if any(passive_g2(base6,base12,j)!=base for j in (2,3,7,8)):
+        raise ArithmeticError("original passive source g2 depends on w/x")
+    slopes=[]
+    for i in (1,4):
+        v=list(base6);v[i]+=F(1)
+        q=passive_g2(v,base12)
+        slopes.append((q[0]-base[0],q[1]-base[1]))
+    if (slopes[0][1]!=0 or slopes[1][0]!=0 or
+            not(0<=slopes[0][0]<1 and 0<=slopes[1][1]<1)):
+        raise ValueError("UNRESOLVED_SOURCE_DOMAIN: cross-coupled gates")
+    q2w=certify_original_source_g11_w_guard(
+        leg="Q2",g_V=cur[4],d_V=cur[3],**auth)
+    if (q2w["status"]!="ORIGINAL_SOURCE_G11_GUARDED_W_UNIQUE_LIFT" or
+            q2w["gauss_charge_derivative_lower_F_per_s"]<=0):
+        raise ValueError("UNRESOLVED_SOURCE_DOMAIN: Q2 G11 panel")
+    xc=F.from_float(float.fromhex(_SOURCE_X_SPECS["Q2"]["x"]))
+    q2x=certify_original_source_x_kcl_outer(
+        leg="Q2",d_V=cur[3],s_V=cur[5],
+        x_V=(xc-F(".04"),xc+F(".04")),**auth)
+    oldg=F.from_float(float.fromhex(_SOURCE_G11_W_SPECS["Q2"]["old_g"]))
+    oldw=F.from_float(float.fromhex(_SOURCE_G11_W_SPECS["Q2"]["old_w"]))
+    olds=F.from_float(float.fromhex(_SOURCE_X_SPECS["Q2"]["old_s"]))
+    old_u=oldg-oldw
+    leak=F(1,10**7)
+    gs=F("1388e-12")/_STAGE3616_H
+    k=(F("500e-12")/_STAGE3616_H,F("555e-12")/_STAGE3616_H)
+    def face_r18(g):
+        b=list(cur)
+        b[4]=(g,g)
+        lo6=list(base6);lo6[4]=g
+        baseline=passive_g2(lo6,base12)[1]
+        g2lo=g2hi=baseline
+        # One original continuous affine lift: do not independently
+        # choose nuisance currents for two rows / same world.
+        for j,box in enumerate(b):
+            v=list(lo6);v[j]=box[1]
+            diff=passive_g2(v,base12)[1]-baseline
+            g2lo+=min(F(0),diff)
+            g2hi+=max(F(0),diff)
+        for j,box in enumerate(old):
+            v=list(base12);v[j]=box[1]
+            diff=passive_g2(lo6,v)[1]-baseline
+            g2lo+=min(F(0),diff)
+            g2hi+=max(F(0),diff)
+        wds=tuple(((leak+cc)*(g-dd)-cc*old_u)/(1+leak+cc)
+                  for dd in cur[3] for cc in k)
+        lower=(g-g2hi)/9+leak*(g-cur[5][1])+
+               leak*(g-cur[3][1])+min(wds)+
+               gs*((g-cur[5][1])-(oldg-olds)))
+        upper=(g-g2lo)/9+leak*(g-cur[5][0])+
+               leak*(g-cur[3][0])+max(wds)+
+               gs*((g-cur[5][0])-(oldg-olds)))
+        if lower>upper:
+            raise ArithmeticError("source Q2 gate residual interval invalid")
+        return lower,upper,(g2lo,g2hi)
+    left=face_r18(cur[4][0])
+    right=face_r18(cur[4][1])
+    strict_slope=gs+2*leak+(1-slopes[1][1])/9
+    if strict_slope<=0:
+        return dict(status="RETAIN_TWO_GATES_UNRESOLVED",q1_gate=q1,
+                    goal27_certified=False)
+    both=(q1["status"]=="ORIGINAL_SOURCE_G11_Q1_GATE_UNIQUE_SIX_TO_FIVE_LIFT"
+          and left[1]<0<right[0])
+    return dict(
+        status=("ORIGINAL_SOURCE_BOTH_GATES_UNIQUE_SIX_TO_FOUR_LIFT"
+                if both else "RETAIN_TWO_GATES_UNRESOLVED"),
+        original_gate_KCL_rows=(6,18),
+        source_g11_rows=(7,19),
+        q1_gate_face_upper_lower_A=(
+            q1["left_face_r6_upper_A"],q1["right_face_r6_lower_A"]),
+        q2_gate_face_upper_lower_A=(left[1],right[0]),
+        q2_g2_face_intervals_V=(left[2],right[2]),
+        exact_passive_g2_gate_jacobian=(
+            (slopes[0][0],slopes[1][0]),
+            (slopes[0][1],slopes[1][1])),
+        certified_both_gate_slope_lower_A_per_V=(
+            q1["certified_gate_slope_lower_A_per_V"],strict_slope),
+        original_q2_w_outer_V=q2w["necessary_w_V"],
+        original_q2_x_outer_V=q2x["necessary_x_V"],
+        simultaneous_both_gate_roots_unique_per_four_fiber=both,
+        source_50d_to_four_nonlinear_nodes_conditional=both,
+        original_shared_old12_predecessor_used=True,
+        all_other_source_KCL_roots_certified=False,
+        source_full_own_prep_cal_history_covered=False,
+        source_ieee_outward_certified=False,
+        goal27_certified=False,
+    )
