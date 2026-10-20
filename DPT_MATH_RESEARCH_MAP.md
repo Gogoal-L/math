@@ -78,6 +78,8 @@
 - **有用出口：** 新序列上的不同可计算预测、受范围限制的closure关系，或严格限定的最少history信息。原doublefall中候选失败不证明同外部信息普遍不可能。
 - **工具/笔记：** [goal word](dpt_tools/goal_word_quotient.py)、[predictive-state audit](dpt_tools/predictive_state_audit.py)、[dynamic closure](dpt_research/20261010_goal_stability_compositional_closure.md)。
 
+- **2026-10-20 Side条件负控：** 两个线性command更新各自严格收缩仍可能出现单段不可观测、双段goal gap；已复用原有限word工具，详见[dynamic closure](dpt_research/20261010_goal_stability_compositional_closure.md)。该合成负控不认证原source连续合法历史。
+
 ### Q3 — 可取得charge误差信息与reference discrepancy的联合传播
 
 - **决定：** 哪一项实际可取得的历史/测点信息，能把目标范围缩到有用水平？
@@ -86,6 +88,8 @@
 - **有用出口：** 条件精度要求、误差—goal tradeoff、合法可行见证和outer之间的gap，或证明endpoint/窗口摘要不足。没有真实sensor误差分布就用确定性条件，不制造noise prior。
 - **停止重复：** 不继续仅为tight数字加密现有DP；不把query实际残差、内部假设µV/µA或假想rho倒称部署前界。
 - **笔记：** [goal/fiber recovery](dpt_research/20261012_mixed_nuisance_goal_radius_formal_derivation.md)、[finite goal propagation](dpt_research/20261010_goal_stability_compositional_closure.md)。
+
+- **2026-10-20 Side精确条件界：** 端点charge共同bias与独立有界误差下，带符号积分目标有可计算sharp minimax半径；中点checkpoint可有零最坏情形收益。见[mixed-nuisance Q3证明](dpt_research/20261012_mixed_nuisance_goal_radius_formal_derivation.md)与`test_goal_ceiling_tools.py`；未给出物理D、joint E、reference discrepancy资格。
 
 ### Q4 — 100 V原R1的可恢复对象与新条件后果
 
