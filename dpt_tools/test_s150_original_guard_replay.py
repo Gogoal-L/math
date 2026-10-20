@@ -166,3 +166,41 @@ class SourceEthContinuousRectangleTests(unittest.TestCase):
         self.assertEqual(partition["leaves"][0]["raw_temperature_C"],list(raw_t))
         self.assertEqual(partition["leaves"][0]["raw_gate_minus_source_V"],list(raw_g))
         self.assertFalse(partition["all_roots"])
+
+
+class OriginalQ2ReverseSourceRootExclusionTests(unittest.TestCase):
+    def test_original_source_50d_tube_excludes_all_weak_reverse_diode_roots(self):
+        from fractions import Fraction as F
+        from s150_original_guard_replay import (
+            certify_original_q2_reverse_complement,
+        )
+        report=certify_original_q2_reverse_complement(
+            old_vj_upper_V="-2")
+        self.assertEqual(report["status"],
+          "SOURCE_DECIMAL_SUBDOMAIN_REVERSE_COMPLEMENT_EXCLUDED_CONDITIONAL")
+        self.assertEqual(F(report["uniform_offset_lower_V_strict"]),F("2.1074"))
+        self.assertEqual(
+          F(report["body_residual_lower_at_minus2_V_strict"]),
+          F("0.10739999998987824"))
+        self.assertEqual(report["new_vj_upper_V_strict"],"-2")
+        self.assertEqual(F(report["abs_ib_plus_Is_A_strict_upper"]),
+                         F("2.8424e-16"))
+        self.assertEqual(report["root_existence"],"NOT_PROVEN")
+        self.assertEqual(report["all_50D_source_root_cover"],"NOT_PROVEN")
+        self.assertEqual(report["joint_CAL_E"],"NOT_PROVEN")
+        self.assertEqual(report["goal27_future_signed_work"],"NOT_CERTIFIED")
+        self.assertFalse(report["source_archived_numeric_replayed_in_this_process"])
+
+    def test_retaining_original_old50_junction_state_is_mandatory(self):
+        from s150_original_guard_replay import (
+            certify_original_q2_reverse_complement,
+        )
+        for old in ("0","0.1","4","-1.999"):
+            with self.assertRaisesRegex(ValueError,
+                                        "full50 old junction carry"):
+                certify_original_q2_reverse_complement(
+                    old_vj_upper_V=old)
+        strict=certify_original_q2_reverse_complement(
+            old_vj_upper_V="-154.4820273950659")
+        self.assertGreater(
+            float(strict["body_residual_lower_at_minus2_V_strict"]),.107)
