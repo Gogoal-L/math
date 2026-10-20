@@ -1356,5 +1356,46 @@ class SharedPhaseAndCrossGuardRegression(unittest.TestCase):
             self.assertEqual(W_on-Woff,F(150,10**9))
 
 
+class OriginalS150EthSeamExactPolynomialTests(unittest.TestCase):
+    """Exact decimal source-polynomial arithmetic, not full source-root proof."""
+
+    def test_s150_eth_nonzero_discontinuity_and_uniform_smoothing_floor(self):
+        from fractions import Fraction as Q
+        t=Q(25)
+        g=Q('8.381e-6')*t*t-Q('4.696e-3')*t+Q('2.8224')
+        self.assertEqual(g,Q(4336381,1600000))
+        hi=(
+            (-Q('22.48e-6')*t**3+Q('5.637e-3')*t**2
+             +Q('87.27e-3')*t-Q('59.02'))*g**3
+            +(Q('567.2e-6')*t**3-Q('0.1404')*t**2
+              -Q('2.866')*t+Q('1502.6'))*g**2
+            +(-Q('3.728e-3')*t**3+Q('0.9245')*t**2
+              +Q('20.77')*t-Q('9359.8'))*g
+            +(Q('5.447e-3')*t**3-Q('1.424')*t**2
+              -Q('31.8')*t+Q('13239.5'))
+        )/1000
+        lo=(
+            (Q('3.788e-6')*t**3-Q('2.125e-3')*t**2
+             +Q('0.2401')*t-Q('10.98'))*g**2
+            +(Q('18.97e-6')*t**3-Q('8.24e-3')*t**2
+              +Q('1.272')*t-Q('339.4'))*g
+            +(Q('20.94e-6')*t**3+Q('6.024e-3')*t**2
+              -Q('3.617')*t-Q('1063.7'))
+        )/1000
+        self.assertTrue(-Q(3)<hi<Q(15) and -Q(3)<lo<Q(15))
+        self.assertGreater(lo,hi)
+        step=lo-hi
+        self.assertLess(Q('0.006459102210087553'),step)
+        self.assertLess(step,Q('0.006459102210087554'))
+        floor=step/2
+        self.assertGreater(floor,Q('0.003229551105043776'))
+        midpoint=(lo+hi)/2
+        self.assertEqual(abs(midpoint-lo),floor)
+        self.assertEqual(abs(midpoint-hi),floor)
+        for candidate in (lo,hi,Q(0),Q(-2)):
+            self.assertGreaterEqual(
+                max(abs(candidate-lo),abs(candidate-hi)),floor)
+
+
 if __name__ == "__main__":
     unittest.main()

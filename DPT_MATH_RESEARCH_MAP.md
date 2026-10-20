@@ -69,6 +69,7 @@
 - **有用出口：** 一个非零有限域内可复算的条件upper/lower与关键常数资格，或合法同信息双世界的goal gap及最小repair。tangent/finite bank最大差不代替连续域。
 - **2026-10-20 P57条件推进：** 同一完整CAL记录的box条件化joint-error支持可比原E−E界严格更紧；固定clock/RC与7维凸共享nuisance模型下，单一候选全CAL不相容具有≤8读数Helly见证。一个4801点合成双root的精确误差门为3/20 V，future-work直径从0跃至1 nJ；真实50D source roots、guard和joint E仍OPEN。见[mixed-nuisance P57](dpt_research/20261012_mixed_nuisance_goal_radius_formal_derivation.md)和`test_paper_transfer_falsifiers.py`。
 - **长期难点：** PREP126/CAL4800/target6720、guard/diode与相关remainder；允许先攻短片段或直接goal证书。缺source输入可做独立条件数学，不反复生成合成收据冒充source包含。
+- **S-L31真实source-law硬界：** 按SHA钉住的S150原始actual_law.py在25℃、ETH阈值2.710238125V存在6.459102210mV跳跃；跨阈值连续替代一致误差≥3.229551105mV，必需分guard并保留两分支，不能用盒径趋零代替。证据[solver fidelity S-L31](dpt_research/20261010_goal_information_solver_fidelity.md)及Fraction回归；实际全50D根/联合CAL E/H841目标仍OPEN。
 - **S-L30跨guard条件传播：** 同一共同光滑扩展chart中，把跨分支残差J显式计入(q,A,B,J)根差界；小投影电流差仍可触发150 nJ未来guard反例。完整source-real q/J与未来H841外包OPEN，见[solver fidelity S-L30](dpt_research/20261010_goal_information_solver_fidelity.md)。
 - **S-L29全root闭合反证：** 同一完整4801×2合成CAL记录下，4926个合法局部阶段及严格guard仍可漏掉另一个全历史根，未来功相差150 nJ（minimax75 nJ）；all-root需要全域补集覆盖。见[solver fidelity S-L29](dpt_research/20261010_goal_information_solver_fidelity.md)和Fraction回归，真实source OPEN。
 - **S-L28论文迁移负控：** index-1 DAE 的各根光滑、每根唯一不推出全根覆盖；同完整零观察的双代数根合成未来signed work相差2 nJ。见[solver fidelity S-L28](dpt_research/20261010_goal_information_solver_fidelity.md)与独立Fraction回归；原S150 full50 root/guard仍OPEN。
