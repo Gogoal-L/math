@@ -117,5 +117,58 @@ class OriginalSourceRCBandwidthOuterTests(unittest.TestCase):
 
 
 
+class OriginalSevenReadingJointOuterTests(unittest.TestCase):
+    def test_singleton_bandwidth_is_valid_source_rc_midpoint(self):
+        from s150_q2_six_row_certificate import original_rc_band_filter_fraction
+        o=original_rc_band_filter_fraction(
+            [F(0), F(1,10**11), F(2,10**11)],
+            [F(0), F(1), F(0)], F(100), F(100),
+            selected_stages=(1,2))
+        self.assertEqual(o["steps_covered"],2)
+        for lo,hi in o["sample_bounds_A"].values():
+            self.assertLessEqual(lo,hi)
+
+    def test_joint_band_envelope_cancels_offsets_and_preserves_nuisance(self):
+        from s150_q2_six_row_certificate import certify_original_seven_reading_joint_outer
+        bands=[(F(90)+F(j,4), F(90)+F(j+1,4), F(-1,100), F(1,100))
+               for j in range(80)]
+        o=certify_original_seven_reading_joint_outer(
+            observed_dual=F("1.253692790291920247338006144666"),
+            source_voltage_dual=(F(-1,10**6),F(1,10**6)),
+            source_current_band_outers=bands,
+            clock_V_bound=F(".00105"),clock_I_bound=F(".00045"))
+        self.assertEqual(o["status"],"STORED_POINT_CONDITIONAL_NECESSARY_EXCLUSION")
+        self.assertGreater(o["strict_margin"],0)
+        self.assertFalse(o["full50_root_cover_certified"])
+        self.assertEqual(o["weights_sum"],(F(0),F(0)))
+        self.assertEqual(o["source_band_count"],80)
+        with self.assertRaisesRegex(ValueError,"gap|band"):
+            certify_original_seven_reading_joint_outer(
+                observed_dual=F("1.253692790291920247338006144666"),
+                source_voltage_dual=(F(0),F(0)),
+                source_current_band_outers=bands[:-1],
+                clock_V_bound=F(".00105"),clock_I_bound=F(".00045"))
+
+    def test_root_tube_and_joint_noise_can_defeat_candidate_rejection(self):
+        from s150_q2_six_row_certificate import certify_original_seven_reading_joint_outer
+        bands=[(F(90)+F(j,4), F(90)+F(j+1,4), F(0),F(0))
+               for j in range(80)]
+        kwargs=dict(observed_dual=F("1.253692790291920247338006144666"),
+                    source_voltage_dual=(F(0),F(0)),
+                    source_current_band_outers=bands,
+                    clock_V_bound=F(".00105"),clock_I_bound=F(".00045"))
+        point=certify_original_seven_reading_joint_outer(**kwargs)
+        tube=certify_original_seven_reading_joint_outer(
+            **kwargs,root_radii=(F(1,100),F(1,100),F(1,100)))
+        self.assertLess(tube["strict_margin"],point["strict_margin"])
+        self.assertEqual(tube["status"],"CANNOT_EXCLUDE")
+        noisy=certify_original_seven_reading_joint_outer(
+            **kwargs,epsilon_V=F(1),epsilon_I=F(1))
+        self.assertEqual(noisy["status"],"CANNOT_EXCLUDE")
+        with self.assertRaises(ValueError):
+            certify_original_seven_reading_joint_outer(
+                **kwargs,root_radii=(F(-1),F(0),F(0)))
+
+
 if __name__=="__main__":
     unittest.main()
