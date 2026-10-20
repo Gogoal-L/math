@@ -37,6 +37,16 @@ class SourceCoilChargeCheckpointCertificate(unittest.TestCase):
                 (0, 1),
             )
 
+    def test_one_charge_row_exact_primal_dual_and_bad_pivot(self):
+        cert = self.load()
+        got = cert.certify_one_zero_charge_row([3, 1], [1, 1], pivot=1)
+        self.assertEqual(got["radius"], F(2))
+        self.assertEqual(got["unconstrained_radius"], F(4))
+        self.assertEqual(got["witness"], (F(1), F(-1)))
+        self.assertEqual(got["checkpoint_residual"], F(0))
+        with self.assertRaisesRegex(ValueError, "infeasible pivot"):
+            cert.certify_one_zero_charge_row([0, 100], [1, 100], pivot=0)
+
     def test_coil_be_and_trapezoid_charge_rows(self):
         cert = self.load()
         b, charge = cert.coil_be_goal_charge_rows(
