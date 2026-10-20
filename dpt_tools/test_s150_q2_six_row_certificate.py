@@ -214,5 +214,61 @@ class SourceQ2OneKCLHeatAbsCuspTests(unittest.TestCase):
             check(-1,1,-1,1,"1")
 
 
+class OriginalS150FullTwelveRowToKCL26Tests(unittest.TestCase):
+    def test_original_10_node_chart_eliminates_both_diodes_and_eight_thermal_rows(self):
+        from s150_q2_six_row_certificate import certify_source_stage3616_26d_reduction
+        from fractions import Fraction as F
+        old_hex=(
+            "0x1.90d8da971d80cp+4","0x1.9000d706653a8p+4",
+            "0x1.9000001c3c2dcp+4","0x1.90000000018f6p+4",
+            "0x1.90446617cedf0p+4","0x1.9000620e38254p+4",
+            "0x1.900000161fde1p+4","0x1.9000000001912p+4",
+        )
+        old=tuple(F.from_float(float.fromhex(x)) for x in old_hex)
+        output=certify_source_stage3616_26d_reduction(
+            old,original_dt(),
+            old_junction_V=(-130,-2),
+            q1_gs_V=("-2.2132","-2.0531"),
+            q2_gs_V=("6.1108","6.271"),
+            q1_d_s_V=("135","135.3"),
+            q2_d_s_V=("3.19","3.36"),
+            adapter_kappa="1.007",
+            source_law_sha256=LAW,source_adapter_sha256=ADAPTER,
+            saved_cal_sha256=ARCHIVE)
+        self.assertEqual(output["status"],"CONDITIONAL_50D_TO_26D_STAGE_ROOT_BIJECTION")
+        self.assertEqual(output["eliminated_rows"],24)
+        self.assertFalse(output["kcl26_roots_exist_certified"])
+        self.assertTrue(output["q1_thermal_upper_C"][0] < F("25.054"))
+        self.assertTrue(output["q2_thermal_upper_C"][0] < F("25.018"))
+        self.assertTrue(output["max_banach_contraction"]<F(".000369"))
+
+    def test_source_coil_be_elimination_and_drive_150V_sign(self):
+        from s150_q2_six_row_certificate import source_be_coil_elimination
+        from fractions import Fraction as F
+        B=[[F(0)]*12 for _ in range(26)]
+        B[0][0]=1;B[1][0]=-1
+        B[0][11]=1;B[1][11]=-1
+        result=source_be_coil_elimination([2,1]+[0]*24,[0]*12,B,[1]*12,F(1,10))
+        self.assertEqual(result[0],F(1,10))
+        self.assertEqual(result[11],-F(149,10))
+        with self.assertRaises(ValueError):
+            source_be_coil_elimination([0]*26,[0]*12,B,[0]+[1]*11,F(1,10))
+
+    def test_26d_reduction_fail_closed_on_guard_and_old_diode_domain(self):
+        from s150_q2_six_row_certificate import certify_source_stage3616_26d_reduction
+        from fractions import Fraction as F
+        old=[F(25)]*8
+        kw=dict(old_junction_V=(-130,-2),q1_gs_V=(-3,-2.5),
+                q2_gs_V=(6,7),q1_d_s_V=(135,136),q2_d_s_V=(3,4),
+                adapter_kappa="1.007",source_law_sha256=LAW,
+                source_adapter_sha256=ADAPTER,saved_cal_sha256=ARCHIVE)
+        with self.assertRaises(ValueError):
+            certify_source_stage3616_26d_reduction(
+                old,original_dt(),**dict(kw,q1_gs_V=(2,3)))
+        with self.assertRaises(ValueError):
+            certify_source_stage3616_26d_reduction(
+                old,original_dt(),**dict(kw,old_junction_V=(-130,1)))
+
+
 if __name__=="__main__":
     unittest.main()
