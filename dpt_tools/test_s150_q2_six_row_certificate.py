@@ -81,5 +81,41 @@ class SourceQ2OnSixRowCertificateTests(unittest.TestCase):
                 **dict(common,heat_upper_W="1e10"))
 
 
+class OriginalSourceRCBandwidthOuterTests(unittest.TestCase):
+    def test_exact_rational_two_step_filter_outer_covers_direct_ode_solution(self):
+        import math
+        from s150_q2_six_row_certificate import (
+            original_rc_band_filter_fraction as verify,
+            exact_machin_pi_interval,
+        )
+        piL,piU=exact_machin_pi_interval()
+        self.assertTrue(piL < F("3.1415926535897932384626433832795") < piU)
+        times=[F(0),F(1,10**11),F(2,10**11)]
+        currents=[F(0),F(1),F(0)]
+        out=verify(times,currents,F(90),F(110),selected_stages=(1,2))
+        self.assertEqual(out["status"],"RC_FILTER_INTERVAL_OUTER_NOT_ROOT_COVER")
+        for mhz in (90.,95.,100.,105.,110.):
+            x=2*math.pi*mhz*1e6*float(times[1]-times[0])
+            E=math.exp(-x)
+            c0,c1,c2=E,(1-E)/x-E,1-(1-E)/x
+            f1=c2
+            f2=c0*f1+c1
+            for index,value in ((1,f1),(2,f2)):
+                lo,hi=out["sample_bounds_A"][index]
+                self.assertLess(float(lo)-1e-11,value)
+                self.assertGreater(float(hi)+1e-11,value)
+        self.assertTrue(out["sample_bounds_A"][1][1]>out["sample_bounds_A"][1][0])
+
+    def test_source_rc_invalid_frequency_and_clock_fail_closed(self):
+        from s150_q2_six_row_certificate import original_rc_band_filter_fraction as verify
+        with self.assertRaises(ValueError):
+            verify([0,1,1],[0,1,2],90,110)
+        with self.assertRaises(ValueError):
+            verify([0,1],[0,1],110,90)
+        with self.assertRaises(ValueError):
+            verify([0,1],[0,1],90,110,selected_stages=(2,))
+
+
+
 if __name__=="__main__":
     unittest.main()
