@@ -63,6 +63,8 @@
 这些问题承接Main短单元难以闭合的数学困难，不要求按顺序全做。Side可以发现更强对象；若改变问题，说明将改变Main哪项决定及为何更值得。
 
 ### Q1 — 合法CAL相容PREP像上的有限目标范围
+- **S-L37新source必需事实：** 原SHA实际ETH在有效T=260℃饱和后仍用RAW tj；raw T=260→261℃时相同有效T、g-s=−4/+14V，ETH分别改变−5.088/−270.956mV。只保留裁剪T的source-root contractor不可靠；该反证不证明raw T>260℃物理可达或50D根。见[solver fidelity S-L37](dpt_research/20261010_goal_information_solver_fidelity.md)和`goal_charge_checkpoint.py`，合法raw-state外包仍OPEN。
+
 
 - **决定：** 哪些外部CAL信息已经足以预测具名未来goal，哪些合法历史仍会使预测失败？
 - **对象：** 同一law/family下的合法own-PREP history集合，完整recorded-command、观察算子和joint error E；直接研究相关goal像或残差`R=G−p(O)`，不先把每个内部状态独立建盒。
@@ -93,6 +95,8 @@
 - **2026-10-20 Side条件负控：** 两个线性command更新各自严格收缩仍可能出现单段不可观测、双段goal gap；已复用原有限word工具，详见[dynamic closure](dpt_research/20261010_goal_stability_compositional_closure.md)。该合成负控不认证原source连续合法历史。
 
 ### Q3 — 可取得charge误差信息与reference discrepancy的联合传播
+- **Q3新source coil-row条件sharp界：** Pro18C原H841目标核与Ls=4.16nH BE约束、未来|δvD|≤1µV盒模型，未测半径.029982652636nJ；完美未来PORT charge第一半窗降至.001330657989nJ，两半窗降至.001300015555nJ（仅多0.0306424pJ）。同bias三读误差下双row固定dual噪声支撑284.0036705V·rho[nC]，严格收益需rho<.1009939pC。LOCAL source-array Fraction重放，CI仅通用模型回归；非pretarget/全50D Goal27证书。见[mixed-nuisance Q3](dpt_research/20261012_mixed_nuisance_goal_radius_formal_derivation.md)与`goal_charge_checkpoint.py`；关键OPEN为合法可取得的PRETARGET charge-to-future transfer与全root joint E。
+
 
 - **决定：** 哪一项实际可取得的历史/测点信息，能把目标范围缩到有用水平？
 - **对象：** gate积分、少数charge checkpoint、origin/first-reversal与reference support；同时保留reference-map discrepancy，区分连续轨迹与采样closure。
@@ -105,6 +109,8 @@
 - **2026-10-20 Side精确条件界：** 端点charge共同bias与独立有界误差下，带符号积分目标有可计算sharp minimax半径；中点checkpoint可有零最坏情形收益。见[mixed-nuisance Q3证明](dpt_research/20261012_mixed_nuisance_goal_radius_formal_derivation.md)与`test_goal_ceiling_tools.py`；未给出物理D、joint E、reference discrepancy资格。
 
 ### Q4 — 100 V原R1的可恢复对象与新条件后果
+- **Q4六ordinary新判别：** 同保存三历史输入的scalar/full-profile六预测最小间距仅fine9.872633pJ、H2 8.898416pJ；预目标比较候选需各自真实TOTAL_ERROR严格小于半间距4.936/4.449pJ。第四角点E150目标、ownPREP/clock/window和误差仍缺，不排序胜者。见[second-order fiber Q4](dpt_research/20261012_second_order_goal_fiber.md)与`audit_e150_waveform_ordinary_coefficients`。
+
 
 - **决定：** 有限CAL支持的是哪个measurement-defined对象，以及它对新history/condition的未来goal是否足够？
 - **构造/挑战：** 保留L/Rser/gain/clock相容关系和实际观测预算；与同信息frequency/whole-wave/scalar-work ordinary正面比较，不能把有效对象命名为独立PCB/package参数。
