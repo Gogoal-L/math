@@ -326,5 +326,115 @@ class OriginalS150FullTwelveRowToKCL26Tests(unittest.TestCase):
 
 
 
+
+class OriginalSourceXKCLAndPaperFiniteTailProofTests(unittest.TestCase):
+    """Independent exact-rational positive and adversarial certificate checks."""
+
+    def source_kwargs(self):
+        return dict(
+            h_s=original_dt(),source_law_sha256=LAW,
+            source_adapter_sha256=ADAPTER,saved_cal_sha256=ARCHIVE)
+
+    def test_source_two_x_KCL_corners_exclude_all_50D_roots_in_cells(self):
+        from s150_q2_six_row_certificate import certify_original_source_x_kcl_outer
+        centers={
+            "Q1":("0x1.2bf0be2eea417p+7","0x1.2bf0dc944b121p+7",
+                  "0x1.da4c3edc813bep+3"),
+            "Q2":("0x1.67138b6a8325dp+3","0x1.67139f1fe1791p+3",
+                  "0x1.fc4c4bfd24625p+2"),
+        }
+        for leg,(dd,xx,ss) in centers.items():
+            d,x,s=[F.from_float(float.fromhex(z)) for z in (dd,xx,ss)]
+            radius,thick=F(".04"),F(".001")
+            # A WHOLE closed source cell, not just a stored source point:
+            out=certify_original_source_x_kcl_outer(
+                leg=leg,d_V=(d+radius-thick,d+radius),
+                x_V=(x-radius,x-radius+thick),
+                s_V=(s-radius,s+radius),**self.source_kwargs())
+            self.assertEqual(out["status"],"SOURCE_EXACT_REAL_X_KCL_BOX_EXCLUDED")
+            self.assertLess(out["residual_upper_A"],-F(700))
+            self.assertGreater(out["strict_abs_residual_margin_A"],F(700))
+            self.assertTrue(out["capacitance_interval_rational_verified"])
+            self.assertTrue(out["conditional_full50_to_24d_KCL_preimage"])
+            self.assertFalse(out["all50_stage_roots_certified"])
+            self.assertFalse(out["native_float_error_certified"])
+
+    def test_saved_q1_q2_x_node_point_keeps_possible_root(self):
+        from s150_q2_six_row_certificate import certify_original_source_x_kcl_outer
+        centers={
+            "Q1":("0x1.2bf0be2eea417p+7","0x1.2bf0dc944b121p+7",
+                  "0x1.da4c3edc813bep+3"),
+            "Q2":("0x1.67138b6a8325dp+3","0x1.67139f1fe1791p+3",
+                  "0x1.fc4c4bfd24625p+2"),
+        }
+        for leg,(dd,xx,ss) in centers.items():
+            d,x,s=[F.from_float(float.fromhex(z)) for z in (dd,xx,ss)]
+            tiny=F(1,1000000)
+            out=certify_original_source_x_kcl_outer(
+                leg=leg,d_V=(d-tiny,d+tiny),x_V=(x-tiny,x+tiny),
+                s_V=(s-tiny,s+tiny),**self.source_kwargs())
+            self.assertEqual(out["status"],"RETAIN_SOURCE_X_CELL_UNRESOLVED")
+            self.assertLess(out["residual_lower_A"],0)
+            self.assertGreater(out["residual_upper_A"],0)
+            # A source-node chart outside certificate is NOT an excluded root.
+            with self.assertRaisesRegex(ValueError,"UNRESOLVED_SOURCE_DOMAIN"):
+                certify_original_source_x_kcl_outer(
+                    leg=leg,d_V=(d,d+F(".041")),x_V=(x,x),s_V=(s,s),
+                    **self.source_kwargs())
+            with self.assertRaisesRegex(ValueError,"archived binary64"):
+                certify_original_source_x_kcl_outer(
+                    leg=leg,d_V=(d,d),x_V=(x,x),s_V=(s,s),
+                    **dict(self.source_kwargs(),h_s=F("1e-6")))
+
+    def test_two_source_thermal_predecessors_require_nearly_160C_memory_radius(self):
+        from s150_q2_six_row_certificate import certify_source_thermal_predecessor_memory_gap
+        for leg,strict_lower in (
+                ("Q1",F("159.9994751909182")),
+                ("Q2",F("159.9998425572754"))):
+            out=certify_source_thermal_predecessor_memory_gap(
+                leg,**self.source_kwargs())
+            self.assertGreater(out["conditional_minimax_radius_C"],strict_lower)
+            self.assertLess(out["conditional_minimax_radius_C"],F(160))
+            self.assertFalse(out["same_full26d_KCL_legal_roots_verified"])
+            self.assertFalse(out["legal_prep_two_worlds_verified"])
+
+    def test_original_paper_bernstein_closed_cells_and_two_unresolved_roots(self):
+        from s150_q2_six_row_certificate import certify_guard_cell_bernstein_tail_exclusion
+        tail=F(1,512)
+        for co,excluded in (
+            ((F(3,32),F(7,128),F(1,32)),True),
+            ((F(1,32),-F(5,128),F(1,32)),False),
+            ((F(1,32),F(1,8),F(15,32)),True),
+        ):
+            out=certify_guard_cell_bernstein_tail_exclusion(co,co,tail)
+            self.assertEqual(
+                out["status"]=="CONDITIONAL_BERNSTEIN_FULL_CELL_ROW_EXCLUSION",
+                excluded)
+            self.assertFalse(out["all50_root_cover_certified"])
+        def full_f(x):
+            return (x-F(1,4))*(x-F(3,8))+x**4/(1024*(1-x/2))
+        self.assertGreater(full_f(F(1,4)),0)
+        self.assertLess(full_f(F(5,16)),0)
+        self.assertGreater(full_f(F(3,8)),0)
+        with self.assertRaises(ValueError):
+            certify_guard_cell_bernstein_tail_exclusion((1,),(0,),tail)
+
+    def test_original_paper_schur_finite_tail_coupling_and_singular_control(self):
+        from s150_q2_six_row_certificate import certify_schur_finite_tail_coupling
+        a=certify_schur_finite_tail_coupling(90,28,F(5,10**10),F(5,10**10))
+        self.assertEqual(a["theta"],F(2521,2000000000))
+        self.assertEqual(a["status"],"CONDITIONAL_WHOLE_BLOCK_INVERTIBLE")
+        self.assertLess(a["rf_to_full_bound"],F(91))
+        self.assertLess(a["rt_to_full_bound"],F(2540))
+        self.assertFalse(a["dpt_44row_coupling_authenticated_in_ci"])
+        # The finite A_ff=1 is invertible, but full A=I-[[0,2],[1/2,0]]
+        # annihilates (2,1). theta=1 MUST NOT pass.
+        b=certify_schur_finite_tail_coupling(1,2,F(1,2),0)
+        self.assertEqual(b["theta"],1)
+        self.assertEqual(b["status"],"RETAIN_BLOCK_COUPLING_UNRESOLVED")
+        with self.assertRaises(ValueError):
+            certify_schur_finite_tail_coupling(1,-1,0,0)
+
+
 if __name__=="__main__":
     unittest.main()

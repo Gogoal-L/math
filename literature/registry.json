@@ -24,7 +24,12 @@
       "pending_task": "把当前 command representation 与独立 finite lift / detection 条件对应；确认 theorem 条件是否真正满足。",
       "reading_status": "DEEP_READ_PRIMARY_SOURCE_PROOF_CHAIN_SCOPED",
       "reading_evidence": "Independent project read-only DEEP_READ_V1 full-PDF page-grounded source study; key theorem/proof hypotheses and DPT non-transfer boundaries recorded, not full independent formal verification",
-      "dpt_transfer_status": "Separate proof required: no paper status implies full source S150/Goal27 history outer or hardware claim."
+      "dpt_transfer_status": "Separate proof required: no paper status implies full source S150/Goal27 history outer or hardware claim.",
+      "original_research_origin": "OpenAI Math Release 2026 original manuscript; not independently confirmed journal peer review",
+      "dpt_transfer_level": "PAPER_METHOD_OR_BOUNDARY_ONLY_NATIVE_GOAL27_OPEN",
+      "primary_proof_locator": "PDF pp.2 Theorem 1.1; pp.4-6 Lemma 2.1; pp.8-10 Theorem 4.2; pp.10-11 formulas (13)-(15)",
+      "primary_hypothesis_and_transfer_boundary": "Bounded-size noncommutative division-free formula tree, characteristic zero; no quantitative physical DPT separation margin.",
+      "reading_provenance_kind": "LOCAL_DEEP_READ_V1_FULL_PDF_AND_THEOREM_PROOF_CHAIN"
     },
     {
       "id": "F116-B",
@@ -44,7 +49,12 @@
       "pending_task": "落实每个 inverse occurrence 的 definedness；判断 hitting-list 类是否适用于当前 command，而非直接借用 headline。",
       "reading_status": "DEEP_READ_PRIMARY_SOURCE_PROOF_CHAIN_SCOPED",
       "reading_evidence": "Independent project read-only DEEP_READ_V1 full-PDF page-grounded source study; key theorem/proof hypotheses and DPT non-transfer boundaries recorded, not full independent formal verification",
-      "dpt_transfer_status": "Separate proof required: no paper status implies full source S150/Goal27 history outer or hardware claim."
+      "dpt_transfer_status": "Separate proof required: no paper status implies full source S150/Goal27 history outer or hardware claim.",
+      "original_research_origin": "OpenAI Math Release 2026 original manuscript; not independently confirmed journal peer review",
+      "dpt_transfer_level": "PAPER_METHOD_OR_BOUNDARY_ONLY_NATIVE_GOAL27_OPEN",
+      "primary_proof_locator": "PDF pp.1-2 Theorem 1.1; pp.12-15 Proposition 4.2 original inverse gate domain; pp.16-21 finite rational hitting list/complexity",
+      "primary_hypothesis_and_transfer_boundary": "Admissible nonzero rational formula tree over Q with original inverse occurrences; no DPT physically attainable excitation.",
+      "reading_provenance_kind": "LOCAL_DEEP_READ_V1_FULL_PDF_AND_THEOREM_PROOF_CHAIN"
     },
     {
       "id": "F229",
@@ -64,7 +74,12 @@
       "pending_task": "按原 MAP 的 reopen condition 调用；不在当前默认落实队列。",
       "reading_status": "DEEP_READ_PRIMARY_SOURCE_PROOF_CHAIN_SCOPED",
       "reading_evidence": "Independent project read-only DEEP_READ_V1 full-PDF page-grounded source study; key theorem/proof hypotheses and DPT non-transfer boundaries recorded, not full independent formal verification",
-      "dpt_transfer_status": "Separate proof required: no paper status implies full source S150/Goal27 history outer or hardware claim."
+      "dpt_transfer_status": "Separate proof required: no paper status implies full source S150/Goal27 history outer or hardware claim.",
+      "original_research_origin": "OpenAI Math Release 2026 original manuscript; not independently confirmed journal peer review",
+      "dpt_transfer_level": "PAPER_METHOD_OR_BOUNDARY_ONLY_NATIVE_GOAL27_OPEN",
+      "primary_proof_locator": "PDF pp.1-60 Theorem 1.1, Corollary 1.2 and tree recursion, finite experiment comparison",
+      "primary_hypothesis_and_transfer_boundary": "Three-state symmetric broadcast-channel and Galton-Watson tree assumptions; no generic SiC channel threshold.",
+      "reading_provenance_kind": "LOCAL_DEEP_READ_V1_FULL_PDF_AND_THEOREM_PROOF_CHAIN"
     },
     {
       "id": "F266",
@@ -83,8 +98,13 @@
       "dpt_implementation": "Existing MAP analysis / synthetic tool support where recorded; native transfer not established by this migration.",
       "pending_task": "把已有 numerical result 的 center/tangent/remainder/readout/provenance 收成可检查证书；确认资源失败仍为 unresolved。",
       "reading_status": "DEEP_READ_PRIMARY_SOURCE_PROOF_CHAIN_SCOPED",
-      "reading_evidence": "Independent project read-only DEEP_READ_V1 full-PDF page-grounded source study; key theorem/proof hypotheses and DPT non-transfer boundaries recorded, not full independent formal verification",
-      "dpt_transfer_status": "Separate proof required: no paper status implies full source S150/Goal27 history outer or hardware claim."
+      "reading_evidence": "Independent project read-only DEEP_READ_V1 full-PDF page-grounded source study; key theorem/proof hypotheses and DPT non-transfer boundaries recorded, not full independent formal verification Caveat: local deep note uses nonstandard frontmatter keys (scope vs reading_scope), thus machine DEEP_READ_V1 validation needs a local-only schema fix; source reading itself documented.",
+      "dpt_transfer_status": "Separate proof required: no paper status implies full source S150/Goal27 history outer or hardware claim.",
+      "original_research_origin": "OpenAI Math Release 2026 original manuscript; not independently confirmed journal peer review",
+      "dpt_transfer_level": "PAPER_METHOD_OR_BOUNDARY_ONLY_NATIVE_GOAL27_OPEN",
+      "primary_proof_locator": "PDF pp.1-76, Propositions 3.11 and 4.5; source build/sections/completion.tex and rounding.tex",
+      "primary_hypothesis_and_transfer_boundary": "At-most-three claim requires complete certified finite cover and binary64 rounding/build contract; official selected Lean proves only at-most-five.",
+      "reading_provenance_kind": "LOCAL_DEEP_READ_V1_FULL_PDF_AND_THEOREM_PROOF_CHAIN"
     },
     {
       "id": "F365-A",
@@ -104,7 +124,12 @@
       "pending_task": "按原 MAP 的 reopen condition 调用；不在当前默认落实队列。",
       "reading_status": "DEEP_READ_PRIMARY_SOURCE_PROOF_CHAIN_SCOPED",
       "reading_evidence": "Independent project read-only DEEP_READ_V1 full-PDF page-grounded source study; key theorem/proof hypotheses and DPT non-transfer boundaries recorded, not full independent formal verification",
-      "dpt_transfer_status": "Separate proof required: no paper status implies full source S150/Goal27 history outer or hardware claim."
+      "dpt_transfer_status": "Separate proof required: no paper status implies full source S150/Goal27 history outer or hardware claim.",
+      "original_research_origin": "OpenAI Math Release 2026 original manuscript; not independently confirmed journal peer review",
+      "dpt_transfer_level": "PAPER_METHOD_OR_BOUNDARY_ONLY_NATIVE_GOAL27_OPEN",
+      "primary_proof_locator": "PDF pp.1-50 Theorem 1.1, common cap and connection-Laplacian continuation steps",
+      "primary_hypothesis_and_transfer_boundary": "Complete local DN boundary energy pairing on smooth Riemannian metric and rank-two unitary connection; not finite DPT probes.",
+      "reading_provenance_kind": "LOCAL_DEEP_READ_V1_FULL_PDF_AND_THEOREM_PROOF_CHAIN"
     },
     {
       "id": "F365-B",
@@ -124,7 +149,12 @@
       "pending_task": "判断简单 inverse/constant-rank theorem 是否已足够；若不足，再迁移 finite-probe / first-order cancellation 的 proof pattern。",
       "reading_status": "DEEP_READ_PRIMARY_SOURCE_PROOF_CHAIN_SCOPED",
       "reading_evidence": "Independent project read-only DEEP_READ_V1 full-PDF page-grounded source study; key theorem/proof hypotheses and DPT non-transfer boundaries recorded, not full independent formal verification",
-      "dpt_transfer_status": "Separate proof required: no paper status implies full source S150/Goal27 history outer or hardware claim."
+      "dpt_transfer_status": "Separate proof required: no paper status implies full source S150/Goal27 history outer or hardware claim.",
+      "original_research_origin": "OpenAI Math Release 2026 original manuscript; not independently confirmed journal peer review",
+      "dpt_transfer_level": "PAPER_METHOD_OR_BOUNDARY_ONLY_NATIVE_GOAL27_OPEN",
+      "primary_proof_locator": "PDF pp.1-43 Theorem 1.1; Theorem 3.1; full cap source and harmonic Hessian hypotheses",
+      "primary_hypothesis_and_transfer_boundary": "Complete local DN map, smooth n>=3 manifold, patch-fixed diffeomorphism equivalence; not finite probe uniqueness.",
+      "reading_provenance_kind": "LOCAL_DEEP_READ_V1_FULL_PDF_AND_THEOREM_PROOF_CHAIN"
     },
     {
       "id": "F365-C",
@@ -144,7 +174,12 @@
       "pending_task": "按原 MAP 的 reopen condition 调用；不在当前默认落实队列。",
       "reading_status": "DEEP_READ_PRIMARY_SOURCE_PROOF_CHAIN_SCOPED",
       "reading_evidence": "Independent project read-only DEEP_READ_V1 full-PDF page-grounded source study; key theorem/proof hypotheses and DPT non-transfer boundaries recorded, not full independent formal verification",
-      "dpt_transfer_status": "Separate proof required: no paper status implies full source S150/Goal27 history outer or hardware claim."
+      "dpt_transfer_status": "Separate proof required: no paper status implies full source S150/Goal27 history outer or hardware claim.",
+      "original_research_origin": "OpenAI Math Release 2026 original manuscript; not independently confirmed journal peer review",
+      "dpt_transfer_level": "PAPER_METHOD_OR_BOUNDARY_ONLY_NATIVE_GOAL27_OPEN",
+      "primary_proof_locator": "PDF pp.1-33 Theorem 1.1 and weak full DN energy-pairing construction",
+      "primary_hypothesis_and_transfer_boundary": "Three-dimensional bounded measurable uniformly positive scalar conductivity, full weak DN equality despite distinct interior.",
+      "reading_provenance_kind": "LOCAL_DEEP_READ_V1_FULL_PDF_AND_THEOREM_PROOF_CHAIN"
     },
     {
       "id": "F372",
@@ -164,7 +199,12 @@
       "pending_task": "按原 MAP 的 reopen condition 调用；不在当前默认落实队列。",
       "reading_status": "DEEP_READ_PRIMARY_SOURCE_PROOF_CHAIN_SCOPED",
       "reading_evidence": "Independent project read-only DEEP_READ_V1 full-PDF page-grounded source study; key theorem/proof hypotheses and DPT non-transfer boundaries recorded, not full independent formal verification",
-      "dpt_transfer_status": "Separate proof required: no paper status implies full source S150/Goal27 history outer or hardware claim."
+      "dpt_transfer_status": "Separate proof required: no paper status implies full source S150/Goal27 history outer or hardware claim.",
+      "original_research_origin": "OpenAI Math Release 2026 original manuscript; not independently confirmed journal peer review",
+      "dpt_transfer_level": "PAPER_METHOD_OR_BOUNDARY_ONLY_NATIVE_GOAL27_OPEN",
+      "primary_proof_locator": "PDF pp.1-24 Theorem 1.1, transport and full displacement-to-traction operator",
+      "primary_hypothesis_and_transfer_boundary": "Three-dimensional smooth isotropic elasticity with strong Lamé positivity; no raw finite DPT sensor uniqueness.",
+      "reading_provenance_kind": "LOCAL_DEEP_READ_V1_FULL_PDF_AND_THEOREM_PROOF_CHAIN"
     },
     {
       "id": "F374",
@@ -184,7 +224,12 @@
       "pending_task": "按原 MAP 的 reopen condition 调用；不在当前默认落实队列。",
       "reading_status": "DEEP_READ_PRIMARY_SOURCE_PROOF_CHAIN_SCOPED",
       "reading_evidence": "Independent project read-only DEEP_READ_V1 full-PDF page-grounded source study; key theorem/proof hypotheses and DPT non-transfer boundaries recorded, not full independent formal verification",
-      "dpt_transfer_status": "Separate proof required: no paper status implies full source S150/Goal27 history outer or hardware claim."
+      "dpt_transfer_status": "Separate proof required: no paper status implies full source S150/Goal27 history outer or hardware claim.",
+      "original_research_origin": "OpenAI Math Release 2026 original manuscript; not independently confirmed journal peer review",
+      "dpt_transfer_level": "PAPER_METHOD_OR_BOUNDARY_ONLY_NATIVE_GOAL27_OPEN",
+      "primary_proof_locator": "PDF pp.1-18 Theorem 1.1; Proposition 2.2; three-atom exponent-sharpness construction",
+      "primary_hypothesis_and_transfer_boundary": "Quadratic Brenier transport, uniform source compact convex full-dimensional body and target supported in fixed compact set; 1/3 is not DPT universal rate.",
+      "reading_provenance_kind": "LOCAL_DEEP_READ_V1_FULL_PDF_AND_THEOREM_PROOF_CHAIN"
     },
     {
       "id": "F357",
@@ -204,7 +249,12 @@
       "pending_task": "把 rank persistence、gain 和 remainder 接到同一声明邻域；检查 tangent-to-finite-radius 升级是否成立。",
       "reading_status": "DEEP_READ_PRIMARY_SOURCE_PROOF_CHAIN_SCOPED",
       "reading_evidence": "Independent project read-only DEEP_READ_V1 full-PDF page-grounded source study; key theorem/proof hypotheses and DPT non-transfer boundaries recorded, not full independent formal verification",
-      "dpt_transfer_status": "Separate proof required: no paper status implies full source S150/Goal27 history outer or hardware claim."
+      "dpt_transfer_status": "Separate proof required: no paper status implies full source S150/Goal27 history outer or hardware claim.",
+      "original_research_origin": "OpenAI Math Release 2026 original manuscript; not independently confirmed journal peer review",
+      "dpt_transfer_level": "PAPER_METHOD_OR_BOUNDARY_ONLY_NATIVE_GOAL27_OPEN",
+      "primary_proof_locator": "PDF pp.1-43 Theorem 1.1, dyadic Bochner/Gram Lemmas 2.2-2.5, Propositions 4.10 and 5.6",
+      "primary_hypothesis_and_transfer_boundary": "Noncollapsed RCD(K,n) and Euclidean tangents at regular point; not an unproved DPT smoothness assumption.",
+      "reading_provenance_kind": "LOCAL_DEEP_READ_V1_FULL_PDF_AND_THEOREM_PROOF_CHAIN"
     },
     {
       "id": "F330",
@@ -224,7 +274,10 @@
       "pending_task": "按原 MAP 的 reopen condition 调用；不在当前默认落实队列。",
       "reading_status": "ACTIVE_OR_CANDIDATE_NOT_DEEP_VERIFIED",
       "reading_evidence": "No verified completed full-PDF proof-chain record in the current audit; may have selected statement/partial method notes.",
-      "dpt_transfer_status": "Separate proof required: no paper status implies full source S150/Goal27 history outer or hardware claim."
+      "dpt_transfer_status": "Separate proof required: no paper status implies full source S150/Goal27 history outer or hardware claim.",
+      "original_research_origin": "OpenAI Math Release 2026 original manuscript; not independently confirmed journal peer review",
+      "dpt_transfer_level": "PAPER_METHOD_OR_BOUNDARY_ONLY_NATIVE_GOAL27_OPEN",
+      "reading_provenance_kind": "SOURCE_SCOPE_OR_SELECTED_FORMALIZATION_ONLY; FULL_DEEP_READ_PENDING"
     },
     {
       "id": "F094",
@@ -244,7 +297,10 @@
       "pending_task": "按原 MAP 的 reopen condition 调用；不在当前默认落实队列。",
       "reading_status": "ACTIVE_OR_CANDIDATE_NOT_DEEP_VERIFIED",
       "reading_evidence": "No verified completed full-PDF proof-chain record in the current audit; may have selected statement/partial method notes.",
-      "dpt_transfer_status": "Separate proof required: no paper status implies full source S150/Goal27 history outer or hardware claim."
+      "dpt_transfer_status": "Separate proof required: no paper status implies full source S150/Goal27 history outer or hardware claim.",
+      "original_research_origin": "OpenAI Math Release 2026 original manuscript; not independently confirmed journal peer review",
+      "dpt_transfer_level": "PAPER_METHOD_OR_BOUNDARY_ONLY_NATIVE_GOAL27_OPEN",
+      "reading_provenance_kind": "SOURCE_SCOPE_OR_SELECTED_FORMALIZATION_ONLY; FULL_DEEP_READ_PENDING"
     },
     {
       "id": "F098",
@@ -264,7 +320,10 @@
       "pending_task": "按原 MAP 的 reopen condition 调用；不在当前默认落实队列。",
       "reading_status": "ACTIVE_OR_CANDIDATE_NOT_DEEP_VERIFIED",
       "reading_evidence": "No verified completed full-PDF proof-chain record in the current audit; may have selected statement/partial method notes.",
-      "dpt_transfer_status": "Separate proof required: no paper status implies full source S150/Goal27 history outer or hardware claim."
+      "dpt_transfer_status": "Separate proof required: no paper status implies full source S150/Goal27 history outer or hardware claim.",
+      "original_research_origin": "OpenAI Math Release 2026 original manuscript; not independently confirmed journal peer review",
+      "dpt_transfer_level": "PAPER_METHOD_OR_BOUNDARY_ONLY_NATIVE_GOAL27_OPEN",
+      "reading_provenance_kind": "SOURCE_SCOPE_OR_SELECTED_FORMALIZATION_ONLY; FULL_DEEP_READ_PENDING"
     },
     {
       "id": "F289-A",
@@ -284,7 +343,10 @@
       "pending_task": "按原 MAP 的 reopen condition 调用；不在当前默认落实队列。",
       "reading_status": "ACTIVE_OR_CANDIDATE_NOT_DEEP_VERIFIED",
       "reading_evidence": "No verified completed full-PDF proof-chain record in the current audit; may have selected statement/partial method notes.",
-      "dpt_transfer_status": "Separate proof required: no paper status implies full source S150/Goal27 history outer or hardware claim."
+      "dpt_transfer_status": "Separate proof required: no paper status implies full source S150/Goal27 history outer or hardware claim.",
+      "original_research_origin": "OpenAI Math Release 2026 original manuscript; not independently confirmed journal peer review",
+      "dpt_transfer_level": "PAPER_METHOD_OR_BOUNDARY_ONLY_NATIVE_GOAL27_OPEN",
+      "reading_provenance_kind": "SOURCE_SCOPE_OR_SELECTED_FORMALIZATION_ONLY; FULL_DEEP_READ_PENDING"
     },
     {
       "id": "F289-B",
@@ -304,7 +366,10 @@
       "pending_task": "按原 MAP 的 reopen condition 调用；不在当前默认落实队列。",
       "reading_status": "ACTIVE_OR_CANDIDATE_NOT_DEEP_VERIFIED",
       "reading_evidence": "No verified completed full-PDF proof-chain record in the current audit; may have selected statement/partial method notes.",
-      "dpt_transfer_status": "Separate proof required: no paper status implies full source S150/Goal27 history outer or hardware claim."
+      "dpt_transfer_status": "Separate proof required: no paper status implies full source S150/Goal27 history outer or hardware claim.",
+      "original_research_origin": "OpenAI Math Release 2026 original manuscript; not independently confirmed journal peer review",
+      "dpt_transfer_level": "PAPER_METHOD_OR_BOUNDARY_ONLY_NATIVE_GOAL27_OPEN",
+      "reading_provenance_kind": "SOURCE_SCOPE_OR_SELECTED_FORMALIZATION_ONLY; FULL_DEEP_READ_PENDING"
     },
     {
       "id": "F251",
@@ -324,7 +389,10 @@
       "pending_task": "按原 MAP 的 reopen condition 调用；不在当前默认落实队列。",
       "reading_status": "ACTIVE_OR_CANDIDATE_NOT_DEEP_VERIFIED",
       "reading_evidence": "No verified completed full-PDF proof-chain record in the current audit; may have selected statement/partial method notes.",
-      "dpt_transfer_status": "Separate proof required: no paper status implies full source S150/Goal27 history outer or hardware claim."
+      "dpt_transfer_status": "Separate proof required: no paper status implies full source S150/Goal27 history outer or hardware claim.",
+      "original_research_origin": "OpenAI Math Release 2026 original manuscript; not independently confirmed journal peer review",
+      "dpt_transfer_level": "PAPER_METHOD_OR_BOUNDARY_ONLY_NATIVE_GOAL27_OPEN",
+      "reading_provenance_kind": "SOURCE_SCOPE_OR_SELECTED_FORMALIZATION_ONLY; FULL_DEEP_READ_PENDING"
     },
     {
       "id": "F325-A",
@@ -344,7 +412,10 @@
       "pending_task": "按原 MAP 的 reopen condition 调用；不在当前默认落实队列。",
       "reading_status": "ACTIVE_OR_CANDIDATE_NOT_DEEP_VERIFIED",
       "reading_evidence": "No verified completed full-PDF proof-chain record in the current audit; may have selected statement/partial method notes.",
-      "dpt_transfer_status": "Separate proof required: no paper status implies full source S150/Goal27 history outer or hardware claim."
+      "dpt_transfer_status": "Separate proof required: no paper status implies full source S150/Goal27 history outer or hardware claim.",
+      "original_research_origin": "OpenAI Math Release 2026 original manuscript; not independently confirmed journal peer review",
+      "dpt_transfer_level": "PAPER_METHOD_OR_BOUNDARY_ONLY_NATIVE_GOAL27_OPEN",
+      "reading_provenance_kind": "SOURCE_SCOPE_OR_SELECTED_FORMALIZATION_ONLY; FULL_DEEP_READ_PENDING"
     },
     {
       "id": "F363",
@@ -364,7 +435,10 @@
       "pending_task": "按原 MAP 的 reopen condition 调用；不在当前默认落实队列。",
       "reading_status": "ACTIVE_OR_CANDIDATE_NOT_DEEP_VERIFIED",
       "reading_evidence": "No verified completed full-PDF proof-chain record in the current audit; may have selected statement/partial method notes.",
-      "dpt_transfer_status": "Separate proof required: no paper status implies full source S150/Goal27 history outer or hardware claim."
+      "dpt_transfer_status": "Separate proof required: no paper status implies full source S150/Goal27 history outer or hardware claim.",
+      "original_research_origin": "OpenAI Math Release 2026 original manuscript; not independently confirmed journal peer review",
+      "dpt_transfer_level": "PAPER_METHOD_OR_BOUNDARY_ONLY_NATIVE_GOAL27_OPEN",
+      "reading_provenance_kind": "SOURCE_SCOPE_OR_SELECTED_FORMALIZATION_ONLY; FULL_DEEP_READ_PENDING"
     },
     {
       "id": "F129",
@@ -384,7 +458,10 @@
       "pending_task": "按原 MAP 的 reopen condition 调用；不在当前默认落实队列。",
       "reading_status": "ACTIVE_OR_CANDIDATE_NOT_DEEP_VERIFIED",
       "reading_evidence": "Scoped conditional DPT transfer proof and synthetic regression recorded, but this audit lacks completed primary full-PDF reading proof chain.",
-      "dpt_transfer_status": "Independently proved/tested CONDITIONAL finite-domain DPT method in dpt_research/20261011_F119_F129_F132_proof_level_DPT_bridge.md and dpt_tools/test_paper_transfer_falsifiers.py; paper not full primary deep-read, original SiC 50D/hardware unchanged OPEN"
+      "dpt_transfer_status": "Independently proved/tested CONDITIONAL finite-domain DPT method in dpt_research/20261011_F119_F129_F132_proof_level_DPT_bridge.md and dpt_tools/test_paper_transfer_falsifiers.py; paper not full primary deep-read, original SiC 50D/hardware unchanged OPEN",
+      "original_research_origin": "OpenAI Math Release 2026 original manuscript; not independently confirmed journal peer review",
+      "dpt_transfer_level": "CONDITIONAL_INDEPENDENT_SYNTHETIC_TRANSFER",
+      "reading_provenance_kind": "SOURCE_SCOPE_OR_SELECTED_FORMALIZATION_ONLY; FULL_DEEP_READ_PENDING"
     },
     {
       "id": "F332",
@@ -404,7 +481,10 @@
       "pending_task": "按原 MAP 的 reopen condition 调用；不在当前默认落实队列。",
       "reading_status": "ACTIVE_OR_CANDIDATE_NOT_DEEP_VERIFIED",
       "reading_evidence": "No verified completed full-PDF proof-chain record in the current audit; may have selected statement/partial method notes.",
-      "dpt_transfer_status": "Separate proof required: no paper status implies full source S150/Goal27 history outer or hardware claim."
+      "dpt_transfer_status": "Separate proof required: no paper status implies full source S150/Goal27 history outer or hardware claim.",
+      "original_research_origin": "OpenAI Math Release 2026 original manuscript; not independently confirmed journal peer review",
+      "dpt_transfer_level": "PAPER_METHOD_OR_BOUNDARY_ONLY_NATIVE_GOAL27_OPEN",
+      "reading_provenance_kind": "SOURCE_SCOPE_OR_SELECTED_FORMALIZATION_ONLY; FULL_DEEP_READ_PENDING"
     },
     {
       "id": "F324",
@@ -424,7 +504,10 @@
       "pending_task": "按原 MAP 的 reopen condition 调用；不在当前默认落实队列。",
       "reading_status": "ACTIVE_OR_CANDIDATE_NOT_DEEP_VERIFIED",
       "reading_evidence": "No verified completed full-PDF proof-chain record in the current audit; may have selected statement/partial method notes.",
-      "dpt_transfer_status": "Separate proof required: no paper status implies full source S150/Goal27 history outer or hardware claim."
+      "dpt_transfer_status": "Separate proof required: no paper status implies full source S150/Goal27 history outer or hardware claim.",
+      "original_research_origin": "OpenAI Math Release 2026 original manuscript; not independently confirmed journal peer review",
+      "dpt_transfer_level": "PAPER_METHOD_OR_BOUNDARY_ONLY_NATIVE_GOAL27_OPEN",
+      "reading_provenance_kind": "SOURCE_SCOPE_OR_SELECTED_FORMALIZATION_ONLY; FULL_DEEP_READ_PENDING"
     },
     {
       "id": "F329",
@@ -443,8 +526,13 @@
       "dpt_implementation": "Existing MAP analysis / synthetic tool support where recorded; native transfer not established by this migration.",
       "pending_task": "在 matched history/command bank 上执行 noise-fiber goal-gap 检查；区分压缩 readout 与 archived raw feature。",
       "reading_status": "DEEP_READ_PRIMARY_SOURCE_PROOF_CHAIN_SCOPED",
-      "reading_evidence": "15-page original PDF fully inspected; Theorem 1.1, Lemma 2.1, Props 3.2/4.2/4.3 and Section 5 source-to-proof bridge checked on 2026-10-20",
-      "dpt_transfer_status": "Separate proof required: no paper status implies full source S150/Goal27 history outer or hardware claim."
+      "reading_evidence": "Direct independent full 15-page pinned primary PDF audit (all section text plus theorem dependency), not a local DEEP_READ_V1 note; theorem-page chain and assumptions indexed in primary_proof_locator. Full author theorem not independently formalized, DPT native transfer OPEN.",
+      "dpt_transfer_status": "Separate proof required: no paper status implies full source S150/Goal27 history outer or hardware claim.",
+      "original_research_origin": "OpenAI Math Release 2026 original manuscript; not independently confirmed journal peer review",
+      "dpt_transfer_level": "PAPER_METHOD_OR_BOUNDARY_ONLY_NATIVE_GOAL27_OPEN",
+      "primary_proof_locator": "PDF pp.1-15 Theorem 1.1; Lemma 2.1; Proposition 3.2 and Propositions 4.2-4.3; Section 5 final parameter order",
+      "primary_hypothesis_and_transfer_boundary": "Origin-symmetric finite-dimensional convex bodies and covering entropy; dimension grows, no fixed-DPT root bound or polarity shortcut.",
+      "reading_provenance_kind": "PRIMARY_DIRECT_15PAGE_THEOREM_AUDIT_NO_LOCAL_DEEP_READ_V1_NOTE"
     },
     {
       "id": "F376-A",
@@ -464,7 +552,12 @@
       "pending_task": "按原 MAP 的 reopen condition 调用；不在当前默认落实队列。",
       "reading_status": "DEEP_READ_PRIMARY_SOURCE_PROOF_CHAIN_SCOPED",
       "reading_evidence": "Independent project read-only DEEP_READ_V1 full-PDF page-grounded source study; key theorem/proof hypotheses and DPT non-transfer boundaries recorded, not full independent formal verification",
-      "dpt_transfer_status": "Separate proof required: no paper status implies full source S150/Goal27 history outer or hardware claim."
+      "dpt_transfer_status": "Separate proof required: no paper status implies full source S150/Goal27 history outer or hardware claim.",
+      "original_research_origin": "OpenAI Math Release 2026 original manuscript; not independently confirmed journal peer review",
+      "dpt_transfer_level": "PAPER_METHOD_OR_BOUNDARY_ONLY_NATIVE_GOAL27_OPEN",
+      "primary_proof_locator": "PDF pp.1-14 Lemma 2.1/Thm 1.1, finite reversible transition to solenoidal shear flow",
+      "primary_hypothesis_and_transfer_boundary": "Smooth incompressible three-torus flow encodes halting; paper companion Lean family statements do not formalize this exact main theorem.",
+      "reading_provenance_kind": "LOCAL_DEEP_READ_V1_FULL_PDF_AND_THEOREM_PROOF_CHAIN"
     },
     {
       "id": "F376-B",
@@ -484,7 +577,10 @@
       "pending_task": "按原 MAP 的 reopen condition 调用；不在当前默认落实队列。",
       "reading_status": "ACTIVE_OR_CANDIDATE_NOT_DEEP_VERIFIED",
       "reading_evidence": "No verified completed full-PDF proof-chain record in the current audit; may have selected statement/partial method notes.",
-      "dpt_transfer_status": "Separate proof required: no paper status implies full source S150/Goal27 history outer or hardware claim."
+      "dpt_transfer_status": "Separate proof required: no paper status implies full source S150/Goal27 history outer or hardware claim.",
+      "original_research_origin": "OpenAI Math Release 2026 original manuscript; not independently confirmed journal peer review",
+      "dpt_transfer_level": "PAPER_METHOD_OR_BOUNDARY_ONLY_NATIVE_GOAL27_OPEN",
+      "reading_provenance_kind": "SOURCE_SCOPE_OR_SELECTED_FORMALIZATION_ONLY; FULL_DEEP_READ_PENDING"
     },
     {
       "id": "F132",
@@ -504,7 +600,10 @@
       "pending_task": "按原 MAP 的 reopen condition 调用；不在当前默认落实队列。",
       "reading_status": "ACTIVE_OR_CANDIDATE_NOT_DEEP_VERIFIED",
       "reading_evidence": "Scoped conditional DPT transfer proof and synthetic regression recorded, but this audit lacks completed primary full-PDF reading proof chain.",
-      "dpt_transfer_status": "Independently proved/tested CONDITIONAL finite-domain DPT method in dpt_research/20261011_F119_F129_F132_proof_level_DPT_bridge.md and dpt_tools/test_paper_transfer_falsifiers.py; paper not full primary deep-read, original SiC 50D/hardware unchanged OPEN"
+      "dpt_transfer_status": "Independently proved/tested CONDITIONAL finite-domain DPT method in dpt_research/20261011_F119_F129_F132_proof_level_DPT_bridge.md and dpt_tools/test_paper_transfer_falsifiers.py; paper not full primary deep-read, original SiC 50D/hardware unchanged OPEN",
+      "original_research_origin": "OpenAI Math Release 2026 original manuscript; not independently confirmed journal peer review",
+      "dpt_transfer_level": "CONDITIONAL_INDEPENDENT_SYNTHETIC_TRANSFER",
+      "reading_provenance_kind": "SOURCE_SCOPE_OR_SELECTED_FORMALIZATION_ONLY; FULL_DEEP_READ_PENDING"
     },
     {
       "id": "F122-A",
@@ -524,7 +623,10 @@
       "pending_task": "按原 MAP 的 reopen condition 调用；不在当前默认落实队列。",
       "reading_status": "ACTIVE_OR_CANDIDATE_NOT_DEEP_VERIFIED",
       "reading_evidence": "No verified completed full-PDF proof-chain record in the current audit; may have selected statement/partial method notes.",
-      "dpt_transfer_status": "Separate proof required: no paper status implies full source S150/Goal27 history outer or hardware claim."
+      "dpt_transfer_status": "Separate proof required: no paper status implies full source S150/Goal27 history outer or hardware claim.",
+      "original_research_origin": "OpenAI Math Release 2026 original manuscript; not independently confirmed journal peer review",
+      "dpt_transfer_level": "PAPER_METHOD_OR_BOUNDARY_ONLY_NATIVE_GOAL27_OPEN",
+      "reading_provenance_kind": "SOURCE_SCOPE_OR_SELECTED_FORMALIZATION_ONLY; FULL_DEEP_READ_PENDING"
     },
     {
       "id": "F122-B",
@@ -544,7 +646,10 @@
       "pending_task": "Provide same-reference legal history pair, complete predictor-visible digital commands, physically justified pretarget sensor/noise correlation or joint categorical PMF/support/tail bounds, goal tolerance, source-scored holdout; compare best single sensor and full command ordinary before any Main acceptance.",
       "reading_status": "ACTIVE_OR_CANDIDATE_NOT_DEEP_VERIFIED",
       "reading_evidence": "No verified completed full-PDF proof-chain record in the current audit; may have selected statement/partial method notes.",
-      "dpt_transfer_status": "Separate proof required: no paper status implies full source S150/Goal27 history outer or hardware claim."
+      "dpt_transfer_status": "Separate proof required: no paper status implies full source S150/Goal27 history outer or hardware claim.",
+      "original_research_origin": "OpenAI Math Release 2026 original manuscript; not independently confirmed journal peer review",
+      "dpt_transfer_level": "PAPER_METHOD_OR_BOUNDARY_ONLY_NATIVE_GOAL27_OPEN",
+      "reading_provenance_kind": "SOURCE_SCOPE_OR_SELECTED_FORMALIZATION_ONLY; FULL_DEEP_READ_PENDING"
     },
     {
       "id": "F355",
@@ -564,7 +669,10 @@
       "pending_task": "按原 MAP 的 reopen condition 调用；不在当前默认落实队列。",
       "reading_status": "ACTIVE_OR_CANDIDATE_NOT_DEEP_VERIFIED",
       "reading_evidence": "No verified completed full-PDF proof-chain record in the current audit; may have selected statement/partial method notes.",
-      "dpt_transfer_status": "Separate proof required: no paper status implies full source S150/Goal27 history outer or hardware claim."
+      "dpt_transfer_status": "Separate proof required: no paper status implies full source S150/Goal27 history outer or hardware claim.",
+      "original_research_origin": "OpenAI Math Release 2026 original manuscript; not independently confirmed journal peer review",
+      "dpt_transfer_level": "PAPER_METHOD_OR_BOUNDARY_ONLY_NATIVE_GOAL27_OPEN",
+      "reading_provenance_kind": "SOURCE_SCOPE_OR_SELECTED_FORMALIZATION_ONLY; FULL_DEEP_READ_PENDING"
     },
     {
       "id": "F140-A",
@@ -584,7 +692,10 @@
       "pending_task": "先落实 elementary goal-packing 下界与信息预算；只在 Gaussian/memory 假设匹配时考虑 source-specific sharp bound。",
       "reading_status": "ACTIVE_OR_CANDIDATE_NOT_DEEP_VERIFIED",
       "reading_evidence": "No verified completed full-PDF proof-chain record in the current audit; may have selected statement/partial method notes.",
-      "dpt_transfer_status": "Separate proof required: no paper status implies full source S150/Goal27 history outer or hardware claim."
+      "dpt_transfer_status": "Separate proof required: no paper status implies full source S150/Goal27 history outer or hardware claim.",
+      "original_research_origin": "OpenAI Math Release 2026 original manuscript; not independently confirmed journal peer review",
+      "dpt_transfer_level": "PAPER_METHOD_OR_BOUNDARY_ONLY_NATIVE_GOAL27_OPEN",
+      "reading_provenance_kind": "SOURCE_SCOPE_OR_SELECTED_FORMALIZATION_ONLY; FULL_DEEP_READ_PENDING"
     },
     {
       "id": "F140-B",
@@ -604,7 +715,10 @@
       "pending_task": "按原 MAP 的 reopen condition 调用；不在当前默认落实队列。",
       "reading_status": "ACTIVE_OR_CANDIDATE_NOT_DEEP_VERIFIED",
       "reading_evidence": "No verified completed full-PDF proof-chain record in the current audit; may have selected statement/partial method notes.",
-      "dpt_transfer_status": "Separate proof required: no paper status implies full source S150/Goal27 history outer or hardware claim."
+      "dpt_transfer_status": "Separate proof required: no paper status implies full source S150/Goal27 history outer or hardware claim.",
+      "original_research_origin": "OpenAI Math Release 2026 original manuscript; not independently confirmed journal peer review",
+      "dpt_transfer_level": "PAPER_METHOD_OR_BOUNDARY_ONLY_NATIVE_GOAL27_OPEN",
+      "reading_provenance_kind": "SOURCE_SCOPE_OR_SELECTED_FORMALIZATION_ONLY; FULL_DEEP_READ_PENDING"
     },
     {
       "id": "F140-C",
@@ -624,7 +738,10 @@
       "pending_task": "按原 MAP 的 reopen condition 调用；不在当前默认落实队列。",
       "reading_status": "ACTIVE_OR_CANDIDATE_NOT_DEEP_VERIFIED",
       "reading_evidence": "No verified completed full-PDF proof-chain record in the current audit; may have selected statement/partial method notes.",
-      "dpt_transfer_status": "Separate proof required: no paper status implies full source S150/Goal27 history outer or hardware claim."
+      "dpt_transfer_status": "Separate proof required: no paper status implies full source S150/Goal27 history outer or hardware claim.",
+      "original_research_origin": "OpenAI Math Release 2026 original manuscript; not independently confirmed journal peer review",
+      "dpt_transfer_level": "PAPER_METHOD_OR_BOUNDARY_ONLY_NATIVE_GOAL27_OPEN",
+      "reading_provenance_kind": "SOURCE_SCOPE_OR_SELECTED_FORMALIZATION_ONLY; FULL_DEEP_READ_PENDING"
     },
     {
       "id": "F119",
@@ -644,7 +761,10 @@
       "pending_task": "按原 MAP 的 reopen condition 调用；不在当前默认落实队列。",
       "reading_status": "ACTIVE_OR_CANDIDATE_NOT_DEEP_VERIFIED",
       "reading_evidence": "Scoped conditional DPT transfer proof and synthetic regression recorded, but this audit lacks completed primary full-PDF reading proof chain.",
-      "dpt_transfer_status": "Independently proved/tested CONDITIONAL finite-domain DPT method in dpt_research/20261011_F119_F129_F132_proof_level_DPT_bridge.md and dpt_tools/test_paper_transfer_falsifiers.py; paper not full primary deep-read, original SiC 50D/hardware unchanged OPEN"
+      "dpt_transfer_status": "Independently proved/tested CONDITIONAL finite-domain DPT method in dpt_research/20261011_F119_F129_F132_proof_level_DPT_bridge.md and dpt_tools/test_paper_transfer_falsifiers.py; paper not full primary deep-read, original SiC 50D/hardware unchanged OPEN",
+      "original_research_origin": "OpenAI Math Release 2026 original manuscript; not independently confirmed journal peer review",
+      "dpt_transfer_level": "CONDITIONAL_INDEPENDENT_SYNTHETIC_TRANSFER",
+      "reading_provenance_kind": "SOURCE_SCOPE_OR_SELECTED_FORMALIZATION_ONLY; FULL_DEEP_READ_PENDING"
     },
     {
       "id": "F325-B",
@@ -664,7 +784,10 @@
       "pending_task": "按原 MAP 的 reopen condition 调用；不在当前默认落实队列。",
       "reading_status": "ACTIVE_OR_CANDIDATE_NOT_DEEP_VERIFIED",
       "reading_evidence": "No verified completed full-PDF proof-chain record in the current audit; may have selected statement/partial method notes.",
-      "dpt_transfer_status": "Separate proof required: no paper status implies full source S150/Goal27 history outer or hardware claim."
+      "dpt_transfer_status": "Separate proof required: no paper status implies full source S150/Goal27 history outer or hardware claim.",
+      "original_research_origin": "OpenAI Math Release 2026 original manuscript; not independently confirmed journal peer review",
+      "dpt_transfer_level": "PAPER_METHOD_OR_BOUNDARY_ONLY_NATIVE_GOAL27_OPEN",
+      "reading_provenance_kind": "SOURCE_SCOPE_OR_SELECTED_FORMALIZATION_ONLY; FULL_DEEP_READ_PENDING"
     },
     {
       "id": "F125",
@@ -680,14 +803,21 @@
       "map_locator": "F125",
       "theorem_transfer": "Anchor/proxy and fixed-price budget strictness read in complete 53-page PDF, no DPT approximation guarantees.",
       "lean_scope": null,
-      "lean_coverage": "No corresponding selected Lean scope in pinned canonical 33-paper snapshot.",
+      "lean_coverage": "Official original OpenAI/math F125 selected Lean statements EXIST (KMedianRefinedRecovery, KMedianRecovery, KMedianThreshold, MetricKMedian), but are not vendored in this 33-paper snapshot or independently compiled/audited here. They do not establish DPT transfer.",
       "reading_tier": "core",
       "reading_status": "DEEP_READ_PRIMARY_SOURCE_PROOF_CHAIN_SCOPED",
       "reading_evidence": "Full PDF pp.1-53 reviewed with anchor/recovery and price strictness proof mechanisms in DEEP_READ_V1 local read-only note; not full reimplementation.",
       "controller_absorption": "Unconfirmed.",
       "dpt_implementation": "Candidate DPT ordinary anchor; no native guarantee.",
       "pending_task": "Require independently legitimate target-visible source budget/exception chart before DPT theorem claim.",
-      "dpt_transfer_status": "Method-only, independent DPT proof OPEN."
+      "dpt_transfer_status": "Method-only, independent DPT proof OPEN.",
+      "original_research_origin": "OpenAI Math Release 2026 original manuscript; not independently confirmed journal peer review",
+      "dpt_transfer_level": "PAPER_METHOD_OR_BOUNDARY_ONLY_NATIVE_GOAL27_OPEN",
+      "primary_proof_locator": "PDF pp.1-53; Theorems 1.1 and 3.3, budget strictness Lemma 8.1 and anchor/proxy recovery",
+      "primary_hypothesis_and_transfer_boundary": "Metric k-median with specified proxy/anchor and exception budget; original bound does not give DPT target command guarantee.",
+      "reading_provenance_kind": "LOCAL_DEEP_READ_V1_FULL_PDF_AND_THEOREM_PROOF_CHAIN",
+      "upstream_primary_pdf_url": "https://github.com/openai/math/blob/fd4aeeb2ee4fc729c18d98444fed42fd0529eeeb/preprints/Single-Exponential-Recovery-and-Bounded-Price-Strictness-for-Metric-k-Median-September-24-2026/paper.pdf",
+      "upstream_lean_scope_url": "https://github.com/openai/math/blob/fd4aeeb2ee4fc729c18d98444fed42fd0529eeeb/lean/docs/125.md"
     }
   ],
   "formalization": [
@@ -2369,7 +2499,7 @@
     "lean/OAI/Probability/Subsphere/Main.lean",
     "lean/OAI/Probability/TraceReconstruction.lean"
   ],
-  "reading_policy": "literature/ = primary PDF full-text + page-grounded load-bearing proof-chain DEEP_READ scoped, not independently formal-proven; literature_archive/ = in-progress/candidate/not yet deep-verified; DPT transfer remains a distinct proof obligation. Canonical fixed snapshot 33 PDFs: 12 completed and 21 candidates; F125 independently pinned fork +1 completed.",
+  "reading_policy": "literature/ contains completed primary full-text proof-chain reading indexed by theorem and conditions, not native DPT transfer; 12 local DEEP_READ_V1 notes plus 1 F329 independently inspected original 15-page direct-audit exception. literature_archive/ contains unfinished/candidate original studies and separately tagged conditional DPT synthetic proofs. OpenAI original preprints, official selected Lean comparator snippets, and third-party cited external theorems remain distinct provenance families. 34 PDF assets = 33 canonical original OpenAI snapshot plus separately forked F125; 3 primary URL-only candidates are not asset count.",
   "deep_read_verification_scope": "12 of canonical OpenAI/math pinned PDFs have independent local read-only DEEP_READ_V1 page-grounded manuscript notes or, for F329, a fresh 15-page primary text/proof audit. External fork F125 adds a separate 53-page deep-reading note. This is a reading-status audit, not independent full proof/Lean/native S150 verification.",
   "read_classification_date": "2026-10-20",
   "prospective_sources": [
@@ -2379,9 +2509,13 @@
       "source_repository": "openai/math",
       "pdf_url": "https://github.com/openai/math/blob/1581d4cbdd69a0faf34b2089614fe2a814316a6a/preprints/A-sharp-Fourier-certificate-for-planar-circle-packing-September-23-2026/paper.pdf",
       "primary_tex_url": "https://github.com/openai/math/blob/1581d4cbdd69a0faf34b2089614fe2a814316a6a/preprints/A-sharp-Fourier-certificate-for-planar-circle-packing-September-23-2026/build/sections/certificates.tex",
-      "reading_status": "SOURCE_SCOUT_ONLY",
+      "reading_status": "ACTIVE_PRIMARY_FULL_49P_PROOF_AND_CHECKER_AUDIT; NOT_YET_DEEP_READ_V1_PERSISTED",
       "dpt_transfer_status": "NOT_PROVEN_SOURCE_50D",
-      "scope": "Arb/192-bit interval, N=256 finite quadrature and separate analytic moment/tail remainders; no independent full checker run"
+      "scope": "Arb/192-bit interval, N=256 finite quadrature and separate analytic moment/tail remainders; no independent full checker run",
+      "primary_pdf_sha256": "3a532659c4aa989d4d9cca9d33810940b61c835597bb0b1b50c16d3487001329",
+      "theorem_locators": "PDF Lemma 3.3 pp.14-15; signed Bernstein certificate pp.16-19; finite checker Appendix; original TeX build/sections/interpolation.tex signs.tex certificates.tex",
+      "independently_verified_method": "Exact Fraction Schur whole-tail theta<1 counterexample theta=1; closed signed Bernstein+analytic tail strict row exclusion with two-root unresolved synthetic falsifier; integrated conditional dpt_tools/s150_q2_six_row_certificate.py.",
+      "original_checker_execution": "Code and manifest inspected; Arb python-flint==0.9.0 192-bit full checker NOT RUN; original continuous analytic proof and DPT 44-row source norm bounds NOT independently replayed."
     },
     {
       "title": "An atomic certificate for triangular-lattice universal optimality",

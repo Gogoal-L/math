@@ -633,5 +633,49 @@ class OriginalS150SourceBEHistoryQuotientTests(unittest.TestCase):
                 key(invalid)
 
 
+class OriginalBERealKeyMinimumAndNativeCountercontrol(unittest.TestCase):
+    def test_source_six_charge_incidence_and_28d_real_residual_old_rank(self):
+        from fractions import Fraction as F
+        from goal_word_quotient import certify_source_be_residual_28d_c1_rank
+        result=certify_source_be_residual_28d_c1_rank(
+            source_law_sha256=
+              "51b78f729393d29745f59ca150adfef69e1847bf26a8853c6cef3d6be9e2083d",
+            h_s=F.from_float(float.fromhex("0x1.b7cdfd9d80000p-37")),
+            old_junction_V=(-130,-2))
+        self.assertEqual(result["source_selected_s_incidence_determinant"],1)
+        self.assertEqual(result["source_selected_w_incidence_determinant"],1)
+        self.assertEqual(result["synthetic_positive_charge_minor_determinant"],30030)
+        self.assertEqual(result["original_real_smooth_residual_old_rank"],28)
+        self.assertEqual(result["minimal_C1_residual_preserving_statistic_dimension"],28)
+        self.assertEqual(len(result["original_old_coordinate_columns"]),28)
+        self.assertEqual(len(result["original_residual_rows"]),28)
+        self.assertFalse(result["native_float_old_junction_exponential_rank_authenticated"])
+        self.assertFalse(result["minimal_goal_or_root_set_history_dimension_certified"])
+        with self.assertRaises(ValueError):
+            certify_source_be_residual_28d_c1_rank(
+                source_law_sha256="wrong",h_s=F(1),old_junction_V=(-130,-2))
+        with self.assertRaises(ValueError):
+            certify_source_be_residual_28d_c1_rank(
+                source_law_sha256=
+                  "51b78f729393d29745f59ca150adfef69e1847bf26a8853c6cef3d6be9e2083d",
+                h_s=F(1),old_junction_V=(-130,1))
+
+    def test_source_deep_reverse_d1_exponent_float_underflows_but_real_positive(self):
+        import math
+        from decimal import Decimal, localcontext
+        from fractions import Fraction as F
+        v=F.from_float(-134.88506096743612)
+        nvt=F.from_float(.13873992725386358)
+        exponent=v/nvt
+        self.assertLess(exponent,-745)
+        self.assertEqual(math.exp(float(exponent)),0.)
+        with localcontext() as ctx:
+            ctx.prec=55
+            exact=(Decimal(exponent.numerator)/
+                   Decimal(exponent.denominator)).exp()
+            self.assertGreater(exact,Decimal(0))
+        # Binary64 old-junction derivative cannot inherit rank 28 here.
+
+
 if __name__ == "__main__":
     unittest.main()
