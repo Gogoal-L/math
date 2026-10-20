@@ -525,6 +525,7 @@ class JointChargeSignedGoalTheoremTests(unittest.TestCase):
         from fractions import Fraction as F
 
         def primitive(x):
+            x = F(x)
             return x*x/2 - x*x*x/3
 
         for rho, expected in (
