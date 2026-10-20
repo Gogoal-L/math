@@ -526,3 +526,123 @@ def certify_source_q2_kcl_heat_abs_switch(
             "one-sided derivatives. Preserve BOTH ABS branches in any "
             "full50 interval-Newton/SIVIA lift; no Goal27 claim."),
     }
+
+
+def source_be_coil_elimination(node_voltage26, old_coil12,
+                               incidence_26x12, inductance_H12, h_s):
+    """Exact 12-row original source BE coil elimination for given 26 nodes.
+
+    For original source r[26:38]=-B.T@v + source_drive e11 and
+    (L/h)*(i_new-i_old), source_drive[11]=+150V, solve:
+        i_new = i_old + (h/L)*(B.T@v-150*e11).
+    Incidence and inductances must come from independently authenticated
+    original source; this function only verifies arithmetic given them.
+    """
+    v=tuple(map(_fraction,node_voltage26))
+    old=tuple(map(_fraction,old_coil12))
+    inductance=tuple(map(_fraction,inductance_H12))
+    matrix=tuple(tuple(map(_fraction,row)) for row in incidence_26x12)
+    h=_fraction(h_s)
+    if len(v)!=26 or len(old)!=12 or len(inductance)!=12 or len(matrix)!=26 or any(
+        len(row)!=12 for row in matrix
+    ) or h<=0 or any(x<=0 for x in inductance):
+        raise ValueError("invalid original source coil BE contract")
+    drive=[F(0)]*12
+    drive[11]=F(150)
+    return tuple(old[j]+h/inductance[j]*(
+        sum(matrix[k][j]*v[k] for k in range(26))-drive[j])
+        for j in range(12))
+
+
+def certify_source_stage3616_26d_reduction(
+    original_old_temperature8_C, h_s, *,
+    old_junction_V,
+    q1_gs_V,q2_gs_V,q1_d_s_V,q2_d_s_V,
+    adapter_kappa,source_law_sha256,source_adapter_sha256,
+    saved_cal_sha256,
+):
+    """Conditional exact original source n3616 50D->26D node-KCL root reduction.
+
+    SHA-authenticated read-only source analysis must separately prove that
+    original Q1 five node voltages indices3,5,6,8,9 and Q2 indices
+    15,17,18,20,21 lie within +/-0.04V of saved stage3616 source center,
+    and source diode/ETH/G2/heat envelopes are valid for EVERY raw T and
+    qualified predecessor (old vj in (-1590,0], all finite old thermal).
+    Across these ten-node charts Q1 is ETH LOW / G2 OFF and Q2 ETH HIGH
+    / G2 ON independent of temperature. Global source body monotonicity,
+    exact thermal 4x4 positive inverse and global H derivative Lipschitz
+    yield one six-row diode+body+thermal root per leg for each fixed node
+    tuple, across heat ABS sign changes. Exact source coil BE inversion
+    determines the other twelve currents. Therefore the complete 50D
+    single-stage root set IN THIS TEN-NODE CHART corresponds bijectively
+    to zeros of remaining 26 nodal KCL equations, provided the supplied
+    original bounds and qualified source law are independently certified.
+    Source 26D KCL root existence, chart complement, PREP/CAL histories,
+    reset, joint observations and H841 Goal27 remain unproved.
+    """
+    if (source_law_sha256!=LAW_SHA or source_adapter_sha256!=ADAPTER_SHA
+            or saved_cal_sha256!=SAVED_SHA):
+        raise ValueError("unqualified original source SHA identity")
+    if _fraction(adapter_kappa)!=F("1.007"):
+        raise ValueError("source adapter kappa unqualified")
+    old=tuple(map(_fraction,original_old_temperature8_C))
+    jold=tuple(map(_fraction,old_junction_V))
+    h=_fraction(h_s)
+    if len(old)!=8 or len(jold)!=2 or not all(
+            F(-1590)<x<=0 for x in jold):
+        raise ValueError("original old junction outside D1 no-breakdown domain")
+    if h<=0:
+        raise ValueError("source BE dt must be positive")
+    gs1=tuple(map(_fraction,q1_gs_V))
+    gs2=tuple(map(_fraction,q2_gs_V))
+    ds1=tuple(map(_fraction,q1_d_s_V))
+    ds2=tuple(map(_fraction,q2_d_s_V))
+    if any(len(x)!=2 or x[0]>x[1] for x in (gs1,gs2,ds1,ds2)):
+        raise ValueError("source physical-node voltage chart malformed")
+    if not(gs1[0]>=F("-2.2132") and gs1[1]<=F("-2.0531")
+           and gs2[0]>=F("6.1108") and gs2[1]<=F("6.271")
+           and ds1[0]>=F(135) and ds1[1]<=F("135.3")
+           and ds2[0]>=F("3.19") and ds2[1]<=F("3.36")
+           and gs1[1]<F("2.1679956")
+           and gs2[0]>F("3.1343316")):
+        raise ValueError("node box leaves source stage3616 ON/OFF guard chart")
+    beta1,alpha1,_=source_thermal_affine_exact(old[:4],h)
+    beta2,alpha2,_=source_thermal_affine_exact(old[4:],h)
+    # Original source-wide heat and derivative envelopes are separate
+    # SHA-qualified mathematical prerequisites, NOT extracted by this CI.
+    H1,H2=F(110000),F(33000)
+    q1=F("1.4230884541564563e-16")
+    q2=F(".000368894405170418")
+    if not all(a>=0 for a in (*alpha1,*alpha2)):
+        raise ValueError("thermal M-matrix inverse is not positive")
+    if not (q1<1 and q2<1):
+        raise ValueError("global heat contraction not established")
+    return dict(
+        status="CONDITIONAL_50D_TO_26D_STAGE_ROOT_BIJECTION",
+        original_stage=3616,
+        declared_10_node_chart_radius_V=F(".04"),
+        q1_guard="ETH_LOW_G2_OFF",
+        q2_guard="ETH_HIGH_G2_ON",
+        old_junction_domain_qualified=True,
+        q1_banach_contraction_upper=q1,
+        q2_banach_contraction_upper=q2,
+        max_banach_contraction=max(q1,q2),
+        q1_thermal_lower_C=beta1,
+        q1_thermal_upper_C=tuple(a+b*H1 for a,b in zip(beta1,alpha1)),
+        q2_thermal_lower_C=beta2,
+        q2_thermal_upper_C=tuple(a+b*H2 for a,b in zip(beta2,alpha2)),
+        eliminated_rows=24,
+        reduced_node_KCL_rows=26,
+        required_10_node_box_source_authenticated_in_ci=False,
+        required_source_heat_derivative_enclosures_authenticated_in_ci=False,
+        kcl26_roots_exist_certified=False,
+        complementary_chart_roots_excluded=False,
+        full50_allstage_root_cover_certified=False,
+        all_cal_joint_E_certified=False,
+        goal27_signed_work_certified=False,
+        claim_ceiling=("Only ORIGINAL one-stage ten-node chart, qualified "
+            "old-diode state and source-proved global diode/thermal/heat "
+            "envelopes imply exact 50D-to-26D node-KCL root bijection. "
+            "No existence/complement certificate for 26 KCL roots, no "
+            "history or physical Goal27 upper."),
+    )
