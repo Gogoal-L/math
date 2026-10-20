@@ -204,3 +204,25 @@ class OriginalQ2ReverseSourceRootExclusionTests(unittest.TestCase):
             old_vj_upper_V="-154.4820273950659")
         self.assertGreater(
             float(strict["body_residual_lower_at_minus2_V_strict"]),.107)
+
+
+    def test_raw_261C_eth_can_make_clipped_temperature_root_exclusion_false(self):
+        from fractions import Fraction as F
+        from s150_original_guard_replay import (
+            audit_original_eth_unclipped_temperature_source_counterexample as audit,
+        )
+        report=audit()
+        self.assertEqual(
+          report["status"],
+          "ORIGINAL_ETH_RAW_T_REQUIRED_SOURCE_SCALAR_FALSE_EXCLUSION")
+        self.assertEqual(
+            F(report["source_low_raw_T_change_V"]),-F(".005088"))
+        self.assertEqual(
+            F(report["source_high_raw_T_change_V"]),-F(".270956"))
+        self.assertEqual(
+            F(report["original_two_row_root_center_V"]),-F("153.285187168"))
+        self.assertGreater(
+            F(report["invalid_clipped_T_body_residual_lower_V"]),
+            F(".0050869"))
+        self.assertEqual(report["all50_source_root_existence"],"NOT_PROVEN")
+        self.assertEqual(report["all_Goal27_status"],"NOT_CERTIFIED")
