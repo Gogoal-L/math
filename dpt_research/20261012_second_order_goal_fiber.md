@@ -761,3 +761,21 @@ valid preparation chart + guard/DAE identities
 5. **Formal acceptance:** no automatic modification of S09 freeze, native model claim, extra LTspice, or active owner lane. The local controller decides which math deltas are scientifically material.
 
 **Evidence status:** analytical theorem(s) independently reconstructed; original OpenAI sources read at theorem/proof-architecture level; 23 synthetic/analytic tests including randomized vertex cross-check, numerical margin guard and CLI/compile checks passed locally; actual DPT source Hessians and stage-valid remainder boxes remain unknown. These tools are reusable mathematical probes and **not** native validations.
+
+
+## 2026-10-20 Q4: saved N100 window-sensitive rank reversal and prospective condition challenge
+
+**Retrospective, actual saved vendor-model 100 V result; no new native execution.** Local authority locator: /power-semiconductor/run/S03_heldout_recovery/development_scout/native_finite_L_mechanism/prep_response_transfer/current_conditioned_curvature/{forecast_freeze.json,result.json,report.md,analysis.py}. The worker and prime inspected the original saved result.json and its fixed scorer boundaries read-only. Contract: 100 V, B-history T1 1.75–6 us and T2 7–8 us, Rg=7.5 ohm, 25 °C, load 150 uH, L_ext=5.25 nH; recorded external V(D_L,S_L)/I(V_J5_JUMPER), 641-node nonfiltered H=[7.115,7.155] us. Errors are actual minus frozen prediction, in pJ.
+
+| Scorer window/path | Shared-curvature profile | Current-scaled profile |
+| --- | ---: | ---: |
+| Full H, fine | -1.635193 | +8.868157 |
+| Full H, H2 | -1.293533 | +8.546443 |
+| Leading [7.115,7.124379] us, fine | -7.858822 | -0.014794 |
+| Leading [7.115,7.124379] us, H2 | -7.289456 | +0.145704 |
+
+The error ranking reverses on the *same frozen predictions and equal observation information* when the declared future signed-work functional is changed from full H to the fixed leading subwindow. Full H shared-curvature near-zero work residual results partly from cancellation of leading negative and later positive contributions (source report fine two-cycle core +6.393182 pJ, trailing -0.170401 pJ). This is a concrete **retrospective falsifier of window-uniform dominance**, not a new held-out condition, a hardware L_eff/R_eff recovery or source-wide guarantee. The current-scaled scalar-work ordinary is a distinct comparator and must not be confused with the current-scaled **profile** in this table. Numerical H2-vs-fine differences are path/scorer movements, not a validated TOTAL_ERROR bound.
+
+**One decision-changing future trial.** After Main freezes and qualifies an actual E-history command (T1-on 1.5 us, with the true T1-off/T2 timing), select 100 V, Rg=7.5 ohm, 25 °C, load 150 uH and L_ext=5.25 nH own-PREP, conditioned on **new source-valid E-history 150 uH endpoint records L_ext=5.0 and 5.5 nH**, original E 100 uH mid/endpoint records and no target leakage. Freeze baseline simple scalar-work endpoint/old-history curvature, shared-profile curvature, current-scaled-profile curvature, and the fully recorded-command/full-wave ordinary on the EXACT same CAL/measurement budget. Compare original signed work over Full H plus predeclared disjoint leading/cycle1/cycle2/trailing windows on both fine/H2 paths; require winning margins larger than independently qualified sensor/clock/numerical/model discrepancy bound to claim information improvement. A full-window win alongside a predeclared leading failure is a meaningful NEGATIVE predictive result. The new 150 uH E endpoints, exact command/target event identity, source qualification and frozen TOTAL_ERROR are not available in the remote Math repository: the prospective experiment remains OPEN and is not authorized by this mathematical note to run native jobs or reveal truth.
+
+**Measurement object boundary.** Rproj and Lproj in Original R1 are coefficients of a declared residual-port projection onto (i_res,di_res/dt), which depend on the measurement operator and calibration. The forward model's manipulated L_ext is a coordinate, not automatically measurement-defined package/PCB parasitics. The saved N100 V(D_L,S_L)/J5 work scorer does not supply the residual cut, raw current derivative, joint clock/gain/PREP error or calibrated projection operator needed to certify recovery of that effective object.

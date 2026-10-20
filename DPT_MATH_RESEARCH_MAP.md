@@ -69,6 +69,9 @@
 - **有用出口：** 一个非零有限域内可复算的条件upper/lower与关键常数资格，或合法同信息双世界的goal gap及最小repair。tangent/finite bank最大差不代替连续域。
 - **2026-10-20 P57条件推进：** 同一完整CAL记录的box条件化joint-error支持可比原E−E界严格更紧；固定clock/RC与7维凸共享nuisance模型下，单一候选全CAL不相容具有≤8读数Helly见证。一个4801点合成双root的精确误差门为3/20 V，future-work直径从0跃至1 nJ；真实50D source roots、guard和joint E仍OPEN。见[mixed-nuisance P57](dpt_research/20261012_mixed_nuisance_goal_radius_formal_derivation.md)和`test_paper_transfer_falsifiers.py`。
 - **长期难点：** PREP126/CAL4800/target6720、guard/diode与相关remainder；允许先攻短片段或直接goal证书。缺source输入可做独立条件数学，不反复生成合成收据冒充source包含。
+- **S-L30跨guard条件传播：** 同一共同光滑扩展chart中，把跨分支残差J显式计入(q,A,B,J)根差界；小投影电流差仍可触发150 nJ未来guard反例。完整source-real q/J与未来H841外包OPEN，见[solver fidelity S-L30](dpt_research/20261010_goal_information_solver_fidelity.md)。
+- **S-L29全root闭合反证：** 同一完整4801×2合成CAL记录下，4926个合法局部阶段及严格guard仍可漏掉另一个全历史根，未来功相差150 nJ（minimax75 nJ）；all-root需要全域补集覆盖。见[solver fidelity S-L29](dpt_research/20261010_goal_information_solver_fidelity.md)和Fraction回归，真实source OPEN。
+- **S-L28论文迁移负控：** index-1 DAE 的各根光滑、每根唯一不推出全根覆盖；同完整零观察的双代数根合成未来signed work相差2 nJ。见[solver fidelity S-L28](dpt_research/20261010_goal_information_solver_fidelity.md)与独立Fraction回归；原S150 full50 root/guard仍OPEN。
 - **现有笔记：** [mixed-nuisance/fiber](dpt_research/20261012_mixed_nuisance_goal_radius_formal_derivation.md)、[solver fidelity](dpt_research/20261010_goal_information_solver_fidelity.md)、[goal defect](dpt_research/20261010_goal_stability_compositional_closure.md)。
 
 ### Q2 — 跨command序列的goal-relevant history closure
@@ -97,6 +100,7 @@
 - **决定：** 有限CAL支持的是哪个measurement-defined对象，以及它对新history/condition的未来goal是否足够？
 - **构造/挑战：** 保留L/Rser/gain/clock相容关系和实际观测预算；与同信息frequency/whole-wave/scalar-work ordinary正面比较，不能把有效对象命名为独立PCB/package参数。
 - **有用出口：** 前置可算有限系数/余项、一个新的独立条件预测、可取得的最小信息repair。解释已接受N100曲率关系后要给新后果，不重买相邻L点。
+- **2026-10-20 N100新判别：** 已冻结100V B-history实际保存fine/H2数据呈现全H与leading子窗shared/current-scaled profile排名反转；只在现有条件属于retrospective，不能宣称window-uniform充分或L_eff恢复。下个新条件为100V E-history×150uH×L_ext5.25nH，须先具备E-history 150uH source-valid 5.0/5.5nH端点、冻结scorer和joint TOTAL_ERROR。详见[second-order fiber Q4](dpt_research/20261012_second_order_goal_fiber.md)。
 - **缺件：** reference/端口/单位/同步与合法PREP input contract由Main提供；没有这些时保留条件关系。
 - **笔记：** [second-order fiber](dpt_research/20261012_second_order_goal_fiber.md)、[measurement factor](dpt_tools/measurement_factor_audit.py)。
 

@@ -1247,5 +1247,114 @@ class FullCalSparseCertificateTests(unittest.TestCase):
         self.assertEqual((max(goals_J)-min(goals_J))/2, F(1,2*10**9))
 
 
+class IndexOneDAEBranchCompletenessTest(unittest.TestCase):
+    def test_two_regular_algebraic_roots_same_observation_different_future_work(self):
+        from fractions import Fraction as F
+        # x'=y, 0=y^2-1; both initial y roots are index-one regular.
+        # Full toy CAL observer returns an unrelated zero channel for all t.
+        source_roots = (F(-1), F(1))
+        t_cal = (F(0), F(1, 1000), F(1, 100))
+        observation_records = []
+        future_work_J = []
+        for y in source_roots:
+            self.assertEqual(y*y-1, 0)
+            self.assertNotEqual(2*y, 0)  # g_y invertible on each branch
+            observation_records.append(tuple(F(0) for _ in t_cal))
+            # 1 V * (y A) * 1 ns = +/- 1 nJ signed.
+            future_work_J.append(F(1)*y*F(1,10**9))
+        self.assertEqual(observation_records[0], observation_records[1])
+        self.assertEqual(future_work_J, [F(-1,10**9), F(1,10**9)])
+        self.assertEqual(max(future_work_J)-min(future_work_J), F(2,10**9))
+        self.assertEqual((max(future_work_J)-min(future_work_J))/2, F(1,10**9))
+
+
+class ExhaustiveRootCoverageIsNotLocalReceiptCount(unittest.TestCase):
+    def test_4926_stage_two_branch_same_cal_diameter(self):
+        from fractions import Fraction as F
+
+        X = (-F(1,8), F(1,8))
+        slope = (2*X[0]-1, 2*X[1]-1)
+        inv_preconditioner = F(-1)
+        kfactor = (1-inv_preconditioner*slope[0],
+                   1-inv_preconditioner*slope[1])
+        krange = (min(a*b for a in kfactor for b in X),
+                  max(a*b for a in kfactor for b in X))
+        self.assertEqual(slope, (-F(5,4), -F(3,4)))
+        self.assertEqual(krange, (-F(1,32), F(1,32)))
+        self.assertTrue(X[0] < krange[0] <= krange[1] < X[1])
+        self.assertLess(X[1]-F(1,2), 0)  # certified branch strict OFF
+        self.assertGreater(F(1)-F(1,2), 0)  # missing branch strict ON
+        self.assertFalse(X[0] <= F(1) <= X[1])
+
+        worlds = []
+        for root in (F(0), F(1)):
+            self.assertEqual(root*(root-1), 0)
+            prior = root
+            for _ in range(2,4927):
+                nxt = prior  # Fn(xn,xold)=xn-xold, exact
+                self.assertEqual(nxt-prior, 0)
+                prior = nxt
+            cal = tuple((F(k,4800),F((k%7)-3,10))
+                        for k in range(4801))
+            on = prior > F(1,2)
+            goal = F(150,10**9) * int(on)  # 150 V * 1 A * 1 ns
+            worlds.append((cal, goal))
+        self.assertEqual(worlds[0][0], worlds[1][0])
+        self.assertEqual(len(worlds[0][0]), 4801)
+        self.assertEqual(worlds[1][1]-worlds[0][1], F(150,10**9))
+        self.assertEqual((worlds[1][1]-worlds[0][1])/2,F(75,10**9))
+
+
+class SharedPhaseAndCrossGuardRegression(unittest.TestCase):
+    def test_joint_vi_phase_cannot_be_split_into_two_coefficients(self):
+        from fractions import Fraction as F
+        k = [F(i) for i in range(5)]
+        cos = list(map(F, (1, 0, -1, 0, 1)))
+        sin = list(map(F, (0, 1, 0, -1, 0)))
+        yV = [t+F(7,10)*v for t,v in zip(k,cos)]
+        yI = [F(3,100)*v for v in cos]
+        ampI = F(1,20)
+        # Differences eliminate arbitrary current offset: eta_c=.6, eta_s=0.
+        eta_c = (yI[0]-yI[2])/(2*ampI)
+        eta_s = (yI[1]-yI[3])/(2*ampI)
+        self.assertEqual((eta_c,eta_s), (F(3,5),F(0)))
+        w = [F(v,4) for v in (1,0,-2,0,1)]
+        for column in ([F(1)]*5,k,sin):
+            self.assertEqual(sum(a*b for a,b in zip(w,column)),0)
+        self.assertEqual(sum(map(abs,w)), 1)
+        self.assertEqual(sum(a*b for a,b in zip(w,cos)),1)
+        observed_contrast = sum(a*b for a,b in zip(w,yV))
+        self.assertEqual(observed_contrast,F(7,10))
+        shared_phase_min_error = observed_contrast-eta_c
+        self.assertEqual(shared_phase_min_error,F(1,10))
+        # An INCORRECT independent V-only phase would make residual zero.
+        independent_etaV = F(7,10)
+        self.assertEqual(observed_contrast-independent_etaV,0)
+        self.assertNotEqual(shared_phase_min_error,0)
+        # Entire timeline feasibility: residual=.1*cos under shared phase.
+        self.assertEqual([v-t-eta_c*c for v,t,c in zip(yV,k,cos)],
+                         [F(1,10)*v for v in cos])
+
+    def test_cross_guard_residual_and_discontinuous_future_goal(self):
+        from fractions import Fraction as F
+        for delta in (F(1,4), F(1,100), F(1,10**9)):
+            xoff, xon = F(0), delta
+            # F_OFF(x)=x, F_ON(x)=x-delta: same smooth derivative=1.
+            # q=0, predecessor difference=0, branch mismatch J=delta.
+            J = abs(xon-(xon-delta))
+            self.assertEqual(J,delta)
+            self.assertEqual(abs(xon-xoff),J)
+            self.assertNotEqual(abs(xon-xoff),F(0))
+        for eps in (F(1,2),F(1,100),F(1,10**12)):
+            izero = -(eps)/(2*(1+eps))
+            ione = eps/(2*(1+eps))
+            self.assertGreater(ione,0)
+            self.assertLess(izero,0)
+            self.assertEqual(ione-izero,eps/(1+eps))
+            # Despite arbitrarily small readout gap, fixed future guard toggles.
+            Woff,W_on = F(0), F(150,10**9)
+            self.assertEqual(W_on-Woff,F(150,10**9))
+
+
 if __name__ == "__main__":
     unittest.main()

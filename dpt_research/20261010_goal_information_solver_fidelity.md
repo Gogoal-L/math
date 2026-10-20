@@ -766,3 +766,67 @@ With `r_eff=0.0700000441623ohm`, `tau/h~160` and positive Is/aV, `B'(vj)>1`. Eac
 **Source-real coarse uniform box stress-check, stronger than one center.** With the SAME reverse old-storage seed bounded by `zold<=1e-480A`, real source `Is<9e-13A`, `aV<0.139V`, `1+tau/h<162`, `r_eff>0`, and d in [154.47,154.48]V, T in [25.0084,25.0087]C, literal ETH clipping gives `E>=-3V`. The strictly monotone scalar identity yields every branch root `vj<=-151.4699999999999V`; thus any TWO branch-projected diode currents satisfy `|delta ib|<=2*(1+tau/h)*Is*exp(vj_upper/aV)<1.618e-483A` and associated |d deltaib|<2.499e-481W throughout this qualified finite box. This is an independently computed deliberately coarse real-exponential bound (not a binary64 evaluator/root-guard certificate); it requires the qualified same reverse storage and cannot apply to another future operating point or own-PREP world with forward diode.
 
 **Most important falsifier:** At the SAME T and g* but fixing d=0V (a body-scalar-only source-domain scenario, NOT a legal full50 world), the two branch roots have vj~+2.043/+2.049V and projected ib change ~**15.3956888microA**. Thus the tiny projected jump depends on genuinely deep reverse bias; no blanket ETH-smoothing assumption is allowed over legal parameter/future branches. Physically useful candidate: separate ETH modes and enclose their explicitly small *projected* KCL/thermal current jump in the actual reverse chart, rather than applying a false global Clarke/semismooth 50D Jacobian. Neither a full coupled 50D seam-crossing root nor a whole-fiber work bound has been proved; a future branch face near forward body bias must be independently qualified. The source model's actual Q2 G2 channel current is continuous at the onset (it contains the zero overdrive factor), while body ETH is discontinuous. Hybrid-DAE consistent reinitialization (Hamann–Mehrmann 2008, DOI 10.1016/j.cma.2007.09.002) is a possible representational analogy, not a verified theorem for this source/port.
+
+
+## 2026-10-20 S-L28: primary nonlinear index-1 DAE reachability transfer — branch-completeness falsifier
+
+**Primary original:** M. Althoff and B. H. Krogh, "Reachability Analysis of Nonlinear Differential-Algebraic Systems," IEEE Transactions on Automatic Control 59(2):371–383 (2014), DOI 10.1109/TAC.2013.2285751. Author-posted full text: https://www.researchgate.net/publication/261037733_Reachability_Analysis_of_Nonlinear_Differential-Algebraic_Systems ; official TUM-hosted PDF: https://mediatum.ub.tum.de/doc/1281529/770926.pdf . The original author's text was examined at proof/assumption level; direct PDF-page screenshot rendering was unavailable and is not claimed.
+
+**Transfer boundary from original hypotheses.** Section II Eq. (1) treats time-invariant, semi-explicit index-1 differential-algebraic dynamics x'=f(x,y,u), 0=g(x,y,u) with consistent initial conditions, piecewise-continuous inputs, uniqueness for every consistent initial state, and nonsingular g_y along the true solution. The base statement does not itself encompass unbounded parameter uncertainty. Section IV Proposition 1 ("Conservativeness of the Abstraction") guarantees an overapproximate abstraction only when the supplied linearization-error set provably contains the exact nonlinear remainder over the FULL joint reachable tube. Section V Proposition 2 retains shared generators when recovering joint differential/algebraic reachable sets; Section V Theorem 1 computes quadratic Hessian-based error bounds and does not establish global hybrid/branch completeness. Section VIII explicitly leaves hybrid-guard extension as further research. Therefore this paper offers a rigorous modewise reachability architecture, not a theorem certifying S150 ETH/clip event crossings, all algebraic roots, qualified observation error or Goal27 future-work diameter.
+
+**Exact all-root counterexample to a false transfer.** Consider the single smooth semi-explicit index-1 DAE
+
+$$
+\dot x=y,\qquad 0=g(y)=y^2-1,\qquad x(0)=0,\quad y(0)\in\{-1,+1\}.
+$$
+
+For each consistent initial root y=±1, g_y=±2≠0, and the modewise trajectory (x(t),y(t))=(±t,±1) is unique and smooth. Define an artificial full CAL external observation O_CAL(t)≡0 for BOTH worlds under one complete common digital command. Freeze a toy future target: terminal V=1 V, terminal I=y A for duration 1 ns. Exact future signed works are W_+=+1 nJ and W_-=-1 nJ; BOTH roots are compatible with the same complete observation, so the true two-world goal diameter is 2 nJ and minimax half-diameter 1 nJ. A proof that propagates only the y=+1 branch reports goal diameter zero and misses a legally consistent second initial root despite perfect modewise index-one regularity. This falsifies "nonsingular algebraic Jacobian + rigorous one-branch reachability ⇒ all-source goal closure." It is a **synthetic full-information counterexample**, not an original 50-state PREP/CAL source-root pair.
+
+**DPT proof adaptation and smallest real gate.** At each original source PREP/CAL stage, an algebraic-root enclosure and guard sign must cover EVERY consistent branch and inheritance of the entire old 50D state. Apply an Althoff–Krogh-style conservative joint state/error reachability operator only inside each source-regular smooth region with independently validated Jacobian/remainder; at uncertain ETH/diode/clip crossings split mode/event charts and propagate both successor/reset images, retaining shared clock/RC/PREP nuisance across all times. Intersect the FULL predicted CAL image with the qualified joint observation E; only then compute future H841 work enclosures for every retained world. One branch's successful Krawczyk receipt is insufficient, and an overlap-only observation box remains undecided. A verified legal two-world pair gives a lower bound, an exhaustive union of source/observation/goal images a legitimate upper. Missing complete original 50D source-root and joint E remain the decisive Q1 OPEN obligation. The synthetic Fraction test in test_paper_transfer_falsifiers.py protects the 2 nJ failure mode and cannot certify S150.
+
+
+## 2026-10-20 S-L29: 4926 valid local stages do not prove all-root source/guard coverage
+
+**Exact synthetic complete-history falsifier (stronger than counting local Krawczyk passes).** Freeze one digital command and initial scalar coordinate x0=0. At the first stage solve F1(x1)=x1(x1-1)=0; the law has TWO legal consistent roots, x1=0 and x1=1. For every subsequent stage n=2,...,4926 require the same exact law Fn(xn,xold)=xn-xold=0; this yields two discrete-law-consistent 4926-stage PREP126/CAL4800 scalar histories, one constant zero, one constant one after the first stage. The first-stage jump from x0=0 to x1=1 is permitted by this TOY algebraic step only; physical continuous-time/reset admissibility for S150 is neither asserted nor inferred. Define all original-shaped 4801 synthetic two-channel CAL readings for k=0,...,4800 as O_k(x)=(k/4800,((k mod 7)-3)/10) independently of x; the record, command and joint E={0} are EXACTLY identical for both legal worlds. A strict guard g(x)=x-1/2 labels the zero world OFF and one world ON. Under a frozen 1 ns future target, set V=150 V and I=1 A when ON, 0 A when OFF, so signed-work goals are W_OFF=0, W_ON=150 nJ; the exact same-full-CAL diameter is 150 nJ and midpoint minimax radius 75 nJ. This is a formal **toy source**, not a 50D original S150 root or physical observation model.
+
+**A valid local certificate exists for EVERY stage of the wrong truncated cover.** For stage 1, use xhat=0, X=[-1/8,1/8], R=-1 and interval F1'(X)=[-5/4,-3/4]. The Krawczyk image about xhat is
+
+$$
+\begin{aligned}
+K(X)&=-RF_1(0)+(1-RF_1'(X))X\\
+&=[-1/32,1/32]\subset(-1/8,1/8).
+\end{aligned}
+$$
+
+Moreover g(X)=[-5/8,-3/8] is strictly OFF. Each later equation Fn=xn-xold with the already certified fixed predecessor xold=0 has the exact center root xn=0, Jacobian 1, inverse/preconditioner 1 and K={0} strictly inside any positive local interval around zero, with the same strict OFF guard. Thus arbitrarily many valid local root/guard receipts plus an exactly matching full CAL record DO NOT exclude the second complete lawful x=1 branch outside X. Treating the positive-receipt collection as a complete outer cover reports a false zero goal diameter. An exhaustive first-stage analysis F1^{-1}(0)={0,1} recovers both branches and the correct 150 nJ diameter. The local certificates themselves are SOUND; it is the unproved *complement coverage* that is unsound.
+
+**Necessary all-source proof obligation and regression.** An ALL_ROOT or full-fiber goal bound requires an explicit exhaustively covered initial/PREP parameter-and-state domain Ω, complete predecessor/guard inheritance, source root charts, exclusions with proofs, and retained undecided boxes. Every guard/mode frontier must be either excluded by source evidence or included in the reachable union. Only after FULL joint E and a common future signed-work scorer are applied to all retained branches can a global diameter upper be claimed; a realizable pair gives the matching lower. The exact Fraction regression tests all 4926 stages, first-stage strict Krawczyk inclusion, strict guards, identical full 4801×2 CAL and 150 nJ goal gap in test_paper_transfer_falsifiers.py. No verified S150 source interval coverage or Original Goal27 shrinkage follows.
+
+
+## 2026-10-20 S-L30: chart-conditional cross-guard root distance and bilinear future-work upper
+
+**A sufficient bound that explicitly pays for branch mismatch.** At stage n let F_{n,b}(x;h,θ)=0 be one smooth *extension* of a branch-b source residual over a common CONVEX chart B containing both source roots x_b and x_{b'}, even if the second world uses guard branch b'. Require one dimensionally valid invertible positive state scaling D, preconditioner R (residual inverse units), and
+
+$$
+q=\sup_{x\in B}\|I-D^{-1}R\,\partial_xF_{n,b}(x;h_b,\theta_b)\,D\|_\infty<1.
+$$
+
+The two fully legal stage solutions satisfy F_{n,b}(x_b;h_b,θ_b)=0 and F_{n,b'}(x_{b'};h_{b'},θ_{b'})=0. Suppose sound, OUTWARD source contracts bound the old-history and parameter residual changes when evaluating the same branch-b extension at x_{b'}, as A d_old and B_θ dθ, and separately bound the cross-branch residual mismatch by J≥||D^{-1}R[F_{n,b}(x_{b'};h_{b'},θ_{b'})−F_{n,b'}(x_{b'};h_{b'},θ_{b'})]||∞. Then
+
+$$
+d_n=\|D^{-1}(x_b-x_{b'})\|_\infty
+\le\frac{A\,d_{\mathrm{old}}+B_\theta d_\theta+J}{1-q}.
+$$
+
+**Proof:** the mean-value secant of the ONE smooth extension F_{n,b} on the common convex chart and the displayed q yields (1−q)d_n≤||D^{-1}R(F_{n,b}(x_b;h_b,θ_b)−F_{n,b}(x_{b'};h_b,θ_b))||. Insert and subtract F_{n,b}(x_{b'};h_{b'},θ_{b'}), then F_{n,b'}(x_{b'};h_{b'},θ_{b'})=0; apply the three supplied residual support bounds. No derivative of a discontinuous ETH/clip law is taken across its seam. If no common regular chart exists, q≥1, a hidden old 50D coordinate is dropped, or J is unknown, ABSTAIN and retain both outer branches. Same-branch J may be zero only after verifying branch identity, not from a small observed projected jump.
+
+For fixed original H841 signed-work coefficients M_ij [s] with scorer W=Σ_ij M_ij V_i I_j [J], and bounds |I_j|≤Imax_j, |V'_i|≤Vmax_i, |V_i−V'_i|≤ΔV_i, |I_j−I'_j|≤ΔI_j, the exact bilinear identity and triangle inequality give
+
+$$
+|W-W'|\le\sum_{i,j}|M_{ij}|
+\big(I^{\max}_j\,\Delta V_i+V^{\max}_i\,\Delta I_j\big).
+$$
+
+H interpolation, true clock warps, different command words, solver and numerical error must separately be enclosed; no S150 actual q/A/B/J, complete root/guard charts or future scorer tube is currently qualified. An exhaustive all-root upper and a realizable legal same-CAL pair are still needed for Goal27.
+
+**Two independent exact falsifiers.** The single-step smooth branch laws F_OFF(x)=x and F_ON(x)=x−δ (δ>0), roots 0 and δ, R=D=1, have q=0 and true difference δ. All previous-state and parameter differences vanish; the cross-branch residual term J=δ is NECESSARY, so omitting J gives the false bound d_n=0. Separately, let ε>0, latent two-world coordinate z_±=1±ε/2 and continuously projected current i_±=(z_±−1)/(1+ε) A; its discrepancy ε/(1+ε) A tends to zero. A legal *toy* future guard i>0 nevertheless switches 1 A versus 0 A under 150 V for 1 ns, producing 150 nJ goal gap for every ε>0. Hence an arbitrarily small projected ETH-like current gap is not, by itself, a future-work modulus across a downstream guard. A positive guard margin or all-downstream branch mismatch outer is indispensable; this toy is not the original S-L27 source seam.
