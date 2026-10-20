@@ -385,5 +385,51 @@ class Q4ThreeCornerIdentifiabilityTests(unittest.TestCase):
                   mixed_derivative_abs_bound_nJ=bad)
 
 
+class E150MidpointInteractionCurvatureTests(unittest.TestCase):
+    def test_actual_saved_additive_baseline_curvature_both_paths(self):
+        from goal_defect_transport import audit_e150_midpoint_interaction as audit
+        fine=("35.35647830357767","35.28498201292368","35.15145166258552")
+        h2=("35.33074380007019","35.2605026034096","35.131729510528395")
+        for saved,expect in ((fine,31.017029842083),(h2,29.265948110307)):
+            r=audit(("5.0","5.25","5.5"),saved)
+            self.assertEqual(r["status"],
+                "NO_FINITE_INTERACTION_BOUND_EVEN_WITH_ENDPOINTS")
+            self.assertIsNone(r["conditional_E150_midpoint_interval_nJ"])
+            self.assertAlmostEqual(
+                float(r["known_additive_midpoint_curvature_pJ"]),expect,places=6)
+            self.assertEqual(r["exact_interpolation_factor_nH2"],"0.03125")
+            self.assertFalse(r["future_midpoint_target_observed"])
+
+    def test_even_two_precise_endpoints_need_a_curvature_contract(self):
+        from goal_defect_transport import audit_e150_midpoint_interaction as audit
+        from fractions import Fraction as F
+        P=("35","34","33")
+        L=("5","5.25","5.5")
+        noK=audit(L,P,E150_endpoint_work_nJ=("37","35"))
+        self.assertIsNone(noK["conditional_E150_midpoint_interval_nJ"])
+        self.assertEqual(noK["status"],
+                         "NO_FINITE_INTERACTION_BOUND_EVEN_WITH_ENDPOINTS")
+        # For ANY A, C_A(L)=2+A*(L-5)*(L-5.5)/(-.0625)
+        # agrees at BOTH off-target E150 corners but alters mid by A.
+        for A in (F(-100),F(0),F(1),F(123456789,1000000)):
+            C0=C1=F(2)
+            Cmid=F(2)+A
+            self.assertEqual(C0,C1)
+            self.assertEqual(Cmid-F(2),A)
+        bound=audit(L,P,E150_endpoint_work_nJ=("37","35"),
+                    interaction_second_derivative_abs_bound_nJ_per_nH2=".32",
+                    joint_total_error_nJ=".002")
+        lo,hi=map(F,bound["conditional_E150_midpoint_interval_nJ"])
+        self.assertEqual((lo,hi),(F("35.988"),F("36.012")))
+        self.assertEqual(bound["status"],"CONDITIONAL_SECOND_DERIVATIVE_INTERVAL")
+        self.assertFalse(bound["source_prep_endpoints_qualified"])
+        self.assertFalse(bound["future_midpoint_target_observed"])
+        for bad in ("-1","NaN","Infinity",True):
+            with self.assertRaises(ValueError):
+                audit(L,P,interaction_second_derivative_abs_bound_nJ_per_nH2=bad)
+        with self.assertRaises(ValueError):
+            audit(("5","5.5","5.25"),P)
+
+
 if __name__ == '__main__':
     unittest.main()

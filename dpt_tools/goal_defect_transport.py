@@ -557,6 +557,95 @@ if __name__ == "__main__":
     raise SystemExit(main())
 
 
+
+def audit_e150_midpoint_interaction(
+        L_nH, additive_B100_E100_B150_nJ, *,
+        E150_endpoint_work_nJ=None,
+        interaction_second_derivative_abs_bound_nJ_per_nH2=None,
+        joint_total_error_nJ=None):
+    """Sharp SECOND-order E150 endpoint interpolation gate; no heldout truth.
+
+    P(L) is the independently source-read ADDITIVE BASELINE work
+    W_B150(L)+W_E100(L)-W_B100(L), specified at [L0,Lmid,L1].
+    C(L)=W_E150(L)-P(L) is the UNKNOWN prep/load interaction.
+    A finite E150 midpoint interval REQUIRES real E150 endpoint source
+    observations and a separately source-qualified |C''(L)|<=K on the
+    complete legal interval. Even exact two endpoints alone do not bound it.
+    """
+    from fractions import Fraction as F
+    from decimal import Decimal, localcontext
+
+    def q(v, name):
+        if isinstance(v, bool):
+            raise ValueError(name+" cannot be boolean")
+        try:
+            z = Decimal(str(v))
+            if not z.is_finite():
+                raise ValueError(name+" must be finite")
+            return F(z)
+        except (ValueError, TypeError, ArithmeticError) as exc:
+            raise ValueError(name+" must be exact finite decimal") from exc
+
+    def series(x,name,n):
+        if not isinstance(x,(list,tuple)) or len(x)!=n:
+            raise ValueError(name+" needs "+str(n)+" values")
+        return [q(v,name) for v in x]
+
+    l0,lm,l1=series(L_nH,"L_nH",3)
+    if not l0<lm<l1:
+        raise ValueError("L_nH requires increasing distinct coordinates")
+    p0,pm,p1=series(additive_B100_E100_B150_nJ,"additive baseline",3)
+    w0=(l1-lm)/(l1-l0)
+    w1=(lm-l0)/(l1-l0)
+    baseline_chord=w0*p0+w1*p1
+    baseline_curvature=pm-baseline_chord
+    E=None if E150_endpoint_work_nJ is None else series(
+        E150_endpoint_work_nJ,"E150 off-target endpoint observations",2)
+    K=(None if interaction_second_derivative_abs_bound_nJ_per_nH2 is None
+       else q(interaction_second_derivative_abs_bound_nJ_per_nH2,"K"))
+    error=None if joint_total_error_nJ is None else q(joint_total_error_nJ,"error")
+    if K is not None and K<0:
+        raise ValueError("K must be nonnegative")
+    if error is not None and error<0:
+        raise ValueError("joint error must be nonnegative")
+    C0,C1=(None,None) if E is None else (E[0]-p0,E[1]-p1)
+    C_chord=None if E is None else w0*C0+w1*C1
+    # Exact Lagrange remainder, sharp for quadratic C with |C''|=K.
+    curvature_radius=None if K is None else K*(lm-l0)*(l1-lm)/2
+    interval=(None if C_chord is None or curvature_radius is None else (
+        pm+C_chord-curvature_radius-(error or 0),
+        pm+C_chord+curvature_radius+(error or 0)))
+
+    with localcontext() as ctx:
+        ctx.prec=75
+        def dec(value):
+            return None if value is None else format(
+                Decimal(value.numerator)/Decimal(value.denominator),"f")
+        return {
+            "status": ("NO_FINITE_INTERACTION_BOUND_EVEN_WITH_ENDPOINTS"
+                       if K is None else
+                       "E150_ENDPOINTS_MISSING_NOT_AN_INTERVAL"
+                       if E is None else "CONDITIONAL_SECOND_DERIVATIVE_INTERVAL"),
+            "evidence": "CALLER_DECIMAL_SAVED_BASELINE_AND_OPTIONAL_ENDPOINTS_ONLY",
+            "known_additive_midpoint_nJ":dec(pm),
+            "known_additive_midpoint_curvature_pJ":dec(1000*baseline_curvature),
+            "unknown_interaction_endpoints_nJ": None if E is None else [
+                dec(C0),dec(C1)],
+            "unknown_interaction_chord_mid_nJ":dec(C_chord),
+            "conditional_curvature_radius_nJ":dec(curvature_radius),
+            "conditional_total_error_nJ":dec(error),
+            "conditional_E150_midpoint_interval_nJ":None if interval is None
+                else [dec(v) for v in interval],
+            "exact_interpolation_factor_nH2":dec((lm-l0)*(l1-lm)/2),
+            "source_prep_endpoints_qualified":False,
+            "future_midpoint_target_observed":False,
+            "claim_ceiling":"No full source/guard/PREP |C''| or TOTAL_ERROR "
+                "proof is supplied by this function. Smooth quadratic "
+                "interpolation is sharp CONDITIONALLY; arbitrary polynomial "
+                "interaction vanishing at both endpoints destroys any "
+                "unconditional midpoint bound. No future target is read.",
+        }
+
 def audit_two_factor_pretarget_interaction(
         B100_nJ, E100_nJ, B150_nJ, *, current_ratio, work_ratio,
         mixed_derivative_abs_bound_nJ=None):

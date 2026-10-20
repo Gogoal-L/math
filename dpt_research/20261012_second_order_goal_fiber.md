@@ -806,3 +806,52 @@ The affine-plus-C*h*l surface attains both endpoints. If the physical prepared E
 For original saved fine, P1=35.28498201292368 nJ, r-profile P_r=32.879301452253735 nJ and q-profile P_q=31.291328176856513 nJ, requiring C_r=-2.40568056066994 nJ and C_q=-3.99365383606716 nJ respectively. H2 required interactions are -2.40692457089440 and -3.99764166098342 nJ. In the three challengers the smallest model-prediction gap is 1.58797327539722 nJ (fine) and 1.59071709008901 nJ (H2). Equal independent prediction/error intervals of halfwidth at least 0.79398663769861 nJ (fine) overlap for at least the nearest pair; this is a necessary discriminability gate, NOT a source-certified TOTAL_ERROR.
 
 **Executable arithmetic and fail-closed usage.** The existing goal_defect_transport.py now exposes audit_two_factor_pretarget_interaction using exact rational arithmetic on the caller's original decimal numbers. With no M it explicitly reports THREE_CORNER_UNIDENTIFIED_NO_MIXED_BOUND and NO E150 interval. If M is supplied it reports only a CONDITIONAL_UNQUALIFIED_MIXED_DERIVATIVE_BOUND (not a source approval); exact Fraction tests prove the arbitrary-interaction no-go and reproduce both historical fine/H2 numeric candidate triplets. No remote Math asset contains the required E150 150uH source-valid 5.0/5.5nH own-PREP endpoint CAL, frozen original command/event/time identity, target blackout or qualified joint error. Neither this code nor the three-corner result is a genuine prospective Original R1 forecast or an original Goal27 full-source certificate.
+
+
+## 2026-10-20 Q4-next: source-saved finite-L additive curvature and sharp off-target repair
+
+The 100 V vendor-model save records for complete own-PREP B100, E100,
+B150 at L=5.0,5.25,5.5 nH define their SAME-operator additive signed-work
+baseline P(L)=W_B150(L)+W_E100(L)-W_B100(L). The existing saved
+fine-path P values are [35.35647830357767,35.28498201292368,
+35.15145166258552] nJ, while H2 gives
+[35.33074380007019,35.2605026034096,35.131729510528395] nJ.
+These are pretarget historical arithmetic; no E150 target was read.
+Consequently the already observed baseline midpoint curvature
+P(5.25)-(P(5.0)+P(5.5))/2 is +31.017029842083 pJ (fine)
+and +29.265948110307 pJ (H2). Neither is the UNKNOWN
+history x load interaction curvature, and neither bounds it.
+
+Let C(L)=W_E150(L)-P(L). Even acquiring both *off-target* E150 endpoint
+works C(5),C(5.5) does NOT bound C(5.25): the smooth perturbation
+A*(L-5)*(L-5.5)/((5.25-5)*(5.25-5.5)) vanishes at the endpoints
+and changes the midpoint by arbitrary A. Therefore a fourth source
+work value or an independently qualified regularity condition is required;
+no finite number of additional endpoint-only measurements is a
+source-independent midpoint-work certificate.
+
+If a LEGAL full source/guard PREP/load chart independently proves
+|C''(L)|<=K [nJ/nH^2] throughout [5,5.5]nH, then with TWO source-valid
+E150 off-target endpoint observations the EXACT sharp deterministic
+midpoint bound is
+
+    W_E150(5.25) in
+      P(5.25) + (C(5)+C(5.5))/2 + [-K/32,+K/32] nJ.
+
+A quadratic C saturates either bound. If instead only ONE endpoint
+C(5) is known and |C'|<=S [nJ/nH], the sharp midpoint C interval
+is [C(5)-S/4,C(5)+S/4]. No such source-certified K or S is currently
+available. Joint source/sensor/solver/clock TOTAL_ERROR adds to the
+halfwidth; neither path comparison nor interval claim is valid without
+its separately qualified bound.
+
+Exact Fraction code in goal_defect_transport.audit_e150_midpoint_interaction
+computes the saved P curvature, returns NO FINITE midpoint interval
+without a supplied K and BOTH endpoint E150 works, and returns a
+CONDITIONAL interval otherwise. All E150 endpoint inputs are held-out
+and absent; the tool never reads target truth. The archived same-state
+B150 own-PREP exists for L5.0,5.25,5.5, but reuse as E150 own-PREP
+requires Main's explicit source/deck and timing approval (the two
+historical PREP templates were reported byte-identical while the actual
+commanded E event has NOT been executed). The exact candidate value
+or future success cannot be inferred or fabricated from P curvature.
