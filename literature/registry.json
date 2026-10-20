@@ -383,8 +383,8 @@
       "dpt_implementation": "Existing MAP analysis / synthetic tool support where recorded; native transfer not established by this migration.",
       "pending_task": "按原 MAP 的 reopen condition 调用；不在当前默认落实队列。",
       "reading_status": "ACTIVE_OR_CANDIDATE_NOT_DEEP_VERIFIED",
-      "reading_evidence": "No verified completed full-PDF proof-chain record in the current audit; may have selected statement/partial method notes.",
-      "dpt_transfer_status": "Separate proof required: no paper status implies full source S150/Goal27 history outer or hardware claim."
+      "reading_evidence": "Scoped conditional DPT transfer proof and synthetic regression recorded, but this audit lacks completed primary full-PDF reading proof chain.",
+      "dpt_transfer_status": "Independently proved/tested CONDITIONAL finite-domain DPT method in dpt_research/20261011_F119_F129_F132_proof_level_DPT_bridge.md and dpt_tools/test_paper_transfer_falsifiers.py; paper not full primary deep-read, original SiC 50D/hardware unchanged OPEN"
     },
     {
       "id": "F332",
@@ -503,8 +503,8 @@
       "dpt_implementation": "Existing MAP analysis / synthetic tool support where recorded; native transfer not established by this migration.",
       "pending_task": "按原 MAP 的 reopen condition 调用；不在当前默认落实队列。",
       "reading_status": "ACTIVE_OR_CANDIDATE_NOT_DEEP_VERIFIED",
-      "reading_evidence": "No verified completed full-PDF proof-chain record in the current audit; may have selected statement/partial method notes.",
-      "dpt_transfer_status": "Separate proof required: no paper status implies full source S150/Goal27 history outer or hardware claim."
+      "reading_evidence": "Scoped conditional DPT transfer proof and synthetic regression recorded, but this audit lacks completed primary full-PDF reading proof chain.",
+      "dpt_transfer_status": "Independently proved/tested CONDITIONAL finite-domain DPT method in dpt_research/20261011_F119_F129_F132_proof_level_DPT_bridge.md and dpt_tools/test_paper_transfer_falsifiers.py; paper not full primary deep-read, original SiC 50D/hardware unchanged OPEN"
     },
     {
       "id": "F122-A",
@@ -643,8 +643,8 @@
       "dpt_implementation": "Existing MAP analysis / synthetic tool support where recorded; native transfer not established by this migration.",
       "pending_task": "按原 MAP 的 reopen condition 调用；不在当前默认落实队列。",
       "reading_status": "ACTIVE_OR_CANDIDATE_NOT_DEEP_VERIFIED",
-      "reading_evidence": "No verified completed full-PDF proof-chain record in the current audit; may have selected statement/partial method notes.",
-      "dpt_transfer_status": "Separate proof required: no paper status implies full source S150/Goal27 history outer or hardware claim."
+      "reading_evidence": "Scoped conditional DPT transfer proof and synthetic regression recorded, but this audit lacks completed primary full-PDF reading proof chain.",
+      "dpt_transfer_status": "Independently proved/tested CONDITIONAL finite-domain DPT method in dpt_research/20261011_F119_F129_F132_proof_level_DPT_bridge.md and dpt_tools/test_paper_transfer_falsifiers.py; paper not full primary deep-read, original SiC 50D/hardware unchanged OPEN"
     },
     {
       "id": "F325-B",
@@ -2371,5 +2371,37 @@
   ],
   "reading_policy": "literature/ = primary PDF full-text + page-grounded load-bearing proof-chain DEEP_READ scoped, not independently formal-proven; literature_archive/ = in-progress/candidate/not yet deep-verified; DPT transfer remains a distinct proof obligation. Canonical fixed snapshot 33 PDFs: 12 completed and 21 candidates; F125 independently pinned fork +1 completed.",
   "deep_read_verification_scope": "12 of canonical OpenAI/math pinned PDFs have independent local read-only DEEP_READ_V1 page-grounded manuscript notes or, for F329, a fresh 15-page primary text/proof audit. External fork F125 adds a separate 53-page deep-reading note. This is a reading-status audit, not independent full proof/Lean/native S150 verification.",
-  "read_classification_date": "2026-10-20"
+  "read_classification_date": "2026-10-20",
+  "prospective_sources": [
+    {
+      "title": "A sharp Fourier certificate for planar circle packing",
+      "source_commit": "1581d4cbdd69a0faf34b2089614fe2a814316a6a",
+      "source_repository": "openai/math",
+      "pdf_url": "https://github.com/openai/math/blob/1581d4cbdd69a0faf34b2089614fe2a814316a6a/preprints/A-sharp-Fourier-certificate-for-planar-circle-packing-September-23-2026/paper.pdf",
+      "primary_tex_url": "https://github.com/openai/math/blob/1581d4cbdd69a0faf34b2089614fe2a814316a6a/preprints/A-sharp-Fourier-certificate-for-planar-circle-packing-September-23-2026/build/sections/certificates.tex",
+      "reading_status": "SOURCE_SCOUT_ONLY",
+      "dpt_transfer_status": "NOT_PROVEN_SOURCE_50D",
+      "scope": "Arb/192-bit interval, N=256 finite quadrature and separate analytic moment/tail remainders; no independent full checker run"
+    },
+    {
+      "title": "An atomic certificate for triangular-lattice universal optimality",
+      "source_commit": "1581d4cbdd69a0faf34b2089614fe2a814316a6a",
+      "source_repository": "openai/math",
+      "pdf_url": "https://github.com/openai/math/blob/1581d4cbdd69a0faf34b2089614fe2a814316a6a/preprints/An-atomic-certificate-for-triangular-lattice-universal-optimality-September-26-2026/paper.pdf",
+      "primary_tex_url": "https://github.com/openai/math/blob/1581d4cbdd69a0faf34b2089614fe2a814316a6a/preprints/An-atomic-certificate-for-triangular-lattice-universal-optimality-September-26-2026/build/main.tex",
+      "reading_status": "SOURCE_SCOUT_ONLY",
+      "dpt_transfer_status": "NOT_PROVEN_SOURCE_50D",
+      "scope": "stdlib exact finite integer checks of 20x20 blocks and Bernstein data; infinite analytic propagation is a separate proof obligation"
+    },
+    {
+      "title": "Exact Fourier certificates for complex Hadamard matrices of order six",
+      "source_commit": "1581d4cbdd69a0faf34b2089614fe2a814316a6a",
+      "source_repository": "openai/math",
+      "pdf_url": "https://github.com/openai/math/blob/1581d4cbdd69a0faf34b2089614fe2a814316a6a/preprints/Exact-Fourier-certificates-for-complex-Hadamard-matrices-of-order-six-September-24-2026/Exact-Fourier-certificates-for-complex-Hadamard-matrices-of-order-six-September-24-2026.pdf",
+      "primary_tex_url": "https://github.com/openai/math/blob/1581d4cbdd69a0faf34b2089614fe2a814316a6a/preprints/Exact-Fourier-certificates-for-complex-Hadamard-matrices-of-order-six-September-24-2026/build/sections/05-verification.tex",
+      "reading_status": "SOURCE_SCOUT_ONLY",
+      "dpt_transfer_status": "NOT_PROVEN_SOURCE_50D",
+      "scope": "exact integer/rational moment + PSD identities and program wrapper; supports at-most-five MUB, not F266's computer-assisted at-most-three"
+    }
+  ]
 }
