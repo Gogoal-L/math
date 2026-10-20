@@ -149,6 +149,25 @@ class OriginalSevenReadingJointOuterTests(unittest.TestCase):
                 source_current_band_outers=bands[:-1],
                 clock_V_bound=F(".00105"),clock_I_bound=F(".00045"))
 
+    def test_per_coefficient_phase_box_is_not_a_waveform_amplitude_contract(self):
+        from s150_q2_six_row_certificate import certify_original_seven_reading_joint_outer
+        bands=[(F(90)+F(j,4), F(90)+F(j+1,4), F(-1,100),F(1,100))
+               for j in range(80)]
+        kwargs=dict(observed_dual=F("1.253692790291920247338006144666"),
+                    source_voltage_dual=(F(-1,10**6),F(1,10**6)),
+                    source_current_band_outers=bands,
+                    clock_V_bound=F(".00105"),clock_I_bound=F(".00045"))
+        disk=certify_original_seven_reading_joint_outer(**kwargs)
+        self.assertGreater(disk["strict_margin"],0)
+        coeff_box=certify_original_seven_reading_joint_outer(
+            **kwargs,phase_V=F(".0283"),phase_I=F(".07075"))
+        self.assertEqual(coeff_box["status"],"CANNOT_EXCLUDE")
+
+    def test_source_replay_missing_original_hash_inputs_fail_closed(self):
+        from s150_q2_six_row_certificate import replay_original_s150_seven_reading_80band
+        with self.assertRaisesRegex(ValueError,"SOURCE_INPUTS_UNAVAILABLE"):
+            replay_original_s150_seven_reading_80band(None,None,None)
+
     def test_root_tube_and_joint_noise_can_defeat_candidate_rejection(self):
         from s150_q2_six_row_certificate import certify_original_seven_reading_joint_outer
         bands=[(F(90)+F(j,4), F(90)+F(j+1,4), F(0),F(0))
