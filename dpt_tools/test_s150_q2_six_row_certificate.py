@@ -232,6 +232,14 @@ class OriginalS150FullTwelveRowToKCL26Tests(unittest.TestCase):
             q2_gs_V=("6.1108","6.271"),
             q1_d_s_V=("135","135.3"),
             q2_d_s_V=("3.19","3.36"),
+            q1_five_node_V=tuple(F.from_float(float.fromhex(x)) for x in (
+                "0x1.2bf0be2eea417p+7","0x1.6d9cb673abfabp+3",
+                "0x1.9609c4242a8a7p+3","0x1.2bf0dc944b121p+7",
+                "0x1.da4c3edc813bep+3")),
+            q2_five_node_V=tuple(F.from_float(float.fromhex(x)) for x in (
+                "0x1.67138b6a8325dp+3","0x1.1bd6737f6c78cp+4",
+                "0x1.c441ed8de0342p+3","0x1.67139f1fe1791p+3",
+                "0x1.fc4c4bfd24625p+2")),
             adapter_kappa="1.007",
             source_law_sha256=LAW,source_adapter_sha256=ADAPTER,
             saved_cal_sha256=ARCHIVE)
@@ -258,7 +266,16 @@ class OriginalS150FullTwelveRowToKCL26Tests(unittest.TestCase):
         from s150_q2_six_row_certificate import certify_source_stage3616_26d_reduction
         from fractions import Fraction as F
         old=[F(25)]*8
-        kw=dict(old_junction_V=(-130,-2),q1_gs_V=(-3,-2.5),
+        centers1=tuple(F.from_float(float.fromhex(x)) for x in (
+            "0x1.2bf0be2eea417p+7","0x1.6d9cb673abfabp+3",
+            "0x1.9609c4242a8a7p+3","0x1.2bf0dc944b121p+7",
+            "0x1.da4c3edc813bep+3"))
+        centers2=tuple(F.from_float(float.fromhex(x)) for x in (
+            "0x1.67138b6a8325dp+3","0x1.1bd6737f6c78cp+4",
+            "0x1.c441ed8de0342p+3","0x1.67139f1fe1791p+3",
+            "0x1.fc4c4bfd24625p+2"))
+        kw=dict(q1_five_node_V=centers1,q2_five_node_V=centers2,
+                old_junction_V=(-130,-2),q1_gs_V=(-3,-2.5),
                 q2_gs_V=(6,7),q1_d_s_V=(135,136),q2_d_s_V=(3,4),
                 adapter_kappa="1.007",source_law_sha256=LAW,
                 source_adapter_sha256=ADAPTER,saved_cal_sha256=ARCHIVE)
@@ -268,6 +285,12 @@ class OriginalS150FullTwelveRowToKCL26Tests(unittest.TestCase):
         with self.assertRaises(ValueError):
             certify_source_stage3616_26d_reduction(
                 old,original_dt(),**dict(kw,old_junction_V=(-130,1)))
+        # Same gs/ds but a malicious out-of-box x would invalidate global heat.
+        x_bad=list(centers1);x_bad[3]+=F(9,100)
+        with self.assertRaisesRegex(ValueError,"ten-node|node chart"):
+            certify_source_stage3616_26d_reduction(
+                old,original_dt(),**dict(kw,q1_five_node_V=tuple(x_bad)))
+
 
 
 if __name__=="__main__":
