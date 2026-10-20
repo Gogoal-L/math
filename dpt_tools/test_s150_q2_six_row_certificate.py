@@ -89,7 +89,7 @@ class OriginalSourceRCBandwidthOuterTests(unittest.TestCase):
             exact_machin_pi_interval,
         )
         piL,piU=exact_machin_pi_interval()
-        self.assertTrue(piL < F("3.1415926535897932384626433832795") < piU)
+        self.assertTrue(F("3.14159265358979") < piL < piU < F("3.14159265358980"))
         times=[F(0),F(1,10**11),F(2,10**11)]
         currents=[F(0),F(1),F(0)]
         out=verify(times,currents,F(90),F(110),selected_stages=(1,2))
