@@ -74,6 +74,30 @@ class GoalEllipsoidTests(unittest.TestCase):
             self.assertEqual(proc.returncode, 0, proc.stderr)
             self.assertAlmostEqual(json.loads(outpath.read_text())["radius"], 0.1, places=8)
 
+    def test_ill_scaled_positive_noise_is_not_exact_noiseless_measurement(self):
+        B=np.eye(2)
+        H=np.eye(2)
+        E=np.diag([1e13, 0.01])
+        goal=np.array([0.,1.])
+        report=recover_scalar_goal(B,H,E,goal)
+        # Two actually feasible SAME observation y=0 worlds:
+        # z=(0,+/-0.01), epsilon=(0,-/+1), and ||z||2<=1.
+        # Both yield z+E@epsilon=0 but goals differ by 0.02.
+        for sign in (-1.,1.):
+            z=np.array([0.,sign*0.01])
+            e=np.array([0.,-sign])
+            self.assertLessEqual(np.linalg.norm(z),1.)
+            self.assertLessEqual(np.linalg.norm(e),1.)
+            np.testing.assert_allclose(H@(B@z)+E@e,np.zeros(2))
+        self.assertGreaterEqual(report["radius"],0.01-1e-12)
+        self.assertAlmostEqual(report["algorithm_upper"],0.01,places=9)
+        self.assertEqual(report["status"],
+                         "LINEAR_ELLIPSOID_RANK_UNCERTAIN_UPPER_ONLY")
+        self.assertEqual(report["radius_kind"],"DUAL_UPPER_NUMERIC_ONLY")
+        self.assertFalse(report["noise_rank_definitive"])
+        self.assertGreater(report["noise_rank_threshold"],0.01)
+        self.assertEqual(report["rank_ambiguous_positive_singular_values"],[0.01])
+
     def test_accept_singular_noise_and_reject_invalid_shapes(self):
         out = recover_scalar_goal(np.eye(2), np.eye(2),
                                   np.diag([0.1, 0.]), np.ones(2))

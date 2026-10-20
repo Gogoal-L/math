@@ -33,6 +33,7 @@
 | --- | --- | --- |
 | **D16 package两线圈/goal projection** | Main实际调用`goal_defect_transport.py`，原Pro18C H841同静态L条件半径0.02306262345 nJ；符号负控有效。后继两线圈有限比较已接受并进入本地02/05可编辑推导。 | 未来内部驱动/seed半径仍是条件输入；不是完整CAL推出的全源目标范围，也不是不同L直接改状态后的合法PREP。 |
 | **S-L27 hybrid投影** | 原source保存状态局部复算支持ETH约−6.295 mV，而深反向body-current投影约4.379e−489 A；d=0标量反证约15.396 µA。Main限定接受并进入02推导。 | 大latent跳跃可有小目标投影，只对具名chart/held-state成立；不是外端口全误差界、可达第二世界或全域可平滑化。 |
+| **椭球算子病态噪声修复** | 原rank阈值会将正奇异噪声误判成无噪声，合成同y双世界真实半径至少0.01却报0。现对rank模糊fail-closed返回decoder dual numeric upper和显式非sharp状态，精确负控进入回归。 | [goal_ellipsoid_recovery.py](dpt_tools/goal_ellipsoid_recovery.py)与[test_goal_ellipsoid_recovery.py](dpt_tools/test_goal_ellipsoid_recovery.py)；非有向源认证，尺度/物理E仍须资格化。 |
 | **FullCAL/目标行与椭球API** | Main实际调用`goal_ellipsoid_recovery.py`并核盒/球、相关误差与dual支持。D3、eta=1e−6时，chi/psi盒半宽upper3.3813e−4 nJ，加既有CAL派生goal行可至1.1723e−5 nJ；正交行几乎无益。 | 固定centered tangent，不是全非线性域。派生行不算新增测量；绝对consumer与uniform remainder另有输入义务。 |
 | **mixed-nuisance/contextual/measurement-factor接口** | 有Side条件数学与工具；不能把合成测试写成全部Main实际调用。 | Main真实transition/合法words、共同nuisance、joint error几何或统一非线性remainder尚缺；由具体decision触发最小消费，不逐模块空跑。 |
 | **非线性fiber、goal-defect、动态closure** | 是可建设的条件数学对象；部分局部source关系和数值消费者已用。 | 连续合法CAL fiber的有用目标upper/lower、有限L own-PREP与多command更新仍开放，优先任务见第4节。 |
