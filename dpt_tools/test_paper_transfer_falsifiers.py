@@ -1417,5 +1417,37 @@ class OriginalS150EthBodyRowInterfaceTest(unittest.TestCase):
         # This is a necessary state jump, not a constructed legal S150 reset.
 
 
+class OriginalEAL455SparseDualSourcePoint(unittest.TestCase):
+    """Exact binary64-lift archived five-reading source candidate contractor."""
+
+    def test_original_source_five_rows_annihilate_gain_offset_and_25mhz(self):
+        from fractions import Fraction as F
+        N=(-5669253778937177,88809074733686082,-88809074733686082,
+           88809074733686082,-83139820954748905)
+        D=355236298934744328
+        w=[F(n,D) for n in N]
+        m=[154.4722348848952,154.37367230432028,135.96445321718,
+           -11.622973781725578,-3.284372419096062]
+        y=[153.89955506036114,153.8026455906095,135.84194741106262,
+           -11.152705172581985,-2.6951365457127188]
+        dot=lambda a,b:sum(t*F.from_float(float(v)) for t,v in zip(a,b))
+        self.assertEqual(sum(w),0)
+        self.assertEqual(sum(map(abs,w)),1)
+        self.assertEqual(dot(w,m),0)
+        self.assertEqual(dot(w,(1.,0.,-1.,0.,1.)),0)
+        self.assertEqual(dot(w,(0.,1.,0.,-1.,0.)),0)
+        contrast=abs(dot(w,y))
+        self.assertEqual(
+            contrast,
+            F(98653386594060235226206137718669,
+              799921031755494340365646345273344))
+        # Clock and phase deductions require the exact source-segment
+        # slope/timebase bounds; this test protects only the scalar arithmetic.
+        threshold=F('0.12297998958402522455006541731386092132792')
+        self.assertGreater(contrast,threshold)
+        self.assertGreater(threshold,F('.1'))
+        self.assertLess(threshold,F('.30558'))
+
+
 if __name__ == "__main__":
     unittest.main()

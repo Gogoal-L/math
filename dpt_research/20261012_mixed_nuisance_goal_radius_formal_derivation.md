@@ -1690,3 +1690,22 @@ In a HYPOTHETICAL coordinatewise free future-PORT-current box |delta I_j|<=D wit
     inf_lambda [ sum_j D_j*abs(a_j-(C^T lambda)_j) + lambda^T z + sigma_E(-lambda) ].
 
 For a record-shared additive bias, first project readings by the SAME differences B with B*1=0 and use z'=Bz, C'=BC and the true projected joint error E'=BE; multiplying marginal noise boxes after projection is not sound. In the full nonlinear source, unknown mode/guard effects, future voltage discrepancies and the bilinear cross term need their own outer; the displayed LP is CONDITIONAL and is not automatically tight for nonconvex physical errors. Source-root/guard-exhaustive paths and H841 future sensor provenance are still missing. No Original Goal27 diameter shrink follows.
+
+
+## 2026-10-20 P58: first actual-original S150 E/A five-CAL source candidate contractor (point-level)
+
+**Provenance and exact scope.** Two DIFFERENT static-L original-source prepared histories share the exact original 4927 digital PREP/CAL command and H4801: observed Pro18E L4.30nH saved full4927x50 and CAL V/I SHA256 baafdd8cb489adb186677658c4a8031130cc53a9a1854c4997211d437daf8b3e, and Pro19A L4.55nH source saved full4927x50 SHA256 98f83174aef3345d81e0c500789ae59c16330874c045cfd85639d6da685c61e1; source actual_law.py SHA256 51b78f729393d29745f59ca150adfef69e1847bf26a8853c6cef3d6be9e2083d. Observed E CAL is *synthetic*, source-generated V plus first-order PREP-initialized 100MHz RC-filtered current with known gains/offsets, NOT a qualified hardware sensor E. The source arrays are available read-only in local original archives but absent from remote Math CI. Do not confuse Pro18F L4.50 CAL-only H4801 V/I or the different-prepared original C target6721/H841 with this same-command pair.
+
+**Actual exact-five-reading witness.** Select original zero-based CAL indices (910,1710,2510,3310,4110), each separated 800 samples (one 25MHz quadrature step). The observed voltage in volts is [153.89955506036114,153.8026455906095,135.84194741106262,-11.152705172581985,-2.6951365457127188]; the L4.55 source candidate has [154.4722348848952,154.37367230432028,135.96445321718,-11.622973781725578,-3.284372419096062]. Lift the exact saved binary64 values to rationals and choose w=N/355236298934744328 with N=(-5669253778937177,88809074733686082,-88809074733686082,88809074733686082,-83139820954748905). Then sum w=0, ||w||1=1, w·m=0, and both 25MHz sine/cosine quadrature basis columns have zero dot w. The actual observation contrast is EXACTLY
+
+    abs(w dot y)=98653386594060235226206137718669 /
+                 799921031755494340365646345273344 V
+                =0.1233289070766861034389894375... V.
+
+This is a shared unknown 25MHz phase **point candidate necessary** test, stronger evidence than a purely invented two-world toy; it does NOT establish physical compatibility of the candidate under all 9602 observations.
+
+**Quantified clock/source-error exclusion condition.** With source saved segment-slope bound 2.11179432780756 V/ns at the five selected samples, any clock offset <=150fs per reading, |gammaV|<=1.1, 25MHz phase disk amplitude <=.02V, exact source-PL knot/timestamp constraints and a separately qualified weighted source-output error outer rho_source, the source candidate is strictly excluded whenever
+
+    epsilonV + 1.1*rho_source < 0.12297998958402522455 V.
+
+Clock voltage contribution is <=0.000348446064088247 V; phase/timestamp contribution <=4.714285727e-7 V on this saved grid. With epsilonV=.1V, an entire L4.55 source-root/guard **cell** can only be excluded if an independently certified *all-root* weighted candidate variation rho_cell satisfies the combined condition; with zero additional point-source error this demands rho_cell<0.02089089962184111V. At the previously reported P54 point error budget .30558V this five-reading certificate does NOT exclude the candidate. The 151-LP P54/bandwidth/clock parameter-cell proposal, full 50D source-root complement, actual sensor E and target H841 are still unverified. Exact Fraction dual arithmetic is in test_paper_transfer_falsifiers.py; SHA-pinned original input replay was read-only and is NOT available from current GitHub CI. The original Goal27 certified full-source goal-diameter shrinkage remains zero.
