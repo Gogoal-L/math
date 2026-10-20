@@ -562,5 +562,48 @@ class JointChargeSignedGoalTheoremTests(unittest.TestCase):
         report = word_audit({"A": a, "B": b}, c, c)
         self.assertEqual([s["goal_rank"] for s in report["horizons"]], [1, 2, 3, 3])
 
+
+class Q2Q3SourceShapedInformationControls(unittest.TestCase):
+    def test_command_alphabet_changes_hybrid_goal_right_congruence(self):
+        from fractions import Fraction as F
+        from itertools import product
+        def signed_work(st,word,eps):
+            h,s=st
+            w=F(0)
+            for cmd in word:
+                if cmd=="A":
+                    s+=1+h
+                    w+=F(150)
+                else:
+                    beta={"B0":F(0),"Blow":-2*eps,"Bhigh":2*eps}[cmd]
+                    w+=F(150)*(1+int(s+beta>1))
+            return w
+        for eps in (F(1,10),F(1,1024),F(1,10**9)):
+            plus,minus=(eps,F(0)),(-eps,F(0))
+            self.assertEqual(signed_work(plus,("A","B0"),eps)-
+                             signed_work(minus,("A","B0"),eps),F(150))
+            for length in range(7):
+                for word in product(("A","Blow","Bhigh"),repeat=length):
+                    self.assertEqual(signed_work(plus,word,eps),
+                                     signed_work(minus,word,eps))
+            self.assertGreater(2*(1-eps)-2*eps,1)
+
+    def test_perfect_future_port_charge_can_leave_signed_work_radius_unchanged(self):
+        from fractions import Fraction as F
+        # Fine PL source-like grid 0..16, frozen H grid (0,8,16).
+        # Both half-integrals of i equal zero, but H signed work is maximal.
+        current=[F(0)]*17
+        for j in (0,8,16): current[j]=F(1)
+        for j in tuple(range(1,8))+tuple(range(9,16)):
+            current[j]=-F(1,7)
+        self.assertTrue(all(abs(x)<=1 for x in current))
+        dt=F(1,10**12)
+        for lo,hi in ((0,8),(8,16)):
+            q=dt*(current[lo]/2+sum(current[lo+1:hi])+current[hi]/2)
+            self.assertEqual(q,0)
+        work=dt*(4*current[0]+8*current[8]+4*current[16])
+        self.assertEqual(work,16*dt)
+        self.assertEqual(-work,-16*dt)
+
 if __name__ == "__main__":
     unittest.main()
