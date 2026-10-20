@@ -76,6 +76,10 @@
 
 **新前沿论文迁移：** F090 的有限块/尾项 Schur 与signed Bernstein闭盒排除已由精确反例验证；新增完整审读 OpenAI *Atomic triangular-lattice* 31页原PDF+TeX，并真正运行原有限checker（20×20块及659项Bernstein均PASS，恶意枢轴阈值篡改使其FAIL）。独立移植共享nuisance精确消去、可计算几何尾项和De Casteljau闭盒分裂：合成三闭盒严格排除外两盒，保留含真root的中盒。只作为 **CONDITIONAL source-agnostic finite-cover算法**，原8D余式/GL32/guards/历史 E 仍缺原始解析包络。见 [完整证明及负控](dpt_research/20261010_goal_information_solver_fidelity.md)、[执行器](dpt_tools/s150_q2_six_row_certificate.py)、[原论文待读分类](literature_archive/README.md)。
 
+
+
+**S-L46 更新（源原始持续子域）：** 原 n3616、原 saved old50 及 12 个 old coil 电流各 ±1mA 的明确条件 predecessor slab 内，Q1 gate6 与 G11w7 联合消元，经 P16 原电阻/全部 12 BE 线圈仿射 lift，证明六电压当前闭子盒（Q1 gate 保存+10..12mV，其余五节点保存±0.1mV）整个原 source exact-real r6>1.0997A，故无根；既有单独 G11/G12 不可得此结论。原 source ZIP/law/adapter/NPZ SHA、公式、negative controls 与执行器见 [S-L46](dpt_research/20261010_goal_information_solver_fidelity.md)、[code](dpt_tools/s150_q2_six_row_certificate.py)。最高证据仍是 **合法源表达式、固定阶段及条件 predecessor 子域整盒排除**；原全 PREP/CAL 外补集、GL32/SciPy outward 与 Goal27 未闭合。
+
 **下一唯一承重OPEN：** 从已唯一重构的P14/G12x2/guard内G11w2继续证明剩余原 **8D KCL** 全闭盒根/补集（并另行处理G11 guard外分支），外包Q1/Q2 ETH/diode/thermal/clip/ABS seam及原生求积误差；再建立每个合法 predecessor 50D 与PREP126→CAL4800全过程封闭reachability、共同 4801×2 sensor E 和H841 signed-work有向传播。输入仍只有 source-saved n3616 chart，不能称 Goal27有全域upper/lower。
 
 ### Q2 — 合法命令 alphabet 的 history/right-congruence 与必需记忆维数

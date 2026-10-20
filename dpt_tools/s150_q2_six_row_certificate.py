@@ -1371,3 +1371,133 @@ def certify_original_source_passive16_port_lift(
         all_cal_joint_E_certified=False,
         goal27_certified=False
     )
+
+
+# S-L46: source Q1 gate row after the exact passive16 and guarded G11 lift.
+# All predecessor package+external coil currents enter ONE common affine image.
+def certify_original_source_q1_gate_six_cell(
+    *, six_current_node_boxes_V, old_coil12_boxes_A, h_s,
+    source_law_sha256, source_adapter_sha256, saved_cal_sha256
+):
+    """Exact original n3616 Q1 gate-KCL necessary six-current-node exclusion.
+
+    Current Q1(d,g,s),Q2(d,g,s) are source chart boxes; the twelve old
+    coil currents are simultaneously bounded by ONE 12D predecessor box.
+    Old Q1 g/s/w voltages are the frozen original binary64 n3615 anchors.
+    The original G11 single-panel guarded root supplies w-d, the BE GS
+    charge supplies 1388pF/h, and the 16x16 Schur lift supplies Q1:g2.
+    Source G2/ETH/diode/thermal cannot cancel a nonzero r6: they do not
+    stamp the Q1 gate row. A strict sign excludes the WHOLE declared
+    source-exact real single-stage cell. No other stage or CAL claim.
+    """
+    if (source_law_sha256!=LAW_SHA or source_adapter_sha256!=ADAPTER_SHA
+            or saved_cal_sha256!=SAVED_SHA or
+            _fraction(h_s)!=_STAGE3616_H or
+            len(six_current_node_boxes_V)!=6 or len(old_coil12_boxes_A)!=12):
+        raise ValueError("UNRESOLVED_SOURCE_DOMAIN: original Q1 gate six-cell")
+    cur=tuple(map(_source_x_box,six_current_node_boxes_V))
+    old=tuple(map(_source_x_box,old_coil12_boxes_A))
+    centers=(
+        _SOURCE_X_SPECS["Q1"]["d"],_SOURCE_G11_W_SPECS["Q1"]["g"],
+        _SOURCE_X_SPECS["Q1"]["s"],_SOURCE_X_SPECS["Q2"]["d"],
+        _SOURCE_G11_W_SPECS["Q2"]["g"],_SOURCE_X_SPECS["Q2"]["s"],
+    )
+    radius=F(".04")
+    for box,hx in zip(cur,centers):
+        center=F.from_float(float.fromhex(hx))
+        if box[0]<center-radius or box[1]>center+radius:
+            raise ValueError("UNRESOLVED_SOURCE_DOMAIN: original six-node chart")
+    kw=dict(h_s=h_s,source_law_sha256=source_law_sha256,
+            source_adapter_sha256=source_adapter_sha256,
+            saved_cal_sha256=saved_cal_sha256,command_V=15)
+    def q1_g2(v6,i12,dummy=None):
+        # For this ORIGINAL resistor/coil topology, passive g2 has zero
+        # coefficients on the four w/x ports, checked exactly below.
+        boundary=[v6[0],v6[1],F(0),F(0),v6[2],
+                  v6[3],v6[4],F(0),F(0),v6[5]]
+        if dummy is not None:
+            boundary[dummy]=F(1)
+        lifted=certify_original_source_passive16_port_lift(
+            retained_node10_V=boundary,old_coil12_A=i12,**kw)
+        return lifted["package_voltage14_V"][_SOURCE_PACKAGE_P.index(5)]
+    low6=tuple(box[0] for box in cur)
+    lowold=tuple(box[0] for box in old)
+    g20=q1_g2(low6,lowold)
+    for dummy in (2,3,7,8):
+        if q1_g2(low6,lowold,dummy)!=g20:
+            raise ArithmeticError("omitted w/x was not passive-independent")
+    g2lo=g2hi=g20
+    for j,box in enumerate(cur):
+        other=list(low6);other[j]=box[1]
+        diff=q1_g2(other,lowold)-g20
+        g2lo+=min(F(0),diff)
+        g2hi+=max(F(0),diff)
+    for j,box in enumerate(old):
+        other=list(lowold);other[j]=box[1]
+        diff=q1_g2(low6,other)-g20
+        g2lo+=min(F(0),diff)
+        g2hi+=max(F(0),diff)
+    if g2lo>g2hi:
+        raise ArithmeticError("invalid common-predecessor g2 image")
+    auth=dict(h_s=h_s,source_law_sha256=source_law_sha256,
+              source_adapter_sha256=source_adapter_sha256,
+              saved_cal_sha256=saved_cal_sha256)
+    q1w=certify_original_source_g11_w_guard(
+        leg="Q1",g_V=cur[1],d_V=cur[0],**auth)
+    q2w=certify_original_source_g11_w_guard(
+        leg="Q2",g_V=cur[4],d_V=cur[3],**auth)
+    if any(z["status"]!="ORIGINAL_SOURCE_G11_GUARDED_W_UNIQUE_LIFT"
+           for z in (q1w,q2w)):
+        raise ValueError("UNRESOLVED_SOURCE_DOMAIN: original G11 guard")
+    xrequired=[]
+    for leg,dd,ss in (("Q1",cur[0],cur[2]),("Q2",cur[3],cur[5])):
+        center=F.from_float(float.fromhex(_SOURCE_X_SPECS[leg]["x"]))
+        source_x=certify_original_source_x_kcl_outer(
+            leg=leg,d_V=dd,s_V=ss,
+            x_V=(center-radius,center+radius),**auth)
+        xrequired.append(source_x["necessary_x_V"])
+    g,d,s=cur[1],cur[0],cur[2]
+    old_g=F.from_float(float.fromhex(_SOURCE_G11_W_SPECS["Q1"]["old_g"]))
+    old_w=F.from_float(float.fromhex(_SOURCE_G11_W_SPECS["Q1"]["old_w"]))
+    old_s=F.from_float(float.fromhex(_SOURCE_X_SPECS["Q1"]["old_s"]))
+    old_u=old_g-old_w
+    bleed=F(1,10**7)
+    # On this strict original source guard the signed finite GL32
+    # effective Cbar is enclosed by [3.9,4.0]pF (ideal exact-real
+    # quadrature). Native NumPy weights/rounding are NOT outward proved.
+    kl=F("3.9e-12")/_STAGE3616_H
+    ku=F("4.0e-12")/_STAGE3616_H
+    def w_minus_d(gg,dd,k):
+        return ((bleed+k)*(gg-dd)-k*old_u)/(1+bleed+k)
+    corners=tuple(w_minus_d(gg,dd,k)
+                  for gg in g for dd in d for k in (kl,ku))
+    wdlo,wdhi=min(corners),max(corners)
+    gs_charge_S=F("1388e-12")/_STAGE3616_H
+    lower=(g[0]-g2hi)/9+bleed*(g[0]-s[1])+bleed*(g[0]-d[1])+
+           wdlo+gs_charge_S*((g[0]-s[1])-(old_g-old_s)))
+    upper=(g[1]-g2lo)/9+bleed*(g[1]-s[0])+bleed*(g[1]-d[0])+
+           wdhi+gs_charge_S*((g[1]-s[0])-(old_g-old_s)))
+    if lower>upper:
+        raise ArithmeticError("invalid original gate residual enclosure")
+    excluded=lower>0 or upper<0
+    return dict(
+        status=("SOURCE_REAL_Q1_GATE_SIX_CLOSED_CELL_EXCLUDED" if excluded
+                else "RETAIN_SOURCE_Q1_GATE_SIX_CELL_UNRESOLVED"),
+        original_gate_row=6,original_g11_row=7,
+        exact_r6_lower_A=lower,exact_r6_upper_A=upper,
+        strict_abs_r6_margin_A=(lower if lower>0
+                                else -upper if upper<0 else F(0)),
+        source_q1_g2_passive16_V=(g2lo,g2hi),
+        necessary_w_minus_d_Q1_V=(wdlo,wdhi),
+        necessary_w_Q1_Q2_V=(q1w["necessary_w_V"],q2w["necessary_w_V"]),
+        necessary_x_Q1_Q2_V=tuple(xrequired),
+        common_old_coil12_box_used=True,
+        g11_guard_and_g12_branch_qualified=True,
+        omitted_w_x_passive_coefficients_checked_zero=True,
+        original_old_g_s_w_from_frozen_hex=True,
+        physical_old_coil_predecessor_boxes_verified_in_ci=False,
+        native_ieee_gl32_hyp2f1_outward_enclosed=False,
+        complete_6d_stage_roots_certified=False,
+        full_prep_cal_history_certified=False,
+        goal27_certified=False,
+    )
