@@ -49,3 +49,11 @@ Exceptions to this fixed procedure include work on a zero-free region for the Ri
 We will preserve the public release history of this collection. Corrections and revisions will be recorded as new versions, with previously released versions remaining accessible. 
 
 To cite the individual manuscript, use the BibTeX block in its directory. 
+
+## DPT Main ↔ Math Side working interface
+
+The DPT research layer in this fork is maintained through [DPT_MATH_RESEARCH_MAP.md](DPT_MATH_RESEARCH_MAP.md). It is separate from the manuscript collection above and does not imply that a mathematical result has been validated for a physical SiC system.
+
+For DPT work, start with the map's current absorption ledger and open question cards. Complete a scientific unit in one of the existing six living notes, keep implementation contracts in [dpt_tools/README.md](dpt_tools/README.md), and use the map's reusable unit template for the handoff. Update the current entry rather than appending per-run logs. Side verification, Main acceptance, and actual use are recorded separately. Missing source inputs and unperformed checks remain explicit.
+
+The map links a fixed pre-restructure Git revision for historical details. Existing proof/source identities and tests are preserved; the workflow adds no new engine, dependency, or CI gate.
