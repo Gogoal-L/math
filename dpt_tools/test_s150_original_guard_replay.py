@@ -117,3 +117,33 @@ class SourceEthContinuousRectangleTests(unittest.TestCase):
             cover(("25","25"),("2.7","2.8"),depth=-1)
         with self.assertRaises(ValueError):
             cover(("25","25"),("2.7","2.8"),depth=True)
+
+
+    def test_full50_source_box_guard_projection_and_missing_history(self):
+        from s150_original_guard_replay import (
+            classify_original_eth_guard_state50_box,
+        )
+        box = [("0","0") for _ in range(50)]
+        box[46] = ("25.0084","25.0087")
+        box[18] = ("2.700","2.710")
+        box[21] = ("0","0")
+        low=classify_original_eth_guard_state50_box(box)
+        self.assertEqual(low["mode"],"STRICT_LOW")
+        self.assertEqual(low["full50_input_projection"]["temperature_index"],46)
+        self.assertFalse(low["source_root_qualified"])
+        self.assertFalse(low["valid_predecessor_history"])
+        box[18] = ("2.711","2.72")
+        self.assertEqual(classify_original_eth_guard_state50_box(box)["mode"],
+                         "STRICT_HIGH")
+        # Actual correlation between g and s is not supplied; interval
+        # subtraction MUST retain a possible ETH interface.
+        box[18] = ("2.710","2.712")
+        box[21] = ("0",".001")
+        self.assertEqual(classify_original_eth_guard_state50_box(box)["mode"],
+                         "RETAIN_BOTH_FRONTIER")
+        with self.assertRaises(ValueError):
+            classify_original_eth_guard_state50_box(box[:-1])
+        bad = list(box)
+        bad[19]=("3","2")
+        with self.assertRaises(ValueError):
+            classify_original_eth_guard_state50_box(bad)
