@@ -798,3 +798,32 @@ $$
 Moreover g(X)=[-5/8,-3/8] is strictly OFF. Each later equation Fn=xn-xold with the already certified fixed predecessor xold=0 has the exact center root xn=0, Jacobian 1, inverse/preconditioner 1 and K={0} strictly inside any positive local interval around zero, with the same strict OFF guard. Thus arbitrarily many valid local root/guard receipts plus an exactly matching full CAL record DO NOT exclude the second complete lawful x=1 branch outside X. Treating the positive-receipt collection as a complete outer cover reports a false zero goal diameter. An exhaustive first-stage analysis F1^{-1}(0)={0,1} recovers both branches and the correct 150 nJ diameter. The local certificates themselves are SOUND; it is the unproved *complement coverage* that is unsound.
 
 **Necessary all-source proof obligation and regression.** An ALL_ROOT or full-fiber goal bound requires an explicit exhaustively covered initial/PREP parameter-and-state domain Ω, complete predecessor/guard inheritance, source root charts, exclusions with proofs, and retained undecided boxes. Every guard/mode frontier must be either excluded by source evidence or included in the reachable union. Only after FULL joint E and a common future signed-work scorer are applied to all retained branches can a global diameter upper be claimed; a realizable pair gives the matching lower. The exact Fraction regression tests all 4926 stages, first-stage strict Krawczyk inclusion, strict guards, identical full 4801×2 CAL and 150 nJ goal gap in test_paper_transfer_falsifiers.py. No verified S150 source interval coverage or Original Goal27 shrinkage follows.
+
+
+## 2026-10-20 S-L30: chart-conditional cross-guard root distance and bilinear future-work upper
+
+**A sufficient bound that explicitly pays for branch mismatch.** At stage n let F_{n,b}(x;h,θ)=0 be one smooth *extension* of a branch-b source residual over a common CONVEX chart B containing both source roots x_b and x_{b'}, even if the second world uses guard branch b'. Require one dimensionally valid invertible positive state scaling D, preconditioner R (residual inverse units), and
+
+$$
+q=\sup_{x\in B}\|I-D^{-1}R\,\partial_xF_{n,b}(x;h_b,\theta_b)\,D\|_\infty<1.
+$$
+
+The two fully legal stage solutions satisfy F_{n,b}(x_b;h_b,θ_b)=0 and F_{n,b'}(x_{b'};h_{b'},θ_{b'})=0. Suppose sound, OUTWARD source contracts bound the old-history and parameter residual changes when evaluating the same branch-b extension at x_{b'}, as A d_old and B_θ dθ, and separately bound the cross-branch residual mismatch by J≥||D^{-1}R[F_{n,b}(x_{b'};h_{b'},θ_{b'})−F_{n,b'}(x_{b'};h_{b'},θ_{b'})]||∞. Then
+
+$$
+d_n=\|D^{-1}(x_b-x_{b'})\|_\infty
+\le\frac{A\,d_{\mathrm{old}}+B_\theta d_\theta+J}{1-q}.
+$$
+
+**Proof:** the mean-value secant of the ONE smooth extension F_{n,b} on the common convex chart and the displayed q yields (1−q)d_n≤||D^{-1}R(F_{n,b}(x_b;h_b,θ_b)−F_{n,b}(x_{b'};h_b,θ_b))||. Insert and subtract F_{n,b}(x_{b'};h_{b'},θ_{b'}), then F_{n,b'}(x_{b'};h_{b'},θ_{b'})=0; apply the three supplied residual support bounds. No derivative of a discontinuous ETH/clip law is taken across its seam. If no common regular chart exists, q≥1, a hidden old 50D coordinate is dropped, or J is unknown, ABSTAIN and retain both outer branches. Same-branch J may be zero only after verifying branch identity, not from a small observed projected jump.
+
+For fixed original H841 signed-work coefficients M_ij [s] with scorer W=Σ_ij M_ij V_i I_j [J], and bounds |I_j|≤Imax_j, |V'_i|≤Vmax_i, |V_i−V'_i|≤ΔV_i, |I_j−I'_j|≤ΔI_j, the exact bilinear identity and triangle inequality give
+
+$$
+|W-W'|\le\sum_{i,j}|M_{ij}|
+\big(I^{\max}_j\,\Delta V_i+V^{\max}_i\,\Delta I_j\big).
+$$
+
+H interpolation, true clock warps, different command words, solver and numerical error must separately be enclosed; no S150 actual q/A/B/J, complete root/guard charts or future scorer tube is currently qualified. An exhaustive all-root upper and a realizable legal same-CAL pair are still needed for Goal27.
+
+**Two independent exact falsifiers.** The single-step smooth branch laws F_OFF(x)=x and F_ON(x)=x−δ (δ>0), roots 0 and δ, R=D=1, have q=0 and true difference δ. All previous-state and parameter differences vanish; the cross-branch residual term J=δ is NECESSARY, so omitting J gives the false bound d_n=0. Separately, let ε>0, latent two-world coordinate z_±=1±ε/2 and continuously projected current i_±=(z_±−1)/(1+ε) A; its discrepancy ε/(1+ε) A tends to zero. A legal *toy* future guard i>0 nevertheless switches 1 A versus 0 A under 150 V for 1 ns, producing 150 nJ goal gap for every ε>0. Hence an arbitrarily small projected ETH-like current gap is not, by itself, a future-work modulus across a downstream guard. A positive guard margin or all-downstream branch mismatch outer is indispensable; this toy is not the original S-L27 source seam.
