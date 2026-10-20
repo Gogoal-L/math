@@ -15,6 +15,9 @@ def recover_scalar_goal(state_factor, observation, noise_factor, goal):
     B (n,n), H (m,n), E (m,p), g (n,). E need not be square
     or full rank. Singular E exposes exact *noiseless channel contrasts*.
     All rank decisions are numerical and require physical qualification.
+    If a strictly positive noise singular value is discarded by the numerical
+    tolerance, radius becomes a conservative numeric decoder DUAL upper,
+    not a sharp minimax estimate, and status explicitly marks uncertainty.
     """
     B = np.asarray(state_factor, dtype=float)
     H = np.asarray(observation, dtype=float)
@@ -36,6 +39,11 @@ def recover_scalar_goal(state_factor, observation, noise_factor, goal):
     # of the range of E. This includes a zero-width E with no noise.
     U, sv_E, _ = np.linalg.svd(E, full_matrices=True)
     tol_E = 100 * np.finfo(float).eps * max(m, p, 1) * (sv_E[0] if sv_E.size else 0.)
+    # A strictly POSITIVE but much smaller singular value is not exact noise
+    # nullspace. It is numerically unresolved by this floating-point SVD.
+    # Treating it as zero would manufacture a noiseless observation and
+    # potentially report a goal radius of zero when a nonzero radius is legal.
+    ambiguous_positive_noise = bool(np.any((sv_E > 0) & (sv_E <= tol_E)))
     r_E = int(np.count_nonzero(sv_E > tol_E))
     U_r, U_0 = U[:, :r_E], U[:, r_E:]
     C = U_0.T @ HB  # exact observation equality constraints on z
@@ -107,8 +115,20 @@ def recover_scalar_goal(state_factor, observation, noise_factor, goal):
     v_w=v_w/(safe*(1.0+8*np.finfo(float).eps))
     lower=float(abs(c_red @ v_w))
     return {
-        "status": "LINEAR_ELLIPSOID_NUMERIC_DIAGNOSTIC",
-        "radius": float(np.sqrt(max(f, 0.))),
+        "status": ("LINEAR_ELLIPSOID_RANK_UNCERTAIN_UPPER_ONLY"
+                   if ambiguous_positive_noise else
+                   "LINEAR_ELLIPSOID_NUMERIC_DIAGNOSTIC"),
+        # Numerical rank-uncertainty must not be presented as a sharp radius.
+        # The independently evaluated decoder dual upper is valid for
+        # the declared prior/noise ellipsoids; it is not outward-rounded.
+        "radius": float(upper if ambiguous_positive_noise else
+                        np.sqrt(max(f, 0.))),
+        "radius_kind": ("DUAL_UPPER_NUMERIC_ONLY" if ambiguous_positive_noise
+                        else "MINIMAX_NUMERIC_ESTIMATE"),
+        "noise_rank_definitive": not ambiguous_positive_noise,
+        "rank_ambiguous_positive_singular_values": [
+            float(s) for s in sv_E if 0 < s <= tol_E
+        ],
         "q": float(q),
         "measurement_weights": a.tolist(),
         "algorithm_upper": upper,

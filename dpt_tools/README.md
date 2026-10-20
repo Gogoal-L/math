@@ -464,6 +464,9 @@ An analytic two-state fixture has nuisance N=[1,1].T, current goal (1,-1), and f
 
 ## Continuous scalar goal recovery: goal_ellipsoid_recovery.py
 
+**2026-10-20 numerical-rank fail-closed correction.** A strictly positive singular noise direction below the floating SVD rank tolerance cannot be recast as an exactly noiseless channel. On B=H=I2, E=diag(1e13,0.01), goal=e2, two y=0-compatible histories attain radius>=0.01 even though the old rank heuristic returned zero. The tool now reports LINEAR_ELLIPSOID_RANK_UNCERTAIN_UPPER_ONLY, sets radius to the independently computed decoder dual numeric upper (0.01 on the example), and exposes noise_rank_definitive=false, radius_kind=DUAL_UPPER_NUMERIC_ONLY and the ambiguous singular values. This is not an outward source-certified bound or sharp minimax claim; data scaling/validated interval linear algebra is still required before relying on it as a certificate.
+
+
 Source chart: $`x=x_0+Bz,\ \|z\|_2\le1`$; observation $`y-y_0=HBz+Ee,\ \|e\|_2\le1`$; scalar goal $`G-G_0=g^\top Bz`$. The rectangular/rank-deficient matrix E is a **joint deterministic hard sensor-error factor**, not unqualified covariance. The exact linear-model minimax risk, after eliminating any noise-free observation constraints, is
 
 ```math
