@@ -408,7 +408,7 @@ def replay_original_s150_seven_reading_80band(
             raise ValueError("SOURCE_PREP_COMMAND_OR_GRID_IDENTITY_MISMATCH")
         ts=tuple(F(float(x)) for x in times_a)
         current=tuple(F(float(x)) for x in state_a[:,36])
-        voltage=tuple(F(float(x)) for x in state_a[:,0]-state_a[:,1])
+        voltage=tuple(F(float(u))-F(float(v)) for u,v in zip(state_a[:,0],state_a[:,1]))
         ys=sum(w*F(float(cal[i,0])) for w,i in zip(SEVEN_V_W,SEVEN_V_H))
         ys+=sum(w*F(float(cal[i,1])) for w,i in zip(SEVEN_I_W,SEVEN_I_H))
     if any(ts[i]>=ts[i+1] for i in range(4926)):
