@@ -78,6 +78,8 @@
 
 
 
+**S-L48a 严格源 chart 纠错：** 独立 agent 用合成旧线圈全零反证了把 gate-only 单根误称 50D→4D 的 source preimage；现已把两种状态拆开。只有全部原 g2/x/W 关联重构落入源 chart 内带，才保留条件性 4D；离图必须 `RETAIN/UNKNOWN`。公开旧线圈负控和移位线圈合法图内正控不包含任何受保护 NPZ 数据。详见 [S-L48a](dpt_research/20261010_goal_information_solver_fidelity.md)。
+
 **S-L45–S-L48 最新原source最高证据（PR #31）：** 原n3616 P16把 D/sl 与14个 package 节点同时纳入 exact SPD，严格保留 12 个旧 BE 线圈电流和150V外部源；原存档点重构D/sl误差≤2.42×10^-11V。两腿原 G11 的 w 单根和 G12 的 x 单根进一步留六电压；原 Q1/Q2 g2 的 gate 交叉导数精确为零，两条 gate KCL 逐 fiber 严格单调。**在真实保存旧电压、12 oldcoil各±1mA、四 d/s 当前节点各±0.1mV、两 gate 各±125µV 的明确原source闭子域**，四个 KCL 端面严格反号，逐条固定四 d/s + predecessor fiber 两个 gate 均存在唯一，因而该源guard/preimage上条件性的 **50D↔4D**。此外另一非零宽 Q1 gate saved+10..12mV源盒经现有gate KCL整体严格排除（r6>1.0997A）。见 [S-L45–S-L48原始SHA、独立负控](dpt_research/20261010_goal_information_solver_fidelity.md)与 [Fraction执行器](dpt_tools/s150_q2_six_row_certificate.py)。此等级**不是**剩余四 KCL 根、原全部 PREP/CAL history、joint E、native IEEE source evaluator 或 Goal27。新原文 F325/F376/F140 严格假设、可迁移算法及不适用反例见 [archive](literature_archive/README.md)，不改变 core13 分类。
 
 **下一唯一承重OPEN：** 在 S-L48 已约化并严格检验preimage的原 n3616 子域，求**剩余原4D KCL全闭盒根/补集**；对于其它源 chart/G11 guard以外节点和所有前驱情形继续 fail-closed 8D/50D cover。必须同时外包原 ETH/G2/diode/thermal/ABS/clip与 GL32/SciPy/NumPy binary64 误差，再证明 PREP126→CAL4800 的所有合法 hybrid/history、共同 4801×2 sensor E 和未来 H841 有向 signed-work 范围。不能因当前逐 fiber gate root existence 获证就宣称完整 Goal27 upper/lower。

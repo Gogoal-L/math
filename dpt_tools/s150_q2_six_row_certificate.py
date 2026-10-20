@@ -1576,7 +1576,8 @@ def certify_original_source_q1_gate_unique_bracket(
         shared_old_coil12_box_used=True,
         original_q1_gate_root_exists_per_fiber=bracket,
         original_q1_gate_root_unique_per_fiber=bracket,
-        conditional_source_50d_to_five_node_on_guard_preimage=bracket,
+        conditional_source_50d_to_five_node_on_guard_preimage=False,
+        source_ten_node_chart_preimage_not_proved_by_this_operator=True,
         every_legal_prepared_history_covered=False,
         complete_five_kcl_source_root_cover_certified=False,
         original_w_x_g2_chart_preimage_authenticated_in_ci=False,
@@ -1689,8 +1690,56 @@ def certify_original_source_two_gate_unique_bracket(
                     goal27_certified=False)
     both=(q1["status"]=="ORIGINAL_SOURCE_G11_Q1_GATE_UNIQUE_SIX_TO_FIVE_LIFT"
           and left[1]<0<right[0])
+
+    # S-L48 fail-closed PREIMAGE: S-L40 original ten-node chart is
+    # Q1/Q2 (d,g2,g,x,s), EACH saved +/- .04V. These RATIONAL inner
+    # bands have locally authenticated original stage3616 NPZ centers;
+    # public CI validates the exact equations, not protected NPZ bytes.
+    # The w inner bands are an additional conservative source panel
+    # restriction (w is not one of the original ten chart coordinates).
+    inner_bands={
+        "Q1:g2":(F("11.386"),F("11.465")),
+        "Q2:g2":(F("17.700"),F("17.779")),
+        "Q1:w":(F("150.009"),F("150.088")),
+        "Q2:w":(F("11.495"),F("11.573")),
+    }
+    q1full=certify_original_source_q1_gate_six_cell(
+        six_current_node_boxes_V=cur,
+        old_coil12_boxes_A=old,**auth)
+    g2q1=q1full["source_q1_g2_passive16_V"]
+    # Q2 g2 is exactly affine in its own gate, so whole-box extrema
+    # occur among the lower/upper gate face affine images.
+    g2q2=(min(left[2][0],right[2][0]),
+          max(left[2][1],right[2][1]))
+    def correlated_w(leg,gbox,dbox):
+        cfg=_SOURCE_G11_W_SPECS[leg]
+        old_u=(F.from_float(float.fromhex(cfg["old_g"]))-
+               F.from_float(float.fromhex(cfg["old_w"])))
+        bleed=F(1,10**7)
+        krange=(cfg["cap_lower_pF"]/(F(10**12)*_STAGE3616_H),
+                cfg["cap_upper_pF"]/(F(10**12)*_STAGE3616_H))
+        # On original G11 panel w=((bleed+k)*g+d-k*uold)/(1+bleed+k).
+        # Exact 8 corners enclose each correlated g,d,k; partial g,d
+        # are positive and partial k has fixed sign for fixed g,d.
+        corners=[((bleed+k)*g+d-k*old_u)/(1+bleed+k)
+                 for g in gbox for d in dbox for k in krange]
+        return min(corners),max(corners)
+    wq1=correlated_w("Q1",cur[1],cur[0])
+    wq2=correlated_w("Q2",cur[4],cur[3])
+    images={"Q1:g2":g2q1,"Q2:g2":g2q2,"Q1:w":wq1,"Q2:w":wq2}
+    chart_image_inside=all(
+        limits[0]<=images[key][0]<=images[key][1]<=limits[1]
+        for key,limits in inner_bands.items())
+    ximages=q1full["necessary_x_Q1_Q2_V"]
+    for leg,xbox in zip(("Q1","Q2"),ximages):
+        xc=F.from_float(float.fromhex(_SOURCE_X_SPECS[leg]["x"]))
+        chart_image_inside &= (
+            xc-F(".04")<=xbox[0]<=xbox[1]<=xc+F(".04"))
+    original_pair_stage=both and chart_image_inside
     return dict(
         status=("ORIGINAL_SOURCE_BOTH_GATES_UNIQUE_SIX_TO_FOUR_LIFT"
+                if original_pair_stage else
+                "RETAIN_BOTH_GATES_SOURCE_CHART_PREIMAGE_UNRESOLVED"
                 if both else "RETAIN_TWO_GATES_UNRESOLVED"),
         original_gate_KCL_rows=(6,18),
         source_g11_rows=(7,19),
@@ -1706,7 +1755,13 @@ def certify_original_source_two_gate_unique_bracket(
         original_q2_w_outer_V=q2w["necessary_w_V"],
         original_q2_x_outer_V=q2x["necessary_x_V"],
         simultaneous_both_gate_roots_unique_per_four_fiber=both,
-        source_50d_to_four_nonlinear_nodes_conditional=both,
+        source_50d_to_four_nonlinear_nodes_conditional=original_pair_stage,
+        source_ten_node_chart_preimage_certified=chart_image_inside,
+        source_chart_declared_rational_inner_bands_V=inner_bands,
+        source_chart_eliminated_g2_w_image_V=images,
+        source_chart_original_x_Q1_Q2_image_V=ximages,
+        source_original_saved_chart_centers_authenticated_in_ci=False,
+        source_g11_w_eight_correlated_corners_checked=True,
         original_shared_old12_predecessor_used=True,
         all_other_source_KCL_roots_certified=False,
         source_full_own_prep_cal_history_covered=False,

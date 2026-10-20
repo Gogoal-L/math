@@ -1153,3 +1153,14 @@ P_k = (1/c) * Σ_{j=0}^{k-1} (I−J0/c)^j,
 由原论文完整 matrix polynomial norm bound，`||I−P_k J0||₂≤2(r/|c|)^k` 且 `||P_k||₂≤(2/|c|)Σ(r/|c|)^j`，所以 `T(x)=x−P_k F(x)` 对整个 ball 的 Lipschitz≤η。**当 η<1 且 ||P_k F(a)||<(1−η)R**，T 严格内映且存在唯一 F 根（P_k 可逆由 `r<|c|` 得到）；若 `||P_k F(a)||>(1+η)R`，整个 ball 无根。其余全部 UNKNOWN。平方 Gram 有理数上界可替代较松 factor2 求更紧 η。Exact Fraction 非正规 toy `J0=[[11/10,3/2],[0,9/10]]` 满足 `(I−J0)^4=I/10000`，而单步 norm `||I−J0||₂>1`；普通单步 contraction 失败却截断阶4可收缩。反例包括仅用 eigenvalue 半径代替 numerical range、遗漏 ε 或把不同阶段矩阵乘积当成一矩阵多项式。
 
 **DPT SOURCE HAZARD：** 原 Q2 thermal ABS `|d*sense|` 对源合法 chart 存在符号变化；G2 clip/ETH、G11 Gauss32 与 G12 SciPy/native 不保证原分箱内统一 DF 光滑。未经绝对误差向外包围和所有 physical guard cells 重复覆盖，不得用 F325 推出 50D root、完整历史或 Goal27。此条件性算法的独立 exact 2×2 Gram toy 与负控只表明可行方向，并不构成 source 6D/4D original derivative halo。
+
+
+### S-L48a 独立反证触发的证据级别纠错（2026-10-21）
+
+worker 的 read-only 原始 source adversarial replay 找到**公开合成旧线圈全零**之反例：原两条 gate KCL 仍各有唯一根，但 original P16 exact Fraction 把 g2 Q1 重构到约 [12.5485045,12.6141400] V、g2 Q2 到约 [14.4656456,14.5308185] V，均与 S-L40 明确 ten-node 原始中心 ±0.04V chart 严格不相交。旧版 public checker 仅凭四个 gate face signs 错误标为原 stage **50D↔4D chart bijection**，属于真实的 source-domain 语义漏洞；不能把本应局限于“gate 方程 pair-only 单根”的结论自动升级为“原完整 stage-chart 对应”。
+
+新 S-L48 fail-closed 修复在得到 paired scalar roots 后，再使用**同一个 old12 共同前驱** exact Fraction 重算整六节点盒的两 g2 Schur 必需电压包络、两 x G12 必需包络，并用 G11 符号电荷单一 panel 的 w(g,d,k) **关联八角点**包络，而不是错误的松弛式 g−u 笛卡尔差。其源十节点的 g2 内带采用只读核验原 Pro18E NPZ 后固定的保守开内界 \`Q1:g2∈[11.386,11.465]V\`、\`Q2:g2∈[17.700,17.779]V\`，分别严格包含于原保存值 ±0.04V；w 更保守的源局部内带 Q1 [150.009,150.088] V、Q2 [11.495,11.573] V，x 根据公开固定 saved 16进制源中心 ±0.04V。公开 CI 仍**不持有受保护 NPZ**，只检验 exact Fraction 公式，原 NPZ/源 SHA 由本地主控只读认证。
+
+仅在四个端面反号 **且** g2/w/x 关联重构全部包含于相应声明原源 chart 时，状态 \`ORIGINAL_SOURCE_BOTH_GATES_UNIQUE_SIX_TO_FOUR_LIFT\` 与 \`source_50d_to_four_nonlinear_nodes_conditional=True\` 才可返回；否则即使 gate-only 仍有唯一根也返回 \`RETAIN_BOTH_GATES_SOURCE_CHART_PREIMAGE_UNRESOLVED\`，并分开标注 \`simultaneous_both_gate_roots_unique_per_four_fiber=True\`、\`source_ten_node_chart_preimage_certified=False\`。单独 S-L47 算子不会未检查整个源十节点 chart 就将 gate-only 根提升为 source 50D↔5D。
+
+公开回归同时涵盖：旧线圈全零/两个 g2 出图严格失败、用**公开合成**两 old coil 电流 -0.288A 和 +0.843A 创造真实源方程十节点内带的正例、扩大 gate 幅度令关联 w 越过更严内带而仅保留 gate-only，以及缺少四面反号时仍 UNKNOWN。公开合成旧线圈配置不是某个合法 PREP126 历史的证明。实际保存 n3615 旧线圈各±1mA 的原 S-L48 两 gate 各±125µV 条件盒经**本地只读**原 NPZ 的前驱回归仍可成立，未上传原始 bytes。任何 \(50D→4D\) 声明都严格局限于这一经过交叉认证的源模型原 ten-node/guard 局部子域，剩余4D KCL/所有历史/E/Goal27继续 OPEN。
