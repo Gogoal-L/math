@@ -792,7 +792,10 @@ For each consistent initial root y=±1, g_y=±2≠0, and the modewise trajectory
 **A valid local certificate exists for EVERY stage of the wrong truncated cover.** For stage 1, use xhat=0, X=[-1/8,1/8], R=-1 and interval F1'(X)=[-5/4,-3/4]. The Krawczyk image about xhat is
 
 $$
-K(X)=-RF_1(0)+(1-RF_1'(X))X=[-1/32,1/32]\subset(-1/8,1/8).
+\begin{aligned}
+K(X)&=-RF_1(0)+(1-RF_1'(X))X\\
+&=[-1/32,1/32]\subset(-1/8,1/8).
+\end{aligned}
 $$
 
 Moreover g(X)=[-5/8,-3/8] is strictly OFF. Each later equation Fn=xn-xold with the already certified fixed predecessor xold=0 has the exact center root xn=0, Jacobian 1, inverse/preconditioner 1 and K={0} strictly inside any positive local interval around zero, with the same strict OFF guard. Thus arbitrarily many valid local root/guard receipts plus an exactly matching full CAL record DO NOT exclude the second complete lawful x=1 branch outside X. Treating the positive-receipt collection as a complete outer cover reports a false zero goal diameter. An exhaustive first-stage analysis F1^{-1}(0)={0,1} recovers both branches and the correct 150 nJ diameter. The local certificates themselves are SOUND; it is the unproved *complement coverage* that is unsound.
