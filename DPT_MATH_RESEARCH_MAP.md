@@ -82,6 +82,8 @@
 
 **S-L47 更强条件性原源证明：** 在同 n3616 已保存 predecessor 旧电压和 12 旧线圈各 ±1mA、其他五 current(d,g,s) ±0.1mV 的严格盒上，源 P16 gate g2 仿射灵敏度 a_g≈0.9553822356；G11 finite Gauss 单调使原 Q1 r6 随 g 以 >111.0449577A/V 单调。保存 Q1 gate±125µV 端面残差严格反号（左上界 −1.050867mA，右下界 +1.022349mA），从而每条 fiber 内唯一 guarded Q1 gate 根，原电路结构在其 preimage 上条件性 **50D↔5D**。绝非其余五 KCL、所有 source/predecessor/guard 历史或 Goal27 已闭合。见 [证明与 F122 正定松弛严格不适用](dpt_research/20261010_goal_information_solver_fidelity.md)、[Fraction 执行器](dpt_tools/s150_q2_six_row_certificate.py)。
 
+**S-L48 原始最新结构：** 在同原 n3616 saved predecessor 的 old12 各 ±1mA、四 current drain/source 各 ±0.1mV、Q1/Q2 gate 各 ±125µV 子域，source P16 证明两 g2 交叉 gate 导数严格为零、两条原 G11 guarded gate KCL 各自导数>111 A/V，四个整盒端面严格反号，因此 **每条固定四电压+old12 fiber 存在唯一两个 gate 根**，单阶段 source-real 在严格 guard/preimage 上条件性从50D进一步到4D。Q1/Q2 两端残差及执行器在 [S-L48](dpt_research/20261010_goal_information_solver_fidelity.md) 和 [Fraction code](dpt_tools/s150_q2_six_row_certificate.py)；其余四 KCL、所有 PREP/CAL source history/E/native IEEE 及 Goal27 仍 OPEN。新深读原文 F325/F376/F140 的条件算法与严格不适用边界在 [archive](literature_archive/README.md)，不计入 core13。
+
 **下一唯一承重OPEN：** 从已唯一重构的P14/G12x2/guard内G11w2继续证明剩余原 **8D KCL** 全闭盒根/补集（并另行处理G11 guard外分支），外包Q1/Q2 ETH/diode/thermal/clip/ABS seam及原生求积误差；再建立每个合法 predecessor 50D 与PREP126→CAL4800全过程封闭reachability、共同 4801×2 sensor E 和H841 signed-work有向传播。输入仍只有 source-saved n3616 chart，不能称 Goal27有全域upper/lower。
 
 ### Q2 — 合法命令 alphabet 的 history/right-congruence 与必需记忆维数

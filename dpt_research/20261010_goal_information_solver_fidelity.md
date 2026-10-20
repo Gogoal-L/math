@@ -1139,3 +1139,17 @@ Q2 gate upper face: r18 lower = +0.0014637660927983114 A > 0
 ```
 
 G11 signed source branch/hypothesis、G12 capacitance branch，two passive g2 的 w/x 零系数和跨 gate 零系数按源 real expression 核验。因此对每条固定四节点与 old12 的合法 guard/preimage fiber，这两条 gate 根都存在且唯一，原 50D 电路节点条件性 root correspondence 进一步到**4D**。这项证明**没有**说明剩余 4D KCL 有解、该 12D predecessor slab 都是历史可达、其他 G2/ETH/diode/thermal/ABS/clip guard 分支被覆盖，或源 NumPy GL32/SciPy 的 binary64 evaluator 被 directed outward 包住，更不是 Goal27。公开 CI 测试只能检验 source-code Fraction 定理及负控；原始 protected NPZ 在本地只读 SHA 检验，不上传。缺少对 full PREP126→CAL4800 的任意历史/共同 E 联合观测闭合证书。
+
+
+### 2026-10-21 F325 原始 nonnormal fixed-J polynomial inverse 向 DPT 的精确条件性迁移
+
+原 OpenAI 论文 *Complete Crouzeix* 两证明见 [archive pinned PDF/SHA 和 exact theorem scope](../literature_archive/README.md)。F325 原主定理对**同一固定**矩阵 J0 和 numerical range W(J0) 的解析函数给出 factor-2 norm 上界，不许当作随 x、时间、hybrid branch 改变的所有 DF(x) 共用谱域界。给定源合格同一 smooth convex closed ball C=B(a,R)，逐项源实数/IEEE outward 包围 `||DF(x)−J0||₂≤ε`，以及已独立认证 `W(J0)⊂disk(c,r)` 且 `0<r<|c|`，令
+
+```text
+P_k = (1/c) * Σ_{j=0}^{k-1} (I−J0/c)^j,
+η = 2*(r/|c|)^k + (2ε/|c|)*Σ_{j=0}^{k-1}(r/|c|)^j.
+```
+
+由原论文完整 matrix polynomial norm bound，`||I−P_k J0||₂≤2(r/|c|)^k` 且 `||P_k||₂≤(2/|c|)Σ(r/|c|)^j`，所以 `T(x)=x−P_k F(x)` 对整个 ball 的 Lipschitz≤η。**当 η<1 且 ||P_k F(a)||<(1−η)R**，T 严格内映且存在唯一 F 根（P_k 可逆由 `r<|c|` 得到）；若 `||P_k F(a)||>(1+η)R`，整个 ball 无根。其余全部 UNKNOWN。平方 Gram 有理数上界可替代较松 factor2 求更紧 η。Exact Fraction 非正规 toy `J0=[[11/10,3/2],[0,9/10]]` 满足 `(I−J0)^4=I/10000`，而单步 norm `||I−J0||₂>1`；普通单步 contraction 失败却截断阶4可收缩。反例包括仅用 eigenvalue 半径代替 numerical range、遗漏 ε 或把不同阶段矩阵乘积当成一矩阵多项式。
+
+**DPT SOURCE HAZARD：** 原 Q2 thermal ABS `|d*sense|` 对源合法 chart 存在符号变化；G2 clip/ETH、G11 Gauss32 与 G12 SciPy/native 不保证原分箱内统一 DF 光滑。未经绝对误差向外包围和所有 physical guard cells 重复覆盖，不得用 F325 推出 50D root、完整历史或 Goal27。此条件性算法的独立 exact 2×2 Gram toy 与负控只表明可行方向，并不构成 source 6D/4D original derivative halo。
