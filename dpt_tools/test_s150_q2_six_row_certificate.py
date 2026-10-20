@@ -810,9 +810,10 @@ class OriginalSourceTwoGuardedGateFourDimensionalBridgeTests(unittest.TestCase):
         self.assertGreater(passed["q2_gate_face_upper_lower_A"][1],0)
         self.assertFalse(passed["all_other_source_KCL_roots_certified"])
         self.assertFalse(passed["source_full_own_prep_cal_history_covered"])
-        # Correlated G11 w image can violate its *narrower* original
-        # 40mV saved-panel band on a wide gate even when g2 is inside.
-        wide=trial(-F(".025"),F(".025"),tuple(shifted))
+        # The CORRELATED w outer stays inside the qualified panel:
+        # enlarging gate to +/-35mV instead violates the stronger
+        # g2 inner band. Do not fail on uncorrelated g-u w bounds.
+        wide=trial(-F(".035"),F(".035"),tuple(shifted))
         self.assertTrue(wide["simultaneous_both_gate_roots_unique_per_four_fiber"])
         self.assertFalse(wide["source_ten_node_chart_preimage_certified"])
         self.assertFalse(wide["source_50d_to_four_nonlinear_nodes_conditional"])
