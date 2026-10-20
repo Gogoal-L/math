@@ -637,5 +637,36 @@ class MonotoneOriginalG12TwoCornerUpgradeTests(unittest.TestCase):
         self.assertFalse(got["all50_stage_roots_certified"])
 
 
+
+
+class OriginalSourcePassive16PortLiftTests(unittest.TestCase):
+    def test_original_external_source_150v_and_spd_schur(self):
+        from fractions import Fraction as F
+        from s150_q2_six_row_certificate import (
+            certify_original_source_passive16_port_lift,
+        )
+        kw=dict(retained_node10_V=tuple(F(i,10) for i in range(10)),
+                old_coil12_A=tuple(F(i,100) for i in range(12)),
+                command_V=15,h_s=original_dt(),
+                source_law_sha256=LAW,source_adapter_sha256=ADAPTER,
+                saved_cal_sha256=ARCHIVE)
+        q=certify_original_source_passive16_port_lift(**kw)
+        self.assertEqual(q["original_two_port_residual_A"],(0,0))
+        self.assertTrue(all(v>0 for v in
+                     q["strict_package_ldl_pivots_S"]+
+                     q["strict_schur_pivots_S"]))
+        self.assertEqual(q["original_D_coil_150V_offset_A"],
+                         F(150)*original_dt()/F("100e-6"))
+        self.assertFalse(q["complete_original_six_node_roots_certified"])
+        # An old external D-current affects the new D/sl root.
+        changed=list(kw["old_coil12_A"])
+        changed[11]+=F(1)
+        qq=certify_original_source_passive16_port_lift(
+            **dict(kw,old_coil12_A=changed))
+        self.assertNotEqual(q["port_D_sl_V"],qq["port_D_sl_V"])
+        with self.assertRaisesRegex(ValueError,"UNRESOLVED_SOURCE_DOMAIN"):
+            certify_original_source_passive16_port_lift(
+                **dict(kw,command_V=10))
+
 if __name__=="__main__":
     unittest.main()
