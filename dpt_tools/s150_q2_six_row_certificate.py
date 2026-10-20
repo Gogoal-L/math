@@ -688,3 +688,204 @@ def certify_source_stage3616_26d_reduction(
             "No existence/complement certificate for 26 KCL roots, no "
             "history or physical Goal27 upper."),
     )
+
+
+# S-L41: exact-source x-node KCL exclusion, two further 50D -> 24D eliminations.
+# This is an ideal exact-real charge certificate. The original SciPy hyp2f1
+# evaluation and all its binary64 errors are NOT outward-enclosed by this code.
+_SOURCE_X_SPECS={
+    "Q1":{
+        "d":"0x1.2bf0be2eea417p+7","x":"0x1.2bf0dc944b121p+7",
+        "s":"0x1.da4c3edc813bep+3",
+        "old_d":"0x1.2c10e46fba814p+7","old_s":"0x1.d453559cc49d6p+3",
+        "cap":("135","136","110","125"),"max_heat_W":F(110000),
+    },
+    "Q2":{
+        "d":"0x1.67138b6a8325dp+3","x":"0x1.67139f1fe1791p+3",
+        "s":"0x1.fc4c4bfd24625p+2",
+        "old_d":"0x1.64640b421faa8p+3","old_s":"0x1.f6cdb13c29792p+2",
+        "cap":("3.19","3.36","600","650"),"max_heat_W":F(33000),
+    },
+}
+_STAGE3616_H=F.from_float(float.fromhex("0x1.b7cdfd9d80000p-37"))
+
+
+def _source_x_box(v):
+    pair=tuple(map(_fraction,v))
+    if len(pair)!=2 or pair[0]>pair[1]:
+        raise ValueError("invalid source closed voltage box")
+    return pair
+
+
+def _source_dq_sign_outer(delta, lo_cap, hi_cap):
+    """Exact interval for integral C(v) dv when lo<=C<=hi."""
+    return (lo_cap*delta,hi_cap*delta) if delta>=0 else (hi_cap*delta,lo_cap*delta)
+
+
+def certify_original_source_x_kcl_outer(
+        *, leg, d_V, s_V, x_V, h_s, source_law_sha256,
+        source_adapter_sha256, saved_cal_sha256):
+    """Stage3616 necessary root exclusion for x KCL under a closed node box.
+
+    Original source row r8/r20 is exactly
+      10000*(x-d) + 1e-7*(x-s) + (Q12(ds)-Q12(ds_old))/h.
+    Q12' = 1108pF/[1+(v/4.5)^(63/100)] for 0.1<=v<=460.
+    The original x node has NO other KCL terms. Its unique exact-real lift
+    for fixed d,s is x=(10000*d+1e-7*s-dQ12/h)/(10000+1e-7).
+    The two x rows can therefore be eliminated from the 26D KCL residual
+    exactly, leaving 24 remaining KCL rows, *only* on the preimage of the
+    original ten-node +/-0.04V chart and qualified predecessor.
+    Source SHA strings identify, but do not replay, the private original.
+    """
+    if (source_law_sha256!=LAW_SHA or source_adapter_sha256!=ADAPTER_SHA
+            or saved_cal_sha256!=SAVED_SHA):
+        raise ValueError("UNRESOLVED_SOURCE_DOMAIN: original source SHA mismatch")
+    if _fraction(h_s)!=_STAGE3616_H:
+        raise ValueError("UNRESOLVED_SOURCE_DOMAIN: archived binary64 h required")
+    if leg not in _SOURCE_X_SPECS:
+        raise ValueError("UNRESOLVED_SOURCE_DOMAIN: unqualified source leg")
+    cfg=_SOURCE_X_SPECS[leg]
+    d,s,x=map(_source_x_box,(d_V,s_V,x_V))
+    radius=F("0.04")
+    for box,name in ((d,"d"),(s,"s"),(x,"x")):
+        center=F.from_float(float.fromhex(cfg[name]))
+        if box[0]<center-radius or box[1]>center+radius:
+            raise ValueError("UNRESOLVED_SOURCE_DOMAIN: ten-node chart exceeded")
+    lower,upper,cl_pF,cu_pF=map(F,cfg["cap"])
+    old_ds=(F.from_float(float.fromhex(cfg["old_d"]))-
+            F.from_float(float.fromhex(cfg["old_s"])))
+    ds=(d[0]-s[1],d[1]-s[0])
+    if not(lower<=old_ds<=upper and lower<=ds[0]<=ds[1]<=upper):
+        raise ValueError("UNRESOLVED_SOURCE_DOMAIN: G12 branch not enclosed")
+    # Exact integer-power comparison replaces float evaluation of z^0.63.
+    # C12 decreases with v. These inequalities establish cl<=C12<=cu
+    # for EVERY real voltage between lower and upper, including old ds.
+    rat_lo=F(1108)/cu_pF-1
+    rat_hi=F(1108)/cl_pF-1
+    if not (lower>=F(".1") and upper<=F(460) and
+            0<cl_pF<=cu_pF and rat_lo>0 and rat_hi>0 and
+            (lower/F("4.5"))**63>=rat_lo**100 and
+            (upper/F("4.5"))**63<=rat_hi**100):
+        raise ValueError("UNRESOLVED_SOURCE_DOMAIN: G12 cap enclosure unproved")
+    cl,cu=cl_pF/F(10**12),cu_pF/F(10**12)
+    qlo=_source_dq_sign_outer(ds[0]-old_ds,cl,cu)[0]
+    qhi=_source_dq_sign_outer(ds[1]-old_ds,cl,cu)[1]
+    a,b=F(10000),F(1,10**7)
+    residual_lo=a*(x[0]-d[1])+b*(x[0]-s[1])+qlo/_STAGE3616_H
+    residual_hi=a*(x[1]-d[0])+b*(x[1]-s[0])+qhi/_STAGE3616_H
+    dx_tube=((b*ds[0]+qlo/_STAGE3616_H)/(a+b),
+             (b*ds[1]+qhi/_STAGE3616_H)/(a+b))
+    excluded=residual_lo>0 or residual_hi<0
+    return dict(
+        status=("SOURCE_EXACT_REAL_X_KCL_BOX_EXCLUDED" if excluded else
+                "RETAIN_SOURCE_X_CELL_UNRESOLVED"),
+        exact_original_law_row=(8 if leg=="Q1" else 20),
+        residual_lower_A=residual_lo,residual_upper_A=residual_hi,
+        strict_abs_residual_margin_A=(residual_lo if residual_lo>0 else
+                                      -residual_hi if residual_hi<0 else F(0)),
+        necessary_d_minus_x_V=dx_tube,
+        capacitance_interval_rational_verified=True,
+        source_exact_real_x_row_unique_lift=True,
+        conditional_full50_to_24d_KCL_preimage=True,
+        old_source_npz_bytes_authenticated_in_ci=False,
+        native_float_error_certified=False,
+        all50_stage_roots_certified=False,
+        any_24d_KCL_zero_certified=False,
+        all_cal_joint_E_certified=False,goal27_certified=False,
+    )
+
+
+def certify_source_thermal_predecessor_memory_gap(
+        leg, *, h_s, source_law_sha256, source_adapter_sha256,
+        saved_cal_sha256):
+    """Sharp necessary OLD-temperature-memory lower bound, conditional.
+
+    Compare two independently admissible six-row predecessors, with all
+    four old thermal temperatures -60 or +260 deg C, at identical fixed
+    present ten-node and old-junction inputs. If both six-row roots satisfy
+    0<=H<=Hmax, their new T0 gap is at least
+         [beta0(hot)-beta0(cold)] - alpha0*Hmax >0.
+    No two full-26D-KCL roots or legal PREP histories are asserted.
+    """
+    if (source_law_sha256!=LAW_SHA or source_adapter_sha256!=ADAPTER_SHA
+            or saved_cal_sha256!=SAVED_SHA or
+            _fraction(h_s)!=_STAGE3616_H or leg not in _SOURCE_X_SPECS):
+        raise ValueError("UNRESOLVED_SOURCE_DOMAIN: original stage identity")
+    hot,alpha,_=source_thermal_affine_exact((260,)*4,_STAGE3616_H)
+    cold,alpha2,_=source_thermal_affine_exact((-60,)*4,_STAGE3616_H)
+    if alpha!=alpha2 or any(a<0 for a in alpha):
+        raise ArithmeticError("nonpositive exact source thermal M inverse")
+    Hmax=_SOURCE_X_SPECS[leg]["max_heat_W"]
+    gap=hot[0]-cold[0]-alpha[0]*Hmax
+    if gap<=0:
+        raise ValueError("UNRESOLVED_SOURCE_DOMAIN: no positive memory gap")
+    return dict(
+        status="CONDITIONAL_SIX_ROW_OLD_THERMAL_PREDECESSOR_SEPARATION",
+        conditional_temperature_gap_lower_C=gap,
+        conditional_minimax_radius_C=gap/2,
+        original_binary64_h_verified=True,
+        old_thermal_both_in_native_chart=True,
+        heat_nonnegativity_and_upper_assumed=True,
+        source_heat_global_majorants_authenticated_in_ci=False,
+        same_full26d_KCL_legal_roots_verified=False,
+        legal_prep_two_worlds_verified=False,
+    )
+
+
+def certify_guard_cell_bernstein_tail_exclusion(
+        coefficient_lowers,coefficient_uppers,analytic_tail_abs_bound):
+    """Conditional CLOSED-cell row exclusion after all guard/source bounds.
+
+    An exact Bernstein basis is nonnegative and sums to one. Therefore a
+    rigorous uniform remainder |R|<=rho and min lower coefficient>rho
+    (or max upper<-rho) excludes a zero of this residual on the whole cell.
+    All omitted/guard-switch branches remain UNRESOLVED, NEVER 'no root'.
+    Inspired by OpenAI Math F090 finite-sign plus analytic-tail separation.
+    """
+    lo=tuple(map(_fraction,coefficient_lowers))
+    hi=tuple(map(_fraction,coefficient_uppers))
+    rho=_fraction(analytic_tail_abs_bound)
+    if not lo or len(lo)!=len(hi) or rho<0 or any(
+            l>u for l,u in zip(lo,hi)):
+        raise ValueError("invalid Bernstein coefficient/remainder enclosure")
+    gap=max(min(lo)-rho,-max(hi)-rho)
+    return dict(
+        status=("CONDITIONAL_BERNSTEIN_FULL_CELL_ROW_EXCLUSION" if gap>0
+                else "RETAIN_GUARD_CELL_UNRESOLVED"),
+        strict_signed_gap=max(gap,F(0)),
+        uniform_analytic_tail_assumed=True,
+        source_coefficient_bounds_authenticated_in_ci=False,
+        complete_guard_closed_cover_certified=False,
+        all50_root_cover_certified=False,
+    )
+
+
+def certify_schur_finite_tail_coupling(M,B,delta,eta):
+    """F090-inspired exact Schur complement whole-tail sufficient criterion.
+
+    For A=I-S partitioned into finite and tail, M bounds A_ff^-1,
+    B bounds S_ft, delta bounds S_tf and eta bounds S_tt.  theta<1
+    supplies a FULL block inverse, not just a finite-block inverse.
+    Source/DPT matrix norm, branch and rounding hypotheses are external.
+    """
+    M,B,delta,eta=map(_fraction,(M,B,delta,eta))
+    if M<=0 or any(v<0 for v in (B,delta,eta)):
+        raise ValueError("invalid nonnegative Schur block norm bounds")
+    theta=eta+delta*M*B
+    if theta>=1:
+        return dict(status="RETAIN_BLOCK_COUPLING_UNRESOLVED",theta=theta,
+                    dpt_44row_coupling_authenticated_in_ci=False)
+    inv=1/(1-theta)
+    rf_to_xf=M*(1+B*delta*M*inv)
+    rt_to_xf=M*B*inv
+    rf_to_xt=delta*M*inv
+    rt_to_xt=inv
+    return dict(
+        status="CONDITIONAL_WHOLE_BLOCK_INVERTIBLE",
+        theta=theta,rf_to_xf_bound=rf_to_xf,rt_to_xf_bound=rt_to_xf,
+        rf_to_xt_bound=rf_to_xt,rt_to_xt_bound=rt_to_xt,
+        rf_to_full_bound=rf_to_xf+rf_to_xt,
+        rt_to_full_bound=rt_to_xf+rt_to_xt,
+        dpt_44row_coupling_authenticated_in_ci=False,
+        complete_non_smooth_source_chart_certified=False,
+    )

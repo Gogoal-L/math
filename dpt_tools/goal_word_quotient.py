@@ -180,3 +180,88 @@ def source_s150_be_predecessor_key(old50, *, discretization="BE",
     if len(key)!=28:
         raise ArithmeticError("original source BE key dimension drift")
     return key+((vals[0]-vals[1],) if include_current_port else ())
+
+
+def certify_source_be_residual_28d_c1_rank(*,source_law_sha256,h_s,
+                                         old_junction_V):
+    """Sharp LOCAL dimension of SOURCE-REAL BE old-state residual summaries.
+
+    For original _source_operator/_turnoff_operator with old_command=None,
+    all old-state dependence factors through the existing 28D key.
+    At smooth charge charts, use old-coordinate columns
+      (6,7,3,18,19,15, 26..37, 40,41, 42..49)
+    and residual rows
+      (6,7,8,18,19,20, 26..37, 40,41, 42..49).
+    Original S and W charge incidence minors each have determinant +1.
+    Positive Cgs/Cgd/C12, 12 positive coil L, 2 positive real D1 exp
+    derivatives, 8 thermal Ct, h>0 give a NONZERO 28x28 old Jacobian
+    minor. Chain rule: any C1 m-dimensional statistic factoring ALL
+    one-step residuals must have m>=28. This does not apply to goal-only
+    summaries, reachable histories or source binary64 numerical rank.
+    """
+    from fractions import Fraction as F
+    if source_law_sha256!=(
+            "51b78f729393d29745f59ca150adfef69e1847bf26a8853c6cef3d6be9e2083d"):
+        raise ValueError("UNRESOLVED_SOURCE_DOMAIN: original law SHA required")
+    if F(h_s)<=0:
+        raise ValueError("UNRESOLVED_SOURCE_DOMAIN: positive BE time step")
+    j=tuple(F(v) for v in old_junction_V)
+    if len(j)!=2 or any(not F(-1590)<v<=0 for v in j):
+        raise ValueError("UNRESOLVED_SOURCE_DOMAIN: qualified old D1 chart")
+    # Source edges: per leg S columns gs, gd, (x-s);
+    # W.T rows gs, gd, (d-s), selected rows g,w,x and columns g,w,d.
+    S3=((1,1,0),(0,-1,0),(0,0,1))
+    W3=((1,0,0),(1,-1,0),(0,0,1))
+    S=[[F(0)]*6 for _ in range(6)]
+    W=[[F(0)]*6 for _ in range(6)]
+    for off in (0,3):
+        for i in range(3):
+            for k in range(3):
+                S[off+i][off+k]=F(S3[i][k])
+                W[off+i][off+k]=F(W3[i][k])
+
+    def determinant(mat):
+        a=[list(map(F,row)) for row in mat]
+        n=len(a)
+        det=F(1)
+        for k in range(n):
+            pivot=next((i for i in range(k,n) if a[i][k]!=0),None)
+            if pivot is None:
+                return F(0)
+            if pivot!=k:
+                a[k],a[pivot]=a[pivot],a[k]
+                det=-det
+            diag=a[k][k]
+            det*=diag
+            for i in range(k+1,n):
+                factor=a[i][k]/diag
+                for t in range(k+1,n):
+                    a[i][t]-=factor*a[k][t]
+                a[i][k]=F(0)
+        return det
+
+    dS,dW=determinant(S),determinant(W)
+    # Synthetic POSITIVE capacitances independently test the determinant
+    # factorization, NOT original source capacitance values.
+    c=tuple(map(F,(2,3,5,7,11,13)))
+    minor=[[sum(S[i][k]*c[k]*W[jj][k] for k in range(6))
+            for jj in range(6)] for i in range(6)]
+    dc=determinant(minor)
+    if (dS,dW,dc)!=(F(1),F(1),F(30030)):
+        raise ArithmeticError("original S/W control minor rank unexpected")
+    return dict(
+        status="CONDITIONAL_EXACT_REAL_SOURCE_BE_28D_C1_RESIDUAL_MINIMAL",
+        source_selected_s_incidence_determinant=dS,
+        source_selected_w_incidence_determinant=dW,
+        synthetic_positive_charge_minor_determinant=dc,
+        original_old_coordinate_columns=(6,7,3,18,19,15)+tuple(range(26,38))+
+                                        (40,41)+tuple(range(42,50)),
+        original_residual_rows=(6,7,8,18,19,20)+tuple(range(26,38))+
+                               (40,41)+tuple(range(42,50)),
+        original_real_smooth_residual_old_rank=28,
+        minimal_C1_residual_preserving_statistic_dimension=28,
+        source_coil_L_and_charge_derivative_positive_assumed=True,
+        native_float_old_junction_exponential_rank_authenticated=False,
+        minimal_goal_or_root_set_history_dimension_certified=False,
+        legal_old_prep_reachability_certified=False,
+    )
