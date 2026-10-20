@@ -1224,6 +1224,15 @@ class FullCalSparseCertificateTests(unittest.TestCase):
             self.assertEqual(sum(x*v for x,v in zip(w,column)), 0)
         self.assertEqual(sum(map(abs,w)), 1)
         self.assertEqual(sum(x*v for x,v in zip(w,y)), F(3,20))
+        # Same cosine coefficient acts on BOTH sensor channels:
+        # A_V=1 V, A_I=1/20 A, eta_c=3/5; source I0=0,
+        # observed source I1=3/100*cos25 and current residual is zero.
+        shared_eta_c, current_phase_amp = F(3,5), F(1,20)
+        current_observed = [F(3,100)*c for c in cos25]
+        self.assertEqual(
+            current_observed,
+            [current_phase_amp*shared_eta_c*c for c in cos25],
+        )
         # All-time identity V1=(11/5)V0-3/4+(3/5)cos25+(3/20)cos50.
         # Gamma=11/5, beta=-3/4, shared phase cos25=3/5 are legal.
         self.assertTrue(F(1) <= F(11,5) <= F(3))
