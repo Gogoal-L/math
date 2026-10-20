@@ -871,3 +871,41 @@ These are real-number bounds for the EXACT source decimal polynomial literals; t
 **Quantitative conditional source-guard contractor.** The original clipping and temperature polynomial admit |d net3/dT|<=.00570172 V/degreeC for T clipped to [-60,260]C. Therefore if every *individual saved point* has independently supplied true-g and true-s error bounds <=.8mV each and true temperature bound <=.001C, the nominal sign stays fixed since min absolute margin minus 1.6mV minus 0.00570172mV remains >0.143217mV. A source box with +/-1mV each in g,s straddles both guard signs near n1707 (shift +2mV turns the negative nominal margin positive). The saved transition at 1707→1708 also triggers the S-L32 body-row interface question: no unqualified globally smooth source Jacobian or missing-reset crossing may be inferred. A *point* region within that narrow box is not evidence that every parameter/old50 source history stays in it.
 
 **Executable fail-closed locator.** `dpt_tools/s150_original_guard_replay.py` accepts only the SHA-matched original ZIP/member and saved source NPZ, validates full arrays and identity, and returns `POINT_SOURCE_GUARD_ONLY_NOT_ALL_ROOT` with branch sign/margin diagnostics. No input bytes were copied to Math CI; the CI regression verifies contracts on artificial point arrays and wrong-shape/ambiguous-guard negative controls. Complete Q1 needs a global source parameter/preparation domain Omega, a *directed exhaustive* outer for all 50D source roots at every stage and all guard/reset transitions (including the uncovered complement), full-record joint sensor/clock/RC nuisance E, and every retained future H841 signed-work interval. The replay certifies none of these stronger objects and is deliberately incapable of reporting ALL_ROOT. Original E-current measurement is a synthetic source100MHz RC/gain/offset record, not a qualified physical sensor contract. Current Original Goal27 strict source-wide diameter reduction remains NOT CERTIFIED.
+
+
+## 2026-10-20 S-L36: complete source-defined two-coordinate ETH guard partition (NOT source roots)
+
+For original SHA-pinned actual_law.py (member SHA256
+51b78f729393d29745f59ca150adfef69e1847bf26a8853c6cef3d6be9e2083d),
+the exact real-decimal Q2 guard threshold BEFORE clipping is
+net3(T)=8.381e-6*T*T -4.696e-3*T+2.8224 V.
+The derivative is negative over ALL original clipped T in [-60,260] C:
+it ranges from -0.00570172 V/C at -60 C to -0.00033788 V/C at 260 C.
+Clipping at 1.7 and 3.2 V preserves nonincrease. Thus for any closed
+source-coordinate rectangle T in [Tl,Th] and g-s in [Gl,Gh],
+with original source clips on both, the exact continuous all-point
+threshold enclosure is [net3(Th),net3(Tl)] after clipping.
+
+The new source-decimal Fraction classifier gives STRICT_LOW only if the
+entire clipped gate interval lies strictly below the threshold interval,
+STRICT_HIGH only if entirely above. A touching or crossing rectangle is
+RETAIN_BOTH_FRONTIER, never silently assigned to a branch. An exhaustive
+binary tree of closed rational 2D rectangles preserves the union exactly
+and reports all undecided leaves. For original source T in [25.0084,25.0087] C,
+the independently established threshold outer
+[2.710200916147,2.710202199233] V certifies g-s in [2.70,2.71] V
+LOW and g-s in [2.711,2.72] V HIGH for every T in that band.
+The interface strip [2.710200,2.710203] V is unresolved and must retain
+both candidate ETH modes. Behavior tests confirm strict/touch/overlap
+and that even a successful partition never claims source roots.
+
+This is stronger evidence than scanning the saved E trajectory's
+individual ETH guards: it proves a genuine *continuous source-expression
+(T,g-s) subdomain classification*, independent of any saved center point.
+It is also much weaker than a source-qualified 50D PREP or 4801-CAL
+history outer. The source literal transcription is SHA identified but
+is not an independent binary64/libm enclosure; the source archive bytes
+must be authenticated separately by replay_original_archive. No
+source-root existence, elimination of the 48 other variables, diode/heat/
+clip modes, consistent predecessor lift, correlated joint CAL E or
+H841 signed-work diameter follows. Actual full-domain Goal27 remains OPEN.
