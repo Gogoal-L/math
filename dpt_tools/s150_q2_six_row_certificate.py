@@ -567,8 +567,11 @@ def certify_source_stage3616_26d_reduction(
     SHA-authenticated read-only source analysis must separately prove that
     original Q1 five node voltages indices3,5,6,8,9 and Q2 indices
     15,17,18,20,21 lie within +/-0.04V of saved stage3616 source center,
-    and source diode/ETH/G2/heat envelopes are valid for EVERY raw T and
-    qualified predecessor (old vj in (-1590,0], all finite old thermal).
+    and source diode/ETH/G2/heat envelopes are valid on the declared
+    NATIVE-ARITHMETIC CHART: exact stored BE h and old raw thermal in
+    [-60,260] C, old vj in (-1590,0]. States outside this chart remain
+    UNRESOLVED, not excluded. The ideal real-law all-raw-T lemma is a
+    different claim from IEEE execution of the source polynomial.
     Across these ten-node charts Q1 is ETH LOW / G2 OFF and Q2 ETH HIGH
     / G2 ON independent of temperature. Global source body monotonicity,
     exact thermal 4x4 positive inverse and global H derivative Lipschitz
@@ -594,6 +597,20 @@ def certify_source_stage3616_26d_reduction(
         raise ValueError("original old junction outside D1 no-breakdown domain")
     if h<=0:
         raise ValueError("source BE dt must be positive")
+    # The heat Lipschitz/Banach numbers below are source-qualified for one
+    # archived binary64 BE stage, NOT an arbitrary user-supplied h. A longer
+    # step changes the inverse thermal map and may destroy contraction.
+    source_h=F.from_float(float.fromhex("0x1.b7cdfd9d80000p-37"))
+    if h!=source_h:
+        raise ValueError("UNRESOLVED_SOURCE_DOMAIN: original stage3616 binary64 dt required")
+    # This is a scoped NATIVE IEEE arithmetic-safe predecessor chart. ETH
+    # intentionally contains UNCLIPPED raw tj polynomial terms. At very
+    # large finite raw tj NumPy intermediate multiplications may overflow
+    # to NaN despite tjc/ETH output clips; never call such boxes certified.
+    # A failure here retains the complement as unresolved; it does not
+    # prove that a raw-temperature root outside the chart is impossible.
+    if any(not(F(-60)<=t<=F(260)) for t in old):
+        raise ValueError("UNRESOLVED_SOURCE_DOMAIN: old raw temperature outside native arithmetic chart [-60,260] C")
     # The source heat envelope bounds both (d-x) and (g-g2).
     # Merely bounding gs/ds would let arbitrary x voltages through,
     # falsely elevating the global 12-root contractor. Source-center
@@ -646,6 +663,9 @@ def certify_source_stage3616_26d_reduction(
         q1_guard="ETH_LOW_G2_OFF",
         q2_guard="ETH_HIGH_G2_ON",
         old_junction_domain_qualified=True,
+        archived_binary64_step_qualified=True,
+        old_raw_temperature_native_chart_qualified=True,
+        original_native_float_error_bound_qualified_in_ci=False,
         q1_banach_contraction_upper=q1,
         q2_banach_contraction_upper=q2,
         max_banach_contraction=max(q1,q2),
@@ -664,7 +684,7 @@ def certify_source_stage3616_26d_reduction(
         goal27_signed_work_certified=False,
         claim_ceiling=("Only ORIGINAL one-stage ten-node chart, qualified "
             "old-diode state and source-proved global diode/thermal/heat "
-            "envelopes imply exact 50D-to-26D node-KCL root bijection. "
+            "envelopes and the fixed source BE step / raw predecessor box imply exact 50D-to-26D node-KCL root bijection IN THIS CHART. "
             "No existence/complement certificate for 26 KCL roots, no "
             "history or physical Goal27 upper."),
     )
