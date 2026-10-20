@@ -909,3 +909,15 @@ must be authenticated separately by replay_original_archive. No
 source-root existence, elimination of the 48 other variables, diode/heat/
 clip modes, consistent predecessor lift, correlated joint CAL E or
 H841 signed-work diameter follows. Actual full-domain Goal27 remains OPEN.
+
+
+**Independent raw-domain coverage audit/fix.** State boxes outside the
+literal source clips, e.g. raw T=[300,301] C and raw g-s=[20,21] V, map
+to effective clipped points T=260 C and g-s=19 V. A representation which
+stores ONLY effective boxes loses the original RAW rectangular cover
+even though its ETH sign is correct. The source classifier now returns
+BOTH original raw box and effective source-clipped projection; every
+recursive leaf retains its original raw ancestry. A behavioral negative
+test forbids equating the collapsed effective point to a raw 50D
+parameter/root cover. This is a coverage-provenance repair, not a
+new physical root-existence claim.
