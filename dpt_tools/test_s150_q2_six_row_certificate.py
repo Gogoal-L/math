@@ -262,6 +262,39 @@ class OriginalS150FullTwelveRowToKCL26Tests(unittest.TestCase):
         with self.assertRaises(ValueError):
             source_be_coil_elimination([0]*26,[0]*12,B,[0]+[1]*11,F(1,10))
 
+    def test_source_26d_rejects_wrong_dt_or_unsafe_raw_thermal_predecessor(self):
+        # The old contractor silently reused the source-stage q=0.00036889
+        # at h=1 us, although the actual thermal contraction upper is >29.
+        # These are UNRESOLVED input charts, not proofs of root exclusion.
+        from s150_q2_six_row_certificate import certify_source_stage3616_26d_reduction
+        centers1=tuple(F.from_float(float.fromhex(x)) for x in (
+            "0x1.2bf0be2eea417p+7","0x1.6d9cb673abfabp+3",
+            "0x1.9609c4242a8a7p+3","0x1.2bf0dc944b121p+7",
+            "0x1.da4c3edc813bep+3"))
+        centers2=tuple(F.from_float(float.fromhex(x)) for x in (
+            "0x1.67138b6a8325dp+3","0x1.1bd6737f6c78cp+4",
+            "0x1.c441ed8de0342p+3","0x1.67139f1fe1791p+3",
+            "0x1.fc4c4bfd24625p+2"))
+        kw=dict(old_junction_V=(-130,-2),
+                q1_gs_V=("-2.2132","-2.0531"),q2_gs_V=("6.1108","6.271"),
+                q1_d_s_V=("135","135.3"),q2_d_s_V=("3.19","3.36"),
+                q1_five_node_V=centers1,q2_five_node_V=centers2,
+                adapter_kappa="1.007",source_law_sha256=LAW,
+                source_adapter_sha256=ADAPTER,saved_cal_sha256=ARCHIVE)
+        source_dt=original_dt()
+        ok=certify_source_stage3616_26d_reduction([F(25)]*8,source_dt,**kw)
+        self.assertTrue(ok["archived_binary64_step_qualified"])
+        self.assertTrue(ok["old_raw_temperature_native_chart_qualified"])
+        self.assertFalse(ok["original_native_float_error_bound_qualified_in_ci"])
+        with self.assertRaisesRegex(ValueError,"UNRESOLVED_SOURCE_DOMAIN.*binary64 dt"):
+            certify_source_stage3616_26d_reduction([F(25)]*8,F("1e-6"),**kw)
+        # Original NumPy ETH has RAW-tj terms; finite 1e307 can overflow
+        # to NaN although effective tjc=260. No false certification.
+        with self.assertRaisesRegex(ValueError,"UNRESOLVED_SOURCE_DOMAIN.*raw temperature"):
+            certify_source_stage3616_26d_reduction([F("1e307")]*8,source_dt,**kw)
+        with self.assertRaisesRegex(ValueError,"UNRESOLVED_SOURCE_DOMAIN.*raw temperature"):
+            certify_source_stage3616_26d_reduction([F(261)]*8,source_dt,**kw)
+
     def test_26d_reduction_fail_closed_on_guard_and_old_diode_domain(self):
         from s150_q2_six_row_certificate import certify_source_stage3616_26d_reduction
         from fractions import Fraction as F
