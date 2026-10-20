@@ -45,7 +45,7 @@ def certify_two_zero_charge_rows(goal, charge_rows, pivots, bound=1):
     target0=-sum(c0[i]*u[i] for i in range(len(a)))
     target1=-sum(c1[i]*u[i] for i in range(len(a)))
     u[p]=(target0*c1[q]-target1*c0[q])/det
-    u[q]=(c0[p]*target1-c0[q]*target0)/det
+    u[q]=(c0[p]*target1-c1[p]*target0)/det
     if max(map(abs,u))>bound:
         raise ValueError("infeasible pivot: zero-charge primal violates box")
     checkpoints=(sum(x*y for x,y in zip(c0,u)),

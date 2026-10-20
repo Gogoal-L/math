@@ -28,6 +28,16 @@ class SourceCoilChargeCheckpointCertificate(unittest.TestCase):
         self.assertEqual(result["witness"], (F(1), F(1), F(-1), F(-1)))
         self.assertEqual(result["checkpoint_residuals"], (F(0), F(0)))
 
+    def test_coupled_checkpoint_pivot_cramer_exact(self):
+        # Nonzero off-diagonal entries expose the wrong c0[q]/c1[p] cofactor.
+        result = self.load().certify_two_zero_charge_rows(
+            [4, 6, 0], [[1, 2, 1], [3, 4, 1]], (0, 1)
+        )
+        self.assertEqual(result["radius"], F(2))
+        self.assertEqual(result["witness"], (F(-1), F(1), F(-1)))
+        self.assertEqual(result["checkpoint_residuals"], (F(0), F(0)))
+        self.assertEqual(result["primal"], result["dual"])
+
     def test_bad_pivot_cannot_fake_a_sharp_radius(self):
         cert = self.load()
         with self.assertRaisesRegex(ValueError, "infeasible pivot"):
