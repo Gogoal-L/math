@@ -852,10 +852,12 @@ At temperature exactly 25 degrees C, with gate and temperature clips inactive lo
 
 For the SAME SHA-pinned original source law as S-L31, the one-sided algebraic body equations are F_body=vj+ETH(g-s,T)+reff(T)*ib+d=0. At a common limiting threshold gate and T in [25.0084,25.0087] Celsius, original decimal-polynomial real interval-Horner bounds (clip inactive) give |ETH_HIGH-ETH_LOW|>0.006292235773735 V and 0<reff<=0.070000045119393 ohm. Subtracting both zero-residual equations on the two sides gives the necessary inequality:
 
-$$
-|\Delta v_j|+|\Delta d|+0.070000045119393\,\Omega\,|\Delta i_b|
->0.006292235773735\,\mathrm V.
-$$
+$
+\begin{aligned}
+&|\Delta v_j|+|\Delta d|+0.070000045119393\,\Omega\,|\Delta i_b|\\
+&\quad >0.006292235773735\,\mathrm V.
+\end{aligned}
+$
 
 Hence at least one of the three summands must exceed 2.097411924578 mV. If ONLY ib jumps, |Delta ib|>0.0898 A. If all 50 original state coordinates remain continuous across a genuine LOW/HIGH threshold crossing, the left side is zero, in contradiction with the two source body equations. The original law does NOT supply a verified hybrid reset map, so do not invent such a reset: mark this legal-history interface unresolved and retain BOTH guard branches until all source states, transitions and observation errors are qualified. A one-mode Krawczyk certificate cannot cross the ETH seam by shrinking its interval width.
 
