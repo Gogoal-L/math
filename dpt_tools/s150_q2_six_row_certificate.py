@@ -558,6 +558,7 @@ def certify_source_stage3616_26d_reduction(
     original_old_temperature8_C, h_s, *,
     old_junction_V,
     q1_gs_V,q2_gs_V,q1_d_s_V,q2_d_s_V,
+    q1_five_node_V,q2_five_node_V,
     adapter_kappa,source_law_sha256,source_adapter_sha256,
     saved_cal_sha256,
 ):
@@ -593,6 +594,26 @@ def certify_source_stage3616_26d_reduction(
         raise ValueError("original old junction outside D1 no-breakdown domain")
     if h<=0:
         raise ValueError("source BE dt must be positive")
+    # The source heat envelope bounds both (d-x) and (g-g2).
+    # Merely bounding gs/ds would let arbitrary x voltages through,
+    # falsely elevating the global 12-root contractor. Source-center
+    # binary64 coordinates are explicitly frozen and ALL ten independent
+    # node degrees are checked before any Banach implication is allowed.
+    q1center=tuple(F.from_float(float.fromhex(x)) for x in (
+        "0x1.2bf0be2eea417p+7","0x1.6d9cb673abfabp+3",
+        "0x1.9609c4242a8a7p+3","0x1.2bf0dc944b121p+7",
+        "0x1.da4c3edc813bep+3"))
+    q2center=tuple(F.from_float(float.fromhex(x)) for x in (
+        "0x1.67138b6a8325dp+3","0x1.1bd6737f6c78cp+4",
+        "0x1.c441ed8de0342p+3","0x1.67139f1fe1791p+3",
+        "0x1.fc4c4bfd24625p+2"))
+    q1node=tuple(map(_fraction,q1_five_node_V))
+    q2node=tuple(map(_fraction,q2_five_node_V))
+    if (len(q1node)!=5 or len(q2node)!=5 or
+            any(abs(x-c)>F(".04") for nodes,center in (
+                (q1node,q1center),(q2node,q2center))
+                for x,c in zip(nodes,center))):
+        raise ValueError("original source ten-node chart leave +/-0.04V")
     gs1=tuple(map(_fraction,q1_gs_V))
     gs2=tuple(map(_fraction,q2_gs_V))
     ds1=tuple(map(_fraction,q1_d_s_V))
@@ -621,6 +642,7 @@ def certify_source_stage3616_26d_reduction(
         status="CONDITIONAL_50D_TO_26D_STAGE_ROOT_BIJECTION",
         original_stage=3616,
         declared_10_node_chart_radius_V=F(".04"),
+        original_ten_nodes_checked_against_saved_center=True,
         q1_guard="ETH_LOW_G2_OFF",
         q2_guard="ETH_HIGH_G2_ON",
         old_junction_domain_qualified=True,
