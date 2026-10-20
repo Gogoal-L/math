@@ -68,6 +68,7 @@
 - **对象：** 同一law/family下的合法own-PREP history集合，完整recorded-command、观察算子和joint error E；直接研究相关goal像或残差`R=G−p(O)`，不先把每个内部状态独立建盒。
 - **最强ordinary：** 获相同CAL/public law/seed/family权限的Full与简单goal/readout模型。Full已准确时，贡献可为更少必要信息、明确误差/失效边界，不强求beat Full。
 - **有用出口：** 一个非零有限域内可复算的条件upper/lower与关键常数资格，或合法同信息双世界的goal gap及最小repair。tangent/finite bank最大差不代替连续域。
+- **P58首次原始CAL点排除门：** 同原digital PREP/CAL的Pro18E L4.30观测与Pro19A L4.55 source候选五时刻，exact Fraction共同25MHz相位/增益dual给出|w·y|=0.1233289070766861V；在具名150fs clock/phase/gain及source误差假设下仅当epsV+1.1rho_source<0.122979989584V才能排除该存点。此为真实source数组的候选**必要**排除，不是所有合法L4.55根或Goal27工作直径证书。见[mixed-nuisance P58](dpt_research/20261012_mixed_nuisance_goal_radius_formal_derivation.md)和Fraction回归；全root/cell、joint E、未来H841仍OPEN。
 - **2026-10-20 P57条件推进：** 同一完整CAL记录的box条件化joint-error支持可比原E−E界严格更紧；固定clock/RC与7维凸共享nuisance模型下，单一候选全CAL不相容具有≤8读数Helly见证。一个4801点合成双root的精确误差门为3/20 V，future-work直径从0跃至1 nJ；真实50D source roots、guard和joint E仍OPEN。见[mixed-nuisance P57](dpt_research/20261012_mixed_nuisance_goal_radius_formal_derivation.md)和`test_paper_transfer_falsifiers.py`。
 - **长期难点：** PREP126/CAL4800/target6720、guard/diode与相关remainder；允许先攻短片段或直接goal证书。缺source输入可做独立条件数学，不反复生成合成收据冒充source包含。
 - **S-L32/D19证据门：** 原S150 body row在ETH跨guard下需要非零状态补偿，不能在保持全50连续的假设下两侧同时零残差；固定H841 work不能被BE-right work替代（原coil-row构造差0.100nJ）。见[solver fidelity S-L32](dpt_research/20261010_goal_information_solver_fidelity.md)、[stability D19](dpt_research/20261010_goal_stability_compositional_closure.md)和回归。full50 root/guard及joint E仍OPEN。
