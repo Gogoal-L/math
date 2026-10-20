@@ -479,7 +479,7 @@ class E150StrongOrdinaryProfileControls(unittest.TestCase):
         self.assertEqual(F(x["scalar_add"]),9)
         self.assertEqual(F(x["wave_add"]),7)
         self.assertEqual(F(x["scalar_r"]),7)
-        self.assertEqual(F(x["wave_r"]),F(23,4))
+        self.assertEqual(F(x["wave_r"]),F(47,8))
         for bad in ("NaN","Infinity",True):
             with self.assertRaises(ValueError):
                 audit(10,14,5,profile_add_minus_scalar_nJ=bad,
