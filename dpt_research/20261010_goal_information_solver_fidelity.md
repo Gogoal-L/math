@@ -1096,3 +1096,25 @@ Source G12 row 8/20 and full G11 guard are also checked. Thus exact Fraction aff
 Fresh independent read-only original saved-predecessor test: old source voltage controls n3615 held fixed, each of the twelve old coil currents varied independently by **±0.001 A around that SAME archived old current**, Q1 current g6 in [saved+0.010,saved+0.012] V, other five current (d,g,s) nodes in saved ±0.0001V. P16/G11/G12 source chart guards verified; old-coil uncertainty reduces the r6 lower by <0.000993 A. Archived-old singleton exact rational r6 interval [1.100719398908974,1.3475288710211726] A, so the stated 12-old-coil interval still excludes every exact-real source root with >1.0997A positive r6. No raw protected predecessor values are uploaded to GitHub or embedded in public tests. Separate synthetic old-coil box and a zero-crossing candidate exercise fail-closed behavior in public CI.
 
 **Evidence ceiling:** true original source expressions, finite h, a nonzero-width conditional 6D current chart plus 12D old-coil slab, original G11 guarded branch and passive lifts. The actual source ZIP and saved NPZ were only authenticated/read **locally**; public CI tests formula consequences and cannot authenticate their private bytes. Still OPEN: other guard components, old-coil PREP reachability for every slab point, complete six-KCL roots and chart complement, full 50D history and joint CAL4801×2, native IEEE enclosures, H841 goal diameter.
+
+
+### S-L47 — 原始 Q1 g6 guarded 单根：条件性源 50D→5D (2026-10-21)
+
+与上节不同，本节证明的是一条**余下 KCL 的实际存在/唯一性**，不是只排除一个候选盒。原 n3616 Q1 G11 signed finite Gauss32 的合法单一 smooth panel 有 H'(u)=1+10^{-7}+ΔQ'_{32}(u)/h>1。故沿 r7=0 的唯一 w(g,d) 有 0<dw/dg=1−1/H'(u)<1。P16 SPD 仿射 lift 对 gate 的严格原 source 斜率
+\`a_g=∂g2/∂g=0.9553822356017335...\`，保留其精确 Fraction 表示。对于固定的另外五个 Q1/Q2(d,g,s) 坐标及共同 old12 线圈记忆：
+
+\`dr6/dg=(1−a_g)/9+2×10^(-7)+dw/dg+(1388e−12/h) > 111.04495772913411 A/V\`。
+
+以原始保存 n3615 的旧 Q1 g/s/w 精确 binary64 电压为锚、12 个 old coil 电流在**各自保存值±1mA** 及其余五个 current 电压在各自保存值±0.1mV 为条件，经过本轮 read-only Pro18E NPZ SHA 校验与精确 P16/G11/G12 计算，原 Q1 gate 保存值左右 125µV 的**全 17D face slab** 给出：
+- 左 face \`g=g_saved−0.000125V\` 时 \`r6_upper=−0.0010508671630896351A<0\`；
+- 右 face \`g=g_saved+0.000125V\` 时 \`r6_lower=+0.0010223486726103875A>0\`。
+
+因此在上述声明参数盒的**每一条固定 fiber** 上，原始 gated r6=0 对 g 有且仅有一根，位于 saved±125µV。两侧是严格有向全盒端点界，导数是独立由源 G11 charge-positive 和 P16 仿射传递给出的下界，不是 Newton 保存点的一次测试。新 \`certify_original_source_q1_gate_unique_bracket\` 会在斜率/两端反号/原始 panel 任一不合格时 **RETAIN/UNKNOWN**，不能错误地把单个端点证书升级为根存在。因而在 source chart/guard 重构 preimage 上，先前 S-L45 条件性的六节点电路求根，还可条件性消去一个 Q1 g 自由度变成**五节点**。
+
+这并非其余五条 KCL 及 old thermal/diode/G2/ETH/ABS source branches 的全根覆盖；保存 PREP 周围任意 old coil boxes 的所有 50D history 可达性、完整 CAL E、native GL32/SciPy IEEE outward 和 H841 signed-work 直径继续 OPEN。GitHub 公开 tests 使用 synthetic old12 因而不包含任何 protected n3615 旧电流原始字节。只有原始保存 NPZ 的本地只读计算支持本节上述 ±125µV 定量值。
+
+### 原始 F122-A 思路的新 DPT 数学边界：PSD moments 的严格 slack 不可直接平移
+
+原论文 OpenAI *Uniform quasipolynomial-time trace reconstruction*，固定 \`openai/math@fd4aeeb2ee4fc729c18d98444fed42fd0529eeeb\`，原 TeX \`build/manuscript/setup.tex\` 的 \`eq:moment-matrix\` / \`thm:separation\` 和 \`decoding.tex\` 的 \`lem:prefix-slack\` / \`lem:rational-feasibility\`：正确二元 trace 前缀通过混入均匀符号分布获得 \`M(m*)≽ζ/8 I\`，在**可容纳统计误差**的可行性问题中给出 bounded rational iteration。它不自动成为精确 DPT KCL 根的内点验收法。严格反迁移定理：若非零多项式源残差 r 的度数不大于 moment degree D，并施加精确等式 \`E[r²]=0\`，则 PSD Gram 矩阵必有非零系数零向量，\`M_D c(r)=0\`，从而无任何 \`M_D≻0\` 的物理可行 moment completion。Exact Fraction 例：\`r=x−1/2\`, \`E[x]=1/2,E[x²]=1/4\`，其 2×2 moment matrix det=0；以 1/8 的均匀 \`x∈[0,1]\` 分布混合后 det>0，却造成 \`E[r²]=1/96>0\`，破坏原等式。此结论不否定正半定 moment outer 排除，它只阻止把 F122-A 的 strict-slack 存在保证误用到硬 KCL equality。
+
+一种互补方法是 **SOS 先排除、Bernstein 再自适应分裂**：\`p(x)=x²−x+5/16=(x−1/2)²+1/16\` 对 |e|≤1/32 有整个 [0,1] 的严格 gap=1/32，而原 degree-2 Bernstein parent coefficients (5/16,-3/16,5/16) 无法直接排除。Exact Fraction 及去掉常数项的真根突变均已独立通过。这目前是 source-agnostic conditional 算法，不是经 source G11/ETH native 承包的 S150 root certificate；F122 原始主论文未完成全页 DEEP_READ_V1，不移动至 literature/。

@@ -1501,3 +1501,86 @@ def certify_original_source_q1_gate_six_cell(
         full_prep_cal_history_certified=False,
         goal27_certified=False,
     )
+
+
+# S-L47: exact-real guarded Q1 gate root for every remaining five-node fiber.
+def certify_original_source_q1_gate_unique_bracket(
+    *,six_current_node_boxes_V,old_coil12_boxes_A,h_s,
+    source_law_sha256,source_adapter_sha256,saved_cal_sha256
+):
+    """Source n3616 six-to-five Q1 gate row lift with strict face witnesses.
+
+    G11 r7 has one smooth finite-Gauss guarded root w for every g,d in
+    chart, and its signed derivative gives dw/dg>0. Source P16 makes Q1
+    g2 affine with exact slope a_g on g, hence along r7=0:
+       d r6/dg > 1388pF/h + 2e-7 + (1-a_g)/9.
+    If BOTH full-parameter gate faces have opposite strict KCL signs,
+    the scalar root g exists and is unique for EVERY common old-coil
+    predecessor / other five coordinates. Remaining five original
+    KCL roots, other hybrid branches, PREP/CAL and native rounding OPEN.
+    """
+    boxes=tuple(map(_source_x_box,six_current_node_boxes_V))
+    olds=tuple(map(_source_x_box,old_coil12_boxes_A))
+    if len(boxes)!=6 or len(olds)!=12 or boxes[1][0]>=boxes[1][1]:
+        raise ValueError("UNRESOLVED_SOURCE_DOMAIN: gated six-cell bracket")
+    auth=dict(h_s=h_s,source_law_sha256=source_law_sha256,
+              source_adapter_sha256=source_adapter_sha256,
+              saved_cal_sha256=saved_cal_sha256)
+    g11=certify_original_source_g11_w_guard(
+        leg="Q1",g_V=boxes[1],d_V=boxes[0],**auth)
+    if (g11["status"]!="ORIGINAL_SOURCE_G11_GUARDED_W_UNIQUE_LIFT" or
+            g11["gauss_charge_derivative_lower_F_per_s"]<=0):
+        raise ValueError("UNRESOLVED_SOURCE_DOMAIN: G11 derivative sign")
+    six=tuple(v[0] for v in boxes)
+    old=tuple(v[0] for v in olds)
+    boundary=[six[0],six[1],F(0),F(0),six[2],
+              six[3],six[4],F(0),F(0),six[5]]
+    kw=dict(auth,command_V=15)
+    def q1_g2(b):
+        result=certify_original_source_passive16_port_lift(
+            retained_node10_V=b,old_coil12_A=old,**kw)
+        return result["package_voltage14_V"][_SOURCE_PACKAGE_P.index(5)]
+    before=q1_g2(boundary)
+    perturbed=list(boundary)
+    perturbed[1]+=F(1)
+    source_g2_slope=q1_g2(perturbed)-before
+    # G11 derivative adds a strictly positive dw/dg in its whole guard.
+    strict_slope_lower=(
+        F("1388e-12")/_STAGE3616_H+
+        F(2,10**7)+(1-source_g2_slope)/9)
+    if strict_slope_lower<=0:
+        return dict(status="RETAIN_Q1_GATE_MONOTONICITY_UNRESOLVED",
+                    certified_gate_slope_lower_A_per_V=strict_slope_lower,
+                    goal27_certified=False)
+    face_left=list(boxes)
+    face_right=list(boxes)
+    face_left[1]=(boxes[1][0],boxes[1][0])
+    face_right[1]=(boxes[1][1],boxes[1][1])
+    left=certify_original_source_q1_gate_six_cell(
+        six_current_node_boxes_V=face_left,
+        old_coil12_boxes_A=olds,**auth)
+    right=certify_original_source_q1_gate_six_cell(
+        six_current_node_boxes_V=face_right,
+        old_coil12_boxes_A=olds,**auth)
+    bracket=(left["exact_r6_upper_A"]<0 and
+             right["exact_r6_lower_A"]>0)
+    return dict(
+        status=("ORIGINAL_SOURCE_G11_Q1_GATE_UNIQUE_SIX_TO_FIVE_LIFT"
+                if bracket else "RETAIN_GATE_BRACKET_UNRESOLVED"),
+        necessary_q1_g_V=boxes[1],
+        left_face_r6_upper_A=left["exact_r6_upper_A"],
+        right_face_r6_lower_A=right["exact_r6_lower_A"],
+        certified_gate_slope_lower_A_per_V=strict_slope_lower,
+        exact_passive_q1_g2_vs_g_slope=source_g2_slope,
+        original_finite_G11_charge_derivative_positive=True,
+        shared_old_coil12_box_used=True,
+        original_q1_gate_root_exists_per_fiber=bracket,
+        original_q1_gate_root_unique_per_fiber=bracket,
+        conditional_source_50d_to_five_node_on_guard_preimage=bracket,
+        every_legal_prepared_history_covered=False,
+        complete_five_kcl_source_root_cover_certified=False,
+        original_w_x_g2_chart_preimage_authenticated_in_ci=False,
+        native_ieee_outward_enclosed=False,
+        all_cal_joint_E_certified=False,
+        goal27_certified=False,
+    )
