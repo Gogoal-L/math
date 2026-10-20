@@ -1268,5 +1268,42 @@ class IndexOneDAEBranchCompletenessTest(unittest.TestCase):
         self.assertEqual((max(future_work_J)-min(future_work_J))/2, F(1,10**9))
 
 
+class ExhaustiveRootCoverageIsNotLocalReceiptCount(unittest.TestCase):
+    def test_4926_stage_two_branch_same_cal_diameter(self):
+        from fractions import Fraction as F
+
+        X = (-F(1,8), F(1,8))
+        slope = (2*X[0]-1, 2*X[1]-1)
+        inv_preconditioner = F(-1)
+        kfactor = (1-inv_preconditioner*slope[0],
+                   1-inv_preconditioner*slope[1])
+        krange = (min(a*b for a in kfactor for b in X),
+                  max(a*b for a in kfactor for b in X))
+        self.assertEqual(slope, (-F(5,4), -F(3,4)))
+        self.assertEqual(krange, (-F(1,32), F(1,32)))
+        self.assertTrue(X[0] < krange[0] <= krange[1] < X[1])
+        self.assertLess(X[1]-F(1,2), 0)  # certified branch strict OFF
+        self.assertGreater(F(1)-F(1,2), 0)  # missing branch strict ON
+        self.assertFalse(X[0] <= F(1) <= X[1])
+
+        worlds = []
+        for root in (F(0), F(1)):
+            self.assertEqual(root*(root-1), 0)
+            prior = root
+            for _ in range(2,4927):
+                nxt = prior  # Fn(xn,xold)=xn-xold, exact
+                self.assertEqual(nxt-prior, 0)
+                prior = nxt
+            cal = tuple((F(k,4800),F((k%7)-3,10))
+                        for k in range(4801))
+            on = prior > F(1,2)
+            goal = F(150,10**9) * int(on)  # 150 V * 1 A * 1 ns
+            worlds.append((cal, goal))
+        self.assertEqual(worlds[0][0], worlds[1][0])
+        self.assertEqual(len(worlds[0][0]), 4801)
+        self.assertEqual(worlds[1][1]-worlds[0][1], F(150,10**9))
+        self.assertEqual((worlds[1][1]-worlds[0][1])/2,F(75,10**9))
+
+
 if __name__ == "__main__":
     unittest.main()
