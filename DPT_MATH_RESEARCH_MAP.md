@@ -63,8 +63,9 @@
 这些问题承接Main短单元难以闭合的数学困难，不要求按顺序全做。Side可以发现更强对象；若改变问题，说明将改变Main哪项决定及为何更值得。
 
 ### Q1 — 合法CAL相容PREP像上的有限目标范围
+- **P60原source七读数连续RC门（本轮新增）：** SHA锁定E/A原始保存数组，V3/I4零和双通道dual消共同offset，对共享b∈[90,110]MHz作80子带×4926阶严格有理数PL外包、150fs clock、同通道gain和逐读输出phase/noise共同排除。原始本地只读回放得正的**保存点条件**间隔；source-cell lift仅在额外认证全部4927阶50D根tube且其有向支持小于间隔时成立。见[mixed-nuisance P60](dpt_research/20261012_mixed_nuisance_goal_radius_formal_derivation.md)、[执行器与测试](dpt_tools/s150_q2_six_row_certificate.py)；原始字节不在远端CI，全root/joint CAL E/H841仍OPEN。
+- **S-L38已合并的首次原source六行存在唯一性：** Pro18E n3616固定完整旧50与Q2五节点±0.04V盒内，Q2 body/diode/4热方程在指定根盒唯一；Banach q<1.34e−5，原adapter kappa=1.007，predecessor旧T0盒内exclusion另有严格门。它不是剩余44行、全50D/连续PREP→CAL的证明。见[solver fidelity S-L38](dpt_research/20261010_goal_information_solver_fidelity.md)与[Fraction程序](dpt_tools/s150_q2_six_row_certificate.py)。
 - **S-L37新source必需事实：** 原SHA实际ETH在有效T=260℃饱和后仍用RAW tj；raw T=260→261℃时相同有效T、g-s=−4/+14V，ETH分别改变−5.088/−270.956mV。只保留裁剪T的source-root contractor不可靠；该反证不证明raw T>260℃物理可达或50D根。见[solver fidelity S-L37](dpt_research/20261010_goal_information_solver_fidelity.md)和`goal_charge_checkpoint.py`，合法raw-state外包仍OPEN。
-
 
 - **决定：** 哪些外部CAL信息已经足以预测具名未来goal，哪些合法历史仍会使预测失败？
 - **对象：** 同一law/family下的合法own-PREP history集合，完整recorded-command、观察算子和joint error E；直接研究相关goal像或残差`R=G−p(O)`，不先把每个内部状态独立建盒。
@@ -97,7 +98,6 @@
 ### Q3 — 可取得charge误差信息与reference discrepancy的联合传播
 - **Q3新source coil-row条件sharp界：** Pro18C原H841目标核与Ls=4.16nH BE约束、未来|δvD|≤1µV盒模型，未测半径.029982652636nJ；完美未来PORT charge第一半窗降至.001330657989nJ，两半窗降至.001300015555nJ（仅多0.0306424pJ）。同bias三读误差下双row固定dual噪声支撑284.0036705V·rho[nC]，严格收益需rho<.1009939pC。LOCAL source-array Fraction重放，CI仅通用模型回归；非pretarget/全50D Goal27证书。见[mixed-nuisance Q3](dpt_research/20261012_mixed_nuisance_goal_radius_formal_derivation.md)与`goal_charge_checkpoint.py`；关键OPEN为合法可取得的PRETARGET charge-to-future transfer与全root joint E。
 
-
 - **决定：** 哪一项实际可取得的历史/测点信息，能把目标范围缩到有用水平？
 - **对象：** gate积分、少数charge checkpoint、origin/first-reversal与reference support；同时保留reference-map discrepancy，区分连续轨迹与采样closure。
 - **强ordinary：** checkpoint双向Lipschitz cones+finite-PL box，必须得到同一信息。先解释它做不到什么，再用DP/更深数学。
@@ -109,8 +109,8 @@
 - **2026-10-20 Side精确条件界：** 端点charge共同bias与独立有界误差下，带符号积分目标有可计算sharp minimax半径；中点checkpoint可有零最坏情形收益。见[mixed-nuisance Q3证明](dpt_research/20261012_mixed_nuisance_goal_radius_formal_derivation.md)与`test_goal_ceiling_tools.py`；未给出物理D、joint E、reference discrepancy资格。
 
 ### Q4 — 100 V原R1的可恢复对象与新条件后果
+- **E150已保存路径Hessian方法级反证（本轮新增）：** B100/E100/B150原始三曲线的中点缺陷迫使任意逐路径ABSOLUTE Hessian上界三项之和（在每路径eps=六ordinary最小gap/2的条件下）至少3.044/2.894 nJ/nH²，超过最近六候选区分门0.15796/0.14237达19.27/20.33倍；三项各自绝对界再triangle不能认证所需交互曲率，必须转向直接SIGNED C''与相关误差外包。见[second-order Q4](dpt_research/20261012_second_order_goal_fiber.md)及[严格算术负控](dpt_tools/goal_defect_transport.py)。E150真值和TOTAL_ERROR仍缺。
 - **Q4六ordinary新判别：** 同保存三历史输入的scalar/full-profile六预测最小间距仅fine9.872633pJ、H2 8.898416pJ；预目标比较候选需各自真实TOTAL_ERROR严格小于半间距4.936/4.449pJ。第四角点E150目标、ownPREP/clock/window和误差仍缺，不排序胜者。见[second-order fiber Q4](dpt_research/20261012_second_order_goal_fiber.md)与`audit_e150_waveform_ordinary_coefficients`。
-
 
 - **决定：** 有限CAL支持的是哪个measurement-defined对象，以及它对新history/condition的未来goal是否足够？
 - **构造/挑战：** 保留L/Rser/gain/clock相容关系和实际观测预算；与同信息frequency/whole-wave/scalar-work ordinary正面比较，不能把有效对象命名为独立PCB/package参数。
