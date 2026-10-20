@@ -64,17 +64,19 @@
 
 ### Q1 — Original S150 合法 PREP/CAL 历史上的全根与 H841 goal outer
 
-**最高新层级：S-L41 原源 x-KCL 闭子盒严格排除与单阶段 50D↔24D 结构归约。** 原 ZIP SHA256 250aa4ea17514ffdeda3a51d95bedf8e034b181f97bdc254db29ddc36281b9c8 / actual_law.py SHA256 51b78f729393d29745f59ca150adfef69e1847bf26a8853c6cef3d6be9e2083d / E NPZ SHA baafdd8cb489adb186677658c4a8031130cc53a9a1854c4997211d437daf8b3e / adapter κ1.007。n3616 Q1/Q2 的两个 x-KCL 行具有完全可逆的正电阻+正 G12 电荷形式：可在保存中心各±.04V chart 内再消去 x8/x20，重构的 x 必须仍在 chart 中。源 Q12 电容采用严格 Fraction 整数幂包络，而不是浮点幂近似；两个非零宽的源节点角子盒 x 残差上界都小于−700A，因而排除**每个**剩余 48 坐标的原始数学全根。G12 Schur 导纳严格正，单一 rank-one PSD 边不等于完整 24D Jacobian SPD。见 [solver fidelity S-L41](dpt_research/20261010_goal_information_solver_fidelity.md)与 [源X-KCL证书及负控](dpt_tools/s150_q2_six_row_certificate.py)。
+**当前最高原source结构：S-L43 的 14D package SPD、G11 Gauss32 guarded w-KCL、原 S-L41 G12 x-KCL。** 原 ZIP SHA250aa4ea...、actual_law SHA51b78f...、E NPZ SHAbaafdd8c... 严格冻结。S-L40 已可条件性消元24个线圈/器件/热变量，S-L41 再消去 x8/x20；新证明原14个 package P 节点只受正电阻、10线圈 BE 与固定源 forcing，exact Fraction 14×14 LDL全部枢轴正（最小约0.0192181S），从原单阶段 **50D↔10D 条件根对应**，且重构 g2/x 必须仍属于原±.04V十节点chart。另证明 Q1/Q2 原**有限 GL32** G11 w7/w19 行在原 solver |Δ(g−w)|≤1V guard 内均有唯一标量根，对所有固定 g,d±.04V成立；在此guard合格分支进一步条件性 **50D↔8D**。Q2 g−w 原源必要区间宽仅4.470192mV；两个与x无关的非零宽 G11 电压角子盒的全源数学根由 w-KCL 各自严格排除（r上界 Q1<−0.0213288A、Q2<−3.102596A），而PR29的两个x-KCL角子盒仍各自排除 >700A。**没有8D残差存在性、chart补集、原生IEEE GL32/SciPy外包、完整合法历史或Goal27证书**。见 [源结构与原论文迁移](dpt_research/20261010_goal_information_solver_fidelity.md)和 [fail-closed Fraction 代码与测试](dpt_tools/s150_q2_six_row_certificate.py)。
 
-**S-L40 执行域修正：** 先前 50D→26D 已消除12线圈与12双腿 D1/body/thermal 坐标，针对**固定 n3616 原始 h=0x1.b7cdfd9d80000p-37 秒、source十节点±.04V、旧两个vj∈(-1590,0]V**。理想实数全 raw-T 局部六行数学结论和目前可执行 native-boundary 证书不可混同；**已合并 PR #28 的源执行器仅接受旧8温度 [-60,260]°C**，超出一律 UNKNOWN；native SciPy/NumPy 误差未外包，源身份字符串并不证明原ZIP已在CI重演。对每个当前原source固定合法旧态，24D KCL 零点的存在/唯一性与 chart complement 仍无证书。见 [S-L40及纠错](dpt_research/20261010_goal_information_solver_fidelity.md)。
+**S-L44 真正更强的source补集：** 原x方程在 h>0.1108ps 时全局x*(d,s,dold,sold)严格呈(+,+,+,−)坐标单调，故合法闭盒两角即可有向包住x根，不需16角或独立划分x。在原n3616 Q2同一非零宽D×S×X source chart子盒，PR29笛卡尔残差含0（下界−1.56A），新联合单调两角严格证明原source r20≥0.51999999999886A，从UNRESOLVED升级为整盒无根；这是实际可复核的**全source单阶段子域排除**，不是全50历史或原生IEEE认证。见 [S-L44细节、精确负控](dpt_research/20261010_goal_information_solver_fidelity.md)及[同一工具](dpt_tools/s150_q2_six_row_certificate.py)。
+
+**S-L40 执行域修正：** 先前 50D→26D 已消除12线圈与12双腿 D1/body/thermal 坐标，针对**固定 n3616 原始 h=0x1.b7cdfd9d80000p-37 秒、source十节点±.04V、旧两个vj∈(-1590,0]V**。理想实数全 raw-T 局部六行数学结论和目前可执行 native-boundary 证书不可混同；**已合并 PR #28 的源执行器仅接受旧8温度 [-60,260]°C**，超出一律 UNKNOWN；native SciPy/NumPy 误差未外包，源身份字符串并不证明原ZIP已在CI重演。即使有了S-L43的10D/guarded8D严格消元，剩余KCL存在/唯一性、guard外根与整个chart补集仍没有原source证书。见 [S-L40及纠错](dpt_research/20261010_goal_information_solver_fidelity.md)。
 
 **S-L42 旧thermal历史必需性：** 在同固定节点chart下，两种条件独立旧四温度全−60/全260°C 的六行热平衡解，其新T0至少相隔 Q1 319.998950381836°C、Q2 319.999685114551°C；仅当前node的旧T盲估计条件minimax至少159.999475/159.999843°C。它们不被宣称是合法同PREP或同26D KCL的两条source历史。与Q2的28D状态下界相互支持，但不自动形成目标功双世界。
 
 **P60b 七读数 PORT-V3/I4、连续80子带：** 原 E/A/ZIP SHA 锁定；4926阶段×80闭子带、共享b∈[90,110]MHz、零和offset、同通道gain/clock/phase/shared nuisance Fraction证书的**保存候选点**间隔已独立复核为 M=0.0344867139926634065 dimensionless；旧报告约0.0298276795443是待冻结旧code/clock/noise contract的历史对比值，不能据此宣称同条件改善；midpoint-to-edge RC漂移的独立算术变化可解释约0.0046590的差额，但旧源码/参数未被当前仓库完整对账。新M仍只是同一声明型误差模型的保存点证书，非新增物理信息。若另获连续全源历史50D tube，额外读数支持必须严格小于M；假设仅两端口V各同半径且I精确时 rV<4.960829mV，假设仅I tube时 rI<36.552385mA，**尚未获此tube**。共同实际E、cal-allroot和未来signed H841仍OPEN。见 [P60b](dpt_research/20261012_mixed_nuisance_goal_radius_formal_derivation.md)和 [七读数执行器](dpt_tools/s150_q2_six_row_certificate.py)。
 
-**新增前沿方法：** 原始 OpenAI F090 planar Fourier 的 Schur有限-尾项定理与signed Bernstein+解析余项使封闭cell可获得严格行排除；已有 exact Fraction 原算子和两-root合成负控，但尚无原24D 44剩余行的来源有向范数界、解析余项和热ABS guard全覆盖。见 [F090迁移](dpt_research/20261010_goal_information_solver_fidelity.md)、[原论文待精读索引](literature_archive/README.md)。
+**新前沿论文迁移：** F090 的有限块/尾项 Schur 与signed Bernstein闭盒排除已由精确反例验证；新增完整审读 OpenAI *Atomic triangular-lattice* 31页原PDF+TeX，并真正运行原有限checker（20×20块及659项Bernstein均PASS，恶意枢轴阈值篡改使其FAIL）。独立移植共享nuisance精确消去、可计算几何尾项和De Casteljau闭盒分裂：合成三闭盒严格排除外两盒，保留含真root的中盒。只作为 **CONDITIONAL source-agnostic finite-cover算法**，原8D余式/GL32/guards/历史 E 仍缺原始解析包络。见 [完整证明及负控](dpt_research/20261010_goal_information_solver_fidelity.md)、[执行器](dpt_tools/s150_q2_six_row_certificate.py)、[原论文待读分类](literature_archive/README.md)。
 
-**下一唯一承重OPEN：** 为每个合法旧50、source branch及source Q12/G11/ETH/diode/thermal条件构造24D整KCL闭覆盖，证明所有分支要么严格全行排除、要么包含经合法重构的根球，未决数为零；再逐stage legal PREP126/CAL4800 hybrid/reset 传播 + **共同** 4801×2 E + 原H841 signed-work。未补齐之前，S-L41只给非平凡原source节点子盒排除，Goal27全域上界/双世界下界仍OPEN。
+**下一唯一承重OPEN：** 从已唯一重构的P14/G12x2/guard内G11w2继续证明剩余原 **8D KCL** 全闭盒根/补集（并另行处理G11 guard外分支），外包Q1/Q2 ETH/diode/thermal/clip/ABS seam及原生求积误差；再建立每个合法 predecessor 50D 与PREP126→CAL4800全过程封闭reachability、共同 4801×2 sensor E 和H841 signed-work有向传播。输入仍只有 source-saved n3616 chart，不能称 Goal27有全域upper/lower。
 
 ### Q2 — 合法命令 alphabet 的 history/right-congruence 与必需记忆维数
 
@@ -82,9 +84,9 @@
 
 **长期OPEN：** 原真实source old_command/reset/TRAP的合法future alphabet、guards、全root历史集合能否右同余，以及一组具有同全CAL但不同future goal的**可达**两世界。合成{A,Blow,Bhigh}右同余而加B0失败仍是命令域反例，不是原S150合法轨迹证明。
 
-### Q3 — pretarget 可取得 charge / Cramer primal-dual / shared uncertainty
+### Q3 — pretarget PORT charge / shared prepared current / sharp primal-dual
 
-原Pro18C 6720-stage BE coil+trapezoid H841 source-point有条件 future port charge 信息下，半径 R0=0.029982652635977969nJ，理想双未来PORT charge把半径降至 R*=0.001300015555245664nJ，收缩95.6641076%；三读共享bias+独立有界误差的正反LP对偶给半半径误差门 rho_half(B)=rho0+max(0,rho0−B)，rho0=0.048964522492562246pC。全源50D未来物理耦合不等于独立coil盒；现有charge是**未来内源 oracle**，不是可执行pretarget sensor。负控：同preparation下CAL12ns ramp与TARGET18ns ramp的前42ns PORT charge相差20.136246938nC，绝不可设Q_TARGET=Q_CAL。见 [Q3/共享偏置及正反dual](dpt_research/20261012_mixed_nuisance_goal_radius_formal_derivation.md)、[charge代码](dpt_tools/goal_charge_checkpoint.py)。下一OPEN是 source-qualified cross-command transfer K、真正CAL joint E、reference discrepancy和24D/50D合法轨迹，而不是重复优化未来理想盒。
+原source-coil future oracle 与真实 PRETARGET 必须分离。旧冻结 gamma=0 的两future-charge条件最小半径1.300015555pJ（相对R0=.029982652636nJ缩小95.6641%）。**本轮新增sharp物理记忆负控：**在相同原Pro18C source row36 Ls4.16nH与原H841电压核下，若未来驱动盒再容许 ONE SHARED PREP 线圈旧电流偏差 |gamma|≤5µA，则两42ns未来 PORT charge 即使均完美零观测，source系数线性盒的原始Fraction primal/dual仍有非零sharp R=1.617350388645pJ，明确±两世界 charge全同而signed-work差3.234700777289pJ。新先验的无charge半径也须重新算为R0new=.060732996605nJ，不能沿用旧95.6641%百分比；当前先验中的有条件收缩97.33695%，但gamma可取得性、真实共同CAL E及剩余49源残差无证书。原 source SHA/未来 PORT charge/可执行 [Q3证明](dpt_research/20261012_mixed_nuisance_goal_radius_formal_derivation.md)、[原code LP证书](dpt_tools/goal_charge_checkpoint.py)；CAL12ns与TARGET18ns既有20.136246938nC差距仍反证直接CAL当oracle。下一OPEN为合法own-PREP跨command K、未来线圈与端口电压物理耦合及joint E/H841全源界。
 
 ### Q4 — Original R1 100V E150 合法新条件及 TOTAL_ERROR
 

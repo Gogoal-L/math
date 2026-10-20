@@ -2523,9 +2523,16 @@
       "source_repository": "openai/math",
       "pdf_url": "https://github.com/openai/math/blob/1581d4cbdd69a0faf34b2089614fe2a814316a6a/preprints/An-atomic-certificate-for-triangular-lattice-universal-optimality-September-26-2026/paper.pdf",
       "primary_tex_url": "https://github.com/openai/math/blob/1581d4cbdd69a0faf34b2089614fe2a814316a6a/preprints/An-atomic-certificate-for-triangular-lattice-universal-optimality-September-26-2026/build/main.tex",
-      "reading_status": "SOURCE_SCOUT_ONLY",
-      "dpt_transfer_status": "NOT_PROVEN_SOURCE_50D",
-      "scope": "stdlib exact finite integer checks of 20x20 blocks and Bernstein data; infinite analytic propagation is a separate proof obligation"
+      "reading_status": "ACTIVE_PRIMARY_31P_FULL_TEXT_PROOF_AND_FINITE_CHECKER_REPLAY; NOT_YET_DEEP_READ_V1_PERSISTED",
+      "dpt_transfer_status": "CONDITIONAL_DPT_SYNTHETIC_CELL_EXCLUSION_ONLY; ACTUAL_50D_ALLROOT_OPEN",
+      "scope": "stdlib exact finite integer checks of 20x20 blocks and Bernstein data; infinite analytic propagation is a separate proof obligation",
+      "primary_pdf_sha256": "83e0d874119abae56db94fb1ecd6ebb794753d4982464b4f9788e5158708be93",
+      "primary_tex_git_blob_sha": "dad316cc2ad861a7482d79b46b6f840ed83d2a5e",
+      "official_finite_checker_url": "https://github.com/openai/math/blob/1581d4cbdd69a0faf34b2089614fe2a814316a6a/preprints/An-atomic-certificate-for-triangular-lattice-universal-optimality-September-26-2026/verification/check_certificate.py",
+      "official_finite_checker_sha256": "5689152e970b652a8e40c3c120eda3b45320c8745968a5cb416fa9b9dbdc5385",
+      "theorem_locators": "PDF 31 pages, original complete 2474-line main.tex; Lemma 4.1 finite 20x20 blocks; 659 rational Bernstein minima, separate Fourier Schur tail and sine positivity barrier.",
+      "independently_verified_method": "Original official finite checker Python -I -B original in-memory source exit0 CHECKER_PASS; adversarial in-memory change strict pivot threshold .12->99.0 causes AssertionError/exit1. Independent exact Fraction analytic-tail+shared-nuisance+Bernstein three-cell synthetic negative example, existing dpt_tools/s150_q2_six_row_certificate.py.",
+      "original_checker_execution": "Finite checker executed on pinned code and data read-only; original infinite-dimensional analytic proof, Lean transitive build, and S150 source-residual coefficient/tail/guard qualification NOT executed or proved."
     },
     {
       "title": "Exact Fourier certificates for complex Hadamard matrices of order six",
