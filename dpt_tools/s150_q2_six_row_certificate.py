@@ -137,3 +137,111 @@ def certify_q2_on_subsystem(
             "given separately source-proved H,B and derivative enclosures. "
             "Not 50D root, all-stage root covering, joint CAL E or Goal27."),
     }
+
+
+def exact_machin_pi_interval():
+    """Exact 32-term Machin alternating rational pi enclosure."""
+    def atan_band(u, count=32):
+        u=F(u)
+        subtotal=sum(((-1)**k)*u**(2*k+1)/F(2*k+1)
+                     for k in range(count))
+        return subtotal,subtotal+u**(2*count+1)/F(2*count+1)
+    a=atan_band(F(1,5))
+    b=atan_band(F(1,239))
+    lo,hi=16*a[0]-4*b[1],16*a[1]-4*b[0]
+    if not(F("3.14159265358979")<lo<hi<F("3.14159265358980")):
+        raise ArithmeticError("exact pi interval construction failed")
+    return lo,hi
+
+
+def original_rc_band_filter_fraction(
+    time_s, raw_source_current_A, bandwidth_lo_MHz, bandwidth_hi_MHz,
+    *, selected_stages=(), integer_scale=10**12, expected_sample_count=None
+):
+    """Directed original first-order PL RC source-current filter *point* outer.
+
+    f_new = exp(-x)*f_old
+            +((1-exp(-x))/x-exp(-x))*i_old
+            +(1-(1-exp(-x))/x)*i_new,
+    x=2*pi*bandwidth*dt. Raw current is the SOURCE CAL coil36 history.
+    Each original stage is outward integer-rounded at the declared scale.
+    This is SOURCE CANDIDATE/RC-MEMORY arithmetic, not any 50D source-root
+    complement, sensor-noise contract, or future target certificate.
+    """
+    from math import factorial
+    ts=tuple(map(_fraction,time_s))
+    current=tuple(map(_fraction,raw_source_current_A))
+    low,high=map(_fraction,(bandwidth_lo_MHz,bandwidth_hi_MHz))
+    n=len(ts)
+    if (n<2 or n!=len(current) or low<=0 or high<=low or
+            integer_scale<1 or not isinstance(integer_scale,int) or
+            (expected_sample_count is not None and n!=expected_sample_count)
+            or any(ts[j]>=ts[j+1] for j in range(n-1))):
+        raise ValueError("invalid original RC source/time/frequency chart")
+    need=tuple(selected_stages)
+    if any(not isinstance(j,int) or j<0 or j>=n for j in need):
+        raise ValueError("sample outside source PREP/CAL grid")
+    piL,piU=exact_machin_pi_interval()
+    S=integer_scale
+    def to_int_interval(v):
+        lower=v*S
+        return ((lower.numerator//lower.denominator),
+                -((-lower).numerator//(-lower).denominator))
+    def mul(c,v):
+        a=(c[0]*v[0],c[0]*v[1],c[1]*v[0],c[1]*v[1])
+        return (min(a)//S,-(-max(a)//S))
+    def exp_alt(x,n_terms):
+        return sum(((-1)**k)*x**k/F(factorial(k))
+                   for k in range(n_terms+1))
+    def coefficients(dt):
+        xl=2*piL*low*10**6*dt
+        xu=2*piU*high*10**6*dt
+        if not(0<xl<=xu<F("0.05")):
+            raise ValueError("RC exponential enclosure requires x<.05")
+        aL,aU=exp_alt(xu,17),exp_alt(xl,16)
+        qL,qU=(1-aU)/xu,(1-aL)/xl
+        return tuple(to_int_interval(lo),to_int_interval(hi)) if False else (
+            to_int_interval(aL),to_int_interval(aU))
+    # Each SOURCE step has three independently outward-enclosed affine
+    # coefficients; precompute once for each distinct exact stored dt.
+    ccache={}
+    def coeff3(dt):
+        if dt in ccache:
+            return ccache[dt]
+        xl=2*piL*low*10**6*dt
+        xu=2*piU*high*10**6*dt
+        if not(0<xl<=xu<F("0.05")):
+            raise ValueError("RC exponential enclosure requires x<.05")
+        aL,aU=exp_alt(xu,17),exp_alt(xl,16)
+        qL,qU=(1-aU)/xu,(1-aL)/xl
+        def coeff_interval(lo,hi):
+            p=to_int_interval(lo)[0]
+            q=to_int_interval(hi)[1]
+            return p,q
+        result=(coeff_interval(aL,aU),
+                coeff_interval(qL-aU,qU-aL),
+                coeff_interval(1-qU,1-qL))
+        ccache[dt]=result
+        return result
+    samples={}
+    f=to_int_interval(current[0])
+    if 0 in need:
+        samples[0]=(F(f[0],S),F(f[1],S))
+    raw_intervals=tuple(map(to_int_interval,current))
+    for j in range(n-1):
+        a,b,c=coeff3(ts[j+1]-ts[j])
+        terms=(mul(a,f),mul(b,raw_intervals[j]),
+               mul(c,raw_intervals[j+1]))
+        f=(sum(x[0] for x in terms),sum(x[1] for x in terms))
+        if j+1 in need:
+            samples[j+1]=(F(f[0],S),F(f[1],S))
+    return {
+        "status":"RC_FILTER_INTERVAL_OUTER_NOT_ROOT_COVER",
+        "sample_bounds_A":samples,
+        "source_raw_bytes_authenticated":False,
+        "all_source_roots_covered":False,
+        "steps_covered":n-1,
+        "distinct_exact_time_steps":len(ccache),
+        "fractional_pi_interval":(piL,piU),
+        "claim_ceiling":"Exact rational/source-candidate PL filter outer for one saved raw-current trace, bounded bandwidth and one initial filter state. Not all 50D source roots, joint CAL sensor E, guard/reset reachability or Goal27.",
+    }
