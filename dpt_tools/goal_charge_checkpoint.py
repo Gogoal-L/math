@@ -179,3 +179,72 @@ def original_eth_fraction(gate_minus_source_V, raw_temperature_C):
             +(F("20.94e-6")*t**3+F("6.024e-3")*t**2-F("3.617")*t-F("1063.7"))
         )/1000
     return clip(val,-3,15)
+
+
+def certify_three_read_shared_bias_dual(
+    goal, charge_rows, dual_weights, rho, bias_bound,
+    *, witness=None, measurement_errors=None, bound=1,
+):
+    """Exact conditional signed-goal support with THREE centered port charges.
+
+    The source-row-only model is |u_i|<=bound, goal b.u [nJ], future
+    charges Q1=C0.u and Q2=C1.u [nC]. Three raw centered sensor readings
+    are y=(0,0,0), true levels q=(0,Q1,Q1+Q2), ONE shared record bias beta
+    |beta|<=B [nC], and independent |e0,e1,e2|<=rho [nC].
+    Thus e0=-beta, C0.u=e0-e1, C1.u=e1-e2. For lambda=(l1,l2) [V],
+    a correct EXACT dual upper is
+       ||b-C.T*l||_1*bound +
+       rho*(|l1-l2|+|l2|) + min(rho,B)*|l1|.
+    This respects the COMMON error/bias geometry, not two independent
+    differenced error boxes. A supplied feasible primal with objective
+    exactly equal to this dual makes the reported radius SHARP for the
+    declared LP; otherwise the result is only a valid upper bound.
+    Actual SOURCE 6720D source rows, PRETARGET feasibility, sensor E,
+    50D roots, voltage dynamics and future H841 are external obligations.
+    """
+    b=tuple(map(_f,goal))
+    if len(charge_rows)!=2:
+        raise ValueError("two cumulative PORT charge rows required")
+    C0,C1=(tuple(map(_f,c)) for c in charge_rows)
+    if len(b)<2 or len(C0)!=len(b) or len(C1)!=len(b):
+        raise ValueError("invalid goal/charge dimensions")
+    if len(dual_weights)!=2:
+        raise ValueError("two dual multipliers required")
+    l1,l2=map(_f,dual_weights)
+    rho,B,D=map(_f,(rho,bias_bound,bound))
+    if rho<0 or B<0 or D<=0:
+        raise ValueError("invalid nonnegative sensor bounds or box")
+    remainder=sum((abs(b[i]-l1*C0[i]-l2*C1[i])
+                   for i in range(len(b))),F(0))*D
+    noise=rho*(abs(l1-l2)+abs(l2))+min(rho,B)*abs(l1)
+    dual=remainder+noise
+    unconstrained=D*sum(map(abs,b))
+    out={
+        "dual":dual,"radius_upper":min(dual,unconstrained),
+        "unconstrained_radius":unconstrained,
+        "correlated_sensor_support":noise,
+        "primal":None,"radius":None,"sharp_certified":False,
+        "source_50d_goal_certified":False,
+        "claim_ceiling":"Sharp ONLY if exact primal=dual in declared linear "
+           "future-port source-row LP; no pretarget CAL gain/Goal27.",
+    }
+    if (witness is None)!=(measurement_errors is None):
+        raise ValueError("witness and measurement errors must appear together")
+    if witness is None:
+        return out
+    u=tuple(map(_f,witness))
+    e=tuple(map(_f,measurement_errors))
+    if len(u)!=len(b) or len(e)!=3 or any(abs(x)>D for x in u):
+        raise ValueError("invalid bounded primal")
+    if abs(e[0])>B or any(abs(x)>rho for x in e):
+        raise ValueError("infeasible shared bias or per-reading sensor errors")
+    q1=sum((x*y for x,y in zip(C0,u)),F(0))
+    q2=sum((x*y for x,y in zip(C1,u)),F(0))
+    cp=(q1-(e[0]-e[1]),q2-(e[1]-e[2]))
+    if cp!=(0,0):
+        raise ValueError("infeasible cumulative-charge primal")
+    p=sum((x*y for x,y in zip(b,u)),F(0))
+    if p!=dual:
+        raise ArithmeticError("exact shared-bias primal/dual gap not closed")
+    out.update(primal=p,radius=p,sharp_certified=True,charge_residuals=cp)
+    return out
