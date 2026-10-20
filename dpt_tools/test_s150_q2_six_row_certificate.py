@@ -189,5 +189,30 @@ class OriginalSevenReadingJointOuterTests(unittest.TestCase):
                 **kwargs,root_radii=(F(-1),F(0),F(0)))
 
 
+class SourceQ2OneKCLHeatAbsCuspTests(unittest.TestCase):
+    def test_source_bounds_force_a_real_heat_abs_switch_on_the_kcl_lift(self):
+        from s150_q2_six_row_certificate import certify_source_q2_kcl_heat_abs_switch
+        from fractions import Fraction as F
+        got=certify_source_q2_kcl_heat_abs_switch(
+            sensor_left_upper_A="-0.04158004546562281",
+            sensor_right_lower_A="3.4157913530608375",
+            left_thermal_slope_upper_C_per_V="-2.705796e-6",
+            right_thermal_slope_lower_C_per_V="2.705796e-6",
+            six_row_contraction_upper="0.000278",
+        )
+        self.assertEqual(got["status"],"SOURCE_SEVEN_ROW_HEAT_ABS_CUSP_MUST_SPLIT")
+        self.assertEqual(got["root_50d_certified"],False)
+        self.assertGreater(got["opposite_slope_jump_lower_C_per_V"],F("5e-6"))
+
+    def test_source_kcl_abs_non_crossing_or_zero_slope_never_asserts_cusp(self):
+        from s150_q2_six_row_certificate import certify_source_q2_kcl_heat_abs_switch as check
+        self.assertEqual(check(1,3,-1,1,F("0.001") if False else "0.001")["status"],
+                         "RETAIN_UNDECIDED")
+        self.assertEqual(check(-1,1,0,1,"0.001")["status"],
+                         "RETAIN_UNDECIDED")
+        with self.assertRaises(ValueError):
+            check(-1,1,-1,1,"1")
+
+
 if __name__=="__main__":
     unittest.main()
