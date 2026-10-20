@@ -387,6 +387,81 @@ def classify_original_eth_guard_state50_box(state50_intervals):
     result["valid_predecessor_history"] = False
     return result
 
+
+def certify_original_q2_reverse_complement(*, old_vj_upper_V="-2"):
+    """Source-law Q2 diode FORWARD-ROOT exclusion on declared real 50D tube.
+
+    Given independently SHA-qualified saved 4927 source centers and exact
+    Bernstein derivative/seam bounds, this proves NO original BE root
+    with new Q2 vj>=-2V in the 40mV/10mK source-coordinate strip.
+    No raw ZIP/NPZ bytes are supplied to this pure arithmetic function:
+    it does NOT certify the archived bounds, root existence, other 50D
+    coordinates, guard resets, CAL feasibility, or all Goal27 states.
+    """
+    from fractions import Fraction as F
+    from math import factorial
+    old=F(str(old_vj_upper_V))
+    if old>F(-2):
+        raise ValueError("full50 old junction carry must be <=-2V for induction")
+    # Original SHA-qualified local Pro18E full 4927-state read-only
+    # source replay gives min (d-s)+ETH >2.491333156468701V (n3616).
+    # Choose the strict weaker rational lower 2.49V, not a claimed
+    # recomputation of source bytes in GitHub.
+    nominal_lower=F("2.49")
+    # Full original polynomial Bernstein bounds on T[24.99,25.04]C,
+    # LOW g[-4.2,3.1], HIGH g[2.4,8.9], with 2 possible seam
+    # crossings. These exact *declared* bounds require source provenance.
+    dg=F(".04")+F(".04")
+    d_ds=F(".04")+F(".04")
+    dT=F(".01")
+    ETH_grad_g=F("3.6")
+    ETH_grad_T=F(".06")
+    ETH_seam_max=F(".007")
+    offset_lower=nominal_lower-d_ds-ETH_grad_g*dg-ETH_grad_T*dT-2*ETH_seam_max
+    # Original BE Q2 diode row and body balance at vj=-2V:
+    # ib=(1+lambda)Is*exp(vj/aV)-Is-lambda*Is*exp(oldvj/aV).
+    # With lambda<161, 0<Is<0.88e-12 A, oldvj<=-2V,
+    # ib>-(1+lambda)Is, regardless vj.
+    Is_upper=F(".88e-12")
+    lambda_upper=F(161)
+    reff_upper=F(".071")
+    body_margin=F(-2)+offset_lower-reff_upper*(1+lambda_upper)*Is_upper
+    if body_margin<=0:
+        raise ArithmeticError("original body root exclusion does not hold")
+    # Both old and new reverse junctions < -2V, aV<1/7 V
+    # hence exp(vj/aV)<exp(-14)<1e-6. The *finite rational*
+    # lower Taylor sum proves exp(14)>1e6 without floating exponentials.
+    taylor=sum((F(14)**k)/factorial(k) for k in range(19))
+    if taylor<=10**6:
+        raise ArithmeticError("rational exponential witness failed")
+    current_radius=(1+2*lambda_upper)*Is_upper/F(10**6)
+    if current_radius>=F("3e-16"):
+        raise ArithmeticError("projected diode-current bound not small")
+    return {
+        "status": "SOURCE_DECIMAL_SUBDOMAIN_REVERSE_COMPLEMENT_EXCLUDED_CONDITIONAL",
+        "original_source_member_sha256":ACTUAL_LAW_SHA256,
+        "saved_Pro18E_cal_sha256":E_SAVED_CAL_SHA256,
+        "source_archived_numeric_replayed_in_this_process":False,
+        "source_50D_stage_domain":{
+            "stages":"1..4926", "saved_delta_g_V":"0.04",
+            "saved_delta_s_V":"0.04","saved_delta_d_V":"0.04",
+            "saved_delta_Tj_C":"0.01",
+            "source_low_g_V":"[-4.2,3.1]",
+            "source_high_g_V":"[2.4,8.9]",
+            "source_temperature_C":"[24.99,25.04]",
+            "full_old50_vj_upper_V":str(old),
+        },
+        "nominal_offset_lower_assumed_V":str(nominal_lower),
+        "uniform_offset_lower_V_strict":str(offset_lower),
+        "body_residual_lower_at_minus2_V_strict":str(body_margin),
+        "new_vj_upper_V_strict":"-2",
+        "abs_ib_plus_Is_A_strict_upper":str(current_radius),
+        "root_existence":"NOT_PROVEN",
+        "all_50D_source_root_cover":"NOT_PROVEN",
+        "joint_CAL_E":"NOT_PROVEN",
+        "goal27_future_signed_work":"NOT_CERTIFIED",
+    }
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--original-zip", required=True)
