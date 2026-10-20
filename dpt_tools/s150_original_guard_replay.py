@@ -462,6 +462,60 @@ def certify_original_q2_reverse_complement(*, old_vj_upper_V="-2"):
         "goal27_future_signed_work":"NOT_CERTIFIED",
     }
 
+
+def audit_original_eth_unclipped_temperature_source_counterexample():
+    """Real SOURCE scalar body/diode counterexample to raw-T clip substitution.
+
+    Original ETH gr polynomials contain un-clipped raw T terms even when
+    tjc=min(260,max(-60,T)) fixes the clipped thermal coefficients.
+    This is exact source-decimal algebra, not a 50D reachable state.
+    """
+    from fractions import Fraction as F
+    g_low,g_high=F(-4),F(14)
+    # Original actual_law.py raw-T coefficients in the unclipped parts.
+    low_slope=F("1.272")*g_low/F(1000)
+    high_slope=(-F("2.866")*g_high*g_high
+                +F("20.77")*g_high)/F(1000)
+    if (low_slope!=-F(".005088") or
+            high_slope!=-F(".270956")):
+        raise ArithmeticError("raw-T original ETH coefficients changed")
+    # SHA-original real decimal ETH at raw T=260 and T=261 Celsius.
+    low260,low261=F("-.709724832"),F("-.714812832")
+    high260,high261=F("10.556083680"),F("10.285127680")
+    if low261-low260!=low_slope or high261-high260!=high_slope:
+        raise ArithmeticError("source ETH raw/clipped discrepancy not reproduced")
+    # At source Q2 d=154V, g-s=-4V, T=261C, fixed old Q2 vj<0,
+    # the 2-row diode/body reduction has a strict monotone scalar F(vj).
+    # Using the strict diode-current bound |reff*ib|<1e-10V, the true
+    # source bracket center -154-ETH_261=-153.285187168V is valid.
+    center=-F(154)-low261
+    radius=F("0.000001")
+    nonlinear_body_error=F("1e-10")
+    if not (center==-F("153.285187168")
+            and radius>nonlinear_body_error):
+        raise ArithmeticError("source body bracket not proved")
+    # The INCORRECT clipped-temperature ETH260 residual is positive
+    # throughout the same +/-1uV interval: excludes a true SOURCE
+    # body/diode scalar root and is thus not a valid exclusion test.
+    bad_residual_lower=(low260-low261)-radius-nonlinear_body_error
+    if bad_residual_lower<=F(".0050869"):
+        raise ArithmeticError("false exclusion gap not proved")
+    return {
+        "status": "ORIGINAL_ETH_RAW_T_REQUIRED_SOURCE_SCALAR_FALSE_EXCLUSION",
+        "actual_law_sha256": ACTUAL_LAW_SHA256,
+        "raw_temperature_C":["260","261"],
+        "source_low_eth_V":[str(low260),str(low261)],
+        "source_high_eth_V":[str(high260),str(high261)],
+        "source_low_raw_T_change_V":str(low_slope),
+        "source_high_raw_T_change_V":str(high_slope),
+        "original_two_row_root_center_V":str(center),
+        "original_two_row_root_bracket_radius_V":str(radius),
+        "invalid_clipped_T_body_residual_lower_V":str(bad_residual_lower),
+        "all50_source_root_existence":"NOT_PROVEN",
+        "physical_reachable_raw_261C":"NOT_PROVEN",
+        "all_Goal27_status":"NOT_CERTIFIED",
+    }
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--original-zip", required=True)
