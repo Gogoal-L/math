@@ -100,35 +100,49 @@ def certify_one_zero_charge_row(goal, charge_row, pivot, bound=1):
 
 def coil_be_goal_charge_rows(fine_current_goal_coeff, dt_s, voltage_bound_V,
                              source_Ls_H, half_fine_index):
-    """Build coefficient rows for source coil BE and two fine-PL port charges.
+    """Original-coil BE and two fine-PL port-charge rows, exact rational.
 
-    a_j is the EXACT fine-current coefficient in W=a.i=V.T M i, j=0..N,
-    from the declared original H841 scorer M. The original coil BE
-    difference is ds_j=ds_(j-1)+(voltage_bound/Ls)*dt*u_j for j>=1,
-    with same prepared ds_0=0. Both future port charges use this ds.
-    Returned checkpoint rows divide out common positive factor
-    voltage_bound*dt**2/Ls, immaterial when their targets are exactly zero.
+    dt_s is either a common positive step or the FULL sequence of n-1 actual
+    stored binary64 fine-grid steps. Source replay MUST supply those steps;
+    rounding every interval to a nominal 12.5ps is NOT bitwise source-exact.
+    The first prepared source-current perturbation is fixed at zero.
+    Charge rows divide out ONE common positive factor
+    voltage_bound*steps[0]**2/Ls. This is harmless for PERFECT zero-charge
+    equalities, but not for actual sensor-error units until restored.
     """
     a=tuple(map(_f,fine_current_goal_coeff))
-    dt,eps,L=map(_f,(dt_s,voltage_bound_V,source_Ls_H))
     n=len(a)
-    if n<3 or not(0<half_fine_index<n-1) or dt<=0 or eps<=0 or L<=0:
+    eps,L=map(_f,(voltage_bound_V,source_Ls_H))
+    if isinstance(dt_s,(str,bytes)):
+        steps=(_f(dt_s),)*(n-1)
+    else:
+        try:
+            steps=tuple(map(_f,dt_s))
+        except TypeError:
+            steps=(_f(dt_s),)*(n-1)
+    if (n<3 or len(steps)!=n-1 or
+            not isinstance(half_fine_index,int) or
+            not (0<half_fine_index<n-1) or eps<=0 or L<=0 or
+            any(s<=0 for s in steps)):
         raise ValueError("invalid source coil grid or positive units")
     suffix=F(0)
     b=[F(0)]*(n-1)
     for m in range(n-1,0,-1):
         suffix+=a[m]
-        b[m-1]=eps*dt/L*suffix
+        b[m-1]=eps*steps[m-1]/L*suffix
 
     def normalized_charge_row(lo,hi):
+        # Integrate ds at adjacent fine time nodes using the ACTUAL PL dt.
         weights=[F(0)]*n
-        for j in range(lo,hi+1):
-            weights[j]=(F(1,2) if j==lo or j==hi else F(1))
+        for j in range(lo,hi):
+            weights[j]+=steps[j]/2
+            weights[j+1]+=steps[j]/2
         suffix=F(0)
         row=[F(0)]*(n-1)
+        scale=steps[0]*steps[0]
         for m in range(n-1,0,-1):
             suffix+=weights[m]
-            row[m-1]=suffix
+            row[m-1]=steps[m-1]*suffix/scale
         return tuple(row)
     return tuple(b),(
         normalized_charge_row(0,half_fine_index),
