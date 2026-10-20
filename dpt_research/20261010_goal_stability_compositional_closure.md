@@ -225,7 +225,7 @@ L(h)=2^{\lfloor(h-2)/31\rfloor}.
 \end{aligned}
 ```
 
-若 $`\dim x=n`$，该升链最多发生 $`n-\dim\mathcal V_0`$ 次严格增维；稳定后 $`\mathcal V_\infty A_u\subseteq\mathcal V_\infty`$，所以以此 row basis $`T`$ 定义 $`z=Tx`$，存在准确 reduced update $`T A_u=\bar A_u T`$。任何线性**自主演化且覆盖所有词目标**的商状态，其 row space 必须含 $`\mathcal V_\infty`$；最小维数为 $`\dim\mathcal V_\infty`$。[goal_word_quotient](dpt_tools/goal_word_quotient.py) 计算这一命题。**有限指定** $`\mathcal W`$ 则只要求 $`\mathop{\mathrm{row}}(CA_w:w\in\mathcal W)`$，不是 all-word autonomous closure。
+若 $`\dim x=n`$，该升链最多发生 $`n-\dim\mathcal V_0`$ 次严格增维；稳定后 $`\mathcal V_\infty A_u\subseteq\mathcal V_\infty`$，所以以此 row basis $`T`$ 定义 $`z=Tx`$，存在准确 reduced update $`T A_u=\bar A_u T`$。任何线性**自主演化且覆盖所有词目标**的商状态，其 row space 必须含 $`\mathcal V_\infty`$；最小维数为 $`\dim\mathcal V_\infty`$。[goal_word_quotient](../dpt_tools/goal_word_quotient.py) 计算这一命题。**有限指定** $`\mathcal W`$ 则只要求 $`\mathop{\mathrm{row}}(CA_w:w\in\mathcal W)`$，不是 all-word autonomous closure。
 
 另一个可以直接测试的结果是**顺序交换缺陷**：
 

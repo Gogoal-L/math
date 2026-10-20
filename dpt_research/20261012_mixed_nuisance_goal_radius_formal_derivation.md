@@ -649,7 +649,7 @@ R_{\infty,\mathcal W}=
 \max_{w\in\mathcal W,\ j}\frac{R(c_{w,j};A,N,E)}{\tau_j}.
 ```
 
-因此 $`R_{\infty,\mathcal W}\le1`$ 是声明模型/传感器/有限 word 下的**达到工程容差的充分且必要条件**；不是全 command language 或 nonlinear source 的证书。[contextual_goal_recovery.py](dpt_tools/contextual_goal_recovery.py) 实际计算此式，调用 [goal_ellipsoid_recovery.py](dpt_tools/goal_ellipsoid_recovery.py) 的一维 $`q`$ 求解器；[8 项解析＋CLI 测试](dpt_tools/test_contextual_goal_recovery.py) 覆盖命令先后、rank-one shared noise、independent noise、预测前 CAL 和非法输入。
+因此 $`R_{\infty,\mathcal W}\le1`$ 是声明模型/传感器/有限 word 下的**达到工程容差的充分且必要条件**；不是全 command language 或 nonlinear source 的证书。[contextual_goal_recovery.py](../dpt_tools/contextual_goal_recovery.py) 实际计算此式，调用 [goal_ellipsoid_recovery.py](../dpt_tools/goal_ellipsoid_recovery.py) 的一维 $`q`$ 求解器；[8 项解析＋CLI 测试](../dpt_tools/test_contextual_goal_recovery.py) 覆盖命令先后、rank-one shared noise、independent noise、预测前 CAL 和非法输入。
 
 **由 (M16) 退化出的无噪声 rank 定理：** 当 $`E=0`$，$`R(c)=0`$ 当且仅当 $`c\in\mathop{\mathrm{row}}(U_0^\top HB)`$。若一组未来目标在 $`z`$ 坐标堆为 $`\Gamma_{\mathcal W}`$，允许免费设计任意理想、无新增 nuisance 的标量测量，则最少还缺的独立读数为
 
@@ -661,7 +661,7 @@ k_{\rm ideal}=
 -\mathop{\mathrm{rank}}(U_0^\top HB).
 ```
 
-这与已有 [contextual_goal_quotient.py](dpt_tools/contextual_goal_quotient.py) 一致；$`B`$ 非满秩时必须先写在可达 $`z`$ chart 中，不能把整个 ambient parameter space 当作真实 reachable space。真实 CAL/传感器只能从**有限合法候选库**购买，所需 channel 数可能大于理想 $`k_{\rm ideal}`$。
+这与已有 [contextual_goal_quotient.py](../dpt_tools/contextual_goal_quotient.py) 一致；$`B`$ 非满秩时必须先写在可达 $`z`$ chart 中，不能把整个 ambient parameter space 当作真实 reachable space。真实 CAL/传感器只能从**有限合法候选库**购买，所需 channel 数可能大于理想 $`k_{\rm ideal}`$。
 
 **精确小例子：** $`B=H=I_2,\ N=(1,1)^\top,\ E=0,\ C=(1,-1),\ A_{\rm future}=\mathrm{diag}(1,-1)`$。当前 goal 为 $`x_1-x_2`$，可用 $`y_1-y_2`$ 精确计算，$`R_{\rm now}=0`$；未来 goal 变成 $`x_1+x_2`$，却与无界共同 offset 混淆，$`R_{\rm future}=\sqrt2`$（状态先验是 $`\|z\|_2\le1`$，不是两个独立区间）。若合法预测前 CAL 另读 $`y_3=\eta`$，则 $`y_1+y_2-2y_3=x_1+x_2`$，future 半径归零。若原两通道分别有联合球 $`\|e\|\le1`$ 的 **0.1 倍独立误差**，CAL 后 $`R_{\rm future}=0.1\sqrt2`$；共享的 0.2 倍噪声 $`E=0.2(1,1)^\top`$ 则在差分方向仍完全消去。**这个小例子的单位是归一化状态/目标，不是 V、nH 或 nJ。**
 
