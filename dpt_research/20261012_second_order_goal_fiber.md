@@ -782,3 +782,27 @@ The error ranking reverses on the *same frozen predictions and equal observation
 
 
 **New E150 pretarget numeric challengers (NOT a new-condition source execution or genuine freeze).** Read-only, separately hash-pinned saved vendor-model 100V records have historical signed H-work [fine,H2] in nJ: B100=[62.411894937103,62.387342991745], E100=[69.662348603357,69.641430064909], B150=[28.034528346669,28.006415530245]. Let Delta=W(E100)-W(B100)=[7.250453666254,7.254087073164]nJ and candidate P(k)=W(B150)+k*Delta, for k=1, r, q. Here r=[.668202753730,.668197452468] is the H-grid arithmetic-mean load-current ratio at L5.0, whereas q=[.449185662043,.448911817481] is the B150/B100 L5.25 work ratio. The prospective candidate family is fine [35.284982012924,32.879301452254,31.291328176857]nJ and H2 [35.260502603410,32.853578032515,31.262860942426]nJ. These are arithmetic alternatives, not observed E150 target results or a frozen E150 predictor. Source-valid E150 5.0/5.5nH endpoint CAL, complete exact command/event identity, target blackout, lawful ownPREP, strongest same-data ordinary and TOTAL_ERROR are still missing. Score 1000*(W_target_nJ-P_nJ) pJ only AFTER a legitimate new target. No new native simulation, protected truth or physical effective R/L inference follows.
+
+
+## 2026-10-20 Q4: sharp three-corner prep/load interaction nonidentifiability
+
+**New conclusion from the real saved 100V B100/E100/B150 work values (not a new native run).** Suppose all three own-PREP histories correspond to one SAME-law signed-work surface W(h,l) with normalized preparation h=0 for B and h=1 for E, and load l=0 at 100uH and l=1 at 150uH. The fourth corner is the proposed E150 trial. The unknown difference-in-differences is
+
+$$
+C=W(1,1)-W(1,0)-W(0,1)+W(0,0).
+$$
+
+For ANY real C, the smooth surface W(h,l)=B100+(E100-B100)*h+(B150-B100)*l+C*h*l reproduces the THREE archived corners EXACTLY while producing a different E150 value. Hence **even zero historical measurement noise cannot yield a finite fourth-corner work bound without a bound on the interaction**. This is an exact identifiability obstruction, not a statistical confidence interval or proof that an arbitrary such surface is a legal SiC source history.
+
+A usable source-specific sufficient condition would be a smooth and complete legal own-PREP/guard parameter rectangle on which the absolute mixed derivative of W with respect to the two NORMALIZED coordinates is at most M nJ. Twice applying the fundamental theorem of calculus gives |C|<=M; the **sharp conditional** E150 range is
+
+$$
+W_{E150}\in[P_1-M,P_1+M],\qquad
+P_1=B150+E100-B100.
+$$
+
+The affine-plus-C*h*l surface attains both endpoints. If the physical prepared E-history cannot be interpolated legally into B-history, an event/guard switches, the physical goal window changes, or source smoothness fails, that derivative theorem cannot be imported. A separately qualified finite difference interaction bound could replace it.
+
+For original saved fine, P1=35.28498201292368 nJ, r-profile P_r=32.879301452253735 nJ and q-profile P_q=31.291328176856513 nJ, requiring C_r=-2.40568056066994 nJ and C_q=-3.99365383606716 nJ respectively. H2 required interactions are -2.40692457089440 and -3.99764166098342 nJ. In the three challengers the smallest model-prediction gap is 1.58797327539722 nJ (fine) and 1.59071709008901 nJ (H2). Equal independent prediction/error intervals of halfwidth at least 0.79398663769861 nJ (fine) overlap for at least the nearest pair; this is a necessary discriminability gate, NOT a source-certified TOTAL_ERROR.
+
+**Executable arithmetic and fail-closed usage.** The existing goal_defect_transport.py now exposes audit_two_factor_pretarget_interaction using exact rational arithmetic on the caller's original decimal numbers. With no M it explicitly reports THREE_CORNER_UNIDENTIFIED_NO_MIXED_BOUND and NO E150 interval. If M is supplied it reports only a CONDITIONAL_UNQUALIFIED_MIXED_DERIVATIVE_BOUND (not a source approval); exact Fraction tests prove the arbitrary-interaction no-go and reproduce both historical fine/H2 numeric candidate triplets. No remote Math asset contains the required E150 150uH source-valid 5.0/5.5nH own-PREP endpoint CAL, frozen original command/event/time identity, target blackout or qualified joint error. Neither this code nor the three-corner result is a genuine prospective Original R1 forecast or an original Goal27 full-source certificate.
