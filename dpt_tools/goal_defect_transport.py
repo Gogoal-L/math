@@ -785,3 +785,53 @@ def audit_e150_waveform_ordinary_coefficients(
             "total_error_qualified":False,
             "claim_ceiling":"Caller-supplied saved profile coefficients; no new E150 target, source input validation, actual E150 own-PREP, H window or TOTAL_ERROR. A six-way small gap is not certified predictive superiority.",
         }
+
+
+def absolute_hessian_triangle_resolution_gate(
+    known_midpoint_defects_pJ, nearest_forecast_gap_pJ,
+    per_archived_work_error_pJ, endpoint_span_nH="0.5",
+):
+    """Exact conditional no-go for NAIVE per-path ABSOLUTE Hessian contractors.
+
+    For three separately legal saved load families B100/E100/B150, d_X is
+    W_X(Lmid)-(W_X(Llo)+W_X(Lhi))/2 in pJ. Suppose EACH of the three W
+    readings has independently outward qualified error <=eps pJ and each
+    underlying load curve is C2. Then |W_X''| <=K_X demands
+    K_X >=8*(|d_X|-2eps)_+ / ((Lhi-Llo)**2 *1000) [nJ/nH2].
+    A triangle contractor K_C<=sum_X K_X+K_E150 CANNOT guarantee
+    six-rival midpoint resolution if the known three lower floors already
+    exceed 4*g / (span**2 * 1000). A joint SIGNED C'' contractor may still
+    succeed. Source native error eps and C2 regularity are NOT established.
+    No E150 target is read, produced, or scored.
+    """
+    from fractions import Fraction as F
+    def rational(x):
+        if isinstance(x,bool):
+            raise ValueError("boolean is not a source curvature certificate")
+        try:
+            return F(x)
+        except (ValueError,TypeError,ZeroDivisionError,OverflowError) as ex:
+            raise ValueError("invalid rational source curvature input") from ex
+    ds=tuple(map(rational,known_midpoint_defects_pJ))
+    g=rational(nearest_forecast_gap_pJ)
+    eps=rational(per_archived_work_error_pJ)
+    span=rational(endpoint_span_nH)
+    if len(ds)!=3 or not(g>0 and eps>=0 and span>0):
+        raise ValueError("expected three signed source defects and positive gap/span")
+    floor=sum((max(F(0),abs(d)-2*eps) for d in ds),F(0))
+    Kknown=F(8)*floor/(span*span*1000)
+    Kgoal=F(4)*g/(span*span*1000)
+    return {
+        "status":("ABSOLUTE_HESSIAN_TRIANGLE_CANNOT_RESOLVE"
+                  if Kknown>=Kgoal else "NOT_EXCLUDED_BY_THIS_BOUND"),
+        "minimum_known_hessian_sum_nJ_per_nH2":Kknown,
+        "six_way_resolution_threshold_nJ_per_nH2":Kgoal,
+        "ratio":Kknown/Kgoal,
+        "joint_interaction_curvature_qualified":False,
+        "source_archived_error_qualified":False,
+        "future_E150_target_observed":False,
+        "claim_ceiling":("Arithmetic necessity for independent ABSOLUTE per-path "
+            "Hessian-plus-triangle contractors, conditional on C2 source "
+            "families and outward score error. A JOINT SIGNED C'' outer "
+            "can avoid this no-go; no E150 physical forecast winner."),
+    }

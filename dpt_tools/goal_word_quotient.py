@@ -134,3 +134,49 @@ def main() -> int:
 
 if __name__ == "__main__":
     raise SystemExit(main())
+
+
+def source_s150_be_predecessor_key(old50, *, discretization="BE",
+                                   include_current_port=False):
+    """Exact original-law 28D old-state key for one BE step (set-valued).
+
+    Source actual_law.py member SHA256
+    51b78f729393d29745f59ca150adfef69e1847bf26a8853c6cef3d6be9e2083d.
+    For the ORIGINAL _source_operator and _turnoff_operator, when
+    old_command=None and old D1 history is within the qualified law,
+    ALL old-state arguments in F(y, old, dt, command) factor through
+       (W.T v_old [6], coil_currents_old [12],
+        junction_voltages_old [2], thermal_old [8]).
+    G11 old charge change is also determined by W.T v_old. Thus identical
+    keys give IDENTICAL next ROOT SETS (including all guarded choices)
+    for every command and positive BE step, and induction gives an exact
+    set-valued right-congruence for any finite BE command word. This is
+    algebraic factorizability, NOT proof any two distinct legal original
+    PREP/CAL histories share the key, that a root exists, or that a
+    consumer can infer this key from external observations.
+
+    Any trapezoidal old_command argument evaluates static(old) and breaks
+    this reduction. Literal hybrid resets/other integrators require a
+    separate root/guard/reset proof; fail closed rather than upgrade BE.
+    Optionally add current V(D)-V(sl) as a 29th observable-coordinate key.
+    """
+    from fractions import Fraction as F
+    if discretization!="BE":
+        raise ValueError("ONLY_SOURCE_BE_OLD_COMMAND_NONE_QUALIFIED")
+    try:
+        vals=tuple(F(x) if not isinstance(x,bool) else (_ for _ in ()).throw(
+            ValueError("boolean old state not permitted")) for x in old50)
+    except (TypeError,ValueError,ZeroDivisionError,OverflowError) as ex:
+        raise ValueError("invalid source old50 rational") from ex
+    if len(vals)!=50:
+        raise ValueError("source predecessor must have 50 coordinates")
+    # Original 26 source nodes:
+    # ['D','sl', Q1{da,d,gb,g2,g,w,x,s,sv,sb,k,sa},
+    #             Q2{da,d,gb,g2,g,w,x,s,sv,sb,k,sa}]
+    # The original source control map W.T v is (gs,gd,ds) in each Q.
+    controls=(vals[6]-vals[9],vals[6]-vals[7],vals[3]-vals[9],
+              vals[18]-vals[21],vals[18]-vals[19],vals[15]-vals[21])
+    key=controls+vals[26:38]+vals[40:42]+vals[42:50]
+    if len(key)!=28:
+        raise ArithmeticError("original source BE key dimension drift")
+    return key+((vals[0]-vals[1],) if include_current_port else ())

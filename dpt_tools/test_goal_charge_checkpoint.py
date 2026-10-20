@@ -89,5 +89,44 @@ class SourceCoilChargeCheckpointCertificate(unittest.TestCase):
         self.assertEqual(hi1 - hi0, F("-0.270956"))
 
 
+    def test_three_read_shared_bias_exact_primal_dual_50pct_threshold(self):
+        cert=self.load()
+        from fractions import Fraction as F
+        b=(F(7,4),F(-3,4),F(2),F(1))
+        C=((F(1,4),F(1,4),F(1),F(0)),
+           (F(1,4),F(-1,4),F(0),F(1)))
+        u=(F(1),F(-1),F(3,8),F(-1,2))
+        rho0=F(3,16)
+        for B,rho in ((F(0),F(3,8)),(F(3,32),F(9,32)),
+                      (F(3,16),F(3,16)),(F(1),F(3,16))):
+            m=min(B,rho)
+            e=(m,m-F(3,8),m-F(3,8))
+            got=cert.certify_three_read_shared_bias_dual(
+                b,C,(F(2),F(1)),rho,B,
+                witness=u,measurement_errors=e,
+            )
+            self.assertEqual(got["radius"],F(11,4))
+            self.assertEqual(got["primal"],got["dual"])
+            self.assertEqual(got["unconstrained_radius"],F(11,2))
+            self.assertEqual(got["charge_residuals"],(F(0),F(0)))
+            self.assertEqual(rho,rho0+max(F(0),rho0-B))
+
+    def test_three_read_joint_error_rejects_independent_difference_and_bad_bias(self):
+        cert=self.load()
+        from fractions import Fraction as F
+        b=(F(7,4),F(-3,4),F(2),F(1))
+        C=((F(1,4),F(1,4),F(1),F(0)),
+           (F(1,4),F(-1,4),F(0),F(1)))
+        with self.assertRaises(ValueError):
+            cert.certify_three_read_shared_bias_dual(
+                b,C,(2,1),F(3,16),F(0),
+                witness=(1,-1,F(3,8),F(-1,2)),
+                measurement_errors=(F(3,16),F(-3,16),F(-3,16)),
+            )
+        with self.assertRaises(ValueError):
+            cert.certify_three_read_shared_bias_dual(
+                b,C,(2,1),F(-1),F(0))
+
+
 if __name__ == "__main__":
     unittest.main()

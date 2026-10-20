@@ -177,7 +177,7 @@ def original_rc_band_filter_fraction(
     current=tuple(map(_fraction,raw_source_current_A))
     low,high=map(_fraction,(bandwidth_lo_MHz,bandwidth_hi_MHz))
     n=len(ts)
-    if (n<2 or n!=len(current) or low<=0 or high<=low or
+    if (n<2 or n!=len(current) or low<=0 or high<low or
             integer_scale<1 or not isinstance(integer_scale,int) or
             (expected_sample_count is not None and n!=expected_sample_count)
             or any(ts[j]>=ts[j+1] for j in range(n-1))):
@@ -249,3 +249,422 @@ def original_rc_band_filter_fraction(
         "fractional_pi_interval":(piL,piU),
         "claim_ceiling":"Exact rational/source-candidate PL filter outer for one saved raw-current trace, bounded bandwidth and one initial filter state. Not all 50D source roots, joint CAL sensor E, guard/reset reachability or Goal27.",
     }
+
+
+# Signed dimensionless seven-reading functional from ORIGINAL S150 H4801;
+# independently zero-sum in the two ports removes two arbitrary shared offsets.
+SEVEN_V_W=(F(-3159911,2000000),F(71229,625000),F(14659891,10000000))
+SEVEN_I_W=(F(-221897,2000000),F(-1589547,5000000),
+           F(35459,5000000),F(4217661,10000000))
+SEVEN_V_H=(3800,2614,4147)
+SEVEN_I_H=(1853,4041,2907,3660)
+
+
+def certify_original_seven_reading_joint_outer(
+    *, observed_dual, source_voltage_dual, source_current_band_outers,
+    epsilon_V="0.30558", epsilon_I="0.0401",
+    phase_V="0.02", phase_I="0.05",
+    clock_V_bound, clock_I_bound, initial_filter_I="0.1",
+    gain_V=("0.9","1.1"), gain_I=("0.9","1.1"),
+    clock_V_weighted_support=None,
+    root_radii=(0,0,0),
+):
+    """Exact necessary exclusion for a declared SOURCE-CENTER band outer.
+
+    Every row in source_current_band_outers must independently contain the
+    SAME source candidate's weighted RC port-current output for *every*
+    bandwidth in its frequency band. These bounds are hypotheses, not proved
+    by passing them as arguments. In particular this API does NOT certify
+    their original-source provenance or a 50D root cell. The associated
+    SHA-checking original NPZ replay validates that input obligation.
+    Both gain parameters are SHARED across all reads in their respective
+    channel; offsets cancel by exact zero-sum weights. Arbitrary per-read
+    phase/clock residuals and 0.1A initial filter discrepancy are enlarged
+    independently for a sound, deliberately conservative outer.
+    Normalization: divide V observations by 1V and I by 1A first.
+    """
+    if sum(SEVEN_V_W) or sum(SEVEN_I_W):
+        raise ArithmeticError("seven-read offset annihilator is not exact")
+    if len(source_current_band_outers)!=80:
+        raise ValueError("expected exactly 80 source-current bands")
+    o=_fraction(observed_dual)
+    v=tuple(map(_fraction,source_voltage_dual))
+    if len(v)!=2 or v[0]>v[1]:
+        raise ValueError("invalid source-voltage outer")
+    rv=tuple(map(_fraction,root_radii))
+    if len(rv)!=3 or any(x<0 for x in rv):
+        raise ValueError("invalid source-root tube radii")
+    gv=tuple(map(_fraction,gain_V));gi=tuple(map(_fraction,gain_I))
+    if len(gv)!=2 or len(gi)!=2 or not (0<gv[0]<=gv[1] and 0<gi[0]<=gi[1]):
+        raise ValueError("shared gains must be positive closed intervals")
+    errors=tuple(map(_fraction,(epsilon_V,epsilon_I,phase_V,phase_I,
+                                clock_V_bound,clock_I_bound,initial_filter_I)))
+    if any(x<0 for x in errors):
+        raise ValueError("sensor and clock errors must be nonnegative")
+    lv=sum(map(abs,SEVEN_V_W));li=sum(map(abs,SEVEN_I_W))
+    eV,eI,pV,pI,cV,cI,initI=errors
+    # Offset contributions vanish exactly. Other error sources may be
+    # correlated: the sum of their absolute supports remains a valid outer.
+    # phase_V/phase_I are SENSOR-OUTPUT per-reading waveform bounds,
+    # AFTER gain; independent sine/cos coefficient boxes must first be
+    # converted into actual waveform sup-bounds (usually sqrt(2) larger).
+    cvsupport=(lv*cV if clock_V_weighted_support is None
+               else _fraction(clock_V_weighted_support))
+    if cvsupport<0:
+        raise ValueError("negative source clock support")
+    total_err=lv*(eV+pV+gv[1]*(rv[0]+rv[1])) + gv[1]*cvsupport
+    total_err+=li*(eI+pI+gi[1]*(cI+initI+rv[2]))
+
+    def mult_interval(x,g):
+        corners=(x[0]*g[0],x[0]*g[1],x[1]*g[0],x[1]*g[1])
+        return min(corners),max(corners)
+
+    pv=mult_interval(v,gv)
+    prev=F(90)
+    margins=[]
+    normalized=[]
+    for item in source_current_band_outers:
+        if len(item)!=4:
+            raise ValueError("source-current band entry needs lo,hi,lower,upper")
+        blo,bhi,cl,cu=map(_fraction,item)
+        if blo!=prev or not (blo<bhi<=110) or cl>cu:
+            raise ValueError("source bandwidth gap/overlap or invalid band outer")
+        prev=bhi
+        pi=mult_interval((cl,cu),gi)
+        pred=(pv[0]+pi[0]-total_err,pv[1]+pi[1]+total_err)
+        normalized.append(pred)
+        margins.append(max(F(0),o-pred[1],pred[0]-o))
+    if prev!=110:
+        raise ValueError("source bandwidth gap: last band misses 110 MHz")
+    minimum=min(margins)
+    return dict(
+        status=("STORED_POINT_CONDITIONAL_NECESSARY_EXCLUSION"
+                if minimum>0 else "CANNOT_EXCLUDE"),
+        strict_margin=minimum,
+        zero_offset_annihilator=True,
+        weights_sum=(sum(SEVEN_V_W),sum(SEVEN_I_W)),
+        dual_port_l1=(lv,li),
+        total_nuisance_support=total_err,
+        predicted_outer_per_band=tuple(normalized),
+        source_band_count=80,
+        source_band_bounds_authenticated=False,
+        full50_root_cover_certified=False,
+        joint_full_CAL_E_certified=False,
+        future_H841_goal_certified=False,
+        claim_ceiling=("Conditional ORIGINAL-SOURCE stored-point/verified band "
+                       "outer rejection only. No complete 50D source-root "
+                       "complement, physical joint E or Goal27 certificate."),
+    )
+
+
+def replay_original_s150_seven_reading_80band(
+    observed_e_npz, candidate_a_npz, original_law_zip,
+    *, root_radii=(0,0,0),
+):
+    """Read-only SHA-qualified original E/A first-PREP seven-reading replay.
+
+    No original bytes are copied to a repository, printed or uploaded. Missing
+    original files/hash mismatch fail closed. This is a source STORED-CANDIDATE
+    necessary exclusion, not an exhaustive source-root or joint-CAL certificate.
+    The 80 exact RC midpoint enclosures and a uniform b-Lipschitz source
+    derivative cover the WHOLE 90..110 MHz frequency continuum.
+    """
+    import hashlib
+    import zipfile
+    from pathlib import Path
+    try:
+        import numpy as np
+    except ImportError as ex:
+        raise RuntimeError("NumPy is required for local source NPZ replay") from ex
+    expect_e="baafdd8cb489adb186677658c4a8031130cc53a9a1854c4997211d437daf8b3e"
+    expect_a="98f83174aef3345d81e0c500789ae59c16330874c045cfd85639d6da685c61e1"
+    expect_zip="250aa4ea17514ffdeda3a51d95bedf8e034b181f97bdc254db29ddc36281b9c8"
+    def hashed_path(path, expected):
+        if path is None:
+            raise ValueError("SOURCE_INPUTS_UNAVAILABLE")
+        p=Path(path)
+        if not p.is_file():
+            raise FileNotFoundError("SOURCE_INPUTS_UNAVAILABLE: "+str(p))
+        digest=hashlib.sha256(p.read_bytes()).hexdigest()
+        if digest!=expected:
+            raise ValueError("SOURCE_INPUT_SHA_MISMATCH: "+str(p))
+        return p
+    ep=hashed_path(observed_e_npz,expect_e)
+    ap=hashed_path(candidate_a_npz,expect_a)
+    zp=hashed_path(original_law_zip,expect_zip)
+    with zipfile.ZipFile(zp) as z:
+        members=[name for name in z.namelist() if name.endswith("actual_law.py")]
+        if not members or not any(
+                hashlib.sha256(z.read(name)).hexdigest()==LAW_SHA
+                for name in members):
+            raise ValueError("SOURCE_LAW_MEMBER_SHA_MISMATCH")
+    with np.load(ep,allow_pickle=False) as e, np.load(ap,allow_pickle=False) as a:
+        times_e=e["time_s"];times_a=a["t_s"]
+        state_e=e["state50"];state_a=a["state50"]
+        cmd_e=e["command_V"];cmd_a=a["command_V"]
+        cal=e["measurement_V_A"];H_e=e["H_s"];H_a=a["H_s"]
+        if (times_e.shape!=(4927,) or times_a.shape!=(4927,) or
+                state_e.shape!=(4927,50) or state_a.shape!=(4927,50) or
+                cal.shape!=(4801,2) or H_a.shape!=(4801,) or
+                H_e.shape!=(4801,) or cmd_e.shape!=(4927,) or
+                cmd_a.shape!=(4927,) or
+                not np.array_equal(times_e,times_a) or
+                not np.array_equal(H_e,H_a) or
+                not np.array_equal(H_a,times_a[126:]) or
+                not np.array_equal(cmd_e,cmd_a) or
+                not np.array_equal(state_e[0],state_a[0])):
+            raise ValueError("SOURCE_PREP_COMMAND_OR_GRID_IDENTITY_MISMATCH")
+        ts=tuple(F(float(x)) for x in times_a)
+        current=tuple(F(float(x)) for x in state_a[:,36])
+        voltage=tuple(F(float(u))-F(float(v)) for u,v in zip(state_a[:,0],state_a[:,1]))
+        ys=sum(w*F(float(cal[i,0])) for w,i in zip(SEVEN_V_W,SEVEN_V_H))
+        ys+=sum(w*F(float(cal[i,1])) for w,i in zip(SEVEN_I_W,SEVEN_I_H))
+    if any(ts[i]>=ts[i+1] for i in range(4926)):
+        raise ValueError("SOURCE_TIME_NOT_INCREASING")
+    # Bound derivative of exact piecewise-linear source port currents.
+    current_slope=max(abs((current[i+1]-current[i])/(ts[i+1]-ts[i]))
+                      for i in range(4926))
+    if current_slope>=F(3*10**9):
+        raise ValueError("SOURCE_CURRENT_LIPSCHITZ_NOT_QUALIFIED")
+    raw_V_lipschitz=max(
+        abs((voltage[k+s]-voltage[k+s-1])/(ts[k+s]-ts[k+s-1]))
+        for h in SEVEN_V_H for k in (h+126,) for s in (0,1))
+    if raw_V_lipschitz>=F(7*10**9):
+        raise ValueError("SOURCE_CLOCK_VOLTAGE_SLOPE_NOT_QUALIFIED")
+    source_V=sum(w*voltage[h+126] for w,h in zip(SEVEN_V_W,SEVEN_V_H))
+    stage_indices=tuple(h+126 for h in SEVEN_I_H)
+    piL,_=exact_machin_pi_interval()
+    l1I=sum(map(abs,SEVEN_I_W))
+    bands=[]
+    for k in range(80):
+        blo=F(90)+F(k,4);bhi=blo+F(1,4)
+        mid=(blo+bhi)/2
+        center=original_rc_band_filter_fraction(
+            ts,current,mid,mid,selected_stages=stage_indices,
+            expected_sample_count=4927,integer_scale=10**12)
+        fc=center["sample_bounds_A"]
+        i_lo=i_hi=F(0)
+        for w,j in zip(SEVEN_I_W,stage_indices):
+            lo,hi=fc[j]
+            if w<0:
+                lo,hi=hi,lo
+            i_lo+=w*lo
+            i_hi+=w*hi
+        # Filter derivative wrt bandwidth b, with SAME b for all samples:
+        # f_b=I-int_0^t exp(-2*pi*b*(t-s))*I'(s)ds (when f0=I0).
+        # Drift from a center midpoint to any b in this band, valid for all
+        # t and all signs of the piecewise-linear I' source.
+        inv_diff=max(F(1)/(blo*10**6)-F(1)/(mid*10**6),
+                     F(1)/(mid*10**6)-F(1)/(bhi*10**6))
+        delta=F(3*10**9)*inv_diff/(2*piL)
+        bands.append((blo,bhi,i_lo-l1I*delta,i_hi+l1I*delta))
+    weighted_V_clock_slope=sum(
+        abs(w)*max(
+            abs((voltage[j]-voltage[j-1])/(ts[j]-ts[j-1])),
+            abs((voltage[j+1]-voltage[j])/(ts[j+1]-ts[j])))
+        for w,h in zip(SEVEN_V_W,SEVEN_V_H) for j in (h+126,)
+    )
+    result=certify_original_seven_reading_joint_outer(
+        observed_dual=ys,
+        source_voltage_dual=(source_V,source_V),
+        source_current_band_outers=bands,
+        root_radii=root_radii,
+        clock_V_bound=F(7*10**9)*F("150e-15"),
+        clock_V_weighted_support=weighted_V_clock_slope*F("150e-15"),
+        clock_I_bound=F(3*10**9)*F("150e-15"),
+    )
+    result["source_band_bounds_authenticated"]=True
+    result["source_input_sha256"]=(expect_e,expect_a,expect_zip,LAW_SHA)
+    result["source_stages"]=4926
+    result["max_current_slope_A_per_s"]=current_slope
+    result["max_selected_voltage_slope_V_per_s"]=raw_V_lipschitz
+    result["observed_seven_reading_exact_dual"]=ys
+    result["source_v_seven_reading_exact_dual"]=source_V
+    result["source_exact_physical_sensor_error_qualified"]=False
+    result["source_full50_history_roots_covered"]=False
+    return result
+
+
+def certify_source_q2_kcl_heat_abs_switch(
+    sensor_left_upper_A, sensor_right_lower_A,
+    left_thermal_slope_upper_C_per_V,
+    right_thermal_slope_lower_C_per_V,
+    six_row_contraction_upper,
+):
+    """Fail-closed IVT and derivative-discontinuity gate for an ORIGINAL row.
+
+    This is an IMPLICATION from separately SHA-proven original source bounds,
+    not an algorithm that authenticates those interval inputs. On Pro18E
+    stage3616, eliminate Q2 x from original KCL r20=0 and solve the Q2
+    body/diode/four-thermal variables uniquely for each declared continuous
+    delta in [-.0395,+.0395]V. A continuous sense S(delta) changing strictly
+    from negative to positive forces one S=0; H=|ds*S|+(g-g2)^2/9 then has a
+    cusp if the one-sided T0(delta) derivatives enclose strictly opposite
+    signs. A single smooth C1 Jacobian contractor across this RAW source
+    seven-row chart is inadmissible. The remaining 43 coupled original
+    source rows have not been solved or excluded; other physical history
+    and all-root claims are forbidden.
+    """
+    left,right,tl,tr,q=map(_fraction,(
+        sensor_left_upper_A,sensor_right_lower_A,
+        left_thermal_slope_upper_C_per_V,
+        right_thermal_slope_lower_C_per_V,
+        six_row_contraction_upper,
+    ))
+    if not(0<=q<1):
+        raise ValueError("source six-row thermal contraction not established")
+    crossed=(left<0<right and tl<0<tr)
+    return {
+        "status":("SOURCE_SEVEN_ROW_HEAT_ABS_CUSP_MUST_SPLIT"
+                  if crossed else "RETAIN_UNDECIDED"),
+        "opposite_slope_jump_lower_C_per_V":(tr-tl if crossed else F(0)),
+        "source_interval_inputs_independently_authenticated":False,
+        "root_50d_certified":False,
+        "full50_history_cover_certified":False,
+        "claim_ceiling":("Only ORIGINAL 7-row KCL-eliminated Q2 "
+            "conditional chart with separately source-qualified signs and "
+            "one-sided derivatives. Preserve BOTH ABS branches in any "
+            "full50 interval-Newton/SIVIA lift; no Goal27 claim."),
+    }
+
+
+def source_be_coil_elimination(node_voltage26, old_coil12,
+                               incidence_26x12, inductance_H12, h_s):
+    """Exact 12-row original source BE coil elimination for given 26 nodes.
+
+    For original source r[26:38]=-B.T@v + source_drive e11 and
+    (L/h)*(i_new-i_old), source_drive[11]=+150V, solve:
+        i_new = i_old + (h/L)*(B.T@v-150*e11).
+    Incidence and inductances must come from independently authenticated
+    original source; this function only verifies arithmetic given them.
+    """
+    v=tuple(map(_fraction,node_voltage26))
+    old=tuple(map(_fraction,old_coil12))
+    inductance=tuple(map(_fraction,inductance_H12))
+    matrix=tuple(tuple(map(_fraction,row)) for row in incidence_26x12)
+    h=_fraction(h_s)
+    if len(v)!=26 or len(old)!=12 or len(inductance)!=12 or len(matrix)!=26 or any(
+        len(row)!=12 for row in matrix
+    ) or h<=0 or any(x<=0 for x in inductance):
+        raise ValueError("invalid original source coil BE contract")
+    drive=[F(0)]*12
+    drive[11]=F(150)
+    return tuple(old[j]+h/inductance[j]*(
+        sum(matrix[k][j]*v[k] for k in range(26))-drive[j])
+        for j in range(12))
+
+
+def certify_source_stage3616_26d_reduction(
+    original_old_temperature8_C, h_s, *,
+    old_junction_V,
+    q1_gs_V,q2_gs_V,q1_d_s_V,q2_d_s_V,
+    q1_five_node_V,q2_five_node_V,
+    adapter_kappa,source_law_sha256,source_adapter_sha256,
+    saved_cal_sha256,
+):
+    """Conditional exact original source n3616 50D->26D node-KCL root reduction.
+
+    SHA-authenticated read-only source analysis must separately prove that
+    original Q1 five node voltages indices3,5,6,8,9 and Q2 indices
+    15,17,18,20,21 lie within +/-0.04V of saved stage3616 source center,
+    and source diode/ETH/G2/heat envelopes are valid for EVERY raw T and
+    qualified predecessor (old vj in (-1590,0], all finite old thermal).
+    Across these ten-node charts Q1 is ETH LOW / G2 OFF and Q2 ETH HIGH
+    / G2 ON independent of temperature. Global source body monotonicity,
+    exact thermal 4x4 positive inverse and global H derivative Lipschitz
+    yield one six-row diode+body+thermal root per leg for each fixed node
+    tuple, across heat ABS sign changes. Exact source coil BE inversion
+    determines the other twelve currents. Therefore the complete 50D
+    single-stage root set IN THIS TEN-NODE CHART corresponds bijectively
+    to zeros of remaining 26 nodal KCL equations, provided the supplied
+    original bounds and qualified source law are independently certified.
+    Source 26D KCL root existence, chart complement, PREP/CAL histories,
+    reset, joint observations and H841 Goal27 remain unproved.
+    """
+    if (source_law_sha256!=LAW_SHA or source_adapter_sha256!=ADAPTER_SHA
+            or saved_cal_sha256!=SAVED_SHA):
+        raise ValueError("unqualified original source SHA identity")
+    if _fraction(adapter_kappa)!=F("1.007"):
+        raise ValueError("source adapter kappa unqualified")
+    old=tuple(map(_fraction,original_old_temperature8_C))
+    jold=tuple(map(_fraction,old_junction_V))
+    h=_fraction(h_s)
+    if len(old)!=8 or len(jold)!=2 or not all(
+            F(-1590)<x<=0 for x in jold):
+        raise ValueError("original old junction outside D1 no-breakdown domain")
+    if h<=0:
+        raise ValueError("source BE dt must be positive")
+    # The source heat envelope bounds both (d-x) and (g-g2).
+    # Merely bounding gs/ds would let arbitrary x voltages through,
+    # falsely elevating the global 12-root contractor. Source-center
+    # binary64 coordinates are explicitly frozen and ALL ten independent
+    # node degrees are checked before any Banach implication is allowed.
+    q1center=tuple(F.from_float(float.fromhex(x)) for x in (
+        "0x1.2bf0be2eea417p+7","0x1.6d9cb673abfabp+3",
+        "0x1.9609c4242a8a7p+3","0x1.2bf0dc944b121p+7",
+        "0x1.da4c3edc813bep+3"))
+    q2center=tuple(F.from_float(float.fromhex(x)) for x in (
+        "0x1.67138b6a8325dp+3","0x1.1bd6737f6c78cp+4",
+        "0x1.c441ed8de0342p+3","0x1.67139f1fe1791p+3",
+        "0x1.fc4c4bfd24625p+2"))
+    q1node=tuple(map(_fraction,q1_five_node_V))
+    q2node=tuple(map(_fraction,q2_five_node_V))
+    if (len(q1node)!=5 or len(q2node)!=5 or
+            any(abs(x-c)>F(".04") for nodes,center in (
+                (q1node,q1center),(q2node,q2center))
+                for x,c in zip(nodes,center))):
+        raise ValueError("original source ten-node chart leave +/-0.04V")
+    gs1=tuple(map(_fraction,q1_gs_V))
+    gs2=tuple(map(_fraction,q2_gs_V))
+    ds1=tuple(map(_fraction,q1_d_s_V))
+    ds2=tuple(map(_fraction,q2_d_s_V))
+    if any(len(x)!=2 or x[0]>x[1] for x in (gs1,gs2,ds1,ds2)):
+        raise ValueError("source physical-node voltage chart malformed")
+    if not(gs1[0]>=F("-2.2132") and gs1[1]<=F("-2.0531")
+           and gs2[0]>=F("6.1108") and gs2[1]<=F("6.271")
+           and ds1[0]>=F(135) and ds1[1]<=F("135.3")
+           and ds2[0]>=F("3.19") and ds2[1]<=F("3.36")
+           and gs1[1]<F("2.1679956")
+           and gs2[0]>F("3.1343316")):
+        raise ValueError("node box leaves source stage3616 ON/OFF guard chart")
+    beta1,alpha1,_=source_thermal_affine_exact(old[:4],h)
+    beta2,alpha2,_=source_thermal_affine_exact(old[4:],h)
+    # Original source-wide heat and derivative envelopes are separate
+    # SHA-qualified mathematical prerequisites, NOT extracted by this CI.
+    H1,H2=F(110000),F(33000)
+    q1=F("1.4230884541564563e-16")
+    q2=F(".000368894405170418")
+    if not all(a>=0 for a in (*alpha1,*alpha2)):
+        raise ValueError("thermal M-matrix inverse is not positive")
+    if not (q1<1 and q2<1):
+        raise ValueError("global heat contraction not established")
+    return dict(
+        status="CONDITIONAL_50D_TO_26D_STAGE_ROOT_BIJECTION",
+        original_stage=3616,
+        declared_10_node_chart_radius_V=F(".04"),
+        original_ten_nodes_checked_against_saved_center=True,
+        q1_guard="ETH_LOW_G2_OFF",
+        q2_guard="ETH_HIGH_G2_ON",
+        old_junction_domain_qualified=True,
+        q1_banach_contraction_upper=q1,
+        q2_banach_contraction_upper=q2,
+        max_banach_contraction=max(q1,q2),
+        q1_thermal_lower_C=beta1,
+        q1_thermal_upper_C=tuple(a+b*H1 for a,b in zip(beta1,alpha1)),
+        q2_thermal_lower_C=beta2,
+        q2_thermal_upper_C=tuple(a+b*H2 for a,b in zip(beta2,alpha2)),
+        eliminated_rows=24,
+        reduced_node_KCL_rows=26,
+        required_10_node_box_source_authenticated_in_ci=False,
+        required_source_heat_derivative_enclosures_authenticated_in_ci=False,
+        kcl26_roots_exist_certified=False,
+        complementary_chart_roots_excluded=False,
+        full50_allstage_root_cover_certified=False,
+        all_cal_joint_E_certified=False,
+        goal27_signed_work_certified=False,
+        claim_ceiling=("Only ORIGINAL one-stage ten-node chart, qualified "
+            "old-diode state and source-proved global diode/thermal/heat "
+            "envelopes imply exact 50D-to-26D node-KCL root bijection. "
+            "No existence/complement certificate for 26 KCL roots, no "
+            "history or physical Goal27 upper."),
+    )

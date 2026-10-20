@@ -605,5 +605,33 @@ class Q2Q3SourceShapedInformationControls(unittest.TestCase):
         self.assertEqual(work,16*dt)
         self.assertEqual(-work,-16*dt)
 
+
+class OriginalS150SourceBEHistoryQuotientTests(unittest.TestCase):
+    def test_original_50d_be_old_dependence_factors_through_28d_key(self):
+        from fractions import Fraction as F
+        from goal_word_quotient import source_s150_be_predecessor_key as key
+        old=tuple(F(j,10) for j in range(50))
+        other=list(old)
+        other[0]+=F(2);other[1]+=F(2)
+        other[38]+=F(7,100);other[39]-=F(3,100)
+        self.assertEqual(len(key(old)),28)
+        self.assertEqual(key(old),key(tuple(other)))
+        self.assertEqual(len(key(old,include_current_port=True)),29)
+        self.assertEqual(key(old,include_current_port=True),
+                         key(tuple(other),include_current_port=True))
+        for coordinate in (6,26,40,42):
+            changed=list(old); changed[coordinate]+=F(1,100)
+            self.assertNotEqual(key(old),key(tuple(changed)))
+
+    def test_trapezoid_and_bad_old_states_are_not_covered_by_be_quotient(self):
+        from goal_word_quotient import source_s150_be_predecessor_key as key
+        for kwargs in (dict(discretization="TR"),dict(discretization="unknown")):
+            with self.assertRaises(ValueError):
+                key([0]*50,**kwargs)
+        for invalid in ([0]*49,[0]*49+[True],[0]*49+[float("nan")]):
+            with self.assertRaises(ValueError):
+                key(invalid)
+
+
 if __name__ == "__main__":
     unittest.main()
