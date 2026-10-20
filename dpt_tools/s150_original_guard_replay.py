@@ -277,8 +277,10 @@ def classify_original_eth_guard_rectangle(temperature_C, gate_minus_source_V):
     def clip(v, lo, hi):
         return min(hi, max(lo, v))
 
-    Tl, Th = limits(temperature_C, "T")
-    Gl, Gh = limits(gate_minus_source_V, "g-s")
+    raw_Tl, raw_Th = limits(temperature_C, "T")
+    raw_Gl, raw_Gh = limits(gate_minus_source_V, "g-s")
+    Tl, Th = raw_Tl, raw_Th
+    Gl, Gh = raw_Gl, raw_Gh
     Tl, Th = clip(Tl, F(-60), F(260)), clip(Th, F(-60), F(260))
     Gl, Gh = clip(Gl, F(-8), F(19)), clip(Gh, F(-8), F(19))
 
@@ -298,6 +300,10 @@ def classify_original_eth_guard_rectangle(temperature_C, gate_minus_source_V):
     return {
         "status": "SOURCE_DECIMAL_GUARD_ONLY_NOT_50D_ROOT",
         "actual_law_member_sha256": ACTUAL_LAW_SHA256,
+        "raw_temperature_C": [str(raw_Tl), str(raw_Th)],
+        "raw_gate_minus_source_V": [str(raw_Gl), str(raw_Gh)],
+        "effective_clipped_temperature_C": [str(Tl), str(Th)],
+        "effective_clipped_gate_minus_source_V": [str(Gl), str(Gh)],
         "temperature_C": [str(Tl), str(Th)],
         "gate_minus_source_V": [str(Gl), str(Gh)],
         "threshold_V": [str(th_lo), str(th_hi)],
