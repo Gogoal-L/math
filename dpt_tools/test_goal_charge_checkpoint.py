@@ -56,6 +56,17 @@ class SourceCoilChargeCheckpointCertificate(unittest.TestCase):
         self.assertEqual(charge[0], (F(3, 2), F(1, 2), F(0), F(0)))
         self.assertEqual(charge[1], (F(2), F(2), F(3, 2), F(1, 2)))
 
+    def test_nonuniform_binary64_source_time_steps_change_exact_charge_rows(self):
+        cert=self.load()
+        b,C=cert.coil_be_goal_charge_rows(
+            [0,1,2,3,4],[1,2,1,3],1,1,2)
+        self.assertEqual(b,(F(10),F(18),F(7),F(12)))
+        self.assertEqual(C[0],(F(5,2),F(2),F(0),F(0)))
+        self.assertEqual(C[1],(F(4),F(8),F(7,2),F(9,2)))
+        self.assertNotEqual(C[1],(F(2),F(2),F(3,2),F(1,2)))
+        with self.assertRaises(ValueError):
+            cert.coil_be_goal_charge_rows([0,1,2,3,4],[1,2,3],1,1,2)
+
     def test_raw_temperature_source_eth_does_not_flatten_after_260c(self):
         cert = self.load()
         low0 = cert.original_eth_fraction(F(-4), F(260))
