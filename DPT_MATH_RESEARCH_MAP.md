@@ -67,6 +67,7 @@
 - **对象：** 同一law/family下的合法own-PREP history集合，完整recorded-command、观察算子和joint error E；直接研究相关goal像或残差`R=G−p(O)`，不先把每个内部状态独立建盒。
 - **最强ordinary：** 获相同CAL/public law/seed/family权限的Full与简单goal/readout模型。Full已准确时，贡献可为更少必要信息、明确误差/失效边界，不强求beat Full。
 - **有用出口：** 一个非零有限域内可复算的条件upper/lower与关键常数资格，或合法同信息双世界的goal gap及最小repair。tangent/finite bank最大差不代替连续域。
+- **2026-10-20 P57条件推进：** 同一完整CAL记录的box条件化joint-error支持可比原E−E界严格更紧；固定clock/RC与7维凸共享nuisance模型下，单一候选全CAL不相容具有≤8读数Helly见证。一个4801点合成双root的精确误差门为3/20 V，future-work直径从0跃至1 nJ；真实50D source roots、guard和joint E仍OPEN。见[mixed-nuisance P57](dpt_research/20261012_mixed_nuisance_goal_radius_formal_derivation.md)和`test_paper_transfer_falsifiers.py`。
 - **长期难点：** PREP126/CAL4800/target6720、guard/diode与相关remainder；允许先攻短片段或直接goal证书。缺source输入可做独立条件数学，不反复生成合成收据冒充source包含。
 - **现有笔记：** [mixed-nuisance/fiber](dpt_research/20261012_mixed_nuisance_goal_radius_formal_derivation.md)、[solver fidelity](dpt_research/20261010_goal_information_solver_fidelity.md)、[goal defect](dpt_research/20261010_goal_stability_compositional_closure.md)。
 

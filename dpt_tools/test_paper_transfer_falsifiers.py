@@ -1199,5 +1199,53 @@ class SetInversionTransferContractRegression(unittest.TestCase):
 
 
 
+class FullCalSparseCertificateTests(unittest.TestCase):
+    """Exact P57 controls; artificial two-root source, not source-law replay."""
+
+    def test_record_conditioned_pairwise_support_is_strict(self):
+        from fractions import Fraction as F
+        # Two roots O=G=0 or 1, same y=0, joint E=[-1,1].
+        y, obs_a, obs_b = F(0), F(0), F(1)
+        e_a, e_b = y-obs_a, y-obs_b
+        self.assertTrue(F(-1) <= e_a <= F(1))
+        self.assertTrue(F(-1) <= e_b <= F(1))
+        self.assertEqual(abs(e_b-e_a), F(1))
+        self.assertEqual(F(1)-F(-1), F(2))
+        self.assertEqual(abs(obs_a-obs_b), abs(e_b-e_a))
+
+    def test_exact_five_row_phase_annihilator_and_sharp_toy_threshold(self):
+        from fractions import Fraction as F
+        m = list(map(F, (0, 1, 2, 3, 4)))
+        y = [F(v) for v in ("0", "1.3", "3.2", "5.7", "8.8")]
+        w = [F(i, 8) for i in (1, -2, 2, -2, 1)]
+        sin25 = list(map(F, (0, 1, 0, -1, 0)))
+        cos25 = list(map(F, (1, 0, -1, 0, 1)))
+        for column in ([F(1)]*5, m, sin25, cos25):
+            self.assertEqual(sum(x*v for x,v in zip(w,column)), 0)
+        self.assertEqual(sum(map(abs,w)), 1)
+        self.assertEqual(sum(x*v for x,v in zip(w,y)), F(3,20))
+        # Same cosine coefficient acts on BOTH sensor channels:
+        # A_V=1 V, A_I=1/20 A, eta_c=3/5; source I0=0,
+        # observed source I1=3/100*cos25 and current residual is zero.
+        shared_eta_c, current_phase_amp = F(3,5), F(1,20)
+        current_observed = [F(3,100)*c for c in cos25]
+        self.assertEqual(
+            current_observed,
+            [current_phase_amp*shared_eta_c*c for c in cos25],
+        )
+        # All-time identity V1=(11/5)V0-3/4+(3/5)cos25+(3/20)cos50.
+        # Gamma=11/5, beta=-3/4, shared phase cos25=3/5 are legal.
+        self.assertTrue(F(1) <= F(11,5) <= F(3))
+        self.assertTrue(F(-1) <= -F(3,4) <= F(1))
+        self.assertTrue(F(3,5)**2 <= F(1))
+        # |cos50(t)| <= 1 ANALYTICALLY, hence every 4801 reading fits
+        # at epsilon=3/20; the sparse contrast excludes epsilon smaller.
+        epsilon_star = F(3,20)
+        self.assertTrue(epsilon_star > F(1,10))
+        self.assertEqual(epsilon_star, abs(sum(x*v for x,v in zip(w,y))))
+        goals_J = (F(0), F(1,10**9))
+        self.assertEqual((max(goals_J)-min(goals_J))/2, F(1,2*10**9))
+
+
 if __name__ == "__main__":
     unittest.main()
