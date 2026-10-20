@@ -266,6 +266,7 @@ def certify_original_seven_reading_joint_outer(
     phase_V="0.02", phase_I="0.05",
     clock_V_bound, clock_I_bound, initial_filter_I="0.1",
     gain_V=("0.9","1.1"), gain_I=("0.9","1.1"),
+    clock_V_weighted_support=None,
     root_radii=(0,0,0),
 ):
     """Exact necessary exclusion for a declared SOURCE-CENTER band outer.
@@ -304,8 +305,15 @@ def certify_original_seven_reading_joint_outer(
     eV,eI,pV,pI,cV,cI,initI=errors
     # Offset contributions vanish exactly. Other error sources may be
     # correlated: the sum of their absolute supports remains a valid outer.
-    total_err=lv*(eV+gv[1]*(pV+cV+rv[0]+rv[1]))
-    total_err+=li*(eI+gi[1]*(pI+cI+initI+rv[2]))
+    # phase_V/phase_I are SENSOR-OUTPUT per-reading waveform bounds,
+    # AFTER gain; independent sine/cos coefficient boxes must first be
+    # converted into actual waveform sup-bounds (usually sqrt(2) larger).
+    cvsupport=(lv*cV if clock_V_weighted_support is None
+               else _fraction(clock_V_weighted_support))
+    if cvsupport<0:
+        raise ValueError("negative source clock support")
+    total_err=lv*(eV+pV+gv[1]*(rv[0]+rv[1])) + gv[1]*cvsupport
+    total_err+=li*(eI+pI+gi[1]*(cI+initI+rv[2]))
 
     def mult_interval(x,g):
         corners=(x[0]*g[0],x[0]*g[1],x[1]*g[0],x[1]*g[1])
@@ -448,14 +456,21 @@ def replay_original_s150_seven_reading_80band(
         # t and all signs of the piecewise-linear I' source.
         inv_diff=max(F(1)/(blo*10**6)-F(1)/(mid*10**6),
                      F(1)/(mid*10**6)-F(1)/(bhi*10**6))
-        delta=current_slope*inv_diff/(2*piL)
+        delta=F(3*10**9)*inv_diff/(2*piL)
         bands.append((blo,bhi,i_lo-l1I*delta,i_hi+l1I*delta))
+    weighted_V_clock_slope=sum(
+        abs(w)*max(
+            abs((voltage[j]-voltage[j-1])/(ts[j]-ts[j-1])),
+            abs((voltage[j+1]-voltage[j])/(ts[j+1]-ts[j])))
+        for w,h in zip(SEVEN_V_W,SEVEN_V_H) for j in (h+126,)
+    )
     result=certify_original_seven_reading_joint_outer(
         observed_dual=ys,
         source_voltage_dual=(source_V,source_V),
         source_current_band_outers=bands,
         root_radii=root_radii,
         clock_V_bound=F(7*10**9)*F("150e-15"),
+        clock_V_weighted_support=weighted_V_clock_slope*F("150e-15"),
         clock_I_bound=F(3*10**9)*F("150e-15"),
     )
     result["source_band_bounds_authenticated"]=True
