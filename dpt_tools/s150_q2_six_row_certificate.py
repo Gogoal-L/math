@@ -69,6 +69,7 @@ def certify_q2_on_subsystem(
     body_left_upper_V,body_right_lower_V,
     channel_temperature_derivative_bound_A_per_C,
     drain_span_abs_bound_V,heat_upper_W,
+    diode_current_temperature_derivative_bound_A_per_C="6.58e-17",
     T0_interval_C=("25","25.04"),
     other_temperature_interval_C=("24.99","25.05"),
 ):
@@ -104,7 +105,10 @@ def certify_q2_on_subsystem(
     if any(not(Olo<beta[i]<=beta[i]+alpha[i]*Hmax<Ohi)
            for i in range(1,4)):
         raise ValueError("other thermal root image outside declared box")
-    Lipschitz_H=kappa*dspan*dch
+    dibT=_fraction(diode_current_temperature_derivative_bound_A_per_C)
+    if dibT<0:
+        raise ValueError("diode current thermal derivative majorant must be nonnegative")
+    Lipschitz_H=dspan*(kappa*dch+dibT)
     contraction=alpha[0]*Lipschitz_H
     if not(0<=contraction<1):
         raise ValueError("thermal Banach contraction failed")
