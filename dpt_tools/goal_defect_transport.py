@@ -555,3 +555,78 @@ def main() -> int:
 
 if __name__ == "__main__":
     raise SystemExit(main())
+
+
+def audit_two_factor_pretarget_interaction(
+        B100_nJ, E100_nJ, B150_nJ, *, current_ratio, work_ratio,
+        mixed_derivative_abs_bound_nJ=None):
+    """Sharp three-corner E150 identifiability gate, without held-out truth.
+
+    The two normalized coordinates label legal B/E own-PREP and 100/150uH.
+    An E150 interval requires independently SOURCE-QUALIFIED smooth lawful
+    history rectangle and |partial_h partial_l W|<=M over the ENTIRE area.
+    With no certified M, three exact corners cannot bound the fourth one.
+    """
+    from decimal import Decimal, localcontext
+    from fractions import Fraction
+
+    def q(value, label):
+        if isinstance(value, bool):
+            raise ValueError(label + " must be a finite decimal")
+        try:
+            z = Decimal(str(value))
+            if not z.is_finite():
+                raise ValueError("nonfinite")
+            return Fraction(z)
+        except (ValueError, TypeError, ArithmeticError, OverflowError) as exc:
+            raise ValueError(label + " must be a finite decimal") from exc
+
+    base = q(B100_nJ, "B100")
+    e100 = q(E100_nJ, "E100")
+    b150 = q(B150_nJ, "B150")
+    r = q(current_ratio, "current_ratio")
+    w = q(work_ratio, "work_ratio")
+    M = (None if mixed_derivative_abs_bound_nJ is None else
+         q(mixed_derivative_abs_bound_nJ, "mixed derivative bound"))
+    if M is not None and M < 0:
+        raise ValueError("mixed derivative bound must be nonnegative")
+
+    delta = e100-base
+    predictions = {
+        "additive": b150+delta,
+        "current_scaled": b150+r*delta,
+        "work_scaled": b150+w*delta,
+    }
+    interactions = {key: value-predictions["additive"]
+                    for key, value in predictions.items()}
+    separations = [abs(predictions[a]-predictions[b]) for a,b in (
+        ("additive","current_scaled"),("additive","work_scaled"),
+        ("current_scaled","work_scaled"))]
+    with localcontext() as context:
+        context.prec = 65
+        def dec(z):
+            return format(Decimal(z.numerator)/Decimal(z.denominator), "f")
+        return {
+            "status": ("THREE_CORNER_UNIDENTIFIED_NO_MIXED_BOUND" if M is None
+                       else "CONDITIONAL_UNQUALIFIED_MIXED_DERIVATIVE_BOUND"),
+            "evidence": "CALLER_DECIMAL_CORNER_INPUTS_NO_SOURCE_REPLAY",
+            "source_root_and_prep_status": "NOT_VERIFIED",
+            "E150_new_condition_status": "NOT_OBSERVED_OR_FROZEN",
+            "history_delta_nJ": dec(delta),
+            "additive_E150_nJ": dec(predictions["additive"]),
+            "candidate_predictions_nJ": {k:dec(z) for k,z in predictions.items()},
+            "required_interactions_nJ": {k:dec(z) for k,z in interactions.items()},
+            "minimum_candidate_gap_nJ": dec(min(separations)),
+            "half_minimum_candidate_gap_nJ": dec(min(separations)/2),
+            "mixed_derivative_bound_nJ": None if M is None else dec(M),
+            "conditional_E150_interval_nJ": None if M is None else [
+                dec(predictions["additive"]-M),
+                dec(predictions["additive"]+M)],
+            "excluded_if_M_source_qualified": ([] if M is None else [
+                key for key,z in interactions.items() if abs(z)>M]),
+            "claim_ceiling": ("Three original saved history/load corners alone do "
+                "not identify the E150 signed-work fourth corner. M needs a "
+                "source-qualified lawful smooth PREP/load rectangle and "
+                "all-guard H scorer/error outer. Not a true prospective "
+                "predictor, source-root certificate or Goal27 range."),
+        }

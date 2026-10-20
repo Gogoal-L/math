@@ -343,5 +343,47 @@ class D19OriginalCoilScorerCountercontrol(unittest.TestCase):
                             b['r36_minus_r37_maxabs_V']),1e-7)
 
 
+class Q4ThreeCornerIdentifiabilityTests(unittest.TestCase):
+    def test_saved_fine_h2_corner_predictions_and_interaction_threshold(self):
+        from goal_defect_transport import audit_two_factor_pretarget_interaction as f
+        pairs=(
+          ("62.4118949371027","69.66234860335713","28.034528346669244",
+           "0.6682027537302077","0.44918566204281746",
+           (35.28498201292368,32.879301452253735,31.291328176856513)),
+          ("62.38734299174475","69.641430064909","28.00641553024535",
+           "0.6681974524680616","0.44891181748117126",
+           (35.2605026034096,32.853578032515195,31.262860942426183)),
+        )
+        for base,e,b,r,q,expected in pairs:
+            got=f(base,e,b,current_ratio=r,work_ratio=q)
+            self.assertEqual(got["status"],
+                             "THREE_CORNER_UNIDENTIFIED_NO_MIXED_BOUND")
+            self.assertIsNone(got["conditional_E150_interval_nJ"])
+            values=got["candidate_predictions_nJ"]
+            for key,want in zip(("additive","current_scaled","work_scaled"),
+                                expected):
+                self.assertAlmostEqual(float(values[key]),want,places=10)
+            self.assertGreater(float(got["minimum_candidate_gap_nJ"]),1.58)
+            self.assertLess(float(got["minimum_candidate_gap_nJ"]),1.60)
+            alt=f(base,e,b,current_ratio=r,work_ratio=q,
+                  mixed_derivative_abs_bound_nJ="3")
+            self.assertIn("work_scaled",alt["excluded_if_M_source_qualified"])
+            self.assertNotIn("current_scaled",alt["excluded_if_M_source_qualified"])
+
+    def test_arbitrary_mixed_term_preserves_three_corners(self):
+        from fractions import Fraction as Q
+        a,b,c=Q(62),Q(70),Q(28)
+        def W(h,l,k):
+            return a+(b-a)*h+(c-a)*l+k*h*l
+        for k in (Q(0),Q(-1000000),Q(1000000)):
+            self.assertEqual((W(0,0,k),W(1,0,k),W(0,1,k)),(a,b,c))
+            self.assertEqual(W(1,1,k),b+c-a+k)
+        from goal_defect_transport import audit_two_factor_pretarget_interaction as f
+        for bad in (-1,"NaN","Infinity",True):
+            with self.assertRaises(ValueError):
+                f(1,2,3,current_ratio=1,work_ratio=1,
+                  mixed_derivative_abs_bound_nJ=bad)
+
+
 if __name__ == '__main__':
     unittest.main()
