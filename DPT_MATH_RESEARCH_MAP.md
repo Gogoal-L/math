@@ -63,6 +63,7 @@
 这些问题承接Main短单元难以闭合的数学困难，不要求按顺序全做。Side可以发现更强对象；若改变问题，说明将改变Main哪项决定及为何更值得。
 
 ### Q1 — 合法CAL相容PREP像上的有限目标范围
+- **S-L39新原source六行全温度根补集与7行KCL热ABS seam：** 在Pro18E n3616固定旧50、Q2五节点±0.04V盒，原M-matrix/ETH/G2/二极管热包络将**所有**该六行合法raw-T根困在T0∈[25.016698923488,25.016920980657]°C，Banach q<.000278而非仅局部box存在；KCL r20消去x后在合法同节点盒中原source sense S跨零，T0对参数出现真实ABS非C1 kink，禁止整盒单一光滑Krawczyk。见[solver fidelity S-L39](dpt_research/20261010_goal_information_solver_fidelity.md)及[有理数条件fail-closed](dpt_tools/s150_q2_six_row_certificate.py)；其余43行、全历史仍OPEN。
 - **P60原source七读数连续RC门（本轮新增）：** SHA锁定E/A原始保存数组，V3/I4零和双通道dual消共同offset，对共享b∈[90,110]MHz作80子带×4926阶严格有理数PL外包、150fs clock、同通道gain和逐读输出phase/noise共同排除。原始本地只读回放得正的**保存点条件**间隔；source-cell lift仅在额外认证全部4927阶50D根tube且其有向支持小于间隔时成立。见[mixed-nuisance P60](dpt_research/20261012_mixed_nuisance_goal_radius_formal_derivation.md)、[执行器与测试](dpt_tools/s150_q2_six_row_certificate.py)；原始字节不在远端CI，全root/joint CAL E/H841仍OPEN。
 - **S-L38已合并的首次原source六行存在唯一性：** Pro18E n3616固定完整旧50与Q2五节点±0.04V盒内，Q2 body/diode/4热方程在指定根盒唯一；Banach q<1.34e−5，原adapter kappa=1.007，predecessor旧T0盒内exclusion另有严格门。它不是剩余44行、全50D/连续PREP→CAL的证明。见[solver fidelity S-L38](dpt_research/20261010_goal_information_solver_fidelity.md)与[Fraction程序](dpt_tools/s150_q2_six_row_certificate.py)。
 - **S-L37新source必需事实：** 原SHA实际ETH在有效T=260℃饱和后仍用RAW tj；raw T=260→261℃时相同有效T、g-s=−4/+14V，ETH分别改变−5.088/−270.956mV。只保留裁剪T的source-root contractor不可靠；该反证不证明raw T>260℃物理可达或50D根。见[solver fidelity S-L37](dpt_research/20261010_goal_information_solver_fidelity.md)和`goal_charge_checkpoint.py`，合法raw-state外包仍OPEN。
@@ -85,6 +86,7 @@
 - **现有笔记：** [mixed-nuisance/fiber](dpt_research/20261012_mixed_nuisance_goal_radius_formal_derivation.md)、[solver fidelity](dpt_research/20261010_goal_information_solver_fidelity.md)、[goal defect](dpt_research/20261010_goal_stability_compositional_closure.md)。
 
 ### Q2 — 跨command序列的goal-relevant history closure
+- **Q2首次原source非线性BE右同余：** 原S150两种50D source residual在`old_command=None`的BE离散化时旧态影响精确通过28D键`(Wᵀv_old,12i_old,2vj_old,8T_old)`；相同键导致所有合法BE未来command word的**根集合**相同（若无额外旧态reset），无需单根平滑性。原source read-only 12组数值符合，TRAP因调用`static(old)`不继承。键不一定从CAL可恢复、不证明合法同键PREP双历史。见[stability Q2](dpt_research/20261010_goal_stability_compositional_closure.md)与[执行器](dpt_tools/goal_word_quotient.py)。
 
 - **决定：** 单次CAL上足够的摘要，何时可作为后续序列中递推更新的预测状态？
 - **对象：** 保留合法PREP、command顺序、future word与goal的memory quotient/finite response；pointwise gate范围或短history特征支持不能直接证明whole-sequence支持。
@@ -96,6 +98,7 @@
 - **2026-10-20 Side条件负控：** 两个线性command更新各自严格收缩仍可能出现单段不可观测、双段goal gap；已复用原有限word工具，详见[dynamic closure](dpt_research/20261010_goal_stability_compositional_closure.md)。该合成负控不认证原source连续合法历史。
 
 ### Q3 — 可取得charge误差信息与reference discrepancy的联合传播
+- **Q3新增三读共同bias sharp阈值与PRETARGET负控：** Pro18C H841未来PORT电荷假想线圈盒中，三原始读数共同|bias|≤B、独立|e|≤rho下精确对偶给50%半径收缩界`rho_half(B)=rho0+max(0,rho0-B)`，`rho0≈0.04896452pC`，零bias门约0.097929pC；原source CAL12ns/TARGET18ns虽同PREP却是重叠不同命令，两者前42ns PORT charge相差20.136246938nC，不能把CAL直接冒充TARGET oracle。见[mixed-nuisance Q3](dpt_research/20261012_mixed_nuisance_goal_radius_formal_derivation.md)与[精确噪声dual](dpt_tools/goal_charge_checkpoint.py)；合法CAL→target transfer/joint E仍OPEN。
 - **Q3新source coil-row条件sharp界：** Pro18C原H841目标核与Ls=4.16nH BE约束、未来|δvD|≤1µV盒模型，未测半径.029982652636nJ；完美未来PORT charge第一半窗降至.001330657989nJ，两半窗降至.001300015555nJ（仅多0.0306424pJ）。同bias三读误差下双row固定dual噪声支撑284.0036705V·rho[nC]，严格收益需rho<.1009939pC。LOCAL source-array Fraction重放，CI仅通用模型回归；非pretarget/全50D Goal27证书。见[mixed-nuisance Q3](dpt_research/20261012_mixed_nuisance_goal_radius_formal_derivation.md)与`goal_charge_checkpoint.py`；关键OPEN为合法可取得的PRETARGET charge-to-future transfer与全root joint E。
 
 - **决定：** 哪一项实际可取得的历史/测点信息，能把目标范围缩到有用水平？
