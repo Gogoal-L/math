@@ -1782,7 +1782,7 @@ Goal27 improvement.
 
 ## 2026-10-20 Q3: source-coil-row sharp H841 joint-charge certificate (conditional)
 
-**New information-repair conclusion.** Source archive: read-only original Pro18C target6721/H841 NPZ SHA256 af7299434d7dcde687da3bf56b5ce31babbc4e0c1c0e12b1a849b5f5530ae8fd; NOT hosted in remote Math CI. Hold its external port voltage v fixed and let M=P_H^T Omega_H P_H be the exact existing H841 signed-work fine-grid scorer, a=Mv. Assume only original coil BE row36 with Ls=4.16nH, shared prepared coil current, 6720 actual stored-binary64 source fine step lengths h_m near 12.5ps, hypothetical future drain voltage perturbation delta_vD_m=epsilon*u_m, epsilon=1 microV, |u_m|<=1 for m=1..6720. The row alone forces
+**New information-repair conclusion.** Source archive: read-only original Pro18C target6721/H841 NPZ SHA256 af7299434d7dcde687da3bf56b5ce31babbc4e0c1c0e12b1a849b5f5530ae8fd; NOT hosted in remote Math CI. Hold its external port voltage v fixed and let M=P_H^T Omega_H P_H be the exact existing H841 signed-work fine-grid scorer, a=Mv. Assume only original coil BE row36 with Ls=4.16nH, shared prepared coil current, 6720 actual stored-binary64 source fine step lengths h_m near 12.5ps, hypothetical future sl-node voltage perturbation delta_vD_m=epsilon*u_m, epsilon=1 microV, |u_m|<=1 for m=1..6720. The row alone forces
 
     delta_s_j = (epsilon/Ls)*sum(h_m*u_m for 1<=m<=j)
     delta_W = sum(b_m*u_m), b_m=(epsilon*h_m/Ls)*sum(a_j for j>=m).
