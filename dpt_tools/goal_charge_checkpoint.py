@@ -248,3 +248,81 @@ def certify_three_read_shared_bias_dual(
         raise ArithmeticError("exact shared-bias primal/dual gap not closed")
     out.update(primal=p,radius=p,sharp_certified=True,charge_residuals=cp)
     return out
+
+
+def certify_two_charge_shared_prepared_current(
+    goal,charge_rows,prepared_goal_coefficient,
+    charge_prepared_coefficients,prepared_current_bound,
+    pivot,*,control_bound=1,
+):
+    """Exact source-COIL conditional minimax with ONE shared old-current.
+
+    Let |u_m|<=D be dimensionless future BE coil-voltage controls and
+    |gamma|<=G a common prepared coil-current shift [A].
+    Signed goal W=A*gamma+b.u [nJ], two FUTURE port charges [nC]
+       Q0=T0*gamma+C0.u, Q1=T1*gamma+C1.u.
+    T are [nC/A] (e.g. 42ns=42nC/A), C are [nC].
+    For both charges exactly zero, gamma=-C0.u/T0 and therefore
+       c.u=0, c=C1/T1-C0/T0,
+       W=a.u, a=b-A*C0/T0.
+    One bounded pivot can supply a sharp primal/dual equality:
+       radius = min_lambda D sum|a_m-lambda*c_m|.
+    This routine independently checks all box, shared-gamma, zero-charge
+    and primal/dual obligations over EXACT rationals. Failure to find a
+    feasible sharp pivot is UNKNOWN, not a no-gain or no-root verdict.
+    The real source 6720D coefficient rows and physical pretarget
+    calibration contract are NOT authenticated by the helper or CI.
+    """
+    b=tuple(map(_f,goal))
+    if (len(b)<3 or len(charge_rows)!=2 or
+            len(charge_prepared_coefficients)!=2 or
+            not isinstance(pivot,int) or pivot<0 or pivot>=len(b)):
+        raise ValueError("invalid source future charge dimensions/pivot")
+    C0,C1=(tuple(map(_f,row)) for row in charge_rows)
+    if len(C0)!=len(b) or len(C1)!=len(b):
+        raise ValueError("charge row dimensions mismatch")
+    A=_f(prepared_goal_coefficient)
+    T0,T1=tuple(map(_f,charge_prepared_coefficients))
+    G,D=map(_f,(prepared_current_bound,control_bound))
+    if T0==0 or T1==0 or G<0 or D<=0:
+        raise ValueError("invalid old-current time or positive box")
+    c=tuple(y/T1-x/T0 for x,y in zip(C0,C1))
+    a=tuple(x-A*y/T0 for x,y in zip(b,C0))
+    if c[pivot]==0:
+        raise ValueError("zero contrast pivot cannot prove sharpness")
+    lam=a[pivot]/c[pivot]
+    residual=tuple(x-lam*y for x,y in zip(a,c))
+    u=[D*(1 if r>0 else -1 if r<0 else 0) for r in residual]
+    u[pivot]=F(0)
+    u[pivot]=-sum((c[j]*u[j] for j in range(len(b))),F(0))/c[pivot]
+    if any(abs(v)>D for v in u):
+        raise ValueError("infeasible old-current charge contrast pivot")
+    gamma=-sum((x*v for x,v in zip(C0,u)),F(0))/T0
+    if abs(gamma)>G:
+        raise ValueError("infeasible shared prepared-current bound")
+    q0=T0*gamma+sum((x*v for x,v in zip(C0,u)),F(0))
+    q1=T1*gamma+sum((x*v for x,v in zip(C1,u)),F(0))
+    primal=A*gamma+sum((x*v for x,v in zip(b,u)),F(0))
+    dual=D*sum(map(abs,residual))
+    if (q0,q1)!=(F(0),F(0)) or primal!=dual or dual<0:
+        raise ArithmeticError("exact shared source old-current primal/dual mismatch")
+    return dict(
+        status="SHARP_TWO_FUTURE_PORT_CHARGE_SHARED_PREPARED_CURRENT_LP",
+        radius=primal,
+        dual=dual,
+        witness=tuple(u),
+        prepared_current_witness=gamma,
+        normalized_contrast_row=c,
+        effective_goal_row=a,
+        dual_weight=lam,
+        charge_residuals=(q0,q1),
+        antipodal_goal_gap=2*primal,
+        unconstrained_radius=D*sum(map(abs,b))+abs(A)*G,
+        sharp_certified=True,
+        all_charge_sensors_future_oracle_only=True,
+        physical_shared_prepared_current_bound_qualified=False,
+        source_50d_history_legal_certified=False,
+        pretarget_sensor_available_certified=False,
+        all_cal_joint_E_certified=False,
+        goal27_signed_work_certified=False,
+    )

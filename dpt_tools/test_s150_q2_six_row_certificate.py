@@ -436,5 +436,206 @@ class OriginalSourceXKCLAndPaperFiniteTailProofTests(unittest.TestCase):
             certify_schur_finite_tail_coupling(1,-1,0,0)
 
 
+
+class OriginalSourceStage3616EightDStructuralBridgeTests(unittest.TestCase):
+    """Behavioral source-topology tests: passive package and G11 signed guard."""
+
+    def auth(self):
+        return dict(
+            h_s=original_dt(),source_law_sha256=LAW,
+            source_adapter_sha256=ADAPTER,saved_cal_sha256=ARCHIVE)
+
+    def test_original_package_14d_spd_and_exact_linear_root_for_arbitrary_boundary(self):
+        from s150_q2_six_row_certificate import certify_original_source_package14_linear_lift
+        from fractions import Fraction as F
+        boundary=tuple(F(i,10) for i in range(12))
+        old=tuple(F(j+1,100) for j in range(10))
+        result=certify_original_source_package14_linear_lift(
+            boundary_node12_V=boundary,old_package_coil10_A=old,
+            command_V=15,**self.auth())
+        self.assertEqual(result["status"],"ORIGINAL_SOURCE_PACKAGE14_UNIQUE_EXACT_LINEAR_LIFT")
+        self.assertEqual(result["package_node_indices"],
+            (2,4,5,10,11,12,13,14,16,17,22,23,24,25))
+        self.assertEqual(len(result["node_voltage14_V"]),14)
+        self.assertEqual(len(result["strict_positive_ldl_pivots_S"]),14)
+        self.assertTrue(all(x>0 for x in result["strict_positive_ldl_pivots_S"]))
+        self.assertTrue(all(
+            sum(a*b for a,b in zip(row,result["node_voltage14_V"]))==rhs
+            for row,rhs in zip(result["exact_package_matrix_S"],
+                               result["exact_package_rhs_A"])))
+        self.assertFalse(result["native_ieee_outward_enclosed"])
+        self.assertFalse(result["complete_source_stage_root_certified"])
+        # OLD-coil memory is algebraically essential; dropping it is unsound.
+        changed=list(old);changed[0]+=F(1,1000)
+        other=certify_original_source_package14_linear_lift(
+            boundary_node12_V=boundary,old_package_coil10_A=changed,
+            command_V=15,**self.auth())
+        self.assertNotEqual(result["node_voltage14_V"],other["node_voltage14_V"])
+
+    def test_package_elimination_rejects_wrong_source_domain(self):
+        from s150_q2_six_row_certificate import certify_original_source_package14_linear_lift
+        from fractions import Fraction as F
+        kwargs=dict(boundary_node12_V=[0]*12,
+                    old_package_coil10_A=[0]*10,command_V=15,**self.auth())
+        for update in (dict(h_s=F("1e-6")),
+                       dict(command_V=F(10)),
+                       dict(source_law_sha256="WRONG"),
+                       dict(boundary_node12_V=[0]*11),
+                       dict(old_package_coil10_A=[0]*9)):
+            with self.assertRaisesRegex(ValueError,"UNRESOLVED_SOURCE_DOMAIN"):
+                certify_original_source_package14_linear_lift(
+                    **dict(kwargs,**update))
+
+    def test_original_g11_split_Gauss32_guard_monotone_and_narrow_roots(self):
+        from s150_q2_six_row_certificate import certify_original_source_g11_w_guard
+        from fractions import Fraction as F
+        spec={
+            "Q1":("0x1.9609c4242a8a7p+3","0x1.2bf0be2eea417p+7",
+                  "0x1.2c18d8d76b477p+7",F(".124")),
+            "Q2":("0x1.c441ed8de0342p+3","0x1.67138b6a8325dp+3",
+                  "0x1.71159b94e7b55p+3",F(".0045")),
+        }
+        for leg,(gg,dd,ww,strict_width) in spec.items():
+            g,d,w=[F.from_float(float.fromhex(x)) for x in (gg,dd,ww)]
+            eps=F(".04")
+            out=certify_original_source_g11_w_guard(
+                leg=leg,g_V=(g-eps,g+eps),
+                d_V=(d-eps,d+eps),**self.auth())
+            self.assertEqual(out["status"],"ORIGINAL_SOURCE_G11_GUARDED_W_UNIQUE_LIFT")
+            self.assertTrue(out["gauss32_signed_charge_single_panel_qualified"])
+            self.assertTrue(out["forall_source_current_g_d_chart_w_root_exists"])
+            self.assertGreater(out["gauss_charge_derivative_lower_F_per_s"],0)
+            lo,hi=out["necessary_g_minus_w_V"]
+            self.assertLess(hi-lo,strict_width)
+            self.assertLess(lo,g-w)
+            self.assertGreater(hi,g-w)
+            self.assertFalse(out["all50_stage_roots_certified"])
+            self.assertFalse(out["full_prepared_history_covered"])
+
+    def test_g11_both_closed_corner_complements_exclude_full_source_root(self):
+        from s150_q2_six_row_certificate import certify_original_source_g11_w_guard
+        from fractions import Fraction as F
+        spec={
+            "Q1":("0x1.9609c4242a8a7p+3","0x1.2bf0be2eea417p+7",
+                  "0x1.2c18d8d76b477p+7"),
+            "Q2":("0x1.c441ed8de0342p+3","0x1.67138b6a8325dp+3",
+                  "0x1.71159b94e7b55p+3"),
+        }
+        for leg,(gg,dd,ww) in spec.items():
+            g,d,w=[F.from_float(float.fromhex(x)) for x in (gg,dd,ww)]
+            eps,t=F(".04"),F(".001")
+            out=certify_original_source_g11_w_guard(
+                leg=leg,g_V=(g+eps-t,g+eps),d_V=(d-eps,d+eps),
+                w_V=(w-eps,w-eps+t),**self.auth())
+            self.assertEqual(out["status"],
+                             "ORIGINAL_SOURCE_G11_W_KCL_CLOSED_BOX_EXCLUDED")
+            self.assertLess(out["original_w_KCL_residual_upper_A"],0)
+            self.assertGreater(out["strict_abs_residual_margin_A"],0)
+            self.assertFalse(out["full50_allroot_cover_certified"])
+            mid=certify_original_source_g11_w_guard(
+                leg=leg,g_V=(g-F("1e-6"),g+F("1e-6")),
+                d_V=(d-F("1e-6"),d+F("1e-6")),
+                w_V=(w-F("1e-6"),w+F("1e-6")),**self.auth())
+            self.assertEqual(mid["status"],"RETAIN_ORIGINAL_G11_W_CELL_UNRESOLVED")
+            with self.assertRaisesRegex(ValueError,"UNRESOLVED_SOURCE_DOMAIN"):
+                certify_original_source_g11_w_guard(
+                    leg=leg,g_V=(g,g),d_V=(d,d),
+                    w_V=(w-F(2),w-F(2)),**self.auth())
+
+
+
+class AtomicFiniteTailSharedNuisanceBernsteinCoverTests(unittest.TestCase):
+    def test_exact_shared_offset_tail_three_closed_cells_and_two_real_roots(self):
+        from fractions import Fraction as F
+        from s150_q2_six_row_certificate import certify_atomic_shared_nuisance_tail_cell
+        # R1=b+x+w+e1, R2=b+x-1/4+2w+e2, w=x/4+w/2.
+        # lambda=(1,-1) kills arbitrary common b; N=2 finite tail
+        # gives pN=1/4-7x/16 and certified remainder 9/128.
+        kw=dict(
+            finite_bernstein_rows=((0,1),(-F(1,4),F(3,4))),
+            shared_nuisance_matrix=((1,),(1,)),
+            nuisance_annihilator=(1,-1),
+            residual_tail_coupling=(1,2),
+            tail_q_bernstein=(0,F(1,4)),tail_D=F(1,2),
+            tail_terms=2,error_bounds=(F(1,256),F(1,256)))
+        for cell,expect in (
+           ((F(0),F(1,4)),"CONDITIONAL_BERNSTEIN_POSITIVE_CLOSED_CELL_EXCLUSION"),
+           ((F(1,4),F(3,4)),"RETAIN_CLOSED_CELL_UNRESOLVED"),
+           ((F(3,4),F(1)),"CONDITIONAL_BERNSTEIN_NEGATIVE_CLOSED_CELL_EXCLUSION"),
+        ):
+            got=certify_atomic_shared_nuisance_tail_cell(cell=cell,**kw)
+            self.assertEqual(got["status"],expect)
+            self.assertEqual(got["analytic_tail_and_noise_error_bound"],F(9,128))
+            self.assertEqual(got["global_combined_bernstein_coefficients"],
+                (F(1,4),-F(3,16)))
+            self.assertFalse(got["source_full50_root_cover_certified"])
+        x,w,b=F(1,2),F(1,4),-F(3,4)
+        self.assertEqual(b+x+w,0)
+        self.assertEqual(b+x-F(1,4)+2*w,0)
+
+    def test_atomic_checker_hard_fail_on_undefined_tail_and_wrong_nuisance(self):
+        from fractions import Fraction as F
+        from s150_q2_six_row_certificate import certify_atomic_shared_nuisance_tail_cell
+        kw=dict(
+            finite_bernstein_rows=((0,1),(-F(1,4),F(3,4))),
+            shared_nuisance_matrix=((1,),(1,)),
+            nuisance_annihilator=(1,-1),residual_tail_coupling=(1,2),
+            tail_q_bernstein=(0,F(1,4)),tail_D=F(1,2),
+            tail_terms=2,error_bounds=(F(1,256),F(1,256)),
+            cell=(F(0),F(1,4)))
+        for changed in (
+            dict(tail_D=1),
+            dict(shared_nuisance_matrix=((1,),(-1,))),
+            dict(error_bounds=(F(-1,256),F(1,256))),
+            dict(cell=(F(1,2),F(1,4))),
+        ):
+            with self.assertRaises(ValueError):
+                certify_atomic_shared_nuisance_tail_cell(
+                    **dict(kw,**changed))
+
+
+
+class MonotoneOriginalG12TwoCornerUpgradeTests(unittest.TestCase):
+    def test_original_q2_nonzero_box_old_interval_fails_but_joint_lift_excludes(self):
+        """New real source root exclusion that the old Cartesian row box missed."""
+        from fractions import Fraction as F
+        from s150_q2_six_row_certificate import certify_original_source_x_kcl_outer
+        x=lambda z:F.from_float(float.fromhex(z))
+        d=x("0x1.67138b6a8325dp+3")
+        s=x("0x1.fc4c4bfd24625p+2")
+        old=x("0x1.64640b421faa8p+3")-x("0x1.f6cdb13c29792p+2")
+        h=original_dt()
+        a,b=F(10000),F(1,10**7)
+        D=(d-F(".04"),d)
+        S=(s-F(".04"),s+F(".04"))
+        cl,cu=F(600,10**12),F(650,10**12)
+        def qlow(delta):
+            return cl*delta if delta>=0 else cu*delta
+        # Previous source audit decorrelated d,s from deltaQ during the
+        # residual bound, so it cannot prove this strict interior cell.
+        naive=(a*D[1]+b*S[1]-qlow(D[0]-S[1]-old)/h)/(a+b)
+        # New source monotone derivative ∂x*/∂d>0 and ∂x*/∂s>0
+        # pairs BOTH current maxima into one actual corner.
+        joint=(a*D[1]+b*S[1]-qlow(D[1]-S[1]-old)/h)/(a+b)
+        self.assertGreater(naive-joint,F("0.0002"))
+        X=(joint+(naive-joint)/4,joint+(naive-joint)/2)
+        self.assertLess(X[1],x("0x1.67139f1fe1791p+3")+F(".04"))
+        dsl=D[0]-S[1]-old
+        # The old independent-row interval crosses zero: negative control.
+        old_row_lower=(a*(X[0]-D[1])+b*(X[0]-S[1])+
+                       qlow(dsl)/h)
+        self.assertLess(old_row_lower,0)
+        got=certify_original_source_x_kcl_outer(
+            leg="Q2",d_V=D,s_V=S,x_V=X,h_s=h,
+            source_law_sha256=LAW,source_adapter_sha256=ADAPTER,
+            saved_cal_sha256=ARCHIVE)
+        self.assertEqual(got["status"],"SOURCE_EXACT_REAL_X_KCL_BOX_EXCLUDED")
+        self.assertTrue(got["joint_monotone_x_corner_qualified"])
+        self.assertGreater(got["joint_corner_strict_lower_residual_A"],F(1,2))
+        self.assertGreater(got["strict_abs_residual_margin_A"],F(1,2))
+        self.assertFalse(got["native_float_error_certified"])
+        self.assertFalse(got["all50_stage_roots_certified"])
+
+
 if __name__=="__main__":
     unittest.main()

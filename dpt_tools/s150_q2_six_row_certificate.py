@@ -775,6 +775,31 @@ def certify_original_source_x_kcl_outer(
     residual_hi=a*(x[1]-d[0])+b*(x[1]-s[0])+qhi/_STAGE3616_H
     dx_tube=((b*ds[0]+qlo/_STAGE3616_H)/(a+b),
              (b*ds[1]+qhi/_STAGE3616_H)/(a+b))
+    # NEW strict SOURCE joint contractor, not the Cartesian residual box.
+    # On this exact-real original G12 chart, C12>0 and Cmax/h<a.
+    # For x*(d,s)=[a*d+b*s-(Q12(d-s)-Q12(old))/h]/(a+b),
+    # partial_d x*=(a-C12/h)/(a+b)>0,
+    # partial_s x*=(b+C12/h)/(a+b)>0. The extrema on D x S
+    # therefore use the TWO COMONOTONE corners (dlo,slo),(dhi,shi)
+    # rather than the independent d/s/ds endpoints in residual_lo/hi.
+    if not(cu/_STAGE3616_H<a):
+        raise ValueError("UNRESOLVED_SOURCE_DOMAIN: G12 joint corner derivative")
+    dsl=d[0]-s[0]-old_ds
+    dsh=d[1]-s[1]-old_ds
+    q_upper_low_corner=_source_dq_sign_outer(dsl,cl,cu)[1]
+    q_lower_high_corner=_source_dq_sign_outer(dsh,cl,cu)[0]
+    x_necessary_lower=(a*d[0]+b*s[0]-
+                       q_upper_low_corner/_STAGE3616_H)/(a+b)
+    x_necessary_upper=(a*d[1]+b*s[1]-
+                       q_lower_high_corner/_STAGE3616_H)/(a+b)
+    if x_necessary_lower>x_necessary_upper:
+        raise ArithmeticError("invalid source monotone x necessary enclosure")
+    joint_residual_lower=(a+b)*(x[0]-x_necessary_upper)
+    joint_residual_upper=(a+b)*(x[1]-x_necessary_lower)
+    residual_lo=max(residual_lo,joint_residual_lower)
+    residual_hi=min(residual_hi,joint_residual_upper)
+    if residual_lo>residual_hi:
+        raise ArithmeticError("inconsistent source residual outer contractors")
     excluded=residual_lo>0 or residual_hi<0
     return dict(
         status=("SOURCE_EXACT_REAL_X_KCL_BOX_EXCLUDED" if excluded else
@@ -784,6 +809,10 @@ def certify_original_source_x_kcl_outer(
         strict_abs_residual_margin_A=(residual_lo if residual_lo>0 else
                                       -residual_hi if residual_hi<0 else F(0)),
         necessary_d_minus_x_V=dx_tube,
+        necessary_x_V=(x_necessary_lower,x_necessary_upper),
+        joint_monotone_x_corner_qualified=True,
+        joint_corner_strict_lower_residual_A=joint_residual_lower,
+        joint_corner_strict_upper_residual_A=joint_residual_upper,
         capacitance_interval_rational_verified=True,
         source_exact_real_x_row_unique_lift=True,
         conditional_full50_to_24d_KCL_preimage=True,
@@ -888,4 +917,387 @@ def certify_schur_finite_tail_coupling(M,B,delta,eta):
         rt_to_full_bound=rt_to_xf+rt_to_xt,
         dpt_44row_coupling_authenticated_in_ci=False,
         complete_non_smooth_source_chart_certified=False,
+    )
+
+
+# S-L43: the original SOURCE passive package has fourteen exact linear
+# voltages after the ten package coil BE currents are substituted. All
+# identities below are for the SHA-declared real-decimal source expression;
+# the protected ZIP/NPZ is NOT replayed by the public CI.
+_SOURCE_PACKAGE_NODES=("D","sl")+tuple(
+    tag+":"+name for tag in ("Q1","Q2")
+    for name in ("da","d","gb","g2","g","w","x","s","sv","sb","k","sa"))
+_SOURCE_PACKAGE_P=(2,4,5,10,11,12,13,14,16,17,22,23,24,25)
+_SOURCE_PACKAGE_B=(0,1,3,6,7,8,9,15,18,19,20,21)
+
+
+def certify_original_source_package14_linear_lift(
+    *, boundary_node12_V, old_package_coil10_A, command_V,
+    h_s, source_law_sha256, source_adapter_sha256, saved_cal_sha256
+):
+    """Original Pro18E n3616 14-node passive package, exact Fraction.
+
+    Reconstruct Q1/Q2 (da,gb,g2,sv,sb,k,sa) after source 5+5
+    package coil BE rows. Original nodal residual is Gv+B i-D ib
+    -forcing+charge/h+G2; its 14 listed package rows contain ONLY G,
+    package coils, and three source forcing stamps. No nonlinear D1,
+    G2, ETH, thermal, G11, G12 or 1pF D D.T stamp touches these rows.
+    Every internal package component reaches a retained boundary/ground
+    through positive resistors and inductors, so exact A_PP is SPD.
+    This algebraic lift is NOT existence of the remaining nodal root,
+    diode/thermal/guard admissibility, CAL history or Goal27.
+    """
+    if (source_law_sha256!=LAW_SHA or source_adapter_sha256!=ADAPTER_SHA
+            or saved_cal_sha256!=SAVED_SHA or
+            _fraction(h_s)!=_STAGE3616_H or
+            _fraction(command_V)!=F(15)):
+        raise ValueError("UNRESOLVED_SOURCE_DOMAIN: original n3616 inputs")
+    if len(boundary_node12_V)!=12 or len(old_package_coil10_A)!=10:
+        raise ValueError("UNRESOLVED_SOURCE_DOMAIN: 12 boundary/10 coil entries required")
+    boundary=tuple(map(_fraction,boundary_node12_V))
+    old=tuple(map(_fraction,old_package_coil10_A))
+    locations={name:i for i,name in enumerate(_SOURCE_PACKAGE_NODES)}
+    p=_SOURCE_PACKAGE_P
+    b=_SOURCE_PACKAGE_B
+    values={j:v for j,v in zip(b,boundary)}
+    M=[[F(0)]*14 for _ in range(14)]
+    rhs=[F(0)]*14
+
+    def edge(a,c=None):
+        e=[F(0)]*26
+        e[locations[a]]+=1
+        if c is not None:
+            e[locations[c]]-=1
+        return e
+
+    def stamp(e,conductance,old_current=F(0)):
+        g=_fraction(conductance)
+        if g<=0:
+            raise ValueError("UNRESOLVED_SOURCE_DOMAIN: nonpositive source branch")
+        known=sum(e[i]*values[i] for i in b)
+        for i,node in enumerate(p):
+            v=e[node]
+            if not v:
+                continue
+            rhs[i]-=g*v*known+v*old_current
+            for j,col in enumerate(p):
+                M[i][j]+=g*v*e[col]
+
+    coils=[]
+    for tag in ("Q1","Q2"):
+        n=lambda a:tag+":"+a
+        resistances=(
+            (n("da"),"D" if tag=="Q2" else None,"87.416e-6"),
+            (n("gb"),n("k"),"5.03785" if tag=="Q1" else "12.53785"),
+            (n("g2"),n("g"),"9"),
+            (n("w"),n("d"),"1"),
+            (n("x"),n("d"),"1e-4"),
+            (n("x"),n("s"),"1e7"),
+            (n("g"),n("s"),"1e7"),
+            (n("g"),n("d"),"1e7"),
+            (n("g"),n("w"),"1e7"),
+            (n("d"),n("s"),"1e7"),
+            (n("d"),n("s"),"1e7"),
+            (n("d"),n("s"),"4e8"),
+            (n("sb"),n("k"),".02488"),
+            (n("sa"),"sl" if tag=="Q2" else "D",".003322"),
+        )
+        for a,c,Rohm in resistances:
+            stamp(edge(a,c),1/F(Rohm))
+        package=(
+            ("da","d","4.3659e-9","5"),
+            ("gb","g2","11.364e-9","100"),
+            ("sb","sv","7.574e-9","100"),
+            ("sa","sv","3.435e-9","100"),
+            ("sv","s",".2e-9","100"),
+        )
+        for a,c,L_H,R_parallel_ohm in package:
+            e=edge(n(a),n(c))
+            stamp(e,1/F(R_parallel_ohm))
+            coils.append((e,F(L_H)))
+
+    forcing=(
+        (edge("Q1:da"),F(150)/F("87.416e-6")),
+        (edge("Q1:gb","Q1:k"),-F(4)/F("5.03785")),
+        (edge("Q2:gb","Q2:k"),F(15)/F("12.53785")),
+    )
+    for e,amp in forcing:
+        for j,node in enumerate(p):
+            rhs[j]+=e[node]*amp
+    for j,(e,L) in enumerate(coils):
+        stamp(e,_STAGE3616_H/L,old[j])
+    if len(coils)!=10 or any(
+        M[i][j]!=M[j][i] for i in range(14) for j in range(i+1,14)
+    ):
+        raise ArithmeticError("original passive package matrix symmetry failed")
+
+    # Exact unpivoted LDL; every positive diagonal establishes SPD rather
+    # than trusting a floating eigenvalue or 14 accidental solver pivots.
+    L=[[F(0)]*14 for _ in range(14)]
+    D=[F(0)]*14
+    for i in range(14):
+        L[i][i]=F(1)
+        D[i]=M[i][i]-sum(L[i][k]*L[i][k]*D[k] for k in range(i))
+        if D[i]<=0:
+            raise ArithmeticError("original source package matrix not SPD")
+        for j in range(i+1,14):
+            L[j][i]=(M[j][i]-sum(L[j][k]*L[i][k]*D[k]
+                                  for k in range(i)))/D[i]
+    solution=_solve(M,rhs)
+    if any(sum(M[i][j]*solution[j] for j in range(14))!=rhs[i]
+           for i in range(14)):
+        raise ArithmeticError("original source package linear residual nonzero")
+    return dict(
+        status="ORIGINAL_SOURCE_PACKAGE14_UNIQUE_EXACT_LINEAR_LIFT",
+        package_node_indices=p,retained_node_indices=b,
+        node_voltage14_V=solution,
+        strict_positive_ldl_pivots_S=tuple(D),
+        exact_package_matrix_S=tuple(tuple(row) for row in M),
+        exact_package_rhs_A=tuple(rhs),
+        eliminated_package_kcl_rows=14,
+        conditional_from_50_to_10_stage_reduction=True,
+        source_nonlinear_rows_absent_in_package=True,
+        original_archive_bytes_authenticated_in_ci=False,
+        native_ieee_outward_enclosed=False,
+        reconstructed_x_g2_original_chart_qualified=False,
+        complete_source_stage_root_certified=False,
+        full_prepared_history_covered=False,
+        goal27_certified=False,
+    )
+
+
+_SOURCE_G11_W_SPECS={
+    "Q1":dict(
+        g="0x1.9609c4242a8a7p+3",d="0x1.2bf0be2eea417p+7",
+        old_g="0x1.9020fd0767b7cp+3",old_w="0x1.2c3935046b043p+7",
+        q_lower=F(31132,5),q_upper=F(6395),
+        cap_lower_pF=F(39,10),cap_upper_pF=F(4),
+        max_abs_q_derivative=F(46)+F(27,4)*139),
+    "Q2":dict(
+        g="0x1.c441ed8de0342p+3",d="0x1.67138b6a8325dp+3",
+        old_g="0x1.c17c22194a28bp+3",old_w="0x1.6e8cb5b6c794fp+3",
+        q_lower=F(11,10),q_upper=F(449,400),
+        cap_lower_pF=F(500),cap_upper_pF=F(555),
+        max_abs_q_derivative=F(27,40)),
+}
+
+
+def certify_original_source_g11_w_guard(
+    *, leg, g_V, d_V, h_s, source_law_sha256,
+    source_adapter_sha256, saved_cal_sha256, w_V=None
+):
+    """Qualified full-GUARD exact-real source G11 Gauss32 w-KCL contractor.
+
+    Original 32-point split Gauss source charge, restricted to the one
+    smooth panel [u_old,u], is exactly (u-u_old) sum_j p_j Cgd(
+    u_old+xi_j*(u-u_old)), with positive p_j summing to 1 and
+    xi_j in (0,1). Thus it has the correct SIGN for u-u_old of
+    either polarity (no |delta| error). The source cgd has
+      Cgd(u)=555pF*(1+clip(-u,.1,600)
+                  *(1+22.5*(1+tanh(-.3*u-6))))^(-113/200).
+    For the source old u and full |u-u_old|<=1V:
+    Q1 has -139<u<-136, tanh>=.99 and q in [31132/5,6395];
+    Q2 u>1, clip=.1, tanh<=-.99, q in [1.1,449/400].
+    These tanh signs follow from exp(12)>2^12>199 and their
+    arguments >=6 / <=-6; no floating tanh is used. Rational
+    200th/113th power comparisons enclose *every* Gauss node's
+    physical capacitance. Log-derivative upper alpha<1/V makes
+    each term C+delta*xi*C' positive for |delta|<=1V.
+    Consequently H(u)=(1+1e-7)u+Q_G11(u)/h strictly increases.
+    Every original g,d +/-0.04V chart input has exactly one
+    G11-w KCL root strictly INSIDE this guarded branch. Root interval
+    uses the exact effective Gauss-capacitance convex average k in
+    [Cmin/h,Cmax/h], hence u=(g-d+k*u_old)/(1+1e-7+k).
+    Source SciPy/NumPy outward error, remaining KCL and legal
+    PREP/CAL histories are NOT authenticated by this theorem.
+    """
+    if (source_law_sha256!=LAW_SHA or source_adapter_sha256!=ADAPTER_SHA
+            or saved_cal_sha256!=SAVED_SHA or
+            _fraction(h_s)!=_STAGE3616_H or leg not in _SOURCE_G11_W_SPECS):
+        raise ValueError("UNRESOLVED_SOURCE_DOMAIN: source G11 law/step")
+    cfg=_SOURCE_G11_W_SPECS[leg]
+    g=_source_x_box(g_V)
+    d=_source_x_box(d_V)
+    rad=F(".04")
+    for name,box in (("g",g),("d",d)):
+        center=F.from_float(float.fromhex(cfg[name]))
+        if box[0]<center-rad or box[1]>center+rad:
+            raise ValueError("UNRESOLVED_SOURCE_DOMAIN: G11 g,d chart")
+    old=(F.from_float(float.fromhex(cfg["old_g"]))-
+         F.from_float(float.fromhex(cfg["old_w"])))
+    guard=(old-1,old+1)
+    if ((leg=="Q1" and not(F(-139)<=guard[0]<guard[1]<=F(-136)))
+         or (leg=="Q2" and not(guard[0]>F(1)))):
+        raise ValueError("UNRESOLVED_SOURCE_DOMAIN: G11 panel/clip guard")
+    clp,cup=cfg["cap_lower_pF"],cfg["cap_upper_pF"]
+    qlo,qhi=cfg["q_lower"],cfg["q_upper"]
+    if not(0<clp<=cup and
+           (F(555)/clp)**200>=qhi**113 and
+           (F(555)/cup)**200<=qlo**113):
+        raise ArithmeticError("exact G11 capacitance 113/200 enclosure fails")
+    rel_derivative=F(113,200)*cfg["max_abs_q_derivative"]/qlo
+    if not(0<=rel_derivative<1):
+        raise ValueError("UNRESOLVED_SOURCE_DOMAIN: G11 derivative guard")
+    cmin=clp/F(10**12)
+    cmax=cup/F(10**12)
+    kl,ku=cmin/_STAGE3616_H,cmax/_STAGE3616_H
+    b=F(1,10**7)
+    y=(g[0]-d[1],g[1]-d[0])
+    root=tuple((v+k*old)/(1+b+k)
+               for v in y for k in (kl,ku))
+    roots=(min(root),max(root))
+    # Signed Gauss charge at the guard faces is delta*C_bar with
+    # C_bar in [cl,cu]; these two strict inequalities prove existence
+    # for every y in the ENTIRE source g,d node chart.
+    left_H_upper=(1+b)*(old-1)-kl
+    right_H_lower=(1+b)*(old+1)+kl
+    if not(left_H_upper<y[0] and right_H_lower>y[1]
+            and guard[0]<roots[0]<=roots[1]<guard[1]):
+        raise ValueError("UNRESOLVED_SOURCE_DOMAIN: G11 guard faces")
+    w_outer=(g[0]-roots[1],g[1]-roots[0])
+    status="ORIGINAL_SOURCE_G11_GUARDED_W_UNIQUE_LIFT"
+    lower=None
+    upper=None
+    margin=F(0)
+    if w_V is not None:
+        w=_source_x_box(w_V)
+        u=(g[0]-w[1],g[1]-w[0])
+        if not(guard[0]<=u[0]<=u[1]<=guard[1]):
+            raise ValueError("UNRESOLVED_SOURCE_DOMAIN: w box beyond G11 guard")
+        def signed_charge_bounds(t):
+            diff=t-old
+            return (cmin*diff,cmax*diff) if diff>=0 else (cmax*diff,cmin*diff)
+        lower=y[0]-(1+b)*u[1]-signed_charge_bounds(u[1])[1]/_STAGE3616_H
+        upper=y[1]-(1+b)*u[0]-signed_charge_bounds(u[0])[0]/_STAGE3616_H
+        if lower>0 or upper<0:
+            status="ORIGINAL_SOURCE_G11_W_KCL_CLOSED_BOX_EXCLUDED"
+            margin=lower if lower>0 else -upper
+        else:
+            status="RETAIN_ORIGINAL_G11_W_CELL_UNRESOLVED"
+    return dict(
+        status=status,
+        source_G11_KCL_row=(7 if leg=="Q1" else 19),
+        full_guard_old_gd_V=old,
+        qualified_source_gd_guard_V=guard,
+        gauss32_signed_charge_single_panel_qualified=True,
+        capacitance_interval_pF=(clp,cup),
+        relative_capacitance_derivative_upper_per_V=rel_derivative,
+        gauss_charge_derivative_lower_F_per_s=cmin*(1-rel_derivative)/_STAGE3616_H,
+        effective_G11_schur_edge_conductance_lower_S=(
+            (b+cmin*(1-rel_derivative)/_STAGE3616_H)/
+            (1+b+cmin*(1-rel_derivative)/_STAGE3616_H)),
+        necessary_g_minus_w_V=roots,
+        necessary_w_V=w_outer,
+        original_w_KCL_residual_lower_A=lower,
+        original_w_KCL_residual_upper_A=upper,
+        strict_abs_residual_margin_A=margin,
+        forall_source_current_g_d_chart_w_root_exists=True,
+        source_mathematical_guard_root_unique=True,
+        conditional_further_ten_to_eight_reduction=True,
+        full50_allroot_cover_certified=False,
+        all50_stage_roots_certified=False,
+        original_source_npz_bytes_authenticated_in_ci=False,
+        native_ieee_gl32_outward_enclosed=False,
+        full_prepared_history_covered=False,
+        all_cal_joint_E_certified=False,
+        goal27_certified=False,
+    )
+
+
+def certify_atomic_shared_nuisance_tail_cell(
+    *,finite_bernstein_rows,shared_nuisance_matrix,
+    nuisance_annihilator,residual_tail_coupling,
+    tail_q_bernstein,tail_D,tail_terms,error_bounds,cell
+):
+    """Atomic/F090-inspired finite, source-agnostic closed-cell exclusion.
+
+    Exact rational model on x in [0,1]:
+       R_i(x,b,w)=f_i(x)+A_i.b+B_i*w+e_i,
+       |e_i|<=eps_i, w=q(x)+D*w, |D|<1,
+       b arbitrary but SHARED across all rows.
+    f_i and q are Bernstein coefficient arrays of a COMMON degree.
+    If lambda.T A ==0 EXACTLY, a nonzero lambda.T R root requires
+       lambda.T(f+B*sum_{j=0}^N D^j q)
+    to be within the certified tail and correlated-noise support.
+    The remainder uses max|q_Bernstein_coeff| and geometric |D| bound,
+    rather than using the source paper's numerical constants as DPT
+    assumptions. Exact De Casteljau subdivision restricts the GLOBAL
+    polynomial onto any closed subcell. No source 50D/guard/E certification.
+    """
+    n=len(finite_bernstein_rows)
+    if (n<2 or len(shared_nuisance_matrix)!=n or
+        len(nuisance_annihilator)!=n or
+        len(residual_tail_coupling)!=n or len(error_bounds)!=n or
+        not isinstance(tail_terms,int) or tail_terms<0 or len(cell)!=2):
+        raise ValueError("invalid atomic certificate row or term count")
+    fs=tuple(tuple(map(_fraction,row)) for row in finite_bernstein_rows)
+    q=tuple(map(_fraction,tail_q_bernstein))
+    deg=len(q)-1
+    if deg<1 or any(len(row)!=len(q) for row in fs):
+        raise ValueError("inconsistent finite and tail Bernstein degrees")
+    A=tuple(tuple(map(_fraction,row)) for row in shared_nuisance_matrix)
+    if not A[0] or any(len(row)!=len(A[0]) for row in A):
+        raise ValueError("invalid shared nuisance shape")
+    lam=tuple(map(_fraction,nuisance_annihilator))
+    if not any(lam) or any(
+        sum(lam[i]*A[i][j] for i in range(n))!=0
+        for j in range(len(A[0]))
+    ):
+        raise ValueError("uneliminated shared nuisance invalidates certificate")
+    B=tuple(map(_fraction,residual_tail_coupling))
+    noise=tuple(map(_fraction,error_bounds))
+    delta=_fraction(tail_D)
+    a,b=tuple(map(_fraction,cell))
+    if not(0<=a<b<=1 and abs(delta)<1 and all(v>=0 for v in noise)):
+        raise ValueError("invalid tail contraction, cell or error caps")
+    geo=sum((delta**j for j in range(tail_terms+1)),F(0))
+    lb=sum((lam[i]*B[i] for i in range(n)),F(0))
+    poly=tuple(
+        sum((lam[i]*fs[i][k] for i in range(n)),F(0))+
+        lb*geo*q[k] for k in range(deg+1))
+    qmax=max(map(abs,q))
+    tail=abs(lb)*abs(delta)**(tail_terms+1)*qmax/(1-abs(delta))
+    epsilon=sum((abs(lam[i])*noise[i] for i in range(n)),F(0))
+    error=tail+epsilon
+
+    def split_bernstein(coeff,t):
+        levels=[tuple(coeff)]
+        while len(levels[-1])>1:
+            prev=levels[-1]
+            levels.append(tuple((1-t)*prev[i]+t*prev[i+1]
+                                for i in range(len(prev)-1)))
+        left=tuple(z[0] for z in levels)
+        right=tuple(z[-1] for z in reversed(levels))
+        return left,right
+
+    local=poly
+    if b<1:
+        local,_=split_bernstein(local,b)
+    if a>0:
+        _,local=split_bernstein(local,a/b)
+    pos=min(local)-error
+    neg=-max(local)-error
+    if pos>0:
+        status="CONDITIONAL_BERNSTEIN_POSITIVE_CLOSED_CELL_EXCLUSION"
+        margin=pos
+    elif neg>0:
+        status="CONDITIONAL_BERNSTEIN_NEGATIVE_CLOSED_CELL_EXCLUSION"
+        margin=neg
+    else:
+        status="RETAIN_CLOSED_CELL_UNRESOLVED"
+        margin=F(0)
+    return dict(
+        status=status,cell=(a,b),finite_terms=tail_terms,
+        global_combined_bernstein_coefficients=poly,
+        local_combined_bernstein_coefficients=local,
+        analytic_tail_and_noise_error_bound=error,
+        analytic_tail_bound=tail,shared_nuisance_noise_support=epsilon,
+        strict_abs_row_dual_margin=margin,
+        nuisance_annihilator_verified=True,
+        whole_tail_bound_derived_from_q_bernstein=True,
+        source_predecessor_and_cell_hypotheses_qualified_in_ci=False,
+        original_atomic_analytic_theorem_verified_in_ci=False,
+        source_full50_root_cover_certified=False,
+        all_legal_hybrid_cells_covered=False,
+        goal27_certified=False,
     )

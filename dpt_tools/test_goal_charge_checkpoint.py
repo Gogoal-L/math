@@ -128,5 +128,47 @@ class SourceCoilChargeCheckpointCertificate(unittest.TestCase):
                 b,C,(2,1),F(-1),F(0))
 
 
+class PreparedCurrentSharedMemorySourceCoilMinimaxTests(unittest.TestCase):
+    def test_two_future_zero_charge_rows_do_not_remove_shared_prepared_current(self):
+        from fractions import Fraction as F
+        from goal_charge_checkpoint import certify_two_charge_shared_prepared_current
+        # G=gamma+(1,3,2).u, Q0=gamma+(1,0,1).u,
+        # Q1=gamma+(0,1,1).u. Both charges zero at
+        # u=(1,1,1),gamma=-2 (and its antipode).
+        report=certify_two_charge_shared_prepared_current(
+            goal=(1,3,2),charge_rows=((1,0,1),(0,1,1)),
+            prepared_goal_coefficient=1,
+            charge_prepared_coefficients=(1,1),
+            prepared_current_bound=2,
+            pivot=0,control_bound=1)
+        self.assertTrue(report["sharp_certified"])
+        self.assertEqual(report["radius"],F(4))
+        self.assertEqual(report["antipodal_goal_gap"],F(8))
+        self.assertEqual(report["prepared_current_witness"],F(-2))
+        self.assertEqual(report["charge_residuals"],(0,0))
+        self.assertEqual(report["unconstrained_radius"],F(8))
+        self.assertFalse(report["source_50d_history_legal_certified"])
+        self.assertFalse(report["pretarget_sensor_available_certified"])
+
+    def test_source_shared_i0_minimax_rejects_fake_unattainable_primal(self):
+        from fractions import Fraction as F
+        from goal_charge_checkpoint import certify_two_charge_shared_prepared_current
+        kwargs=dict(goal=(1,3,2),
+                    charge_rows=((1,0,1),(0,1,1)),
+                    prepared_goal_coefficient=1,
+                    charge_prepared_coefficients=(1,1),
+                    prepared_current_bound=2,
+                    pivot=0,control_bound=1)
+        with self.assertRaises(ValueError):
+            certify_two_charge_shared_prepared_current(
+                **dict(kwargs,prepared_current_bound=F(1)))
+        with self.assertRaises(ValueError):
+            certify_two_charge_shared_prepared_current(
+                **dict(kwargs,pivot=2))
+        with self.assertRaises(ValueError):
+            certify_two_charge_shared_prepared_current(
+                **dict(kwargs,charge_prepared_coefficients=(0,1)))
+
+
 if __name__ == "__main__":
     unittest.main()
