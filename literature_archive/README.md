@@ -56,6 +56,19 @@
 
 特别对应：F365-A/B 的 PDF 与 F365-C 的 scalar conductivity statement 分开；F266 的 selected 上界五与 headline 三分开；F122 的 lower bound 与 uniform decoder 分开；F376 的旧版本 scope 与新版本修订分开。来源是 Apache-2.0，保留 [LICENSE](LICENSE)；完整原始 attribution 在 canonical source 中继续保留。
 
+
+## 新候选：原始 TeX 精读准备（仅索引，不伪装已下载 PDF）
+
+以下 3 篇为在 **OpenAI/math 固定 commit `1581d4cbdd69a0faf34b2089614fe2a814316a6a`** 核对过官方 PDF 和承重 TeX 文件位置的后续研究候选。只验证了来源身份、目标定理/局部证明机制与关键前提；**未通读 PDF、独立运行完整 checker，故不计入上文 34 份现存 PDF/13 篇深读**。确认完整验证链之后再迁入 `literature/`：
+
+| 候选原论文 | 已确认入口 | 为什么值得继续读、现在不能声称什么 |
+|---|---|---|
+| A sharp Fourier certificate for planar circle packing | [PDF](https://github.com/openai/math/blob/1581d4cbdd69a0faf34b2089614fe2a814316a6a/preprints/A-sharp-Fourier-certificate-for-planar-circle-packing-September-23-2026/paper.pdf) · [primary TeX](https://github.com/openai/math/blob/1581d4cbdd69a0faf34b2089614fe2a814316a6a/preprints/A-sharp-Fourier-certificate-for-planar-circle-packing-September-23-2026/build/sections/certificates.tex) | Arb/192-bit interval, N=256 finite quadrature and separate analytic moment/tail remainders; no independent full checker run |
+| An atomic certificate for triangular-lattice universal optimality | [PDF](https://github.com/openai/math/blob/1581d4cbdd69a0faf34b2089614fe2a814316a6a/preprints/An-atomic-certificate-for-triangular-lattice-universal-optimality-September-26-2026/paper.pdf) · [primary TeX](https://github.com/openai/math/blob/1581d4cbdd69a0faf34b2089614fe2a814316a6a/preprints/An-atomic-certificate-for-triangular-lattice-universal-optimality-September-26-2026/build/main.tex) | stdlib exact finite integer checks of 20x20 blocks and Bernstein data; infinite analytic propagation is a separate proof obligation |
+| Exact Fourier certificates for complex Hadamard matrices of order six | [PDF](https://github.com/openai/math/blob/1581d4cbdd69a0faf34b2089614fe2a814316a6a/preprints/Exact-Fourier-certificates-for-complex-Hadamard-matrices-of-order-six-September-24-2026/Exact-Fourier-certificates-for-complex-Hadamard-matrices-of-order-six-September-24-2026.pdf) · [primary TeX](https://github.com/openai/math/blob/1581d4cbdd69a0faf34b2089614fe2a814316a6a/preprints/Exact-Fourier-certificates-for-complex-Hadamard-matrices-of-order-six-September-24-2026/build/sections/05-verification.tex) | exact integer/rational moment + PSD identities and program wrapper; supports at-most-five MUB, not F266's computer-assisted at-most-three |
+
+三者可为 DPT 区分有限 exact checker、连续区间 enclosure、解析尾项和原系统历史提供反例/算法启发；没有一篇自动给出 S150 ETH/clip/heat/hybrid 的全根或实际 Goal27 物理证书。
+
 ## 手动增量检查
 
 只在准备使用新数学结果、主控发现推导障碍，或上游发布相关更新时运行，不创建定期任务。下面步骤从仓库根目录运行，读取变更而不合并上游到当前分支。
