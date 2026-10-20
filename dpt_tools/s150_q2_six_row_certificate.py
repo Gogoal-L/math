@@ -177,7 +177,7 @@ def original_rc_band_filter_fraction(
     current=tuple(map(_fraction,raw_source_current_A))
     low,high=map(_fraction,(bandwidth_lo_MHz,bandwidth_hi_MHz))
     n=len(ts)
-    if (n<2 or n!=len(current) or low<=0 or high<=low or
+    if (n<2 or n!=len(current) or low<=0 or high<low or
             integer_scale<1 or not isinstance(integer_scale,int) or
             (expected_sample_count is not None and n!=expected_sample_count)
             or any(ts[j]>=ts[j+1] for j in range(n-1))):
@@ -249,3 +249,101 @@ def original_rc_band_filter_fraction(
         "fractional_pi_interval":(piL,piU),
         "claim_ceiling":"Exact rational/source-candidate PL filter outer for one saved raw-current trace, bounded bandwidth and one initial filter state. Not all 50D source roots, joint CAL sensor E, guard/reset reachability or Goal27.",
     }
+
+
+# Signed dimensionless seven-reading functional from ORIGINAL S150 H4801;
+# independently zero-sum in the two ports removes two arbitrary shared offsets.
+SEVEN_V_W=(F(-3159911,2000000),F(71229,625000),F(14659891,10000000))
+SEVEN_I_W=(F(-221897,2000000),F(-1589547,5000000),
+           F(35459,5000000),F(4217661,10000000))
+SEVEN_V_H=(3800,2614,4147)
+SEVEN_I_H=(1853,4041,2907,3660)
+
+
+def certify_original_seven_reading_joint_outer(
+    *, observed_dual, source_voltage_dual, source_current_band_outers,
+    epsilon_V="0.30558", epsilon_I="0.0401",
+    phase_V="0.02", phase_I="0.05",
+    clock_V_bound, clock_I_bound, initial_filter_I="0.1",
+    gain_V=("0.9","1.1"), gain_I=("0.9","1.1"),
+    root_radii=(0,0,0),
+):
+    """Exact necessary exclusion for a declared SOURCE-CENTER band outer.
+
+    Every row in source_current_band_outers must independently contain the
+    SAME source candidate's weighted RC port-current output for *every*
+    bandwidth in its frequency band. These bounds are hypotheses, not proved
+    by passing them as arguments. In particular this API does NOT certify
+    their original-source provenance or a 50D root cell. The associated
+    SHA-checking original NPZ replay validates that input obligation.
+    Both gain parameters are SHARED across all reads in their respective
+    channel; offsets cancel by exact zero-sum weights. Arbitrary per-read
+    phase/clock residuals and 0.1A initial filter discrepancy are enlarged
+    independently for a sound, deliberately conservative outer.
+    Normalization: divide V observations by 1V and I by 1A first.
+    """
+    if sum(SEVEN_V_W) or sum(SEVEN_I_W):
+        raise ArithmeticError("seven-read offset annihilator is not exact")
+    if len(source_current_band_outers)!=80:
+        raise ValueError("expected exactly 80 source-current bands")
+    o=_fraction(observed_dual)
+    v=tuple(map(_fraction,source_voltage_dual))
+    if len(v)!=2 or v[0]>v[1]:
+        raise ValueError("invalid source-voltage outer")
+    rv=tuple(map(_fraction,root_radii))
+    if len(rv)!=3 or any(x<0 for x in rv):
+        raise ValueError("invalid source-root tube radii")
+    gv=tuple(map(_fraction,gain_V));gi=tuple(map(_fraction,gain_I))
+    if len(gv)!=2 or len(gi)!=2 or not (0<gv[0]<=gv[1] and 0<gi[0]<=gi[1]):
+        raise ValueError("shared gains must be positive closed intervals")
+    errors=tuple(map(_fraction,(epsilon_V,epsilon_I,phase_V,phase_I,
+                                clock_V_bound,clock_I_bound,initial_filter_I)))
+    if any(x<0 for x in errors):
+        raise ValueError("sensor and clock errors must be nonnegative")
+    lv=sum(map(abs,SEVEN_V_W));li=sum(map(abs,SEVEN_I_W))
+    eV,eI,pV,pI,cV,cI,initI=errors
+    # Offset contributions vanish exactly. Other error sources may be
+    # correlated: the sum of their absolute supports remains a valid outer.
+    total_err=lv*(eV+gv[1]*(pV+cV+rv[0]+rv[1]))
+    total_err+=li*(eI+gi[1]*(pI+cI+initI+rv[2]))
+
+    def mult_interval(x,g):
+        corners=(x[0]*g[0],x[0]*g[1],x[1]*g[0],x[1]*g[1])
+        return min(corners),max(corners)
+
+    pv=mult_interval(v,gv)
+    prev=F(90)
+    margins=[]
+    normalized=[]
+    for item in source_current_band_outers:
+        if len(item)!=4:
+            raise ValueError("source-current band entry needs lo,hi,lower,upper")
+        blo,bhi,cl,cu=map(_fraction,item)
+        if blo!=prev or not (blo<bhi<=110) or cl>cu:
+            raise ValueError("source bandwidth gap/overlap or invalid band outer")
+        prev=bhi
+        pi=mult_interval((cl,cu),gi)
+        pred=(pv[0]+pi[0]-total_err,pv[1]+pi[1]+total_err)
+        normalized.append(pred)
+        margins.append(max(F(0),o-pred[1],pred[0]-o))
+    if prev!=110:
+        raise ValueError("source bandwidth gap: last band misses 110 MHz")
+    minimum=min(margins)
+    return dict(
+        status=("STORED_POINT_CONDITIONAL_NECESSARY_EXCLUSION"
+                if minimum>0 else "CANNOT_EXCLUDE"),
+        strict_margin=minimum,
+        zero_offset_annihilator=True,
+        weights_sum=(sum(SEVEN_V_W),sum(SEVEN_I_W)),
+        dual_port_l1=(lv,li),
+        total_nuisance_support=total_err,
+        predicted_outer_per_band=tuple(normalized),
+        source_band_count=80,
+        source_band_bounds_authenticated=False,
+        full50_root_cover_certified=False,
+        joint_full_CAL_E_certified=False,
+        future_H841_goal_certified=False,
+        claim_ceiling=("Conditional ORIGINAL-SOURCE stored-point/verified band "
+                       "outer rejection only. No complete 50D source-root "
+                       "complement, physical joint E or Goal27 certificate."),
+    )
