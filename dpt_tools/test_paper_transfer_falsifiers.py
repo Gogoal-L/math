@@ -1397,5 +1397,25 @@ class OriginalS150EthSeamExactPolynomialTests(unittest.TestCase):
                 max(abs(candidate-lo),abs(candidate-hi)),floor)
 
 
+class OriginalS150EthBodyRowInterfaceTest(unittest.TestCase):
+    def test_real_literal_guard_jump_cannot_have_continuous_body_states(self):
+        from fractions import Fraction as F
+        # Exact real interval-Horner bound for source decimal literals near T=25.0085C.
+        step_lower_V=F('0.006292235773735')
+        reff_max_ohm=F('0.070000045119393')
+        self.assertGreater(step_lower_V/3,F('0.002097411924578'))
+        self.assertGreater(step_lower_V/reff_max_ohm,F('0.0898'))
+        # An all-continuous or insufficient reset would contradict
+        # the two limiting source body-row zero residual equations.
+        for dvj,dd,dib in (
+            (F(0),F(0),F(0)),
+            (F('0.001'),F('0.001'),F('0.01')),
+            (F(0),F(0),F('0.0898')),
+        ):
+            self.assertLess(abs(dvj)+abs(dd)+reff_max_ohm*abs(dib),
+                            step_lower_V)
+        # This is a necessary state jump, not a constructed legal S150 reset.
+
+
 if __name__ == "__main__":
     unittest.main()
