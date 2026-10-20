@@ -1778,3 +1778,26 @@ H841 scorer outer remain OPEN. Excluding this actual SAVED point under
 a hypothetical error contract does NOT exclude all L4.55 lawful worlds,
 does not imply a same-CAL two-world goal gap and does not prove original
 Goal27 improvement.
+
+
+## 2026-10-20 Q3: source-coil-row sharp H841 joint-charge certificate (conditional)
+
+**New information-repair conclusion.** Source archive: read-only original Pro18C target6721/H841 NPZ SHA256 af7299434d7dcde687da3bf56b5ce31babbc4e0c1c0e12b1a849b5f5530ae8fd; NOT hosted in remote Math CI. Hold its external port voltage v fixed and let M=P_H^T Omega_H P_H be the exact existing H841 signed-work fine-grid scorer, a=Mv. Assume only original coil BE row36 with Ls=4.16nH, shared prepared coil current, fine grid spacing h=12.5ps, hypothetical future drain voltage perturbation delta_vD_m=epsilon*u_m, epsilon=1 microV, |u_m|<=1 for m=1..6720. The row alone forces
+
+    delta_s_j = (epsilon*h/Ls)*sum(u_m for 1<=m<=j)
+    delta_W = sum(b_m*u_m), b_m=(epsilon*h/Ls)*sum(a_j for j>=m).
+
+Unlike the prior independent future-current box, all future current coordinates are now correlated by one actual source-row law. Two hypothetical PERFECT FUTURE EXTERNAL PORT charge increments over [0,42]ns and [42,84]ns produce two fine-PL linear equations C*u=0; the common positive epsilon*h*h/Ls factor can be removed. This is NOT S09's internal gate/reference charge and NOT a pretarget sensor.
+
+**Exact optimality mechanism.** For a symmetric box |u_m|<=D with two full-rank checkpoint rows, the homogeneous signed-goal half-diameter is
+
+    R = max_{|u_m|<=D,C*u=0} abs(b*u)
+      = min_{lambda in R^2} D*sum_m abs(b_m-(C^T lambda)_m).
+
+The source-independent implementation goal_charge_checkpoint.certify_two_zero_charge_rows constructs lambda from two candidate zero-residual pivot coordinates, gives all other controls the exact residual sign, solves two pivot controls to satisfy C*u=0, and returns SHARP radius only if both pivot amplitudes are legal and the exact Fraction primal and dual values coincide. A bad pivot is explicitly rejected; missing legality of the source coordinatewise tube is NOT disguised by that result. coil_be_goal_charge_rows constructs the 6720-dimensional b/C for a caller-supplied a=Mv, dt, epsilon, Ls and the fine split. Exact small controls pass GitHub Actions.
+
+**Actual archived-point conditional number (source read-only, not CI replay).** An independent original NPZ and exact saved-binary64 Fraction replay with the Pro18C frozen waveform gave original coil-box no-checkpoint radius R0=0.02998265263597796906nJ. Two PERFECT FUTURE port-charge checkpoints gave sharp R*=0.00130001555524566411nJ with exact primal/dual matching, i.e. 95.6641076057% smaller. Zero-based dual zero-residual pivot indices were m=953 and4884; primal pivot controls approximately -0.7772698940 and +0.5579552406. The source-point output was verified only in the authorized local read-only replay, not in CI: raw original NPZ and its full 6721 coefficient vector are absent from remote. The repository regression certifies the general algebra and rejects infeasible vertices, NOT the 0.0013000156nJ original-source number independently.
+
+**Critical contrast and proof ceiling.** Earlier source-shaped independent current-box alias allowed even perfect future port charge to have ZERO goal-radius benefit; this NEW source coil-coupled box gives ~95.66% conditional benefit for one saved reference. These are not contradictory: the allowable perturbation sets are different. It is mathematically meaningful information-design sensitivity, but no original full50 source-valid pair, root/guard-exhaustive future tube, source-qualified 1microV budget, obtainable PRETARGET port-charge observable, independent sensor/clock/source joint E or H841 voltage-variation remainder was proved. Therefore there is NO certified Goal27 actual-source shrink. This source-row result cannot justify new physical sensor acquisition until those inputs pass a concrete Main qualification gate.
+
+**Reproduce algebra now:** python -B -m unittest discover -s dpt_tools -p 'test_goal_charge_checkpoint.py'. For true archive replay obtain verified original source bytes, construct exact a=Mv from the actual 6721 fine/H841 mapping and call coil_be_goal_charge_rows then certify_two_zero_charge_rows with source-selected pivots (953,4884). Fail closed on missing source SHA, original M, legal old50, guard and error contract; do not label isolated coefficient input as a source-wide certificate.
