@@ -147,3 +147,22 @@ class SourceEthContinuousRectangleTests(unittest.TestCase):
         bad[19]=("3","2")
         with self.assertRaises(ValueError):
             classify_original_eth_guard_state50_box(bad)
+
+
+    def test_guard_cover_preserves_raw_domains_outside_clip_ranges(self):
+        from s150_original_guard_replay import (
+            classify_original_eth_guard_rectangle as classify,
+            bisect_original_eth_guard_rectangle as cover,
+        )
+        raw_t=("300","301")
+        raw_g=("20","21")
+        direct=classify(raw_t,raw_g)
+        self.assertEqual(direct["raw_temperature_C"],["300","301"])
+        self.assertEqual(direct["raw_gate_minus_source_V"],["20","21"])
+        self.assertEqual(direct["effective_clipped_temperature_C"],["260","260"])
+        self.assertEqual(direct["effective_clipped_gate_minus_source_V"],["19","19"])
+        partition=cover(raw_t,raw_g,depth=3)
+        self.assertEqual(len(partition["leaves"]),1)
+        self.assertEqual(partition["leaves"][0]["raw_temperature_C"],list(raw_t))
+        self.assertEqual(partition["leaves"][0]["raw_gate_minus_source_V"],list(raw_g))
+        self.assertFalse(partition["all_roots"])
