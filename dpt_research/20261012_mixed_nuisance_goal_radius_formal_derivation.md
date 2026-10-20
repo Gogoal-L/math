@@ -1709,3 +1709,72 @@ This is a shared unknown 25MHz phase **point candidate necessary** test, stronge
     epsilonV + 1.1*rho_source < 0.12297998958402522455 V.
 
 Clock voltage contribution is <=0.000348446064088247 V; phase/timestamp contribution <=4.714285727e-7 V on this saved grid. With epsilonV=.1V, an entire L4.55 source-root/guard **cell** can only be excluded if an independently certified *all-root* weighted candidate variation rho_cell satisfies the combined condition; with zero additional point-source error this demands rho_cell<0.02089089962184111V. At the previously reported P54 point error budget .30558V this five-reading certificate does NOT exclude the candidate. The 151-LP P54/bandwidth/clock parameter-cell proposal, full 50D source-root complement, actual sensor E and target H841 are still unverified. Exact Fraction dual arithmetic is in test_paper_transfer_falsifiers.py; SHA-pinned original input replay was read-only and is NOT available from current GitHub CI. The original Goal27 certified full-source goal-diameter shrinkage remains zero.
+
+
+## 2026-10-20 P59: stronger original L4.55 three-CAL source-point exclusion
+
+**New original data, not another synthetic phase toy.** Both full Pro18E
+L4.30 observation and Pro19A L4.55 candidate share original S150 source
+law, the exact digital command/PREP CAL times and the same 4801 H rows.
+Read-only original E saved NPZ SHA256
+baafdd8cb489adb186677658c4a8031130cc53a9a1854c4997211d437daf8b3e;
+A source NPZ SHA256
+98f83174aef3345d81e0c500789ae59c16330874c045cfd85639d6da685c61e1;
+original ZIP SHA256
+250aa4ea17514ffdeda3a51d95bedf8e034b181f97bdc254db29ddc36281b9c8;
+actual-law member SHA256
+51b78f729393d29745f59ca150adfef69e1847bf26a8853c6cef3d6be9e2083d.
+Source bytes remain local read-only, absent in remote CI: source/hash checks
+were run independently locally, not in GitHub Actions.
+
+Select zero-based H/CAL indices (3801,2667,4145), original source stage
+indices (3927,2793,4271). Source candidate raw voltage m, exact stored
+binary64 as decimal views, is
+(7.914605249728017,131.3276417312084,-1.8345236508934548)V;
+E observed y=(7.700426513248537,131.26064722263413,
+-1.2327049534809797)V. The normalized exact rational three-sample
+gain/offset-annihilating dual
+
+    w=(1/2,
+      -43906173284025793/1199418156789364442,
+      -277901452555328214/599709078394682221)
+
+satisfies sum(w)=w dot m=0 and ||w||_1=1 EXACTLY, giving
+
+    |w dot y| =
+      517909499186413009776170592290637 /
+      1350424790994497211994023875575808 V
+      = 0.3835159889244979... V.
+
+**Uniform candidate rejection under specified *future-qualified* errors.**
+Independently read-only checked both source-PL adjacent segments for
+each of the 3 actual H timestamps and +/-150 fs tubes. All six slopes
+have absolute value below 7e9 V/s. If measured/model/source voltage
+error satisfies |e_i|<=epsilonV+1.1*rho_source, source gain |gammaV|<=1.1,
+phase is at most 0.02V even INDEPENDENTLY at each selected sample, and
+clock offset <=150fs, necessary candidate compatibility implies
+
+    epsilonV + 1.1*rho_source >=
+      |w dot y| - 0.02V - 1.1*(7e9V/s)*(150e-15s)
+      = 0.3623609889244979... V.
+
+Thus under the hypothetical earlier epsilonV=0.30558V budget, this point
+or a rigorously enclosed candidate subcell is STRICTLY EXCLUDED whenever
+its separately source-certified warped output radius
+rho_source < 0.05161908084045266V. At rho_source >= that amount,
+this contraction cannot decide. The earlier original 5-row P58
+threshold 0.122979989584V did not exclude at epsilonV=0.30558,
+so this is a materially sharper source-shaped point exclusion with a
+WEAKER phase assumption. Existing three_sample_affine_phase_clock_gate
+is reused; exact Fraction independent numerator/dual tests are in
+test_paper_transfer_falsifiers.py.
+
+The six slope bounds are on **entire source segments hit by the clock
+tube**, not merely H-point derivatives. If a source chart crosses a
+hybrid jump or allows more source value variation, the supplied
+rho_source/tube bound is invalid. Actual hardware joint E, complete
+50D all-root/guard cell source variation, PREP inheritance and future
+H841 scorer outer remain OPEN. Excluding this actual SAVED point under
+a hypothetical error contract does NOT exclude all L4.55 lawful worlds,
+does not imply a same-CAL two-world goal gap and does not prove original
+Goal27 improvement.
