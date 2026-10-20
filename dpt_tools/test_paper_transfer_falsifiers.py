@@ -1259,7 +1259,6 @@ class IndexOneDAEBranchCompletenessTest(unittest.TestCase):
         for y in source_roots:
             self.assertEqual(y*y-1, 0)
             self.assertNotEqual(2*y, 0)  # g_y invertible on each branch
-            self.assertEqual([y*t for t in t_cal], [y*t for t in t_cal])
             observation_records.append(tuple(F(0) for _ in t_cal))
             # 1 V * (y A) * 1 ns = +/- 1 nJ signed.
             future_work_J.append(F(1)*y*F(1,10**9))
