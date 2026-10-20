@@ -1080,18 +1080,18 @@ This is a strict reproducible new source-subdomain ALL-ROOT exclusion, although 
 
 ### S-L46 — 原始 Q1 gate KCL 与源 P16/G11 联动的六电压闭子盒排除（2026-10-21）
 
-Original source: ZIP SHA256 \`250aa4ea17514ffdeda3a51d95bedf8e034b181f97bdc254db29ddc36281b9c8\`; \`actual_law.py\` SHA256 \`51b78f729393d29745f59ca150adfef69e1847bf26a8853c6cef3d6be9e2083d\`; adapter SHA256 \`7f03e36809caf3dea1295cf58d7dd70c413ef7991472a5e6eec3405da18f5669\`; original Pro18E saved CAL NPZ SHA256 \`baafdd8cb489adb186677658c4a8031130cc53a9a1854c4997211d437daf8b3e\`. At exact archived n3616 \`h=0x1.b7cdfd9d80000p-37\`, Rg7.5, command15V, the new P16 source passive SPD/Schur eliminates nodes (D,sl,P14) after ALL 12 old BE coil currents and exact external D 150V offset. This is conditional equation equivalence, not source-root existence.
+Original source: ZIP SHA256 `250aa4ea17514ffdeda3a51d95bedf8e034b181f97bdc254db29ddc36281b9c8`; `actual_law.py` SHA256 `51b78f729393d29745f59ca150adfef69e1847bf26a8853c6cef3d6be9e2083d`; adapter SHA256 `7f03e36809caf3dea1295cf58d7dd70c413ef7991472a5e6eec3405da18f5669`; original Pro18E saved CAL NPZ SHA256 `baafdd8cb489adb186677658c4a8031130cc53a9a1854c4997211d437daf8b3e`. At exact archived n3616 `h=0x1.b7cdfd9d80000p-37`, Rg7.5, command15V, the new P16 source passive SPD/Schur eliminates nodes (D,sl,P14) after ALL 12 old BE coil currents and exact external D 150V offset. This is conditional equation equivalence, not source-root existence.
 
 Crucial new remaining-row test: combine original Q1 KCL rows 6 (gate) and 7 (G11 w). At a simultaneous root of the latter, signed G11 charge and the g-w bleeder cancel EXACTLY in the former:
-\`\`\`text
+```text
 r6 = (g-g2)/9 + 1e-7(g-s) + 1e-7(g-d) + (w-d)
      + (1388e-12/h) * [(g-s)-(g_old-s_old)].
-\`\`\`
+```
 The **source-passive P16 reconstruction** makes g2 an affine function of the six current Q1/Q2 (d,g,s) nodes and all 12 **joint** old coil currents, with coefficients for both w/x coordinates exactly zero. On the original guarded Q1 G11 single panel, let u=g-w, u0=g_old-w_old, k=Cbar/h in [3.9pF/h,4.0pF/h]. Literal signed G11 row 7 implies
-\`\`\`text
+```text
 w-d = ((1e-7+k)*(g-d)-k*u0)/(1+1e-7+k).
-\`\`\`
-Source G12 row 8/20 and full G11 guard are also checked. Thus exact Fraction affine image extrema and eight rational w-d corners provide a **whole-cell necessary r6 interval**. The public \`certify_original_source_q1_gate_six_cell\` returns UNKNOWN whenever zero is not strictly separated; it does not infer full CAL, native SciPy/GL32 directed roundoff or Goal27.
+```
+Source G12 row 8/20 and full G11 guard are also checked. Thus exact Fraction affine image extrema and eight rational w-d corners provide a **whole-cell necessary r6 interval**. The public `certify_original_source_q1_gate_six_cell` returns UNKNOWN whenever zero is not strictly separated; it does not infer full CAL, native SciPy/GL32 directed roundoff or Goal27.
 
 Fresh independent read-only original saved-predecessor test: old source voltage controls n3615 held fixed, each of the twelve old coil currents varied independently by **±0.001 A around that SAME archived old current**, Q1 current g6 in [saved+0.010,saved+0.012] V, other five current (d,g,s) nodes in saved ±0.0001V. P16/G11/G12 source chart guards verified; old-coil uncertainty reduces the r6 lower by <0.000993 A. Archived-old singleton exact rational r6 interval [1.100719398908974,1.3475288710211726] A, so the stated 12-old-coil interval still excludes every exact-real source root with >1.0997A positive r6. No raw protected predecessor values are uploaded to GitHub or embedded in public tests. Separate synthetic old-coil box and a zero-crossing candidate exercise fail-closed behavior in public CI.
 

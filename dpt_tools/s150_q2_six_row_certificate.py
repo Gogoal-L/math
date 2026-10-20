@@ -1473,9 +1473,9 @@ def certify_original_source_q1_gate_six_cell(
                   for gg in g for dd in d for k in (kl,ku))
     wdlo,wdhi=min(corners),max(corners)
     gs_charge_S=F("1388e-12")/_STAGE3616_H
-    lower=(g[0]-g2hi)/9+bleed*(g[0]-s[1])+bleed*(g[0]-d[1])+
+    lower=((g[0]-g2hi)/9+bleed*(g[0]-s[1])+bleed*(g[0]-d[1])+
            wdlo+gs_charge_S*((g[0]-s[1])-(old_g-old_s)))
-    upper=(g[1]-g2lo)/9+bleed*(g[1]-s[0])+bleed*(g[1]-d[0])+
+    upper=((g[1]-g2lo)/9+bleed*(g[1]-s[0])+bleed*(g[1]-d[0])+
            wdhi+gs_charge_S*((g[1]-s[0])-(old_g-old_s)))
     if lower>upper:
         raise ArithmeticError("invalid original gate residual enclosure")
