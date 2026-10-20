@@ -483,3 +483,46 @@ def replay_original_s150_seven_reading_80band(
     result["source_exact_physical_sensor_error_qualified"]=False
     result["source_full50_history_roots_covered"]=False
     return result
+
+
+def certify_source_q2_kcl_heat_abs_switch(
+    sensor_left_upper_A, sensor_right_lower_A,
+    left_thermal_slope_upper_C_per_V,
+    right_thermal_slope_lower_C_per_V,
+    six_row_contraction_upper,
+):
+    """Fail-closed IVT and derivative-discontinuity gate for an ORIGINAL row.
+
+    This is an IMPLICATION from separately SHA-proven original source bounds,
+    not an algorithm that authenticates those interval inputs. On Pro18E
+    stage3616, eliminate Q2 x from original KCL r20=0 and solve the Q2
+    body/diode/four-thermal variables uniquely for each declared continuous
+    delta in [-.0395,+.0395]V. A continuous sense S(delta) changing strictly
+    from negative to positive forces one S=0; H=|ds*S|+(g-g2)^2/9 then has a
+    cusp if the one-sided T0(delta) derivatives enclose strictly opposite
+    signs. A single smooth C1 Jacobian contractor across this RAW source
+    seven-row chart is inadmissible. The remaining 43 coupled original
+    source rows have not been solved or excluded; other physical history
+    and all-root claims are forbidden.
+    """
+    left,right,tl,tr,q=map(_fraction,(
+        sensor_left_upper_A,sensor_right_lower_A,
+        left_thermal_slope_upper_C_per_V,
+        right_thermal_slope_lower_C_per_V,
+        six_row_contraction_upper,
+    ))
+    if not(0<=q<1):
+        raise ValueError("source six-row thermal contraction not established")
+    crossed=(left<0<right and tl<0<tr)
+    return {
+        "status":("SOURCE_SEVEN_ROW_HEAT_ABS_CUSP_MUST_SPLIT"
+                  if crossed else "RETAIN_UNDECIDED"),
+        "opposite_slope_jump_lower_C_per_V":(tr-tl if crossed else F(0)),
+        "source_interval_inputs_independently_authenticated":False,
+        "root_50d_certified":False,
+        "full50_history_cover_certified":False,
+        "claim_ceiling":("Only ORIGINAL 7-row KCL-eliminated Q2 "
+            "conditional chart with separately source-qualified signs and "
+            "one-sided derivatives. Preserve BOTH ABS branches in any "
+            "full50 interval-Newton/SIVIA lift; no Goal27 claim."),
+    }
