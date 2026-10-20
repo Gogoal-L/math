@@ -1449,5 +1449,60 @@ class OriginalEAL455SparseDualSourcePoint(unittest.TestCase):
         self.assertLess(threshold,F('.30558'))
 
 
+class OriginalP59ThreePointAffineClockSourceWitness(unittest.TestCase):
+    """Exact stored-float original E/A L4.55 three-point source-candidate control."""
+
+    def test_three_source_rows_beats_five_row_conditional_threshold(self):
+        from fractions import Fraction as F
+        from measurement_factor_audit import three_sample_affine_phase_clock_gate
+        # Original Pro18E observed E / Pro19A L4.55 saved source m.
+        # Full CAL indices: 3801,2667,4145; source stage 3927,2793,4271.
+        # SHA source identities in P59 living note, not available in CI tree.
+        observed=(7.700426513248537,131.26064722263413,
+                  -1.2327049534809797)
+        source=(7.914605249728017,131.3276417312084,
+                -1.8345236508934548)
+        m=tuple(map(F.from_float,source))
+        y=tuple(map(F.from_float,observed))
+        raw=(m[1]-m[2],m[2]-m[0],m[0]-m[1])
+        size=sum(map(abs,raw))
+        w=tuple(x/size for x in raw)
+        self.assertEqual(sum(w),0)
+        self.assertEqual(sum(a*b for a,b in zip(w,m)),0)
+        self.assertEqual(sum(map(abs,w)),1)
+        self.assertEqual(w[0],F(1,2))
+        self.assertEqual(w[1],F(-43906173284025793,
+                               1199418156789364442))
+        self.assertEqual(w[2],F(-277901452555328214,
+                               599709078394682221))
+        contrast=abs(sum(a*b for a,b in zip(w,y)))
+        self.assertEqual(contrast,
+           F(517909499186413009776170592290637,
+             1350424790994497211994023875575808))
+        self.assertGreater(contrast,F(".3835"))
+        # Source point/clock slope B MUST be independently qualified on
+        # EVERY selected PL segment after a +/-150fs warp; none is proved
+        # by this fixture or a GH Actions pass.
+        def gate(rho):
+            return three_sample_affine_phase_clock_gate(
+                observed,source,(0,1,2),F(".30558")+F("1.1")*rho,
+                phase_amplitude_sup_V=".02",gain_abs_upper="1.1",
+                source_slope_bound_V_per_s="7e9",
+                clock_offset_bound_s="150e-15")
+        good=gate(F(".0516"))
+        bad=gate(F(".0520"))
+        self.assertTrue(good["strict_reject"])
+        self.assertFalse(bad["strict_reject"])
+        threshold=contrast-F(".02")-F("1.1")*F("7e9")*F("150e-15")
+        self.assertGreater(threshold,F(".3623609889244978"))
+        self.assertLess(threshold,F(".3623609889244980"))
+        rho_max=(threshold-F(".30558"))/F("1.1")
+        self.assertGreater(rho_max,F(".051619"))
+        self.assertLess(rho_max,F(".051620"))
+        # The previous exact original FIVE reading dual was too weak
+        # for epsilon=0.30558 without a negative extra source error.
+        self.assertGreater(threshold,F(".122979989584"))
+
+
 if __name__ == "__main__":
     unittest.main()
