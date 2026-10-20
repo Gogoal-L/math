@@ -119,6 +119,144 @@ def replay_original_archive(original_zip, e_saved_cal):
     return result
 
 
+
+def certify_original_eth_seam_band():
+    """Exact rational real-source ETH guard-interface certificate.
+
+    The source decimal literals are from ACTUAL_LAW_SHA256; callers must use
+    replay_original_archive to authenticate the separate original source bytes.
+    This fixed temperature band certificate is not a full-50D root/reset proof.
+    """
+    from fractions import Fraction as F
+
+    def q(x):
+        return F(str(x))
+
+    def add(a, b):
+        out = [F(0)] * max(len(a), len(b))
+        for i, x in enumerate(a):
+            out[i] += x
+        for i, x in enumerate(b):
+            out[i] += x
+        return out
+
+    def mul(a, b):
+        out = [F(0)] * (len(a) + len(b) - 1)
+        for i, x in enumerate(a):
+            for j, y in enumerate(b):
+                out[i+j] += x*y
+        return out
+
+    def scale(a, s):
+        return [x*q(s) for x in a]
+
+    def sub(a, b):
+        return add(a, scale(b, -1))
+
+    def power(a, n):
+        out = [F(1)]
+        for _ in range(n):
+            out = mul(out, a)
+        return out
+
+    def poly(coefficients, x):
+        out = [F(0)]
+        for coefficient in coefficients:
+            out = add(mul(out, x), [q(coefficient)])
+        return out
+
+    def eval_exact(coefficients, z):
+        out = F(0)
+        for coefficient in coefficients[::-1]:
+            out = out*z + coefficient
+        return out
+
+    def interval_horner(coefficients, radius):
+        def times(a, b):
+            items = [x*y for x in a for y in b]
+            return min(items), max(items)
+        interval = (coefficients[-1], coefficients[-1])
+        for coefficient in coefficients[-2::-1]:
+            lo, hi = times(interval, (-radius, radius))
+            interval = (lo+coefficient, hi+coefficient)
+        return interval
+
+    def derivative(coefficients):
+        return [i*x for i,x in enumerate(coefficients)][1:] or [F(0)]
+
+    T = [q("25.00855"), F(1)]  # z=T-25.00855, |z| <= 0.00015 C
+    z_radius = q("0.00015")
+    g = add(add(scale(power(T, 2), "8.381e-6"),
+                scale(T, "-4.696e-3")), [q("2.8224")])
+
+    high = [
+        poly(["-22.48e-6", "5.637e-3", "87.27e-3", "-59.02"], T),
+        poly(["567.2e-6", "-0.1404", "-2.866", "1502.6"], T),
+        poly(["-3.728e-3", "0.9245", "20.77", "-9359.8"], T),
+        poly(["5.447e-3", "-1.424", "-31.8", "13239.5"], T),
+    ]
+    low = [
+        poly(["3.788e-6", "-2.125e-3", "0.2401", "-10.98"], T),
+        poly(["18.97e-6", "-8.24e-3", "1.272", "-339.4"], T),
+        poly(["20.94e-6", "6.024e-3", "-3.617", "-1063.7"], T),
+    ]
+    def compose(c):
+        out = [F(0)]
+        for term in c:
+            out = add(mul(out, g), term)
+        return scale(out, F(1, 1000))
+
+    high = compose(high)
+    low = compose(low)
+    difference = sub(high, low)
+    reff = sub([q(".07")],
+               poly(["239.024e-9", "-17.829e-6", "296.341e-6"], T))
+
+    # Directed rational interval-Horner derivatives prove monotonicity
+    # of the *fully composed* source polynomials on the complete band.
+    dderiv = interval_horner(derivative(difference), z_radius)
+    gderiv = interval_horner(derivative(g), z_radius)
+    rderiv = interval_horner(derivative(reff), z_radius)
+    if not (dderiv[0] > 0 and gderiv[1] < 0 and rderiv[0] > 0):
+        raise ArithmeticError("source polynomial monotonicity unproved")
+    lo_d, hi_d = (eval_exact(difference, z)
+                  for z in (-z_radius, z_radius))
+    gmin, gmax = (eval_exact(g, z) for z in (z_radius, -z_radius))
+    rmin, rmax = (eval_exact(reff, z)
+                  for z in (-z_radius, z_radius))
+
+    # Even coarse exact interval-Horner images stay away from every clip:
+    # source temperature, clipped gate, threshold and two ETH output clips.
+    hi_box = interval_horner(high, z_radius)
+    lo_box = interval_horner(low, z_radius)
+    if not (q("1.7") < gmin <= gmax < q("3.2")
+            and q("-8") < gmin and gmax < q("15")
+            and all(q("-3") < z < q("15") for z in (*hi_box, *lo_box))):
+        raise ArithmeticError("source ETH branch clipping not excluded")
+    # These are fixed outward decimal bounds, independently checked against
+    # exact rational endpoint values rather than asserted as data.
+    d_bound = (q("-0.006297989895415"), q("-0.006292235773735"))
+    g_bound = (q("2.710200916147"), q("2.710202199233"))
+    r_bound = (q("0.070000043356052"), q("0.070000045119393"))
+    if not (d_bound[0] <= lo_d <= hi_d <= d_bound[1]
+            and g_bound[0] <= gmin <= gmax <= g_bound[1]
+            and r_bound[0] <= rmin <= rmax <= r_bound[1]
+            and d_bound[1] < 0 and r_bound[0] > 0):
+        raise ArithmeticError("claimed outward source band not certified")
+
+    return {
+        "status": "ORIGINAL_SOURCE_DECIMAL_REAL_INTERVAL_ONLY",
+        "actual_law_sha256": ACTUAL_LAW_SHA256,
+        "temperature_C_closed": ["25.0084", "25.0087"],
+        "eth_high_minus_low_V_outward": [str(x) for x in d_bound],
+        "threshold_gstar_V_outward": [str(x) for x in g_bound],
+        "body_reff_ohm_outward": [str(x) for x in r_bound],
+        "minimum_compensating_body_voltage_V_strict": str(-d_bound[1]),
+        "source_root_status": "NOT_CERTIFIED",
+        "guard_reset_status": "UNRESOLVED",
+        "full_CAL_goal27_status": "NOT_CERTIFIED",
+    }
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--original-zip", required=True)
