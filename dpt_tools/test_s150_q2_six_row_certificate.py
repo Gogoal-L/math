@@ -206,7 +206,7 @@ class SourceQ2OneKCLHeatAbsCuspTests(unittest.TestCase):
 
     def test_source_kcl_abs_non_crossing_or_zero_slope_never_asserts_cusp(self):
         from s150_q2_six_row_certificate import certify_source_q2_kcl_heat_abs_switch as check
-        self.assertEqual(check(1,3,-1,1,F("0.001") if False else "0.001")["status"],
+        self.assertEqual(check(1,3,-1,1,"0.001")["status"],
                          "RETAIN_UNDECIDED")
         self.assertEqual(check(-1,1,0,1,"0.001")["status"],
                          "RETAIN_UNDECIDED")
