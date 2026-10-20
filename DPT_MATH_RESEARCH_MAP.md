@@ -83,6 +83,7 @@
 - **对象：** 保留合法PREP、command顺序、future word与goal的memory quotient/finite response；pointwise gate范围或短history特征支持不能直接证明whole-sequence支持。
 - **强对手/挑战：** 完整数字命令、同CAL、简单history ordinary；构造单段成功但组合失败的可检验反例，再尝试合法repair。不能只增加feature并报告exposed fit。
 - **有用出口：** 新序列上的不同可计算预测、受范围限制的closure关系，或严格限定的最少history信息。原doublefall中候选失败不证明同外部信息普遍不可能。
+- **Q2新条件判据：** 同两hidden历史对受限{A,Blow,Bhigh}所有future word目标等价，加入B0即产生150nJ差异；右同余与guard closure必须绑定允许的future command alphabet。见[stability Q2](dpt_research/20261010_goal_stability_compositional_closure.md)，不代表原50D历史合法。
 - **工具/笔记：** [goal word](dpt_tools/goal_word_quotient.py)、[predictive-state audit](dpt_tools/predictive_state_audit.py)、[dynamic closure](dpt_research/20261010_goal_stability_compositional_closure.md)。
 
 - **2026-10-20 Side条件负控：** 两个线性command更新各自严格收缩仍可能出现单段不可观测、双段goal gap；已复用原有限word工具，详见[dynamic closure](dpt_research/20261010_goal_stability_compositional_closure.md)。该合成负控不认证原source连续合法历史。
@@ -93,6 +94,7 @@
 - **对象：** gate积分、少数charge checkpoint、origin/first-reversal与reference support；同时保留reference-map discrepancy，区分连续轨迹与采样closure。
 - **强ordinary：** checkpoint双向Lipschitz cones+finite-PL box，必须得到同一信息。先解释它做不到什么，再用DP/更深数学。
 - **有用出口：** 条件精度要求、误差—goal tradeoff、合法可行见证和outer之间的gap，或证明endpoint/窗口摘要不足。没有真实sensor误差分布就用确定性条件，不制造noise prior。
+- **Q3源目标信息反例：** 原C保存H841固定外端口目标核在6720 fine电流坐标中842非零/5878零，独立盒±1uA半径约0.00621835nJ；未来完美两半窗PORT charge checkpoint仍可无收益。属source-point+未认证独立future盒，不是S09 gate charge或全root Goal27证书。见[mixed-nuisance Q3](dpt_research/20261012_mixed_nuisance_goal_radius_formal_derivation.md)。
 - **停止重复：** 不继续仅为tight数字加密现有DP；不把query实际残差、内部假设µV/µA或假想rho倒称部署前界。
 - **笔记：** [goal/fiber recovery](dpt_research/20261012_mixed_nuisance_goal_radius_formal_derivation.md)、[finite goal propagation](dpt_research/20261010_goal_stability_compositional_closure.md)。
 
