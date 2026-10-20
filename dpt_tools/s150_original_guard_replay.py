@@ -346,6 +346,41 @@ def bisect_original_eth_guard_rectangle(temperature_C, gate_minus_source_V,
         "goal27": "NOT_CERTIFIED",
     }
 
+
+def classify_original_eth_guard_state50_box(state50_intervals):
+    """Project a FULL 50D physical source-state BOX onto exact Q2 ETH guard.
+
+    This is a NECESSARY guard constraint and cannot prove 50D root existence.
+    Uses interval subtraction for correlated g/s (conservative if correlated).
+    """
+    from fractions import Fraction as F
+    if not isinstance(state50_intervals, (list, tuple)) or len(state50_intervals) != 50:
+        raise ValueError("state50_intervals requires all 50 source coordinates")
+    for i, interval in enumerate(state50_intervals):
+        if (not isinstance(interval, (list,tuple)) or len(interval)!=2
+                or not all(isinstance(v,str) for v in interval)):
+            raise ValueError("state coordinate must be two exact rational strings: "+str(i))
+        try:
+            lo,hi=[F(v) for v in interval]
+        except (ValueError,ZeroDivisionError):
+            raise ValueError("state coordinate invalid rational: "+str(i)) from None
+        if lo>hi:
+            raise ValueError("state coordinate reversed: "+str(i))
+    gl,gh=map(F,state50_intervals[18])
+    sl,sh=map(F,state50_intervals[21])
+    t=state50_intervals[46]
+    result=classify_original_eth_guard_rectangle(
+        t,(str(gl-sh),str(gh-sl)))
+    result["full50_input_projection"] = {
+        "gate_index":18,
+        "source_index":21,
+        "temperature_index":46,
+        "joint_gate_source_correlation": "OUTER_INTERVAL_SUBTRACTION",
+    }
+    result["source_root_qualified"] = False
+    result["valid_predecessor_history"] = False
+    return result
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--original-zip", required=True)
