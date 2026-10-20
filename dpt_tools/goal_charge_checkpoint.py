@@ -63,6 +63,41 @@ def certify_two_zero_charge_rows(goal, charge_rows, pivots, bound=1):
     }
 
 
+
+def certify_one_zero_charge_row(goal, charge_row, pivot, bound=1):
+    """Exact sharp support of |u|<=D and ONE zero charge constraint.
+
+    A bad pivot is not an approximate certificate: it is rejected. This
+    operation does not supply source legality or a pretarget sensor contract.
+    """
+    a=tuple(map(_f,goal))
+    c=tuple(map(_f,charge_row))
+    D=_f(bound)
+    if len(a)<2 or len(c)!=len(a):
+        raise ValueError("goal/charge dimensions mismatch")
+    if D<=0 or not isinstance(pivot,int) or not (0<=pivot<len(a)):
+        raise ValueError("invalid box bound or pivot")
+    if not c[pivot]:
+        raise ValueError("singular checkpoint pivot")
+    lam=a[pivot]/c[pivot]
+    residual=tuple(a[j]-lam*c[j] for j in range(len(a)))
+    u=[D*(1 if x>0 else -1 if x<0 else 0) for x in residual]
+    u[pivot]=-sum(c[j]*u[j] for j in range(len(a)) if j!=pivot)/c[pivot]
+    if abs(u[pivot])>D:
+        raise ValueError("infeasible pivot: zero-charge primal violates box")
+    cp=sum(c[j]*u[j] for j in range(len(a)))
+    primal=sum(a[j]*u[j] for j in range(len(a)))
+    dual=D*sum(abs(x) for x in residual)
+    if cp or primal!=dual:
+        raise ArithmeticError("invalid exact one-row primal/dual witness")
+    return {
+        "radius":primal,"unconstrained_radius":D*sum(map(abs,a)),
+        "primal":primal,"dual":dual,"witness":tuple(u),
+        "checkpoint_residual":cp,"dual_weight":lam,
+        "claim_ceiling":"SHARP_ONE_ROW_LINEAR_BOX_ONLY_NOT_SOURCE_50D",
+    }
+
+
 def coil_be_goal_charge_rows(fine_current_goal_coeff, dt_s, voltage_bound_V,
                              source_Ls_H, half_fine_index):
     """Build coefficient rows for source coil BE and two fine-PL port charges.
