@@ -318,5 +318,30 @@ class D16PackageTwoCoilGoalTests(unittest.TestCase):
         with self.assertRaises(ValueError):call(rad=-1e-6)
 
 
+class D19OriginalCoilScorerCountercontrol(unittest.TestCase):
+    def test_source_BE_right_work_can_cancel_while_frozen_H841_does_not(self):
+        from goal_defect_transport import s150_two_coil_scorer_bridge
+        t=np.arange(6721,dtype=float)*12.5e-12
+        H=t[::8]
+        current=np.ones(t.size)
+        va=np.ones(t.size)
+        vb=va.copy()
+        vb[80]+=1.0
+        vb[81]-=1.0
+        def j_of(v):
+            return np.r_[0.,np.cumsum((v[1:]-150.)*np.diff(t)/100e-6)]
+        a=s150_two_coil_scorer_bridge(t,H,va,current,j_of(va),
+                                       4.16e-9,100e-6)
+        b=s150_two_coil_scorer_bridge(t,H,vb,current,j_of(vb),
+                                       4.16e-9,100e-6)
+        self.assertLess(abs(b['W_BE_right_J']-a['W_BE_right_J']),1e-17)
+        self.assertLess(abs(b['W_H_J']-a['W_H_J']-1e-10),1e-17)
+        self.assertLess(abs(b['Q_H_direct_J']-a['Q_H_direct_J']-1e-10),1e-17)
+        self.assertLess(abs(b['Q_H_J']-a['Q_H_J']-1e-10),1e-17)
+        self.assertLess(abs(b['Q_H_J']-b['Q_H_direct_J']),1e-16)
+        self.assertLess(max(a['r36_minus_r37_maxabs_V'],
+                            b['r36_minus_r37_maxabs_V']),1e-7)
+
+
 if __name__ == '__main__':
     unittest.main()
