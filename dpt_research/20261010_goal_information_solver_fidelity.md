@@ -921,3 +921,19 @@ recursive leaf retains its original raw ancestry. A behavioral negative
 test forbids equating the collapsed effective point to a raw 50D
 parameter/root cover. This is a coverage-provenance repair, not a
 new physical root-existence claim.
+
+
+## 2026-10-20 S-L37: exact RAW-temperature ETH source-domain counterexample
+
+**Origin and falsifier.** Original S150 ZIP SHA256 250aa4ea17514ffdeda3a51d95bedf8e034b181f97bdc254db29ddc36281b9c8, actual_law.py member SHA256 51b78f729393d29745f59ca150adfef69e1847bf26a8853c6cef3d6be9e2083d. Lines 134–152 clip tj to tjc in [-60,260] C but explicitly use UNCLIPPED tj in three ETH terms: HIGH gr² coefficient -2.866*tj, HIGH gr coefficient +20.77*tj, LOW gr coefficient +1.272*tj (all divided by 1000). Other temperature terms use tjc. Therefore raw T cannot be replaced by clipped T when enclosing original source body residuals, even if the clipped-T guard classifier is correct.
+
+Exact real-decimal original law at raw T=260,261 C (same clipped temperature of 260 C), where final ETH output clips remain inactive:
+
+| Gate-source | Mode | ETH(260 C) V | ETH(261 C) V | Difference V |
+|---|---|---:|---:|---:|
+| -4 V | strict LOW | -0.709724832 | -0.714812832 | -0.005088 |
+| +14 V | strict HIGH | +10.556083680 | +10.285127680 | -0.270956 |
+
+For all raw T in [260,261] at either fixed gate-source input, tjc is constant and the surviving tj contribution is exactly affine. In the actual source body equation r[38+k]=vj+ETH+reff(Tc)*ib+d, holding vj,ib,d fixed shifts the SOURCE residual by exactly -5.088mV (LOW) or -270.956mV (HIGH). A wrong contractor that stores only effective clipped T would report zero source variation, despite the actual literal. This is an ORIGINAL-source expression counterexample, not an invented branch or claimed physical full50 root.
+
+**Formal limit.** The new Fraction-based original_eth_fraction in goal_charge_checkpoint.py and exact regression verify this source decimal identity. Original archive/member hashes were independently inspected locally read-only; remote Math CI cannot authenticate original archive bytes and does not bound NumPy/libm floating-point errors. The evidence does NOT prove a lawful own-PREP 50D solution at raw T>260 C; if a genuine root-domain proof enforces raw T<=260 C, the example is excluded. To transfer S-L36's exact clipped guard partition to a source-root outer, retain the RAW 50D rectangle and RAW temperature-dependence or prove a qualified physical raw-domain bound and its complement. All-source roots, guards, joint CAL E and future H841 goal radius remain OPEN.

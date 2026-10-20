@@ -431,5 +431,60 @@ class E150MidpointInteractionCurvatureTests(unittest.TestCase):
             audit(("5","5.5","5.25"),P)
 
 
+class E150StrongOrdinaryProfileControls(unittest.TestCase):
+    """Actual saved-corner *coefficient* arithmetic, not new E150 target truth."""
+
+    def test_source_saved_six_rivals_and_tiny_minimum_margin(self):
+        try:
+            from goal_defect_transport import audit_e150_waveform_ordinary_coefficients as audit
+        except ImportError as error:
+            self.fail(f"new same-information ordinary audit unavailable: {error}")
+        source_cases = (
+            # B100, E100, B150, profile add-minus-scalar, profile quadratic,
+            # current ratio, work ratio, six prior saved predictions.
+            ("62.4118949371027","69.66234860335713","28.034528346669244",
+             "-2.325198849754582",".19909821697010338",
+             ".6682027537302077",".44918566204281746",
+             (35.28498201292368,32.879301452253735,31.291328176856513,
+              32.95978316316908,31.281455543511857,30.197621728802968),
+             .009872633344656),
+            ("62.38734299174475","69.641430064909","28.00641553024535",
+             "-2.327774260871655",".1993719349754971",
+             ".6681974524680616",".44891181748117126",
+             (35.2605026034096,32.853578032515195,31.262860942426183,
+              32.93272834253794,31.253962526139404,30.168572945775924),
+             .008898416286779),
+        )
+        for b,e,c,A,Q,r,q,wants,minimum in source_cases:
+            got=audit(b,e,c,profile_add_minus_scalar_nJ=A,
+                      profile_quadratic_nJ=Q,current_ratio=r,work_ratio=q)
+            self.assertEqual(got["status"],"SIX_RIVALS_PRETARGET_NOT_FROZEN")
+            values=got["candidate_predictions_nJ"]
+            for key,want in zip((
+                "scalar_add","scalar_r","scalar_q",
+                "wave_add","wave_r","wave_q"),wants):
+                self.assertAlmostEqual(float(values[key]),want,places=9)
+            self.assertAlmostEqual(float(got["minimum_six_way_gap_nJ"]),
+                                   minimum,places=9)
+            self.assertLess(float(got["half_minimum_gap_nJ"]),.005)
+            self.assertFalse(got["future_target_observed"])
+
+    def test_negative_curvature_direction_and_invalid_source_contract(self):
+        from fractions import Fraction as F
+        from goal_defect_transport import audit_e150_waveform_ordinary_coefficients as audit
+        got=audit(10,14,5,profile_add_minus_scalar_nJ=-2,
+                  profile_quadratic_nJ=F(1,2),current_ratio=F(1,2),
+                  work_ratio=F(1,4))
+        x=got["candidate_predictions_nJ"]
+        self.assertEqual(F(x["scalar_add"]),9)
+        self.assertEqual(F(x["wave_add"]),7)
+        self.assertEqual(F(x["scalar_r"]),7)
+        self.assertEqual(F(x["wave_r"]),F(47,8))
+        for bad in ("NaN","Infinity",True):
+            with self.assertRaises(ValueError):
+                audit(10,14,5,profile_add_minus_scalar_nJ=bad,
+                      profile_quadratic_nJ=0,current_ratio=1,work_ratio=1)
+
+
 if __name__ == '__main__':
     unittest.main()

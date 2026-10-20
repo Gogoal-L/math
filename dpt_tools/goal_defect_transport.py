@@ -719,3 +719,69 @@ def audit_two_factor_pretarget_interaction(
                 "all-guard H scorer/error outer. Not a true prospective "
                 "predictor, source-root certificate or Goal27 range."),
         }
+
+
+def audit_e150_waveform_ordinary_coefficients(
+        B100_nJ, E100_nJ, B150_nJ, *, profile_add_minus_scalar_nJ,
+        profile_quadratic_nJ, current_ratio, work_ratio):
+    """Exact six SAME-input E150 scalar/profile predictions, NO target.
+
+    With b=B100 ports, e=E100 and c=B150, d=e-b on the SAME H/ports,
+    W(c+k*d)-[W(c)+k(W(e)-W(b))] = k*A+(k*k-k)*Q.
+    A=W(c+d)-W(c)-(W(e)-W(b)); Q=W(d), W(v,i)=v.T M i.
+    This audits caller-declared source-derived A,Q; it does not reconstruct
+    their waveform provenance or prove same-PREP E150 future feasibility.
+    """
+    from decimal import Decimal, localcontext, InvalidOperation
+    from fractions import Fraction
+
+    def rational(value, name):
+        if isinstance(value, bool):
+            raise ValueError(name+" must be finite rational")
+        if isinstance(value, Fraction):
+            return value
+        try:
+            d=Decimal(str(value))
+            if not d.is_finite():
+                raise ValueError("nonfinite")
+            return Fraction(d)
+        except (InvalidOperation, ValueError, TypeError, OverflowError) as exc:
+            raise ValueError(name+" must be finite rational") from exc
+
+    b=rational(B100_nJ,"B100")
+    e=rational(E100_nJ,"E100")
+    c=rational(B150_nJ,"B150")
+    A=rational(profile_add_minus_scalar_nJ,"profile offset")
+    Q=rational(profile_quadratic_nJ,"quadratic")
+    r=rational(current_ratio,"current ratio")
+    q=rational(work_ratio,"work ratio")
+    delta=e-b
+    scalar=lambda k:c+k*delta
+    wave=lambda k:scalar(k)+k*A+(k*k-k)*Q
+    candidates={
+        "scalar_add":scalar(Fraction(1)),
+        "scalar_r":scalar(r),
+        "scalar_q":scalar(q),
+        "wave_add":wave(Fraction(1)),
+        "wave_r":wave(r),
+        "wave_q":wave(q),
+    }
+    sorted_values=sorted(candidates.values())
+    gaps=[sorted_values[j+1]-sorted_values[j]
+          for j in range(len(sorted_values)-1)]
+    minimum=min(gaps)
+    with localcontext() as ctx:
+        ctx.prec=70
+        dec=lambda x:format(Decimal(x.numerator)/Decimal(x.denominator),"f")
+        return {
+            "status":"SIX_RIVALS_PRETARGET_NOT_FROZEN",
+            "candidate_predictions_nJ":{k:dec(v) for k,v in candidates.items()},
+            "profile_add_minus_scalar_nJ":dec(A),
+            "profile_quadratic_nJ":dec(Q),
+            "minimum_six_way_gap_nJ":dec(minimum),
+            "half_minimum_gap_nJ":dec(minimum/2),
+            "future_target_observed":False,
+            "source_prep_qualified":False,
+            "total_error_qualified":False,
+            "claim_ceiling":"Caller-supplied saved profile coefficients; no new E150 target, source input validation, actual E150 own-PREP, H window or TOTAL_ERROR. A six-way small gap is not certified predictive superiority.",
+        }

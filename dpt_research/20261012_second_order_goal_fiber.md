@@ -855,3 +855,24 @@ requires Main's explicit source/deck and timing approval (the two
 historical PREP templates were reported byte-identical while the actual
 commanded E event has NOT been executed). The exact candidate value
 or future success cannot be inferred or fabricated from P curvature.
+
+
+## 2026-10-20 Q4-next: six-way strongest same-information E150 scalar vs profile challenge
+
+Under ONE common previously saved B100/E100/B150 source-path, L, H grid and external V/I port definition, let b,e,c be those saved voltage/current profiles and d=e-b. Since the H-scorer signed work is bilinear W(v,i)=v^T M i, two ordinary predictors receive exactly the same historical inputs:
+
+    S(k)=W(c)+k*(W(e)-W(b))      [scalar-work ordinary]
+    P(k)=W(c+k*d)                [full-profile ordinary]
+    P(k)-S(k)=k*A+(k*k-k)*Q,
+    A=W(c+d)-W(c)-(W(e)-W(b)), Q=W(d).
+
+This is an exact polynomial identity, not an approximation based on future E150 truth. The original read-only source compacts and scorer generated the frozen input coefficients A=-2.325198849754582/-2.327774260871655 nJ and Q=+0.19909821697010338/+0.1993719349754971 nJ (fine/H2), and r=0.6682027537302077/0.6681974524680616 from the historical arithmetic-mean H current, q=0.44918566204281746/0.44891181748117126 from B150/B100 mid-L work. The resulting six pretarget alternatives, all in nJ:
+
+| Path | scalar add | scalar r | scalar q | wave add | wave r | wave q |
+|---|---:|---:|---:|---:|---:|---:|
+| fine | 35.284982013 | 32.879301452 | 31.291328177 | 32.959783163 | 31.281455544 | 30.197621729 |
+| H2 | 35.260502603 | 32.853578033 | 31.262860943 | 32.932728343 | 31.253962526 | 30.168572946 |
+
+The minimum separation among the six competing same-data predictions is only 9.872633344656 pJ (fine) and 8.898416286779 pJ (H2), versus about 1.588 nJ among the old scalar-only subset. Consequently if two candidate predictions each carry a justified equal TOTAL_ERROR >=4.936317pJ (fine) or >=4.449208pJ (H2), their nearest uncertainty intervals overlap; discriminating all six requires tighter margins. The fine/H2 wave-r predictions themselves differ by about 27.493 pJ, which cannot be silently called a qualified numerical error bound.
+
+New exact rational predictor tool goal_defect_transport.audit_e150_waveform_ordinary_coefficients verifies the identity and reports six alternatives from caller-supplied *source-derived* A/Q with explicit NOT_FROZEN and NOT_SOURCE_QUALIFIED status. The saved-decimal 6-way regression detects loss of the quadratic cross term. This is a substantive stronger ordinary and a tighter decision gate, but it is NOT a genuine prospective E150 forecast: the fourth-corner target has not been executed with qualified own-PREP, source-valid original event timing and TOTAL_ERROR. No source-qualified winner, Original R1 physical L_eff measurement or hardware metrology is claimed.
