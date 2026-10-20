@@ -17,7 +17,7 @@ class OriginalEthGuardReplayTests(unittest.TestCase):
         g_lo, g_hi = [F(x) for x in r["threshold_gstar_V_outward"]]
         r_lo, r_hi = [F(x) for x in r["body_reff_ohm_outward"]]
         self.assertLess(lo, hi)
-        self.assertLess(hi, -F("0.006292235773735"))
+        self.assertEqual(hi, -F("0.006292235773735"))
         self.assertEqual(-hi, F(r["minimum_compensating_body_voltage_V_strict"]))
         self.assertGreater(g_lo, 2)
         self.assertLess(g_hi, 3)
