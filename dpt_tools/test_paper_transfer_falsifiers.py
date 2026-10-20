@@ -1247,5 +1247,27 @@ class FullCalSparseCertificateTests(unittest.TestCase):
         self.assertEqual((max(goals_J)-min(goals_J))/2, F(1,2*10**9))
 
 
+class IndexOneDAEBranchCompletenessTest(unittest.TestCase):
+    def test_two_regular_algebraic_roots_same_observation_different_future_work(self):
+        from fractions import Fraction as F
+        # x'=y, 0=y^2-1; both initial y roots are index-one regular.
+        # Full toy CAL observer returns an unrelated zero channel for all t.
+        source_roots = (F(-1), F(1))
+        t_cal = (F(0), F(1, 1000), F(1, 100))
+        observation_records = []
+        future_work_J = []
+        for y in source_roots:
+            self.assertEqual(y*y-1, 0)
+            self.assertNotEqual(2*y, 0)  # g_y invertible on each branch
+            self.assertEqual([y*t for t in t_cal], [y*t for t in t_cal])
+            observation_records.append(tuple(F(0) for _ in t_cal))
+            # 1 V * (y A) * 1 ns = +/- 1 nJ signed.
+            future_work_J.append(F(1)*y*F(1,10**9))
+        self.assertEqual(observation_records[0], observation_records[1])
+        self.assertEqual(future_work_J, [F(-1,10**9), F(1,10**9)])
+        self.assertEqual(max(future_work_J)-min(future_work_J), F(2,10**9))
+        self.assertEqual((max(future_work_J)-min(future_work_J))/2, F(1,10**9))
+
+
 if __name__ == "__main__":
     unittest.main()
