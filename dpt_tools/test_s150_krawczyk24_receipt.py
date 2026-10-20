@@ -156,6 +156,11 @@ class S150Krawczyk24ReceiptTests(unittest.TestCase):
                 clear=True,
             ), patch.dict(receipt_module.SOURCE_ARCHIVE_MEMBER_SHA256, {}, clear=True):
                 result = audit_receipt(receipt, root=root)
+                receipt_path = root_path / "center.json"
+                receipt_path.write_text(json.dumps(receipt), encoding="utf-8")
+                self.assertEqual(
+                    receipt_module.main([str(receipt_path), "--root", str(root_path)]), 0
+                )
 
         self.assertEqual(result["status"], "SOURCE_INPUTS_HASHED_CENTER_ARITHMETIC_PASS_ONLY")
         self.assertEqual(result["noncenter_receipt_status"], "NONCENTER_RECEIPT_HASHED")

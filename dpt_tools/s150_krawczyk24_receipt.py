@@ -471,7 +471,7 @@ def main(argv: list[str] | None = None) -> int:
         print(rendered, end="")
     if result["status"] in (
         "SYNTHETIC_PASS_ONLY",
-        "SOURCE_RECEIPTS_HASHED_CENTER_ARITHMETIC_PASS_ONLY",
+        "SOURCE_INPUTS_HASHED_CENTER_ARITHMETIC_PASS_ONLY",
     ):
         return 0
     return 2
