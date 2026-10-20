@@ -347,3 +347,124 @@ def certify_original_seven_reading_joint_outer(
                        "outer rejection only. No complete 50D source-root "
                        "complement, physical joint E or Goal27 certificate."),
     )
+
+
+def replay_original_s150_seven_reading_80band(
+    observed_e_npz, candidate_a_npz, original_law_zip,
+    *, root_radii=(0,0,0),
+):
+    """Read-only SHA-qualified original E/A first-PREP seven-reading replay.
+
+    No original bytes are copied to a repository, printed or uploaded. Missing
+    original files/hash mismatch fail closed. This is a source STORED-CANDIDATE
+    necessary exclusion, not an exhaustive source-root or joint-CAL certificate.
+    The 80 exact RC midpoint enclosures and a uniform b-Lipschitz source
+    derivative cover the WHOLE 90..110 MHz frequency continuum.
+    """
+    import hashlib
+    import zipfile
+    from pathlib import Path
+    try:
+        import numpy as np
+    except ImportError as ex:
+        raise RuntimeError("NumPy is required for local source NPZ replay") from ex
+    expect_e="baafdd8cb489adb186677658c4a8031130cc53a9a1854c4997211d437daf8b3e"
+    expect_a="98f83174aef3345d81e0c500789ae59c16330874c045cfd85639d6da685c61e1"
+    expect_zip="250aa4ea17514ffdeda3a51d95bedf8e034b181f97bdc254db29ddc36281b9c8"
+    def hashed_path(path, expected):
+        if path is None:
+            raise ValueError("SOURCE_INPUTS_UNAVAILABLE")
+        p=Path(path)
+        if not p.is_file():
+            raise FileNotFoundError("SOURCE_INPUTS_UNAVAILABLE: "+str(p))
+        digest=hashlib.sha256(p.read_bytes()).hexdigest()
+        if digest!=expected:
+            raise ValueError("SOURCE_INPUT_SHA_MISMATCH: "+str(p))
+        return p
+    ep=hashed_path(observed_e_npz,expect_e)
+    ap=hashed_path(candidate_a_npz,expect_a)
+    zp=hashed_path(original_law_zip,expect_zip)
+    with zipfile.ZipFile(zp) as z:
+        members=[name for name in z.namelist() if name.endswith("actual_law.py")]
+        if not members or not any(
+                hashlib.sha256(z.read(name)).hexdigest()==LAW_SHA
+                for name in members):
+            raise ValueError("SOURCE_LAW_MEMBER_SHA_MISMATCH")
+    with np.load(ep,allow_pickle=False) as e, np.load(ap,allow_pickle=False) as a:
+        times_e=e["time_s"];times_a=a["t_s"]
+        state_e=e["state50"];state_a=a["state50"]
+        cmd_e=e["command_V"];cmd_a=a["command_V"]
+        cal=e["measurement_V_A"];H_e=e["H_s"];H_a=a["H_s"]
+        if (times_e.shape!=(4927,) or times_a.shape!=(4927,) or
+                state_e.shape!=(4927,50) or state_a.shape!=(4927,50) or
+                cal.shape!=(4801,2) or H_a.shape!=(4801,) or
+                H_e.shape!=(4801,) or cmd_e.shape!=(4927,) or
+                cmd_a.shape!=(4927,) or
+                not np.array_equal(times_e,times_a) or
+                not np.array_equal(H_e,H_a) or
+                not np.array_equal(H_a,times_a[126:]) or
+                not np.array_equal(cmd_e,cmd_a) or
+                not np.array_equal(state_e[0],state_a[0])):
+            raise ValueError("SOURCE_PREP_COMMAND_OR_GRID_IDENTITY_MISMATCH")
+        ts=tuple(F(float(x)) for x in times_a)
+        current=tuple(F(float(x)) for x in state_a[:,36])
+        voltage=tuple(F(float(x)) for x in state_a[:,0]-state_a[:,1])
+        ys=sum(w*F(float(cal[i,0])) for w,i in zip(SEVEN_V_W,SEVEN_V_H))
+        ys+=sum(w*F(float(cal[i,1])) for w,i in zip(SEVEN_I_W,SEVEN_I_H))
+    if any(ts[i]>=ts[i+1] for i in range(4926)):
+        raise ValueError("SOURCE_TIME_NOT_INCREASING")
+    # Bound derivative of exact piecewise-linear source port currents.
+    current_slope=max(abs((current[i+1]-current[i])/(ts[i+1]-ts[i]))
+                      for i in range(4926))
+    if current_slope>=F(3*10**9):
+        raise ValueError("SOURCE_CURRENT_LIPSCHITZ_NOT_QUALIFIED")
+    raw_V_lipschitz=max(
+        abs((voltage[k+s]-voltage[k+s-1])/(ts[k+s]-ts[k+s-1]))
+        for h in SEVEN_V_H for k in (h+126,) for s in (0,1))
+    if raw_V_lipschitz>=F(7*10**9):
+        raise ValueError("SOURCE_CLOCK_VOLTAGE_SLOPE_NOT_QUALIFIED")
+    source_V=sum(w*voltage[h+126] for w,h in zip(SEVEN_V_W,SEVEN_V_H))
+    stage_indices=tuple(h+126 for h in SEVEN_I_H)
+    piL,_=exact_machin_pi_interval()
+    l1I=sum(map(abs,SEVEN_I_W))
+    bands=[]
+    for k in range(80):
+        blo=F(90)+F(k,4);bhi=blo+F(1,4)
+        mid=(blo+bhi)/2
+        center=original_rc_band_filter_fraction(
+            ts,current,mid,mid,selected_stages=stage_indices,
+            expected_sample_count=4927,integer_scale=10**12)
+        fc=center["sample_bounds_A"]
+        i_lo=i_hi=F(0)
+        for w,j in zip(SEVEN_I_W,stage_indices):
+            lo,hi=fc[j]
+            if w<0:
+                lo,hi=hi,lo
+            i_lo+=w*lo
+            i_hi+=w*hi
+        # Filter derivative wrt bandwidth b, with SAME b for all samples:
+        # f_b=I-int_0^t exp(-2*pi*b*(t-s))*I'(s)ds (when f0=I0).
+        # Drift from a center midpoint to any b in this band, valid for all
+        # t and all signs of the piecewise-linear I' source.
+        inv_diff=max(F(1)/(blo*10**6)-F(1)/(mid*10**6),
+                     F(1)/(mid*10**6)-F(1)/(bhi*10**6))
+        delta=current_slope*inv_diff/(2*piL)
+        bands.append((blo,bhi,i_lo-l1I*delta,i_hi+l1I*delta))
+    result=certify_original_seven_reading_joint_outer(
+        observed_dual=ys,
+        source_voltage_dual=(source_V,source_V),
+        source_current_band_outers=bands,
+        root_radii=root_radii,
+        clock_V_bound=F(7*10**9)*F("150e-15"),
+        clock_I_bound=F(3*10**9)*F("150e-15"),
+    )
+    result["source_band_bounds_authenticated"]=True
+    result["source_input_sha256"]=(expect_e,expect_a,expect_zip,LAW_SHA)
+    result["source_stages"]=4926
+    result["max_current_slope_A_per_s"]=current_slope
+    result["max_selected_voltage_slope_V_per_s"]=raw_V_lipschitz
+    result["observed_seven_reading_exact_dual"]=ys
+    result["source_v_seven_reading_exact_dual"]=source_V
+    result["source_exact_physical_sensor_error_qualified"]=False
+    result["source_full50_history_roots_covered"]=False
+    return result
