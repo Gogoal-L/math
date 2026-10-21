@@ -84,6 +84,8 @@
 
 **S-L51 证书批处理能力：** 固定原 n3616 两五KCL 守恒仿射式预建 exact 2×18 系数表并内存复用，任意 18D shared-old12 闭盒对两行做严格有理数符号端点计算，三种盒与逐 source P16 重构 oracle 完全一致；原型 450 盒支持端点0.1102s（一次建立系数0.525s），比每盒重算精确16D Schur 可扩展，未宣称 native/CI 全程加速。见 [S-L51](dpt_research/20261010_goal_information_solver_fidelity.md) 与 [执行器](dpt_tools/s150_q2_six_row_certificate.py)。
 
+**S-L52 实际原六维 chart 穷尽三盒补集（新增最高阶段层）：** 原 n3616 old12 保存中心各±1mA，Q1 drain 原 ±40mV chart 闭分为 `[-40,-16]`,`[-16,+16]`,`[+16,+40]` mV（其它五个 d/g/s 全±40mV），S-L51 exact five-KCL 仿射守恒将两个外24mV盒**严格排除**，中32mV盒 fail-closed **RETAIN**；三个闭盒并集严格等于整个**指定**原 6D chart，所有可能原 stage 根均保留，排除Q1 d宽60%。不是 all old50/historical root/complement 或 Goal27。证据与 [代码](dpt_tools/s150_q2_six_row_certificate.py) 见 [S-L52](dpt_research/20261010_goal_information_solver_fidelity.md)。
+
 **下一唯一承重OPEN：** 在 S-L48 已约化并严格检验preimage的原 n3616 子域，求**剩余原4D KCL全闭盒根/补集**；对于其它源 chart/G11 guard以外节点和所有前驱情形继续 fail-closed 8D/50D cover。必须同时外包原 ETH/G2/diode/thermal/ABS/clip与 GL32/SciPy/NumPy binary64 误差，再证明 PREP126→CAL4800 的所有合法 hybrid/history、共同 4801×2 sensor E 和未来 H841 有向 signed-work 范围。不能因当前逐 fiber gate root existence 获证就宣称完整 Goal27 upper/lower。
 
 ### Q2 — 合法命令 alphabet 的 history/right-congruence 与必需记忆维数

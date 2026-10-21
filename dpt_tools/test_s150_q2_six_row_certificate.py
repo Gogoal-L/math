@@ -1091,5 +1091,59 @@ class OriginalSourceCachedAffineFiveKclTests(unittest.TestCase):
                 old_coil12_boxes_A=tuple((v,v) for v in old),
                 **dict(kw,source_law_sha256="bad-source-sha"))
 
+
+class OriginalSourceThreeSlabExhaustiveCoverTests(unittest.TestCase):
+    def test_strict_closed_cover_and_source_flux_falsifier(self):
+        from fractions import Fraction as F
+        from s150_q2_six_row_certificate import (
+            certify_original_source_three_slab_global_flux_cover,
+            _SOURCE_X_SPECS,_SOURCE_G11_W_SPECS)
+        H=lambda x:F.from_float(float.fromhex(x))
+        c=tuple(map(H,(
+            _SOURCE_X_SPECS["Q1"]["d"],_SOURCE_G11_W_SPECS["Q1"]["g"],
+            _SOURCE_X_SPECS["Q1"]["s"],_SOURCE_X_SPECS["Q2"]["d"],
+            _SOURCE_G11_W_SPECS["Q2"]["g"],_SOURCE_X_SPECS["Q2"]["s"])))
+        src_box=tuple((v-F(".04"),v+F(".04")) for v in c)
+        old=[F(0)]*12
+        old[0]=-F(".000463")
+        old[1]=-F(".288")
+        old[5]=-F("1.009")
+        old[6]=F(".843")
+        oldbox=tuple((v-F(".001"),v+F(".001")) for v in old)
+        fn=certify_original_source_three_slab_global_flux_cover
+        kw=dict(six_current_node_boxes_V=src_box,
+                old_coil12_boxes_A=oldbox,
+                h_s=original_dt(),source_law_sha256=LAW,
+                source_adapter_sha256=ADAPTER,saved_cal_sha256=ARCHIVE)
+        r=fn(**kw)
+        self.assertTrue(r["exhaustive_closed_cover_of_input_box"])
+        self.assertEqual(r["status"],
+            "ORIGINAL_SOURCE_FINITE_SIX_NODE_OUTER_COVER_WITH_EXCLUSIONS")
+        self.assertEqual(len(r["cells"]),3)
+        statuses=tuple(a["status"] for a in r["cells"])
+        self.assertEqual(statuses,(
+            "STRICT_SOURCE_REAL_BE_FULL50_ROOT_EXCLUDED",
+            "RETAIN_SOURCE_REAL_ROOT_UNRESOLVED",
+            "STRICT_SOURCE_REAL_BE_FULL50_ROOT_EXCLUDED"))
+        self.assertEqual(r["exact_root_excluded_fraction_of_q1_d_width"],F(3,5))
+        c0,c1,c2=r["cells"]
+        self.assertEqual(c0["six_node_boxes_V"][0][0],src_box[0][0])
+        self.assertEqual(c2["six_node_boxes_V"][0][1],src_box[0][1])
+        self.assertEqual(c0["six_node_boxes_V"][0][1],
+                         c1["six_node_boxes_V"][0][0])
+        self.assertEqual(c1["six_node_boxes_V"][0][1],
+                         c2["six_node_boxes_V"][0][0])
+        self.assertLess(c0["original_source_flux_Q1_Q2_A"][0][1],0)
+        self.assertGreater(c2["original_source_flux_Q1_Q2_A"][0][0],0)
+        self.assertFalse(r["global_original_full50_root_existence_proved"])
+        short=fn(**dict(kw,max_cells=2))
+        self.assertEqual(short["status"],
+            "RETAIN_SOURCE_SIX_NODE_PARENT_BUDGET_UNRESOLVED")
+        self.assertEqual(len(short["cells"]),1)
+        self.assertEqual(short["exact_root_excluded_fraction_of_q1_d_width"],0)
+        self.assertTrue(short["exhaustive_closed_cover_of_input_box"])
+        with self.assertRaisesRegex(ValueError,"UNRESOLVED_SOURCE_DOMAIN"):
+            fn(**dict(kw,h_s=F("1e-9")))
+
 if __name__=="__main__":
     unittest.main()

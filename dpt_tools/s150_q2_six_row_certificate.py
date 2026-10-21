@@ -2052,3 +2052,90 @@ def certify_original_source_two_drain_five_kcl_linear_lift(
         source_native_ieee_outward_enclosed=False,
         goal27_certified=False
     )
+
+
+# S-L52: an EXHAUSTIVE three-closed-slab cover of the original current
+# six-node chart, with exact source-necessary KCL complement rejection.
+def certify_original_source_three_slab_global_flux_cover(
+    *,six_current_node_boxes_V,old_coil12_boxes_A,h_s,
+    source_law_sha256,source_adapter_sha256,saved_cal_sha256,
+    left_gate_offset_V=F("-.016"),right_gate_offset_V=F(".016"),
+    max_cells=3
+):
+    """Fail-closed finite outer-cover for original S150 BE source six nodes.
+
+    Gate here denotes a geometric Q1 drain split (NOT a G11/ETH guard).
+    Let C be any six-current / common-old12 rectangle of source inputs.
+    Split ONLY Q1 drain at two exact rational offsets from the original
+    saved d_Q1 center; left, middle, right closed cells have matching
+    shared faces and union EXACTLY the parent. Exclude one child only
+    when original branch-INDEPENDENT conserved five-KCL support misses
+    zero; retain every other child, never infer root existence.
+    No search budget/guard hole: max_cells<3 returns the entire parent
+    unresolved, and no claimed stage/full-history certificate.
+    """
+    if (source_law_sha256!=LAW_SHA or
+            source_adapter_sha256!=ADAPTER_SHA or
+            saved_cal_sha256!=SAVED_SHA or
+            _fraction(h_s)!=_STAGE3616_H):
+        raise ValueError("UNRESOLVED_SOURCE_DOMAIN: wrong original S150 source")
+    boxes=tuple(map(_source_x_box,six_current_node_boxes_V))
+    prev=tuple(map(_source_x_box,old_coil12_boxes_A))
+    if len(boxes)!=6 or len(prev)!=12 or type(max_cells)!=int or max_cells<1:
+        raise ValueError("UNRESOLVED_SOURCE_DOMAIN: finite outer-cover inputs")
+    if max_cells<3:
+        return dict(
+            status="RETAIN_SOURCE_SIX_NODE_PARENT_BUDGET_UNRESOLVED",
+            cells=({"six_node_boxes_V":boxes,
+                    "status":"RETAIN_UNSPLIT_PARENT_UNRESOLVED"},),
+            exhaustive_closed_cover_of_input_box=True,
+            exact_root_excluded_fraction_of_q1_d_width=F(0),
+            original_source_allroot_in_remaining_cells_only=False,
+            source_global_goal27_certified=False,
+            all_prep_cal_history_covered=False)
+    origin=F.from_float(float.fromhex(_SOURCE_X_SPECS["Q1"]["d"]))
+    left=origin+_fraction(left_gate_offset_V)
+    right=origin+_fraction(right_gate_offset_V)
+    lo,hi=boxes[0]
+    if not(lo<left<right<hi):
+        raise ValueError("UNRESOLVED_SOURCE_DOMAIN: exact slab cuts outside parent")
+    q1segments=((lo,left),(left,right),(right,hi))
+    child=[]
+    excluded_length=F(0)
+    auth=dict(h_s=h_s,source_law_sha256=source_law_sha256,
+              source_adapter_sha256=source_adapter_sha256,
+              saved_cal_sha256=saved_cal_sha256)
+    for dspan in q1segments:
+        sub=(dspan,)+boxes[1:]
+        q=certify_original_source_five_kcl_global_flux_outer(
+            six_current_node_boxes_V=sub,
+            old_coil12_boxes_A=prev,**auth)
+        excluded=q["original_full50_projected_kcl_necessary_cell_excluded"]
+        if excluded:
+            excluded_length+=dspan[1]-dspan[0]
+        child.append(dict(
+            six_node_boxes_V=sub,
+            original_source_flux_Q1_Q2_A=
+                q["exact_original_five_kcl_flux_intervals_A"],
+            status=("STRICT_SOURCE_REAL_BE_FULL50_ROOT_EXCLUDED"
+                    if excluded else "RETAIN_SOURCE_REAL_ROOT_UNRESOLVED"),
+            strict_nonzero_flux_margin_A=q["strict_nonzero_flux_margin_A"]))
+    if not(child[0]["six_node_boxes_V"][0][1]==
+           child[1]["six_node_boxes_V"][0][0] and
+           child[1]["six_node_boxes_V"][0][1]==
+           child[2]["six_node_boxes_V"][0][0]):
+        raise ArithmeticError("source exact slab cover gap detected")
+    return dict(
+        status=("ORIGINAL_SOURCE_FINITE_SIX_NODE_OUTER_COVER_WITH_EXCLUSIONS"
+                if excluded_length>0 else
+                "RETAIN_SOURCE_FINITE_SIX_NODE_OUTER_COVER_UNRESOLVED"),
+        cells=tuple(child),
+        exhaustive_closed_cover_of_input_box=True,
+        exact_root_excluded_fraction_of_q1_d_width=excluded_length/(hi-lo),
+        original_source_allroot_in_remaining_cells_only=True,
+        source_q1_d_split_coordinates_V=(left,right),
+        source_real_BE_n3616_shared_old12_provenance_required=True,
+        other_source_guard_branch_proof_not_required_for_exclusion=True,
+        global_original_full50_root_existence_proved=False,
+        source_global_goal27_certified=False,
+        all_prep_cal_history_covered=False)
