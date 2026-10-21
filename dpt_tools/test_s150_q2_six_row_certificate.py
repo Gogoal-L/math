@@ -897,5 +897,64 @@ class OriginalSourceFourNodeConservationExclusionTests(unittest.TestCase):
                                         for _ in range(12)),
                 **dict(auth,h_s=F("1e-9")))
 
+
+class OriginalSourceGlobalFiveKclNecessaryTests(unittest.TestCase):
+    """No gate/diode/thermal solver is needed to exclude a five-KCL sum."""
+
+    def source_six_center(self):
+        from fractions import Fraction as F
+        from s150_q2_six_row_certificate import _SOURCE_X_SPECS, _SOURCE_G11_W_SPECS
+        H=lambda t:F.from_float(float.fromhex(t))
+        return tuple(map(H,(
+            _SOURCE_X_SPECS["Q1"]["d"],_SOURCE_G11_W_SPECS["Q1"]["g"],
+            _SOURCE_X_SPECS["Q1"]["s"],_SOURCE_X_SPECS["Q2"]["d"],
+            _SOURCE_G11_W_SPECS["Q2"]["g"],_SOURCE_X_SPECS["Q2"]["s"])))
+
+    def test_whole_six_source_voltage_chart_excluded_without_preimage(self):
+        from fractions import Fraction as F
+        from s150_q2_six_row_certificate import (
+            certify_original_source_five_kcl_global_flux_outer,
+            certify_original_source_four_node_kcl_conservation_cell)
+        center=self.source_six_center()
+        box=tuple((v+F(".016"),v+F(".04")) if j==0 else
+                  (v-F(".04"),v+F(".04")) for j,v in enumerate(center))
+        old=tuple((-F(".001"),F(".001")) for _ in range(12))
+        auth=dict(h_s=original_dt(),source_law_sha256=LAW,
+                  source_adapter_sha256=ADAPTER,saved_cal_sha256=ARCHIVE)
+        fn=certify_original_source_five_kcl_global_flux_outer
+        result=fn(six_current_node_boxes_V=box,old_coil12_boxes_A=old,**auth)
+        self.assertEqual(result["status"],
+            "ORIGINAL_SOURCE_FIVE_KCL_GLOBAL_NODAL_CELL_EXCLUDED")
+        self.assertIn("Q1",result["strictly_excluded_leg_names"])
+        self.assertTrue(result["original_full50_projected_kcl_necessary_cell_excluded"])
+        self.assertGreater(result["strict_nonzero_flux_margin_A"],F(".001"))
+        self.assertFalse(result["source_full_g2_w_x_ten_chart_preimage_qualified"])
+        self.assertFalse(result["goal27_certified"])
+        # With the synthetic oldzero memory, the MORE demanding S-L48
+        # chart 4D claim is still fail-closed, regardless of flux sign.
+        gatebox=tuple((v-F(".025"),v+F(".025")) if j in (1,4) else
+                      (v-F(".0001"),v+F(".0001"))
+                      for j,v in enumerate(center))
+        guarded=certify_original_source_four_node_kcl_conservation_cell(
+            six_current_node_boxes_V=gatebox,old_coil12_boxes_A=old,**auth)
+        self.assertEqual(guarded["status"],
+            "RETAIN_SOURCE_FOUR_KCL_STAGE_GUARD_UNRESOLVED")
+
+    def test_broad_oldcoil_uncertainty_has_to_remain_unresolved(self):
+        from fractions import Fraction as F
+        from s150_q2_six_row_certificate import (
+            certify_original_source_five_kcl_global_flux_outer)
+        fn=certify_original_source_five_kcl_global_flux_outer
+        boxes=tuple((v-F(".04"),v+F(".04")) for v in self.source_six_center())
+        old=tuple((-F(5),F(5)) for _ in range(12))
+        auth=dict(h_s=original_dt(),source_law_sha256=LAW,
+                  source_adapter_sha256=ADAPTER,saved_cal_sha256=ARCHIVE)
+        result=fn(six_current_node_boxes_V=boxes,old_coil12_boxes_A=old,**auth)
+        self.assertEqual(result["status"],"RETAIN_FOUR_NODE_FLUX_ZERO_UNRESOLVED")
+        self.assertFalse(result["original_full50_projected_kcl_necessary_cell_excluded"])
+        with self.assertRaisesRegex(ValueError,"UNRESOLVED_SOURCE_DOMAIN"):
+            fn(six_current_node_boxes_V=boxes,old_coil12_boxes_A=old,
+               **dict(auth,h_s=F("1e-9")))
+
 if __name__=="__main__":
     unittest.main()

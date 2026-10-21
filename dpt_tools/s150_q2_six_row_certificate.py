@@ -1773,9 +1773,15 @@ def certify_original_source_two_gate_unique_bracket(
 # S-L49: original five-KCL conservation on the remaining four d/s nodes.
 def certify_original_source_four_node_kcl_conservation_cell(
     *,six_current_node_boxes_V,old_coil12_boxes_A,h_s,
-    source_law_sha256,source_adapter_sha256,saved_cal_sha256
+    source_law_sha256,source_adapter_sha256,saved_cal_sha256,
+    require_stage_chart=True
 ):
-    """Strict original n3616 4D root/complement test on guarded source chart.
+    """Exact original n3616 BE five-KCL flux necessary test.
+
+    With require_stage_chart=False, no G11/G12/ETH/diode/thermal
+    branch qualification is needed because all their nodal currents
+    cancel when five original KCL rows are summed. Original source
+    h/BE topology and common old12 still required.
 
     For each leg the five original KCL rows {d,g,w,x,s} sum to the
     package-boundary flux:
@@ -1784,25 +1790,29 @@ def certify_original_source_four_node_kcl_conservation_cell(
     G2 ds, diode ds, all charge GS/GD/G12/DS, thermal and internal
     passive resistors cancel IDENTICALLY; 150V source/BE and all old12
     coil memories remain in the exact common-source P16 Schur lift.
-    A full source root MUST have C_Q1=C_Q2=0. Exclude only when the
-    strict full-box affine image of either row misses zero AND the
-    original S-L48a G11/G12/g2/w/x source chart was verified.
+    A full source root MUST have C_Q1=C_Q2=0. A strictly signed
+    exact affine image of either leg excludes any full source root.
+    Source-chart gates are additionally checked when requested,
+    but are NOT prerequisites of the five-KCL necessary condition.
     """
     auth=dict(h_s=h_s,source_law_sha256=source_law_sha256,
               source_adapter_sha256=source_adapter_sha256,
               saved_cal_sha256=saved_cal_sha256)
-    stage=certify_original_source_two_gate_unique_bracket(
-        six_current_node_boxes_V=six_current_node_boxes_V,
-        old_coil12_boxes_A=old_coil12_boxes_A,**auth)
-    if not stage["source_50d_to_four_nonlinear_nodes_conditional"]:
-        return dict(
-            status="RETAIN_SOURCE_FOUR_KCL_STAGE_GUARD_UNRESOLVED",
-            original_gate_pair_exists=stage.get(
-                "simultaneous_both_gate_roots_unique_per_four_fiber",False),
-            original_full_ten_node_preimage_qualified=False,
-            source_four_kcl_complement_certified=False,
-            all_prep_cal_histories_covered=False,
-            goal27_certified=False)
+    if len(six_current_node_boxes_V)!=6 or len(old_coil12_boxes_A)!=12:
+        raise ValueError("UNRESOLVED_SOURCE_DOMAIN: six node/12 oldcoil boxes")
+    if require_stage_chart:
+        stage=certify_original_source_two_gate_unique_bracket(
+            six_current_node_boxes_V=six_current_node_boxes_V,
+            old_coil12_boxes_A=old_coil12_boxes_A,**auth)
+        if not stage["source_50d_to_four_nonlinear_nodes_conditional"]:
+            return dict(
+                status="RETAIN_SOURCE_FOUR_KCL_STAGE_GUARD_UNRESOLVED",
+                original_gate_pair_exists=stage.get(
+                    "simultaneous_both_gate_roots_unique_per_four_fiber",False),
+                original_full_ten_node_preimage_qualified=False,
+                source_four_kcl_complement_certified=False,
+                all_prep_cal_histories_covered=False,
+                goal27_certified=False)
     boxes=tuple(map(_source_x_box,six_current_node_boxes_V))
     old=tuple(map(_source_x_box,old_coil12_boxes_A))
     low6=tuple(x[0] for x in boxes)
@@ -1858,6 +1868,8 @@ def certify_original_source_four_node_kcl_conservation_cell(
                 if lower[k]>0 or upper[k]<0),default=F(0))
     return dict(
         status=("ORIGINAL_SOURCE_FOUR_NODE_KCL_CONSERVATION_CELL_EXCLUDED"
+                if excluded and require_stage_chart else
+                "ORIGINAL_SOURCE_FIVE_KCL_GLOBAL_NODAL_CELL_EXCLUDED"
                 if excluded else "RETAIN_FOUR_NODE_FLUX_ZERO_UNRESOLVED"),
         original_five_kcl_rows=((3,6,7,8,9),(15,18,19,20,21)),
         remaining_current_four_node_indices=(3,9,15,21),
@@ -1868,11 +1880,31 @@ def certify_original_source_four_node_kcl_conservation_cell(
         full_four_node_source_cell_excluded=bool(excluded),
         source_original_G2_diode_GS_GD_G12_DS_cancel_exactly=True,
         source_old_coil12_joint_affine_extrema=True,
-        source_full_g2_w_x_ten_chart_preimage_qualified=True,
-        original_gate_pair_unique_per_four_fiber=True,
+        source_full_g2_w_x_ten_chart_preimage_qualified=bool(require_stage_chart),
+        original_gate_pair_unique_per_four_fiber=bool(require_stage_chart),
+        original_full50_projected_kcl_necessary_cell_excluded=bool(excluded),
+        source_nonlinear_guard_independent_conservation_qualified=True,
         original_remaining_4D_root_existence_certified=False,
         all_legal_old50_prep_histories_covered=False,
         original_native_ieee_outward_enclosed=False,
         all_cal4801_joint_e_certified=False,
         goal27_certified=False,
     )
+
+
+def certify_original_source_five_kcl_global_flux_outer(
+    *,six_current_node_boxes_V,old_coil12_boxes_A,h_s,
+    source_law_sha256,source_adapter_sha256,saved_cal_sha256
+):
+    """Original BE full50 KCL necessary outer; guard-agnostic and fail-closed.
+
+    Valid on the source-real n3616 law/stamp for all defined nonlinear
+    branches, but not on old_command/trapezoidal or other h histories.
+    """
+    return certify_original_source_four_node_kcl_conservation_cell(
+        six_current_node_boxes_V=six_current_node_boxes_V,
+        old_coil12_boxes_A=old_coil12_boxes_A,
+        h_s=h_s,source_law_sha256=source_law_sha256,
+        source_adapter_sha256=source_adapter_sha256,
+        saved_cal_sha256=saved_cal_sha256,
+        require_stage_chart=False)

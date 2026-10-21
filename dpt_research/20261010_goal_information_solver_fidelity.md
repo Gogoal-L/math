@@ -1188,3 +1188,17 @@ C_Q2 in [-0.003106471779935494, +0.003106471729001115] A.
 **因此整个指定原 4D 电压盒对该真实 old-coil 条件区间都严格无 stage 根，最低带符号裕度0.449567mA。** 这是前一节 gate 单根以外，对**剩余 4D KCL/补集**的新直接 source 数学推进，不是仅重述 G11/x exclusion，也不需要以原 ETH/G2/diode/thermal 数值商替代原源表达式。独立原 native source \`make_source_operator().residual\` 在将全部 16 package 节点和 12 当前 coil currents 依原 BE 方程**同时**重构后，对五行求和的 saved/6组非零扰动验证保守绝对差小于 \`5×10^(-10)\` A。零旧电流合成 source chart 强负控、old Ld 电流符号 ±0.01A 变动和错误源 h 负控均为公开测试；公开测试使用不同的**合成** old currents，不含本地 protected old50 任何数值字节。
 
 最高证明等级仍是：**原 source 模型实数代数、原单阶段 n3616、指定旧电流/节点 guard 内连续闭子域的全根排除**。实际 old12±1mA 子域的每一点是否来自完整 PREP126 合法历史尚无证书；G11 finite Gauss32 的 NumPy 浮点权重、source SciPy \`hyp2f1\`/clip/ABS rounding 及所有 hybrid/thermal 分支并未做严格 native outward 计算；余下 4D 全体 chart 补集、完整 CAL4801×2 共同 E、H841 signed-work 目标直径均**OPEN**。Source ZIP SHA256 \`250aa4ea17514ffdeda3a51d95bedf8e034b181f97bdc254db29ddc36281b9c8\`，adapter SHA256 \`7f03e36809caf3dea1295cf58d7dd70c413ef7991472a5e6eec3405da18f5669\`，ZIP、adapter 与 protected NPZ 均不上传仓库。
+
+
+### S-L49b：原始五 KCL 守恒对所有定义良好的非线性分支都成立
+
+上节 S-L49 先认证 S-L48a 的两个 gate 和原 ten-node chart，随后用五 KCL 守恒排除剩余四维根。**新的更强适用性证明：** 原 \`actual_law.py\` 后向欧拉静态 source 对 d/g/w/x/s 五节点的 G2、diode、GS/GD/G12、1pF DS 及 thermal 电流通过 incidence stamps **恒等抵消**。只要原 50D source 根满足这个指定 BE 步（\`old_command=None\`、\`h=0x1.b7cdfd9d80000p-37\` 秒），无需先解 G11/G12、无需证明各 nonlinear/ETH/clip/ABS/switch guard 单根，必满足上一节 exact P16 五行流量等式。新 \`certify_original_source_five_kcl_global_flux_outer\` 对**原所有已定义 source nonlinear 分支**只做必要 KCL 全盒排除，不提升任何根存在性；未验证的其他 h/梯形 \`old_command\`、全 PREP/CAL 历史和 binary64 outward 仍开放。
+
+原保存 n3615 old12 线圈各保存值±0.001A，原 current 六个电压 \`(Q1:d,g,s,Q2:d,g,s)\` 中 **Q1 d 在保存+[0.016,0.040]V**，其他 **五电压各全保存±0.040V**，固定原 SHA 的完整 18D 共同区间 Exact Fraction 给出
+
+\`\`\`text
+C_Q1 >= +0.00018296416077017902 A
+C_Q1 <= +0.011177167460651302 A.
+\`\`\`
+
+原 Q1 drain 整个 ±40mV chart 上部 24mV，即其电压宽度**30%**连同其它五节点完整 chart，全在该真实保存 old-coil 允许闭盒下严格无任何原 50D stage 根。该全分支必要排除比先认证 G11/dual-gate 的狭窄 4D slice 更强，因而可用作 PREP/CAL 来源足够时的第一层廉价 outer contractor。公开 CI 用 synthetic old12 无源 chart 正例和 ±5A 超宽 oldcoils 保留零的 fail-closed 负控；真正原 archived old12 数据只在受保护本地只读 SHA 下验证，未上传。原 source ZIP SHA256 \`250aa4ea17514ffdeda3a51d95bedf8e034b181f97bdc254db29ddc36281b9c8\`；law SHA256 \`51b78f729393d29745f59ca150adfef69e1847bf26a8853c6cef3d6be9e2083d\`，E NPZ SHA256 \`baafdd8cb489adb186677658c4a8031130cc53a9a1854c4997211d437daf8b3e\`。不称 Goal27 全 root/outer。

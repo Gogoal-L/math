@@ -84,6 +84,8 @@
 
 **S-L49 新 4D 源补集证书：** 原 n3616 五节点 KCL 闭环守恒使 G2/D1/GL32/GS/G12/1pF-DS/thermal 非线性精确抵消，保留 P16/全部12 oldcoil BE 形成两腿共享前驱的 exact Fraction 仿射源流量。原 Pro18E saved old12 每个±1mA、Q1 d 保存+[13,39]mV、双 gate 保存±1mV、另三 d/s 保存±0.1mV 的实际 source-qualified 连续 4D 盒，S-L48a gate/g2/w/x 原图域合格，**Q1 五 KCL 守恒下界+0.449567mA>0**，故整盒原 source stage 根严格排除；非完整 4D cover/Goal27。原公式、SOURCE SHA、公开负控与 [执行器](dpt_tools/s150_q2_six_row_certificate.py) 见 [S-L49](dpt_research/20261010_goal_information_solver_fidelity.md)。**下一 OPEN：** 扩展所有剩余 d/s 四维参数盒、实际 old50/prep 全纤维及原生 outward，随后 full CAL joint E/Goal27。
 
+**S-L49b 更强原 source 必要约束（本轮）：** 原 literal BE 五 KCL 求和使 G2/D1/G11/G12/ETH/thermal 全部分支在 source 26-node incidence 中相消，只保留 P16/共享 old12 affine flux；因此无需 gated 4D/chart preimage 即可严格排除原 50D 的投影六电压盒。在原 n3616 实际 old12 各保存±1mA 下，Q1 d 保存+[16,40]mV 与其余五 d/g/s **完整各±40mV** 的闭盒 `C_Q1≥+0.182964mA`，原完整 Q1 drain chart 上部24mV（30%）无根。详见 [S-L49b](dpt_research/20261010_goal_information_solver_fidelity.md) 与 [exact Fraction global operator](dpt_tools/s150_q2_six_row_certificate.py)；未证 all predecessor/h/hybrid/IEEE outward/Goal27。
+
 **下一唯一承重OPEN：** 在 S-L48 已约化并严格检验preimage的原 n3616 子域，求**剩余原4D KCL全闭盒根/补集**；对于其它源 chart/G11 guard以外节点和所有前驱情形继续 fail-closed 8D/50D cover。必须同时外包原 ETH/G2/diode/thermal/ABS/clip与 GL32/SciPy/NumPy binary64 误差，再证明 PREP126→CAL4800 的所有合法 hybrid/history、共同 4801×2 sensor E 和未来 H841 有向 signed-work 范围。不能因当前逐 fiber gate root existence 获证就宣称完整 Goal27 upper/lower。
 
 ### Q2 — 合法命令 alphabet 的 history/right-congruence 与必需记忆维数
