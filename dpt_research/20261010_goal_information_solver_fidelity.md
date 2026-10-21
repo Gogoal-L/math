@@ -1229,3 +1229,10 @@ det(A) = +0.0022265211922281045... S^2 > 0.
 交叉下三角严格零来自真实原 circuit connectivity，而非数值舍入。因而给定 current Q1(g,w,x,s)、Q2(g,w,x,s) 的八个值与唯一共同 old12，源 BE 两条 KCL 总和对两只 drain 都**存在唯一实根**，可 exact Fraction 反求。新 \`certify_original_source_two_drain_five_kcl_linear_lift\` 对原保存 n3615 old12 和 n3616 其它八 current 保存节点重建两 drain，与保存节点误差仅 \`1.1547366179576273e−9V\`、\`2.320328856732381e−9V\`；公开变更 old-Ld 电流与超 chart 合成 predecessor 为强负控。只在原十节点 chart + S-L40 body/thermal 前驱限定与全部其他 source guards/preimage 通过时，才可把这个双 drain 行替换升级为**条件性 source 50D→8D 的另一种 exact root correspondence 表示**；该 8D 保留的是 Q1/Q2 (g,w,x,s)，与 S-L48 的 gated4D 表示不同，后者的其余4KCL 根仍 OPEN。
 
 本节所有式子继承原 source law SHA256 \`51b78f729393d29745f59ca150adfef69e1847bf26a8853c6cef3d6be9e2083d\`、adapter SHA256 \`7f03e36809caf3dea1295cf58d7dd70c413ef7991472a5e6eec3405da18f5669\`、原保存 E NPZ SHA256 \`baafdd8cb489adb186677658c4a8031130cc53a9a1854c4997211d437daf8b3e\`，n3616 fixed-h BE only。受保护原始输入只在本地只读哈希认证；不上传完整 old50/NPZ。原生 SciPy/GL32/NumPy IEEE outward、PREP126/CAL4800 全历史与共同 CAL4801×2 H841 Goal27 均未闭合。
+
+
+### S-L51 — 两行 18D 原 source 仿射因子缓存：自适应外包的可扩展 exact 算法
+
+上一 S-L49c 的五 KCL 双腿必要函数 \`C=(C_Q1,C_Q2)\` 对同一个原 current 六电压和旧12线圈的 18 个实有理变量，实际上是**一个固定的 source 仿射映射** \`C=c+A v+B i_old\`，其中 \`A∈Q^(2×6),B∈Q^(2×12)\`。新增受限单例（内存、无磁盘缓存）\`_original_source_five_kcl_cached_affine_model\`：只做原 P16 exact source 16×16 建立一次（零基准+六当前基向量+十二 oldcoil 基向量，并对 w/x 四个导数作零系数负控），返回完全 exact Fraction coefficients。任意 \`X×I_old\` 闭盒随后通过每个系数的正负决定端点，**两行同时共用同一个原旧电流输入的共同参数域**；每次调用仍先核对原 law/adapter/saved sha 和 \`h\`，即使已有缓存亦不绕开源身份和步长授权。凡未知原非线性分支，五KCL 必要行恒等式仍精确有效；这个加速仅用于当前固定 BE/15V original stage，非全 PREP→CAL / primitive IEEE outward 证书。
+
+本轮只读 cloud/isolated stdin \`Fraction\` 性能基线：一次构建 18 仿射基系数约0.525s，旧逐 P16 实现三盒1.606s，预计算的 450 个盒 exact support 总共0.1102s（仅统计支持端点循环、不计首次源码加载、CI调度）。公开 \`test_s150_q2_six_row_certificate.py\` 使用**独立手工从原P16代入构造**的每腿五KCL求和作 exact root-point equality oracle，并校验三档不同半径的闭盒 2 行 exact extrema、SOURCE SHA 负控和不牺牲 failclosed 状态。算法优化不改变任一边界不等式/接受阈值；尚待正式 Actions 的函数级性能对照，现阶段只宣称初步 source-proof loop 加速，不承诺 CI 全套提速。

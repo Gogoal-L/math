@@ -82,6 +82,8 @@
 
 **S-L45–S-L50 原 source 当前最高证据（PR #31）：** 原 n3616 P16 passive SPD 保留全部12 oldcoil及150V BE forcing；源 w/x G11/G12 guard 和原两 gate 各唯一根，在真实 saved old12±1mA、四 d/s±0.1mV、两 g±125µV 严格 chart 上条件性 50D→4D（独立 oldzero 反例触发 g2/w/x preimage fail-closed，不能在 guard 外升级）。更强的**不依赖 G11/G12/ETH/G2/diode/thermal 分支的五KCL流量必要条件**：给定旧线圈盒，原当前六电压中 Q1d saved+[16,40]mV、其余五各完整±40mV 原 chart，Q1 conserved flux≥+0.182964mA，**整块上部24mV/30% 原源 50D 阶段 root 投影排除**。在六节点完整各±40mV chart 上流量本身跨零，S-L49c 更进一步以 exact slope 0.202859500696…S 作单调投影，将 Q1d 必要范围压到 saved [−15.0980724,+15.0980745]mV，原80mV宽缩减**62.2548%**。新 S-L50 联立两腿流量的 exact 2×2 矩阵 det>0.0022265S²，两个 drain 对固定另八 current+old12 线性唯一，形成**另一种** S-L40/合法 chart 条件下的 50D→8D 变量表示；它不宣称剩余8D方程有解。所有源码真实 SHA/证书/负控见 [S-L45–50 证明](dpt_research/20261010_goal_information_solver_fidelity.md)、[Fraction代码](dpt_tools/s150_q2_six_row_certificate.py)。前沿论文 F325/F376/F140/F122 仅按条件定理和严格不适用性登记 [archive](literature_archive/README.md)；不得将这些 source 单阶段局部证明提升为所有 legal PREP/CAL history 或 Goal27。
 
+**S-L51 证书批处理能力：** 固定原 n3616 两五KCL 守恒仿射式预建 exact 2×18 系数表并内存复用，任意 18D shared-old12 闭盒对两行做严格有理数符号端点计算，三种盒与逐 source P16 重构 oracle 完全一致；原型 450 盒支持端点0.1102s（一次建立系数0.525s），比每盒重算精确16D Schur 可扩展，未宣称 native/CI 全程加速。见 [S-L51](dpt_research/20261010_goal_information_solver_fidelity.md) 与 [执行器](dpt_tools/s150_q2_six_row_certificate.py)。
+
 **下一唯一承重OPEN：** 在 S-L48 已约化并严格检验preimage的原 n3616 子域，求**剩余原4D KCL全闭盒根/补集**；对于其它源 chart/G11 guard以外节点和所有前驱情形继续 fail-closed 8D/50D cover。必须同时外包原 ETH/G2/diode/thermal/ABS/clip与 GL32/SciPy/NumPy binary64 误差，再证明 PREP126→CAL4800 的所有合法 hybrid/history、共同 4801×2 sensor E 和未来 H841 有向 signed-work 范围。不能因当前逐 fiber gate root existence 获证就宣称完整 Goal27 upper/lower。
 
 ### Q2 — 合法命令 alphabet 的 history/right-congruence 与必需记忆维数

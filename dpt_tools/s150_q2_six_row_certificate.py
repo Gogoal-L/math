@@ -5,6 +5,7 @@ must be independently SHA verified; these formula-only tests cannot prove the
 other 44 full-50 source rows or the complementary root/guard histories.
 """
 from fractions import Fraction as F
+from functools import lru_cache
 
 LAW_SHA="51b78f729393d29745f59ca150adfef69e1847bf26a8853c6cef3d6be9e2083d"
 ADAPTER_SHA="7f03e36809caf3dea1295cf58d7dd70c413ef7991472a5e6eec3405da18f5669"
@@ -1770,6 +1771,62 @@ def certify_original_source_two_gate_unique_bracket(
     )
 
 
+
+
+# S-L51: a UNIQUE certified 2x(6+12) source-affine model reused for
+# arbitrarily many closed boxes in a fail-closed interval covering.
+# All coefficients are exact Fractions of the original BE resistor/coils,
+# no source ZIP or saved NPZ bytes are present in this public module.
+@lru_cache(maxsize=1)
+def _original_source_five_kcl_cached_affine_model():
+    """Precompile literal-original n3616 2-row source flux c+A*v+B*old.
+
+    The expensive P16 exact Schur is independent of candidate boxes.
+    Deliberately instantiate all six current and all twelve old
+    predecessor basis vectors, and fail if four omitted w/x boundary
+    coefficients are nonzero. The public caller MUST verify exact law
+    SHA/adapter/SAVED SHA/h BEFORE using this result from the cache.
+    """
+    zeros6=(F(0),)*6
+    zeros12=(F(0),)*12
+    auth=dict(h_s=_STAGE3616_H,source_law_sha256=LAW_SHA,
+              source_adapter_sha256=ADAPTER_SHA,
+              saved_cal_sha256=SAVED_SHA,command_V=15)
+    def source_rows(six,predecessor,unused_wx=None):
+        b=[six[0],six[1],F(0),F(0),six[2],
+           six[3],six[4],F(0),F(0),six[5]]
+        if unused_wx is not None:
+            b[unused_wx]=F(1)
+        lift=certify_original_source_passive16_port_lift(
+            retained_node10_V=b,old_coil12_A=predecessor,**auth)
+        p=dict(zip(lift["eliminated_node_indices"],
+                   lift["port_D_sl_V"]+lift["package_voltage14_V"]))
+        h=_STAGE3616_H
+        return tuple(
+            (F(1,5)+h/F("4.3659e-9"))*(six[3*k]-p[2+12*k])
+           +(F(1,100)+h/F(".2e-9"))*(six[3*k+2]-p[10+12*k])
+           +(six[3*k+1]-p[5+12*k])/9
+           -predecessor[5*k]-predecessor[5*k+4]
+            for k in (0,1))
+    bias=source_rows(zeros6,zeros12)
+    for j in (2,3,7,8):
+        if source_rows(zeros6,zeros12,j)!=bias:
+            raise ArithmeticError("original source five-KCL flux w/x dependence")
+    A=[]
+    for j in range(6):
+        u=list(zeros6);u[j]=F(1)
+        q=source_rows(u,zeros12)
+        A.append(tuple(q[k]-bias[k] for k in (0,1)))
+    B=[]
+    for j in range(12):
+        u=list(zeros12);u[j]=F(1)
+        q=source_rows(zeros6,u)
+        B.append(tuple(q[k]-bias[k] for k in (0,1)))
+    if not(A[0][0]>0 and A[3][0]<0
+           and A[0][1]==0 and A[3][1]>0):
+        raise ArithmeticError("original source five-KCL 2x6 topology changed")
+    return (bias,tuple(A),tuple(B))
+
 # S-L49: original five-KCL conservation on the remaining four d/s nodes.
 def certify_original_source_four_node_kcl_conservation_cell(
     *,six_current_node_boxes_V,old_coil12_boxes_A,h_s,
@@ -1815,55 +1872,31 @@ def certify_original_source_four_node_kcl_conservation_cell(
                 goal27_certified=False)
     boxes=tuple(map(_source_x_box,six_current_node_boxes_V))
     old=tuple(map(_source_x_box,old_coil12_boxes_A))
-    low6=tuple(x[0] for x in boxes)
-    oldlow=tuple(x[0] for x in old)
-    def flux(v,o,unused_wx=None):
-        b=[v[0],v[1],F(0),F(0),v[2],
-           v[3],v[4],F(0),F(0),v[5]]
-        if unused_wx is not None:
-            b[unused_wx]=F(1)
-        p=certify_original_source_passive16_port_lift(
-            retained_node10_V=b,old_coil12_A=o,
-            command_V=15,**auth)
-        eliminated=dict(zip(p["eliminated_node_indices"],
-                            p["port_D_sl_V"]+p["package_voltage14_V"]))
-        out=[]
-        for k in (0,1):
-            d,g,s=v[3*k:3*k+3]
-            da=eliminated[2+12*k]
-            g2=eliminated[5+12*k]
-            sv=eliminated[10+12*k]
-            out.append(
-                (F(1,5)+_STAGE3616_H/F("4.3659e-9"))*(d-da)
-               +(F(1,100)+_STAGE3616_H/F(".2e-9"))*(s-sv)
-               +(g-g2)/9-o[5*k]-o[5*k+4])
-        return tuple(out)
-    baseline=flux(low6,oldlow)
-    for wj in (2,3,7,8):
-        if flux(low6,oldlow,unused_wx=wj)!=baseline:
-            raise ArithmeticError("original KCL five-row sum depends on w/x")
-    lower=list(baseline)
-    upper=list(baseline)
-    q1_d_slope=None
-    # One original joint affine image; all old12 uncertainty is shared.
-    for j,b in enumerate(boxes):
-        v=list(low6);v[j]=b[1]
-        at=flux(v,oldlow)
-        if j==0 and b[1]>b[0]:
-            q1_d_slope=(at[0]-baseline[0])/(b[1]-b[0])
-        for k in (0,1):
-            delta=at[k]-baseline[k]
-            lower[k]+=min(F(0),delta)
-            upper[k]+=max(F(0),delta)
-    for j,b in enumerate(old):
-        o=list(oldlow);o[j]=b[1]
-        at=flux(low6,o)
-        for k in (0,1):
-            delta=at[k]-baseline[k]
-            lower[k]+=min(F(0),delta)
-            upper[k]+=max(F(0),delta)
+    # Prior source/step identity MUST be rechecked on every call: an
+    # in-memory cache must not mask a wrong SOURCE SHA, h, or adapter.
+    if (source_law_sha256!=LAW_SHA or
+            source_adapter_sha256!=ADAPTER_SHA or
+            saved_cal_sha256!=SAVED_SHA or
+            _fraction(h_s)!=_STAGE3616_H):
+        raise ValueError("UNRESOLVED_SOURCE_DOMAIN: source KCL coefficients")
+    bias,A,B=_original_source_five_kcl_cached_affine_model()
+    # Each support extremum is EXACT for this affine 18D box; the SAME
+    # old12 input is shared by both output rows (not split histories).
+    lower=tuple(
+        bias[k]+sum(A[j][k]*(v[0] if A[j][k]>=0 else v[1])
+                    for j,v in enumerate(boxes))
+               +sum(B[j][k]*(v[0] if B[j][k]>=0 else v[1])
+                    for j,v in enumerate(old))
+        for k in (0,1))
+    upper=tuple(
+        bias[k]+sum(A[j][k]*(v[1] if A[j][k]>=0 else v[0])
+                    for j,v in enumerate(boxes))
+               +sum(B[j][k]*(v[1] if B[j][k]>=0 else v[0])
+                    for j,v in enumerate(old))
+        for k in (0,1))
     if any(a>b for a,b in zip(lower,upper)):
-        raise ArithmeticError("invalid source KCL joint affine enclosure")
+        raise ArithmeticError("invalid source exact affine support")
+    q1_d_slope=A[0][0] if boxes[0][0]<boxes[0][1] else None
     excluded=tuple(("Q1" if k==0 else "Q2") for k in (0,1)
                    if lower[k]>0 or upper[k]<0)
     margin=max((min(abs(lower[k]),abs(upper[k])) for k in (0,1)

@@ -1022,5 +1022,74 @@ class OriginalSourceKclDrainProjectionAndDualSchurTests(unittest.TestCase):
                 retained_node8_V=retained,old_coil12_A=old,
                 **dict(auth,command_V=10))
 
+
+class OriginalSourceCachedAffineFiveKclTests(unittest.TestCase):
+    """Cached model must be EXACTLY the original 16x16 source Schur."""
+
+    def test_closed_cell_cached_coefficients_match_literal_p16_rows(self):
+        from fractions import Fraction as F
+        from s150_q2_six_row_certificate import (
+            _original_source_five_kcl_cached_affine_model,
+            certify_original_source_five_kcl_global_flux_outer,
+            certify_original_source_passive16_port_lift,
+            _SOURCE_X_SPECS,_SOURCE_G11_W_SPECS)
+        bias,A,B=_original_source_five_kcl_cached_affine_model()
+        self.assertEqual(len(A),6)
+        self.assertEqual(len(B),12)
+        self.assertEqual(A[0][1],0)
+        self.assertGreater(A[0][0],F(".20"))
+        self.assertLess(A[3][0],0)
+        H=lambda t:F.from_float(float.fromhex(t))
+        c=tuple(map(H,(
+            _SOURCE_X_SPECS["Q1"]["d"],_SOURCE_G11_W_SPECS["Q1"]["g"],
+            _SOURCE_X_SPECS["Q1"]["s"],_SOURCE_X_SPECS["Q2"]["d"],
+            _SOURCE_G11_W_SPECS["Q2"]["g"],_SOURCE_X_SPECS["Q2"]["s"])))
+        old=tuple(F(i-6,100) for i in range(12))
+        kw=dict(h_s=original_dt(),source_law_sha256=LAW,
+                source_adapter_sha256=ADAPTER,saved_cal_sha256=ARCHIVE)
+        ports=(c[0],c[1],F(0),F(0),c[2],
+               c[3],c[4],F(0),F(0),c[5])
+        p=certify_original_source_passive16_port_lift(
+            retained_node10_V=ports,old_coil12_A=old,
+            command_V=15,**kw)
+        values=dict(zip(p["eliminated_node_indices"],
+                        p["port_D_sl_V"]+p["package_voltage14_V"]))
+        literal=tuple(
+            (F(1,5)+original_dt()/F("4.3659e-9"))*
+                (c[3*k]-values[2+12*k])
+           +(F(1,100)+original_dt()/F(".2e-9"))*
+                (c[3*k+2]-values[10+12*k])
+           +(c[3*k+1]-values[5+12*k])/9-old[5*k]-old[5*k+4]
+            for k in (0,1))
+        cached=tuple(
+            bias[k]+sum(A[j][k]*c[j] for j in range(6))+
+                    sum(B[j][k]*old[j] for j in range(12))
+            for k in (0,1))
+        self.assertEqual(cached,literal)
+        for radius in (F(".0001"),F(".01"),F(".04")):
+            boxes=tuple((v-radius,v+radius) for v in c)
+            oldboxes=tuple((v-F(".001"),v+F(".001")) for v in old)
+            result=certify_original_source_five_kcl_global_flux_outer(
+                six_current_node_boxes_V=boxes,
+                old_coil12_boxes_A=oldboxes,**kw)
+            lohi=result["exact_original_five_kcl_flux_intervals_A"]
+            for k in range(2):
+                oracle_low=(bias[k]+
+                    sum(A[j][k]*(b[0] if A[j][k]>=0 else b[1])
+                        for j,b in enumerate(boxes))+
+                    sum(B[j][k]*(b[0] if B[j][k]>=0 else b[1])
+                        for j,b in enumerate(oldboxes)))
+                oracle_hi=(bias[k]+
+                    sum(A[j][k]*(b[1] if A[j][k]>=0 else b[0])
+                        for j,b in enumerate(boxes))+
+                    sum(B[j][k]*(b[1] if B[j][k]>=0 else b[0])
+                        for j,b in enumerate(oldboxes)))
+                self.assertEqual(lohi[k],(oracle_low,oracle_hi))
+        with self.assertRaisesRegex(ValueError,"UNRESOLVED_SOURCE_DOMAIN"):
+            certify_original_source_five_kcl_global_flux_outer(
+                six_current_node_boxes_V=tuple((v,v) for v in c),
+                old_coil12_boxes_A=tuple((v,v) for v in old),
+                **dict(kw,source_law_sha256="bad-source-sha"))
+
 if __name__=="__main__":
     unittest.main()
