@@ -1844,11 +1844,13 @@ def certify_original_source_four_node_kcl_conservation_cell(
             raise ArithmeticError("original KCL five-row sum depends on w/x")
     lower=list(baseline)
     upper=list(baseline)
-    # The same source P16 affine lift and ONE joint old12 box are used
-    # for both legs; no independent row-wise nuisance choices.
+    q1_d_slope=None
+    # One original joint affine image; all old12 uncertainty is shared.
     for j,b in enumerate(boxes):
         v=list(low6);v[j]=b[1]
         at=flux(v,oldlow)
+        if j==0 and b[1]>b[0]:
+            q1_d_slope=(at[0]-baseline[0])/(b[1]-b[0])
         for k in (0,1):
             delta=at[k]-baseline[k]
             lower[k]+=min(F(0),delta)
@@ -1866,11 +1868,31 @@ def certify_original_source_four_node_kcl_conservation_cell(
                    if lower[k]>0 or upper[k]<0)
     margin=max((min(abs(lower[k]),abs(upper[k])) for k in (0,1)
                 if lower[k]>0 or upper[k]<0),default=F(0))
+    # Sharp projected exact outer: C_Q1(d)=a*d+b with a>0.
+    # A true source root must have d in this entire-box support.
+    q1_d_required=None
+    q1_d_retained_fraction=None
+    if q1_d_slope is not None:
+        if q1_d_slope<=0:
+            raise ArithmeticError("source Q1 drain flux not monotone")
+        dlow,dhigh=boxes[0]
+        upper_from_others=upper[0]-q1_d_slope*(dhigh-dlow)
+        projected_low=max(dlow,dlow-upper_from_others/q1_d_slope)
+        projected_high=min(dhigh,dlow-lower[0]/q1_d_slope)
+        if projected_low<=projected_high:
+            q1_d_required=(projected_low,projected_high)
+            q1_d_retained_fraction=(projected_high-projected_low)/(dhigh-dlow)
+        else:
+            q1_d_retained_fraction=F(0)
     return dict(
         status=("ORIGINAL_SOURCE_FOUR_NODE_KCL_CONSERVATION_CELL_EXCLUDED"
                 if excluded and require_stage_chart else
                 "ORIGINAL_SOURCE_FIVE_KCL_GLOBAL_NODAL_CELL_EXCLUDED"
                 if excluded else "RETAIN_FOUR_NODE_FLUX_ZERO_UNRESOLVED"),
+        necessary_q1_d_source_interval_V=q1_d_required,
+        exact_q1_d_five_kcl_slope_A_per_V=q1_d_slope,
+        q1_d_outer_width_retained_fraction=q1_d_retained_fraction,
+        source_q1_d_projected_contractor_verified=q1_d_slope is not None,
         original_five_kcl_rows=((3,6,7,8,9),(15,18,19,20,21)),
         remaining_current_four_node_indices=(3,9,15,21),
         source_coil_old_Ld_Lv_positions=((0,4),(5,9)),
@@ -1908,3 +1930,92 @@ def certify_original_source_five_kcl_global_flux_outer(
         source_adapter_sha256=source_adapter_sha256,
         saved_cal_sha256=saved_cal_sha256,
         require_stage_chart=False)
+
+
+# S-L50: the TWO original BE leg boundary-conservation equations also
+# uniquely solve both drain voltages, independently of semiconductor laws.
+def certify_original_source_two_drain_five_kcl_linear_lift(
+    *,retained_node8_V,old_coil12_A,command_V,h_s,
+    source_law_sha256,source_adapter_sha256,saved_cal_sha256
+):
+    """Exact original n3616 2x2 affine dual-drain Schur root lift.
+
+    Retained Q1(g,w,x,s),Q2(g,w,x,s), shared full oldcoil12.
+    P16 eliminates D/sl and 14 passive package nodes; 12 coil BE rows
+    are solved. Two source five-KCL sums are affine in d_Q1,d_Q2,
+    with invertible rational 2x2. Replacing each drain KCL row by
+    its entire leg's 5-row sum is an invertible row operation once
+    g/w/x/s KCL rows are retained. This does NOT prove remaining
+    nonlinear roots, legal old-body/thermal history or Goal27.
+    """
+    if len(retained_node8_V)!=8 or len(old_coil12_A)!=12:
+        raise ValueError("UNRESOLVED_SOURCE_DOMAIN: eight nodes/12 old coils")
+    v=tuple(map(_fraction,retained_node8_V))
+    old=tuple(map(_fraction,old_coil12_A))
+    auth=dict(h_s=h_s,source_law_sha256=source_law_sha256,
+              source_adapter_sha256=source_adapter_sha256,
+              saved_cal_sha256=saved_cal_sha256,command_V=command_V)
+    def flux(d1,d2,retain=False):
+        ports=(d1,v[0],v[1],v[2],v[3],d2,v[4],v[5],v[6],v[7])
+        lift=certify_original_source_passive16_port_lift(
+            retained_node10_V=ports,old_coil12_A=old,**auth)
+        pp=dict(zip(lift["eliminated_node_indices"],
+                    lift["port_D_sl_V"]+lift["package_voltage14_V"]))
+        out=[]
+        for k in (0,1):
+            d,g,s=(d1,v[0],v[3]) if k==0 else (d2,v[4],v[7])
+            out.append(
+                (F(1,5)+_STAGE3616_H/F("4.3659e-9"))*(d-pp[2+12*k])
+               +(F(1,100)+_STAGE3616_H/F(".2e-9"))*(s-pp[10+12*k])
+               +(g-pp[5+12*k])/9-old[5*k]-old[5*k+4])
+        return (tuple(out),pp) if retain else tuple(out)
+    zero=F(0)
+    base=flux(zero,zero);one=flux(F(1),zero);two=flux(zero,F(1))
+    M=((one[0]-base[0],two[0]-base[0]),
+       (one[1]-base[1],two[1]-base[1]))
+    det=M[0][0]*M[1][1]-M[0][1]*M[1][0]
+    if not(M[0][0]>0 and M[1][0]==0 and M[0][1]<0
+           and M[1][1]>0 and det>0):
+        raise ArithmeticError("invalid original dual-drain KCL coefficient")
+    drains=_solve(M,(-base[0],-base[1]))
+    zeros,pp=flux(*drains,retain=True)
+    if zeros!=(zero,zero):
+        raise ArithmeticError("source dual-drain affine residue nonzero")
+    chart=True
+    originals=[]
+    for k,leg in enumerate(("Q1","Q2")):
+        data=_SOURCE_X_SPECS[leg]
+        gg=_SOURCE_G11_W_SPECS[leg]
+        item=(drains[k],pp[5+12*k],v[4*k],v[4*k+2],v[4*k+3])
+        originals.append(item)
+        center=(F.from_float(float.fromhex(data["d"])),None,
+                F.from_float(float.fromhex(gg["g"])),
+                F.from_float(float.fromhex(data["x"])),
+                F.from_float(float.fromhex(data["s"])))
+        for j in (0,2,3,4):
+            chart &= abs(item[j]-center[j])<=F(".04")
+        g2band=(F("11.386"),F("11.465")) if k==0 else (
+                F("17.700"),F("17.779"))
+        chart &= g2band[0]<=item[1]<=g2band[1]
+        oldu=(F.from_float(float.fromhex(gg["old_g"]))-
+              F.from_float(float.fromhex(gg["old_w"])))
+        nowu=item[2]-v[4*k+1]
+        chart &= abs(nowu-oldu)<=F(1)
+    return dict(
+        status=("ORIGINAL_SOURCE_DUAL_DRAIN_CHART_AFFINE_LIFT" if chart else
+                "RETAIN_SOURCE_DUAL_DRAIN_ALGEBRAIC_ONLY_CHART_UNRESOLVED"),
+        exact_two_drain_schur_matrix_S=M,
+        exact_two_drain_determinant_S2=det,
+        unique_original_source_drain_pair_V=drains,
+        exact_original_five_kcl_sums_A=zeros,
+        ten_source_nodes_d_g2_g_x_s=tuple(originals),
+        source_drain_pair_affine_unique_globally=True,
+        ten_node_and_g11_w_guard_source_chart_qualified=bool(chart),
+        source_original_drain_kcl_row_replacement_equivalent=True,
+        conditional_root_correspondence_needs_S_L40_body_thermal=True,
+        old_thermal_diode_predecessor_qualified_here=False,
+        other_remaining_original_nonlinear_rows_solved=False,
+        full_prep_cal_history_covered=False,
+        source_native_ieee_outward_enclosed=False,
+        goal27_certified=False
+    )

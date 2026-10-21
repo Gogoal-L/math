@@ -956,5 +956,71 @@ class OriginalSourceGlobalFiveKclNecessaryTests(unittest.TestCase):
             fn(six_current_node_boxes_V=boxes,old_coil12_boxes_A=old,
                **dict(auth,h_s=F("1e-9")))
 
+
+class OriginalSourceKclDrainProjectionAndDualSchurTests(unittest.TestCase):
+    """Both original flux equations support strict exact rational inversions."""
+
+    def test_source_q1_drain_sharp_projected_outer_from_full_voltage_chart(self):
+        from fractions import Fraction as F
+        from s150_q2_six_row_certificate import (
+            certify_original_source_five_kcl_global_flux_outer,
+            _SOURCE_X_SPECS,_SOURCE_G11_W_SPECS)
+        H=lambda x:F.from_float(float.fromhex(x))
+        c=tuple(map(H,(
+            _SOURCE_X_SPECS["Q1"]["d"],_SOURCE_G11_W_SPECS["Q1"]["g"],
+            _SOURCE_X_SPECS["Q1"]["s"],_SOURCE_X_SPECS["Q2"]["d"],
+            _SOURCE_G11_W_SPECS["Q2"]["g"],_SOURCE_X_SPECS["Q2"]["s"])))
+        old=[F(0)]*12
+        old[0]=-F(".000463");old[1]=-F(".288")
+        old[5]=-F("1.009");old[6]=F(".843")
+        r=certify_original_source_five_kcl_global_flux_outer(
+            six_current_node_boxes_V=tuple((v-F(".04"),v+F(".04"))
+                                           for v in c),
+            old_coil12_boxes_A=tuple((i-F(".001"),i+F(".001"))
+                                    for i in old),
+            h_s=original_dt(),source_law_sha256=LAW,
+            source_adapter_sha256=ADAPTER,saved_cal_sha256=ARCHIVE)
+        self.assertEqual(r["status"],"RETAIN_FOUR_NODE_FLUX_ZERO_UNRESOLVED")
+        self.assertGreater(r["exact_q1_d_five_kcl_slope_A_per_V"],F(".20"))
+        f=r["q1_d_outer_width_retained_fraction"]
+        self.assertGreater(f,F(".3"))
+        self.assertLess(f,F(".4"))
+        self.assertIsNotNone(r["necessary_q1_d_source_interval_V"])
+        self.assertFalse(r["original_full50_projected_kcl_necessary_cell_excluded"])
+        self.assertFalse(r["goal27_certified"])
+
+    def test_dual_drain_original_2x2_source_lift_and_chart_negative(self):
+        from fractions import Fraction as F
+        from s150_q2_six_row_certificate import (
+            certify_original_source_two_drain_five_kcl_linear_lift,
+            _SOURCE_X_SPECS,_SOURCE_G11_W_SPECS)
+        H=lambda x:F.from_float(float.fromhex(x))
+        xx=_SOURCE_X_SPECS;gg=_SOURCE_G11_W_SPECS
+        retained=(H(gg["Q1"]["g"]),F(150),H(xx["Q1"]["x"]),H(xx["Q1"]["s"]),
+                  H(gg["Q2"]["g"]),F("11.5"),H(xx["Q2"]["x"]),H(xx["Q2"]["s"]))
+        old=[F(0)]*12
+        old[1]=-F(".288");old[6]=F(".843")
+        auth=dict(command_V=15,h_s=original_dt(),
+                  source_law_sha256=LAW,source_adapter_sha256=ADAPTER,
+                  saved_cal_sha256=ARCHIVE)
+        result=certify_original_source_two_drain_five_kcl_linear_lift(
+            retained_node8_V=retained,old_coil12_A=old,**auth)
+        mat=result["exact_two_drain_schur_matrix_S"]
+        self.assertEqual(mat[1][0],0)
+        self.assertGreater(result["exact_two_drain_determinant_S2"],F(".002"))
+        self.assertEqual(result["exact_original_five_kcl_sums_A"],(0,0))
+        self.assertTrue(result["source_drain_pair_affine_unique_globally"])
+        self.assertFalse(result["ten_node_and_g11_w_guard_source_chart_qualified"])
+        self.assertFalse(result["other_remaining_original_nonlinear_rows_solved"])
+        changed=old.copy();changed[0]+=F(".01")
+        other=certify_original_source_two_drain_five_kcl_linear_lift(
+            retained_node8_V=retained,old_coil12_A=changed,**auth)
+        self.assertNotEqual(result["unique_original_source_drain_pair_V"],
+                            other["unique_original_source_drain_pair_V"])
+        with self.assertRaisesRegex(ValueError,"UNRESOLVED_SOURCE_DOMAIN"):
+            certify_original_source_two_drain_five_kcl_linear_lift(
+                retained_node8_V=retained,old_coil12_A=old,
+                **dict(auth,command_V=10))
+
 if __name__=="__main__":
     unittest.main()
