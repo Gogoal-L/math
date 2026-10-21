@@ -637,5 +637,513 @@ class MonotoneOriginalG12TwoCornerUpgradeTests(unittest.TestCase):
         self.assertFalse(got["all50_stage_roots_certified"])
 
 
+
+
+class OriginalSourcePassive16PortLiftTests(unittest.TestCase):
+    def test_original_external_source_150v_and_spd_schur(self):
+        from fractions import Fraction as F
+        from s150_q2_six_row_certificate import (
+            certify_original_source_passive16_port_lift,
+        )
+        kw=dict(retained_node10_V=tuple(F(i,10) for i in range(10)),
+                old_coil12_A=tuple(F(i,100) for i in range(12)),
+                command_V=15,h_s=original_dt(),
+                source_law_sha256=LAW,source_adapter_sha256=ADAPTER,
+                saved_cal_sha256=ARCHIVE)
+        q=certify_original_source_passive16_port_lift(**kw)
+        self.assertEqual(q["original_two_port_residual_A"],(0,0))
+        self.assertTrue(all(v>0 for v in
+                     q["strict_package_ldl_pivots_S"]+
+                     q["strict_schur_pivots_S"]))
+        self.assertEqual(q["original_D_coil_150V_offset_A"],
+                         F(150)*original_dt()/F("100e-6"))
+        self.assertFalse(q["complete_original_six_node_roots_certified"])
+        # An old external D-current affects the new D/sl root.
+        changed=list(kw["old_coil12_A"])
+        changed[11]+=F(1)
+        qq=certify_original_source_passive16_port_lift(
+            **dict(kw,old_coil12_A=changed))
+        self.assertNotEqual(q["port_D_sl_V"],qq["port_D_sl_V"])
+        with self.assertRaisesRegex(ValueError,"UNRESOLVED_SOURCE_DOMAIN"):
+            certify_original_source_passive16_port_lift(
+                **dict(kw,command_V=10))
+
+
+class OriginalS150Q1GateSixCellWithCommonOldCoilsTests(unittest.TestCase):
+    """Independent signed source-gate regression (no protected archive)."""
+
+    def setup_boxes(self,delta_lo,delta_hi):
+        from fractions import Fraction as F
+        from s150_q2_six_row_certificate import (
+            _SOURCE_X_SPECS,_SOURCE_G11_W_SPECS)
+        H=lambda h:F.from_float(float.fromhex(h))
+        c=tuple(map(H,(
+            _SOURCE_X_SPECS["Q1"]["d"],_SOURCE_G11_W_SPECS["Q1"]["g"],
+            _SOURCE_X_SPECS["Q1"]["s"],_SOURCE_X_SPECS["Q2"]["d"],
+            _SOURCE_G11_W_SPECS["Q2"]["g"],_SOURCE_X_SPECS["Q2"]["s"])))
+        return tuple((v+delta_lo,v+delta_hi) if j==1 else
+                     (v-F(".0001"),v+F(".0001"))
+                     for j,v in enumerate(c))
+
+    def test_q1_gate_strict_closed_box_source_all_twelve_old_coils(self):
+        from fractions import Fraction as F
+        from s150_q2_six_row_certificate import (
+            certify_original_source_q1_gate_six_cell)
+        a=dict(
+            six_current_node_boxes_V=self.setup_boxes(F(".01"),F(".012")),
+            old_coil12_boxes_A=tuple((-F(".001"),F(".001")) for _ in range(12)),
+            h_s=original_dt(),source_law_sha256=LAW,
+            source_adapter_sha256=ADAPTER,saved_cal_sha256=ARCHIVE)
+        r=certify_original_source_q1_gate_six_cell(**a)
+        self.assertEqual(r["status"],"SOURCE_REAL_Q1_GATE_SIX_CLOSED_CELL_EXCLUDED")
+        self.assertGreater(r["exact_r6_lower_A"],F(".9"))
+        self.assertTrue(r["omitted_w_x_passive_coefficients_checked_zero"])
+        self.assertTrue(r["common_old_coil12_box_used"])
+        self.assertFalse(r["full_prep_cal_history_certified"])
+
+    def test_q1_gate_strict_exclusion_fails_closed_at_root_crossing(self):
+        from fractions import Fraction as F
+        from s150_q2_six_row_certificate import (
+            certify_original_source_q1_gate_six_cell)
+        a=dict(
+            six_current_node_boxes_V=self.setup_boxes(F(0),F(".005")),
+            old_coil12_boxes_A=tuple((-F(".001"),F(".001")) for _ in range(12)),
+            h_s=original_dt(),source_law_sha256=LAW,
+            source_adapter_sha256=ADAPTER,saved_cal_sha256=ARCHIVE)
+        r=certify_original_source_q1_gate_six_cell(**a)
+        self.assertEqual(r["status"],"RETAIN_SOURCE_Q1_GATE_SIX_CELL_UNRESOLVED")
+        self.assertLessEqual(r["exact_r6_lower_A"],0)
+        self.assertGreaterEqual(r["exact_r6_upper_A"],0)
+        with self.assertRaisesRegex(ValueError,"UNRESOLVED_SOURCE_DOMAIN"):
+            certify_original_source_q1_gate_six_cell(
+                **dict(a,h_s=F("1e-9")))
+
+
+class OriginalSourceQ1GateRootPerFiberTests(unittest.TestCase):
+    """Exact face signs + original G11 monotonicity, not 50D root existence."""
+
+    def test_g11_gate_both_strict_faces_prove_scalar_unique_root(self):
+        from fractions import Fraction as F
+        from s150_q2_six_row_certificate import (
+            certify_original_source_q1_gate_unique_bracket,
+            _SOURCE_X_SPECS,_SOURCE_G11_W_SPECS)
+        H=lambda v:F.from_float(float.fromhex(v))
+        centers=tuple(map(H,(
+            _SOURCE_X_SPECS["Q1"]["d"],_SOURCE_G11_W_SPECS["Q1"]["g"],
+            _SOURCE_X_SPECS["Q1"]["s"],_SOURCE_X_SPECS["Q2"]["d"],
+            _SOURCE_G11_W_SPECS["Q2"]["g"],_SOURCE_X_SPECS["Q2"]["s"])))
+        def get(lo,hi):
+            box=tuple((v+lo,v+hi) if j==1 else
+                      (v-F(".0001"),v+F(".0001"))
+                      for j,v in enumerate(centers))
+            return certify_original_source_q1_gate_unique_bracket(
+                six_current_node_boxes_V=box,
+                old_coil12_boxes_A=tuple((-F(".001"),F(".001"))
+                                        for _ in range(12)),
+                h_s=original_dt(),source_law_sha256=LAW,
+                source_adapter_sha256=ADAPTER,saved_cal_sha256=ARCHIVE)
+        positive=get(-F(".025"),F(".025"))
+        self.assertEqual(positive["status"],
+            "ORIGINAL_SOURCE_G11_Q1_GATE_UNIQUE_SIX_TO_FIVE_LIFT")
+        self.assertLess(positive["left_face_r6_upper_A"],0)
+        self.assertGreater(positive["right_face_r6_lower_A"],0)
+        self.assertGreater(positive["certified_gate_slope_lower_A_per_V"],F(111))
+        self.assertFalse(positive["complete_five_kcl_source_root_cover_certified"])
+        self.assertFalse(positive["conditional_source_50d_to_five_node_on_guard_preimage"])
+        self.assertTrue(positive["source_ten_node_chart_preimage_not_proved_by_this_operator"])
+        # Two positive faces are NOT a root-existence/uniqueness certificate.
+        fail=get(F(".010"),F(".012"))
+        self.assertEqual(fail["status"],"RETAIN_GATE_BRACKET_UNRESOLVED")
+        self.assertFalse(fail["original_q1_gate_root_exists_per_fiber"])
+
+
+class OriginalSourceTwoGuardedGateFourDimensionalBridgeTests(unittest.TestCase):
+    def test_two_source_gate_roots_unique_per_common_four_node_fiber(self):
+        from fractions import Fraction as F
+        from s150_q2_six_row_certificate import (
+            certify_original_source_two_gate_unique_bracket,
+            _SOURCE_X_SPECS,_SOURCE_G11_W_SPECS)
+        H=lambda v:F.from_float(float.fromhex(v))
+        centers=tuple(map(H,(
+            _SOURCE_X_SPECS["Q1"]["d"],_SOURCE_G11_W_SPECS["Q1"]["g"],
+            _SOURCE_X_SPECS["Q1"]["s"],_SOURCE_X_SPECS["Q2"]["d"],
+            _SOURCE_G11_W_SPECS["Q2"]["g"],_SOURCE_X_SPECS["Q2"]["s"])))
+        def trial(left,right,oldbase=None):
+            box=tuple((v+left,v+right) if j in (1,4) else
+                      (v-F(".0001"),v+F(".0001"))
+                      for j,v in enumerate(centers))
+            b=tuple(F(0) for _ in range(12)) if oldbase is None else oldbase
+            return certify_original_source_two_gate_unique_bracket(
+                six_current_node_boxes_V=box,
+                old_coil12_boxes_A=tuple((v-F(".001"),v+F(".001")) for v in b),
+                h_s=original_dt(),source_law_sha256=LAW,
+                source_adapter_sha256=ADAPTER,saved_cal_sha256=ARCHIVE)
+        # RED regression: gate equations admit scalar roots, but zero
+        # previous currents put reconstructed g2 outside S-L40 chart.
+        bad=trial(-F(".025"),F(".025"))
+        self.assertTrue(bad["simultaneous_both_gate_roots_unique_per_four_fiber"])
+        self.assertFalse(bad["source_ten_node_chart_preimage_certified"])
+        self.assertFalse(bad["source_50d_to_four_nonlinear_nodes_conditional"])
+        self.assertEqual(bad["status"],
+            "RETAIN_BOTH_GATES_SOURCE_CHART_PREIMAGE_UNRESOLVED")
+        self.assertGreater(
+            bad["source_chart_eliminated_g2_w_image_V"]["Q1:g2"][0],F("11.465"))
+        self.assertLess(
+            bad["source_chart_eliminated_g2_w_image_V"]["Q2:g2"][1],F("17.700"))
+        # Construct PUBLIC synthetic current memory using P16 exact
+        # rational affine coefficients. Not qualified own-PREP history.
+        shifted=[F(0)]*12
+        shifted[1]=-F(".288")
+        shifted[6]=F(".843")
+        passed=trial(-F(".000125"),F(".000125"),tuple(shifted))
+        self.assertEqual(passed["status"],
+            "ORIGINAL_SOURCE_BOTH_GATES_UNIQUE_SIX_TO_FOUR_LIFT")
+        self.assertTrue(passed["source_ten_node_chart_preimage_certified"])
+        self.assertTrue(passed["source_50d_to_four_nonlinear_nodes_conditional"])
+        self.assertEqual(
+            passed["exact_passive_g2_gate_jacobian"][0][1],0)
+        self.assertEqual(
+            passed["exact_passive_g2_gate_jacobian"][1][0],0)
+        self.assertTrue(all(x>111 for x in
+            passed["certified_both_gate_slope_lower_A_per_V"]))
+        self.assertLess(passed["q2_gate_face_upper_lower_A"][0],0)
+        self.assertGreater(passed["q2_gate_face_upper_lower_A"][1],0)
+        self.assertFalse(passed["all_other_source_KCL_roots_certified"])
+        self.assertFalse(passed["source_full_own_prep_cal_history_covered"])
+        # The CORRELATED w outer stays inside the qualified panel:
+        # enlarging gate to +/-35mV instead violates the stronger
+        # g2 inner band. Do not fail on uncorrelated g-u w bounds.
+        wide=trial(-F(".035"),F(".035"),tuple(shifted))
+        self.assertTrue(wide["simultaneous_both_gate_roots_unique_per_four_fiber"])
+        self.assertFalse(wide["source_ten_node_chart_preimage_certified"])
+        self.assertFalse(wide["source_50d_to_four_nonlinear_nodes_conditional"])
+        # Without opposite faces, existence remains unknown even when
+        # G11 branch and the source ten-node chart accept the input.
+        self.assertEqual(trial(F(".01"),F(".012"))["status"],
+                         "RETAIN_TWO_GATES_UNRESOLVED")
+
+
+class OriginalSourceFourNodeConservationExclusionTests(unittest.TestCase):
+    def test_true_source_five_kcl_sum_excludes_4d_cell_after_gate_lift(self):
+        from fractions import Fraction as F
+        from s150_q2_six_row_certificate import (
+            certify_original_source_four_node_kcl_conservation_cell,
+            _SOURCE_X_SPECS,_SOURCE_G11_W_SPECS)
+        H=lambda x:F.from_float(float.fromhex(x))
+        c=tuple(map(H,(
+            _SOURCE_X_SPECS["Q1"]["d"],_SOURCE_G11_W_SPECS["Q1"]["g"],
+            _SOURCE_X_SPECS["Q1"]["s"],_SOURCE_X_SPECS["Q2"]["d"],
+            _SOURCE_G11_W_SPECS["Q2"]["g"],_SOURCE_X_SPECS["Q2"]["s"])))
+        box=tuple((v+F(".013"),v+F(".039")) if j==0 else
+                  (v-F(".001"),v+F(".001")) if j in (1,4) else
+                  (v-F(".0001"),v+F(".0001"))
+                  for j,v in enumerate(c))
+        old=[F(0)]*12
+        old[1]=-F(".288")
+        old[6]=F(".843")
+        old[0]=F(".01")  # nonzero old Ld sign mutation witness
+        old[5]=-F(".02")
+        ob=tuple((v-F(".001"),v+F(".001")) for v in old)
+        auth=dict(h_s=original_dt(),source_law_sha256=LAW,
+                  source_adapter_sha256=ADAPTER,saved_cal_sha256=ARCHIVE)
+        fn=certify_original_source_four_node_kcl_conservation_cell
+        r=fn(six_current_node_boxes_V=box,old_coil12_boxes_A=ob,**auth)
+        self.assertEqual(r["status"],
+            "ORIGINAL_SOURCE_FOUR_NODE_KCL_CONSERVATION_CELL_EXCLUDED")
+        self.assertTrue(r["source_full_g2_w_x_ten_chart_preimage_qualified"])
+        self.assertIn("Q1",r["strictly_excluded_leg_names"])
+        self.assertGreater(r["exact_original_five_kcl_flux_intervals_A"][0][0],
+                           F(".02"))
+        self.assertFalse(r["original_remaining_4D_root_existence_certified"])
+        self.assertFalse(r["goal27_certified"])
+        # Independent original BE sign check: raising old Q1 Ld current
+        # must DECREASE the five-KCL boundary flux near -1 A/A.
+        change=list(old)
+        change[0]+=F(".01")
+        updated=fn(
+            six_current_node_boxes_V=box,
+            old_coil12_boxes_A=tuple(
+                (v-F(".001"),v+F(".001")) for v in change),**auth)
+        delta=(updated["exact_original_five_kcl_flux_intervals_A"][0][0]-
+               r["exact_original_five_kcl_flux_intervals_A"][0][0])
+        self.assertLess(delta,-F(".0099"))
+        self.assertGreater(delta,-F(".0101"))
+
+    def test_unguarded_predecessor_cannot_promote_row_sum(self):
+        from fractions import Fraction as F
+        from s150_q2_six_row_certificate import (
+            certify_original_source_four_node_kcl_conservation_cell,
+            _SOURCE_X_SPECS,_SOURCE_G11_W_SPECS)
+        H=lambda x:F.from_float(float.fromhex(x))
+        c=tuple(map(H,(
+            _SOURCE_X_SPECS["Q1"]["d"],_SOURCE_G11_W_SPECS["Q1"]["g"],
+            _SOURCE_X_SPECS["Q1"]["s"],_SOURCE_X_SPECS["Q2"]["d"],
+            _SOURCE_G11_W_SPECS["Q2"]["g"],_SOURCE_X_SPECS["Q2"]["s"])))
+        box=tuple((v-F(".025"),v+F(".025")) if j in (1,4) else
+                  (v-F(".0001"),v+F(".0001")) for j,v in enumerate(c))
+        auth=dict(h_s=original_dt(),source_law_sha256=LAW,
+                  source_adapter_sha256=ADAPTER,saved_cal_sha256=ARCHIVE)
+        q=certify_original_source_four_node_kcl_conservation_cell(
+            six_current_node_boxes_V=box,
+            old_coil12_boxes_A=tuple((-F(".001"),F(".001"))
+                                    for _ in range(12)),**auth)
+        self.assertEqual(q["status"],
+            "RETAIN_SOURCE_FOUR_KCL_STAGE_GUARD_UNRESOLVED")
+        self.assertFalse(q["source_four_kcl_complement_certified"])
+        with self.assertRaisesRegex(ValueError,"UNRESOLVED_SOURCE_DOMAIN"):
+            certify_original_source_four_node_kcl_conservation_cell(
+                six_current_node_boxes_V=box,
+                old_coil12_boxes_A=tuple((-F(".001"),F(".001"))
+                                        for _ in range(12)),
+                **dict(auth,h_s=F("1e-9")))
+
+
+class OriginalSourceGlobalFiveKclNecessaryTests(unittest.TestCase):
+    """No gate/diode/thermal solver is needed to exclude a five-KCL sum."""
+
+    def source_six_center(self):
+        from fractions import Fraction as F
+        from s150_q2_six_row_certificate import _SOURCE_X_SPECS, _SOURCE_G11_W_SPECS
+        H=lambda t:F.from_float(float.fromhex(t))
+        return tuple(map(H,(
+            _SOURCE_X_SPECS["Q1"]["d"],_SOURCE_G11_W_SPECS["Q1"]["g"],
+            _SOURCE_X_SPECS["Q1"]["s"],_SOURCE_X_SPECS["Q2"]["d"],
+            _SOURCE_G11_W_SPECS["Q2"]["g"],_SOURCE_X_SPECS["Q2"]["s"])))
+
+    def test_whole_six_source_voltage_chart_excluded_without_preimage(self):
+        from fractions import Fraction as F
+        from s150_q2_six_row_certificate import (
+            certify_original_source_five_kcl_global_flux_outer,
+            certify_original_source_four_node_kcl_conservation_cell)
+        center=self.source_six_center()
+        box=tuple((v+F(".016"),v+F(".04")) if j==0 else
+                  (v-F(".04"),v+F(".04")) for j,v in enumerate(center))
+        old=tuple((-F(".001"),F(".001")) for _ in range(12))
+        auth=dict(h_s=original_dt(),source_law_sha256=LAW,
+                  source_adapter_sha256=ADAPTER,saved_cal_sha256=ARCHIVE)
+        fn=certify_original_source_five_kcl_global_flux_outer
+        result=fn(six_current_node_boxes_V=box,old_coil12_boxes_A=old,**auth)
+        self.assertEqual(result["status"],
+            "ORIGINAL_SOURCE_FIVE_KCL_GLOBAL_NODAL_CELL_EXCLUDED")
+        self.assertIn("Q1",result["strictly_excluded_leg_names"])
+        self.assertTrue(result["original_full50_projected_kcl_necessary_cell_excluded"])
+        self.assertGreater(result["strict_nonzero_flux_margin_A"],F(".001"))
+        self.assertFalse(result["source_full_g2_w_x_ten_chart_preimage_qualified"])
+        self.assertFalse(result["goal27_certified"])
+        # With the synthetic oldzero memory, the MORE demanding S-L48
+        # chart 4D claim is still fail-closed, regardless of flux sign.
+        gatebox=tuple((v-F(".025"),v+F(".025")) if j in (1,4) else
+                      (v-F(".0001"),v+F(".0001"))
+                      for j,v in enumerate(center))
+        guarded=certify_original_source_four_node_kcl_conservation_cell(
+            six_current_node_boxes_V=gatebox,old_coil12_boxes_A=old,**auth)
+        self.assertEqual(guarded["status"],
+            "RETAIN_SOURCE_FOUR_KCL_STAGE_GUARD_UNRESOLVED")
+
+    def test_broad_oldcoil_uncertainty_has_to_remain_unresolved(self):
+        from fractions import Fraction as F
+        from s150_q2_six_row_certificate import (
+            certify_original_source_five_kcl_global_flux_outer)
+        fn=certify_original_source_five_kcl_global_flux_outer
+        boxes=tuple((v-F(".04"),v+F(".04")) for v in self.source_six_center())
+        old=tuple((-F(5),F(5)) for _ in range(12))
+        auth=dict(h_s=original_dt(),source_law_sha256=LAW,
+                  source_adapter_sha256=ADAPTER,saved_cal_sha256=ARCHIVE)
+        result=fn(six_current_node_boxes_V=boxes,old_coil12_boxes_A=old,**auth)
+        self.assertEqual(result["status"],"RETAIN_FOUR_NODE_FLUX_ZERO_UNRESOLVED")
+        self.assertFalse(result["original_full50_projected_kcl_necessary_cell_excluded"])
+        with self.assertRaisesRegex(ValueError,"UNRESOLVED_SOURCE_DOMAIN"):
+            fn(six_current_node_boxes_V=boxes,old_coil12_boxes_A=old,
+               **dict(auth,h_s=F("1e-9")))
+
+
+class OriginalSourceKclDrainProjectionAndDualSchurTests(unittest.TestCase):
+    """Both original flux equations support strict exact rational inversions."""
+
+    def test_source_q1_drain_sharp_projected_outer_from_full_voltage_chart(self):
+        from fractions import Fraction as F
+        from s150_q2_six_row_certificate import (
+            certify_original_source_five_kcl_global_flux_outer,
+            _SOURCE_X_SPECS,_SOURCE_G11_W_SPECS)
+        H=lambda x:F.from_float(float.fromhex(x))
+        c=tuple(map(H,(
+            _SOURCE_X_SPECS["Q1"]["d"],_SOURCE_G11_W_SPECS["Q1"]["g"],
+            _SOURCE_X_SPECS["Q1"]["s"],_SOURCE_X_SPECS["Q2"]["d"],
+            _SOURCE_G11_W_SPECS["Q2"]["g"],_SOURCE_X_SPECS["Q2"]["s"])))
+        old=[F(0)]*12
+        old[0]=-F(".000463");old[1]=-F(".288")
+        old[5]=-F("1.009");old[6]=F(".843")
+        r=certify_original_source_five_kcl_global_flux_outer(
+            six_current_node_boxes_V=tuple((v-F(".04"),v+F(".04"))
+                                           for v in c),
+            old_coil12_boxes_A=tuple((i-F(".001"),i+F(".001"))
+                                    for i in old),
+            h_s=original_dt(),source_law_sha256=LAW,
+            source_adapter_sha256=ADAPTER,saved_cal_sha256=ARCHIVE)
+        self.assertEqual(r["status"],"RETAIN_FOUR_NODE_FLUX_ZERO_UNRESOLVED")
+        self.assertGreater(r["exact_q1_d_five_kcl_slope_A_per_V"],F(".20"))
+        f=r["q1_d_outer_width_retained_fraction"]
+        self.assertGreater(f,F(".3"))
+        self.assertLess(f,F(".4"))
+        self.assertIsNotNone(r["necessary_q1_d_source_interval_V"])
+        self.assertFalse(r["original_full50_projected_kcl_necessary_cell_excluded"])
+        self.assertFalse(r["goal27_certified"])
+
+    def test_dual_drain_original_2x2_source_lift_and_chart_negative(self):
+        from fractions import Fraction as F
+        from s150_q2_six_row_certificate import (
+            certify_original_source_two_drain_five_kcl_linear_lift,
+            _SOURCE_X_SPECS,_SOURCE_G11_W_SPECS)
+        H=lambda x:F.from_float(float.fromhex(x))
+        xx=_SOURCE_X_SPECS;gg=_SOURCE_G11_W_SPECS
+        retained=(H(gg["Q1"]["g"]),F(150),H(xx["Q1"]["x"]),H(xx["Q1"]["s"]),
+                  H(gg["Q2"]["g"]),F("11.5"),H(xx["Q2"]["x"]),H(xx["Q2"]["s"]))
+        old=[F(0)]*12
+        old[1]=-F(".288");old[6]=F(".843")
+        auth=dict(command_V=15,h_s=original_dt(),
+                  source_law_sha256=LAW,source_adapter_sha256=ADAPTER,
+                  saved_cal_sha256=ARCHIVE)
+        result=certify_original_source_two_drain_five_kcl_linear_lift(
+            retained_node8_V=retained,old_coil12_A=old,**auth)
+        mat=result["exact_two_drain_schur_matrix_S"]
+        self.assertEqual(mat[1][0],0)
+        self.assertGreater(result["exact_two_drain_determinant_S2"],F(".002"))
+        self.assertEqual(result["exact_original_five_kcl_sums_A"],(0,0))
+        self.assertTrue(result["source_drain_pair_affine_unique_globally"])
+        self.assertFalse(result["ten_node_and_g11_w_guard_source_chart_qualified"])
+        self.assertFalse(result["other_remaining_original_nonlinear_rows_solved"])
+        changed=old.copy();changed[0]+=F(".01")
+        other=certify_original_source_two_drain_five_kcl_linear_lift(
+            retained_node8_V=retained,old_coil12_A=changed,**auth)
+        self.assertNotEqual(result["unique_original_source_drain_pair_V"],
+                            other["unique_original_source_drain_pair_V"])
+        with self.assertRaisesRegex(ValueError,"UNRESOLVED_SOURCE_DOMAIN"):
+            certify_original_source_two_drain_five_kcl_linear_lift(
+                retained_node8_V=retained,old_coil12_A=old,
+                **dict(auth,command_V=10))
+
+
+class OriginalSourceCachedAffineFiveKclTests(unittest.TestCase):
+    """Cached model must be EXACTLY the original 16x16 source Schur."""
+
+    def test_closed_cell_cached_coefficients_match_literal_p16_rows(self):
+        from fractions import Fraction as F
+        from s150_q2_six_row_certificate import (
+            _original_source_five_kcl_cached_affine_model,
+            certify_original_source_five_kcl_global_flux_outer,
+            certify_original_source_passive16_port_lift,
+            _SOURCE_X_SPECS,_SOURCE_G11_W_SPECS)
+        bias,A,B=_original_source_five_kcl_cached_affine_model()
+        self.assertEqual(len(A),6)
+        self.assertEqual(len(B),12)
+        self.assertEqual(A[0][1],0)
+        self.assertGreater(A[0][0],F(".20"))
+        self.assertLess(A[3][0],0)
+        H=lambda t:F.from_float(float.fromhex(t))
+        c=tuple(map(H,(
+            _SOURCE_X_SPECS["Q1"]["d"],_SOURCE_G11_W_SPECS["Q1"]["g"],
+            _SOURCE_X_SPECS["Q1"]["s"],_SOURCE_X_SPECS["Q2"]["d"],
+            _SOURCE_G11_W_SPECS["Q2"]["g"],_SOURCE_X_SPECS["Q2"]["s"])))
+        old=tuple(F(i-6,100) for i in range(12))
+        kw=dict(h_s=original_dt(),source_law_sha256=LAW,
+                source_adapter_sha256=ADAPTER,saved_cal_sha256=ARCHIVE)
+        ports=(c[0],c[1],F(0),F(0),c[2],
+               c[3],c[4],F(0),F(0),c[5])
+        p=certify_original_source_passive16_port_lift(
+            retained_node10_V=ports,old_coil12_A=old,
+            command_V=15,**kw)
+        values=dict(zip(p["eliminated_node_indices"],
+                        p["port_D_sl_V"]+p["package_voltage14_V"]))
+        literal=tuple(
+            (F(1,5)+original_dt()/F("4.3659e-9"))*
+                (c[3*k]-values[2+12*k])
+           +(F(1,100)+original_dt()/F(".2e-9"))*
+                (c[3*k+2]-values[10+12*k])
+           +(c[3*k+1]-values[5+12*k])/9-old[5*k]-old[5*k+4]
+            for k in (0,1))
+        cached=tuple(
+            bias[k]+sum(A[j][k]*c[j] for j in range(6))+
+                    sum(B[j][k]*old[j] for j in range(12))
+            for k in (0,1))
+        self.assertEqual(cached,literal)
+        for radius in (F(".0001"),F(".01"),F(".04")):
+            boxes=tuple((v-radius,v+radius) for v in c)
+            oldboxes=tuple((v-F(".001"),v+F(".001")) for v in old)
+            result=certify_original_source_five_kcl_global_flux_outer(
+                six_current_node_boxes_V=boxes,
+                old_coil12_boxes_A=oldboxes,**kw)
+            lohi=result["exact_original_five_kcl_flux_intervals_A"]
+            for k in range(2):
+                oracle_low=(bias[k]+
+                    sum(A[j][k]*(b[0] if A[j][k]>=0 else b[1])
+                        for j,b in enumerate(boxes))+
+                    sum(B[j][k]*(b[0] if B[j][k]>=0 else b[1])
+                        for j,b in enumerate(oldboxes)))
+                oracle_hi=(bias[k]+
+                    sum(A[j][k]*(b[1] if A[j][k]>=0 else b[0])
+                        for j,b in enumerate(boxes))+
+                    sum(B[j][k]*(b[1] if B[j][k]>=0 else b[0])
+                        for j,b in enumerate(oldboxes)))
+                self.assertEqual(lohi[k],(oracle_low,oracle_hi))
+        with self.assertRaisesRegex(ValueError,"UNRESOLVED_SOURCE_DOMAIN"):
+            certify_original_source_five_kcl_global_flux_outer(
+                six_current_node_boxes_V=tuple((v,v) for v in c),
+                old_coil12_boxes_A=tuple((v,v) for v in old),
+                **dict(kw,source_law_sha256="bad-source-sha"))
+
+
+class OriginalSourceThreeSlabExhaustiveCoverTests(unittest.TestCase):
+    def test_strict_closed_cover_and_source_flux_falsifier(self):
+        from fractions import Fraction as F
+        from s150_q2_six_row_certificate import (
+            certify_original_source_three_slab_global_flux_cover,
+            _SOURCE_X_SPECS,_SOURCE_G11_W_SPECS)
+        H=lambda x:F.from_float(float.fromhex(x))
+        c=tuple(map(H,(
+            _SOURCE_X_SPECS["Q1"]["d"],_SOURCE_G11_W_SPECS["Q1"]["g"],
+            _SOURCE_X_SPECS["Q1"]["s"],_SOURCE_X_SPECS["Q2"]["d"],
+            _SOURCE_G11_W_SPECS["Q2"]["g"],_SOURCE_X_SPECS["Q2"]["s"])))
+        src_box=tuple((v-F(".04"),v+F(".04")) for v in c)
+        old=[F(0)]*12
+        old[0]=-F(".000463")
+        old[1]=-F(".288")
+        old[5]=-F("1.009")
+        old[6]=F(".843")
+        oldbox=tuple((v-F(".001"),v+F(".001")) for v in old)
+        fn=certify_original_source_three_slab_global_flux_cover
+        kw=dict(six_current_node_boxes_V=src_box,
+                old_coil12_boxes_A=oldbox,
+                h_s=original_dt(),source_law_sha256=LAW,
+                source_adapter_sha256=ADAPTER,saved_cal_sha256=ARCHIVE)
+        r=fn(**kw)
+        self.assertTrue(r["exhaustive_closed_cover_of_input_box"])
+        self.assertEqual(r["status"],
+            "ORIGINAL_SOURCE_FINITE_SIX_NODE_OUTER_COVER_WITH_EXCLUSIONS")
+        self.assertEqual(len(r["cells"]),3)
+        statuses=tuple(a["status"] for a in r["cells"])
+        self.assertEqual(statuses,(
+            "STRICT_SOURCE_REAL_BE_FULL50_ROOT_EXCLUDED",
+            "RETAIN_SOURCE_REAL_ROOT_UNRESOLVED",
+            "STRICT_SOURCE_REAL_BE_FULL50_ROOT_EXCLUDED"))
+        self.assertEqual(r["exact_root_excluded_fraction_of_q1_d_width"],F(3,5))
+        c0,c1,c2=r["cells"]
+        self.assertEqual(c0["six_node_boxes_V"][0][0],src_box[0][0])
+        self.assertEqual(c2["six_node_boxes_V"][0][1],src_box[0][1])
+        self.assertEqual(c0["six_node_boxes_V"][0][1],
+                         c1["six_node_boxes_V"][0][0])
+        self.assertEqual(c1["six_node_boxes_V"][0][1],
+                         c2["six_node_boxes_V"][0][0])
+        self.assertLess(c0["original_source_flux_Q1_Q2_A"][0][1],0)
+        self.assertGreater(c2["original_source_flux_Q1_Q2_A"][0][0],0)
+        self.assertFalse(r["global_original_full50_root_existence_proved"])
+        short=fn(**dict(kw,max_cells=2))
+        self.assertEqual(short["status"],
+            "RETAIN_SOURCE_SIX_NODE_PARENT_BUDGET_UNRESOLVED")
+        self.assertEqual(len(short["cells"]),1)
+        self.assertEqual(short["exact_root_excluded_fraction_of_q1_d_width"],0)
+        self.assertTrue(short["exhaustive_closed_cover_of_input_box"])
+        with self.assertRaisesRegex(ValueError,"UNRESOLVED_SOURCE_DOMAIN"):
+            fn(**dict(kw,h_s=F("1e-9")))
+
 if __name__=="__main__":
     unittest.main()

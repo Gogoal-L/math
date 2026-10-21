@@ -5,6 +5,7 @@ must be independently SHA verified; these formula-only tests cannot prove the
 other 44 full-50 source rows or the complementary root/guard histories.
 """
 from fractions import Fraction as F
+from functools import lru_cache
 
 LAW_SHA="51b78f729393d29745f59ca150adfef69e1847bf26a8853c6cef3d6be9e2083d"
 ADAPTER_SHA="7f03e36809caf3dea1295cf58d7dd70c413ef7991472a5e6eec3405da18f5669"
@@ -1301,3 +1302,840 @@ def certify_atomic_shared_nuisance_tail_cell(
         all_legal_hybrid_cells_covered=False,
         goal27_certified=False,
     )
+
+
+# S-L45: original 12-coil passive source Schur stage (D, sl, package14).
+# The last D-coil KVL contains +150 V; its BE-affine stamp is
+# old_iD + h*(D-150)/100uH, NOT old_iD + h*D/100uH.
+def certify_original_source_passive16_port_lift(
+    *, retained_node10_V, old_coil12_A, command_V,
+    h_s, source_law_sha256, source_adapter_sha256, saved_cal_sha256
+):
+    """Exact source-real 16-node lift, conditional on original stage domain.
+
+    Original retained order: Q1(d,g,w,x,s),Q2(d,g,w,x,s).
+    External source rows D,sl have no charge/G2/diode/thermal terms.
+    The package14 and exact 2x2 Schur complement are SPD; the full
+    eliminated original 50D equation requires S-L40 and all guards.
+    """
+    if (source_law_sha256!=LAW_SHA or source_adapter_sha256!=ADAPTER_SHA
+            or saved_cal_sha256!=SAVED_SHA or
+            _fraction(h_s)!=_STAGE3616_H or
+            _fraction(command_V)!=F(15) or
+            len(retained_node10_V)!=10 or len(old_coil12_A)!=12):
+        raise ValueError("UNRESOLVED_SOURCE_DOMAIN: original 16-node source identity")
+    v=tuple(map(_fraction,retained_node10_V))
+    old=tuple(map(_fraction,old_coil12_A))
+    auth=dict(h_s=h_s,source_law_sha256=source_law_sha256,
+              source_adapter_sha256=source_adapter_sha256,
+              saved_cal_sha256=saved_cal_sha256,command_V=command_V)
+    def residual_ports(D,sl):
+        P=certify_original_source_package14_linear_lift(
+            boundary_node12_V=(D,sl)+v,old_package_coil10_A=old[:10],
+            **auth)
+        pp=dict(zip(P["package_node_indices"],P["node_voltage14_V"]))
+        rD=(D-pp[14])/F("87.416e-6")+(D-pp[13])/F(".003322")+old[11]+(
+            _STAGE3616_H/F("100e-6"))*(D-F(150))
+        rsl=(sl-pp[25])/F(".003322")+old[10]+(
+            _STAGE3616_H/F("4.3e-9"))*sl
+        return (rD,rsl),P
+    zero,_=residual_ports(F(0),F(0))
+    ex,_=residual_ports(F(1),F(0))
+    ey,_=residual_ports(F(0),F(1))
+    S=((ex[0]-zero[0],ey[0]-zero[0]),
+       (ex[1]-zero[1],ey[1]-zero[1]))
+    if S[0][1]!=S[1][0] or S[0][0]<=0 or (
+        S[0][0]*S[1][1]-S[0][1]*S[1][0]<=0):
+        raise ArithmeticError("original 16-node Schur not SPD")
+    port=_solve(S,(-zero[0],-zero[1]))
+    rr,P=residual_ports(*port)
+    if rr!=(F(0),F(0)):
+        raise ArithmeticError("original passive port residual not exactly zero")
+    return dict(
+        status="ORIGINAL_SOURCE_PASSIVE16_UNIQUE_EXACT_LINEAR_LIFT",
+        eliminated_node_indices=(0,1)+_SOURCE_PACKAGE_P,
+        retained_node_indices=(3,6,7,8,9,15,18,19,20,21),
+        port_D_sl_V=port,
+        package_voltage14_V=P["node_voltage14_V"],
+        strict_package_ldl_pivots_S=P["strict_positive_ldl_pivots_S"],
+        strict_schur_pivots_S=(S[0][0],
+          S[1][1]-S[1][0]*S[0][1]/S[0][0]),
+        original_two_port_residual_A=rr,
+        old_external_sl_current_A=old[10],
+        old_external_D_current_A=old[11],
+        original_D_coil_150V_offset_A=F(150)*_STAGE3616_H/F("100e-6"),
+        conditional_full50_to_eight_node_reduction=True,
+        conditional_to_six_nonlinear_node_reduction_after_G11_G12=True,
+        complete_original_six_node_roots_certified=False,
+        original_full_predecessor_chart_qualified_in_ci=False,
+        original_native_ieee_outward_enclosed=False,
+        all_cal_joint_E_certified=False,
+        goal27_certified=False
+    )
+
+
+# S-L46: source Q1 gate row after the exact passive16 and guarded G11 lift.
+# All predecessor package+external coil currents enter ONE common affine image.
+def certify_original_source_q1_gate_six_cell(
+    *, six_current_node_boxes_V, old_coil12_boxes_A, h_s,
+    source_law_sha256, source_adapter_sha256, saved_cal_sha256
+):
+    """Exact original n3616 Q1 gate-KCL necessary six-current-node exclusion.
+
+    Current Q1(d,g,s),Q2(d,g,s) are source chart boxes; the twelve old
+    coil currents are simultaneously bounded by ONE 12D predecessor box.
+    Old Q1 g/s/w voltages are the frozen original binary64 n3615 anchors.
+    The original G11 single-panel guarded root supplies w-d, the BE GS
+    charge supplies 1388pF/h, and the 16x16 Schur lift supplies Q1:g2.
+    Source G2/ETH/diode/thermal cannot cancel a nonzero r6: they do not
+    stamp the Q1 gate row. A strict sign excludes the WHOLE declared
+    source-exact real single-stage cell. No other stage or CAL claim.
+    """
+    if (source_law_sha256!=LAW_SHA or source_adapter_sha256!=ADAPTER_SHA
+            or saved_cal_sha256!=SAVED_SHA or
+            _fraction(h_s)!=_STAGE3616_H or
+            len(six_current_node_boxes_V)!=6 or len(old_coil12_boxes_A)!=12):
+        raise ValueError("UNRESOLVED_SOURCE_DOMAIN: original Q1 gate six-cell")
+    cur=tuple(map(_source_x_box,six_current_node_boxes_V))
+    old=tuple(map(_source_x_box,old_coil12_boxes_A))
+    centers=(
+        _SOURCE_X_SPECS["Q1"]["d"],_SOURCE_G11_W_SPECS["Q1"]["g"],
+        _SOURCE_X_SPECS["Q1"]["s"],_SOURCE_X_SPECS["Q2"]["d"],
+        _SOURCE_G11_W_SPECS["Q2"]["g"],_SOURCE_X_SPECS["Q2"]["s"],
+    )
+    radius=F(".04")
+    for box,hx in zip(cur,centers):
+        center=F.from_float(float.fromhex(hx))
+        if box[0]<center-radius or box[1]>center+radius:
+            raise ValueError("UNRESOLVED_SOURCE_DOMAIN: original six-node chart")
+    kw=dict(h_s=h_s,source_law_sha256=source_law_sha256,
+            source_adapter_sha256=source_adapter_sha256,
+            saved_cal_sha256=saved_cal_sha256,command_V=15)
+    def q1_g2(v6,i12,dummy=None):
+        # For this ORIGINAL resistor/coil topology, passive g2 has zero
+        # coefficients on the four w/x ports, checked exactly below.
+        boundary=[v6[0],v6[1],F(0),F(0),v6[2],
+                  v6[3],v6[4],F(0),F(0),v6[5]]
+        if dummy is not None:
+            boundary[dummy]=F(1)
+        lifted=certify_original_source_passive16_port_lift(
+            retained_node10_V=boundary,old_coil12_A=i12,**kw)
+        return lifted["package_voltage14_V"][_SOURCE_PACKAGE_P.index(5)]
+    low6=tuple(box[0] for box in cur)
+    lowold=tuple(box[0] for box in old)
+    g20=q1_g2(low6,lowold)
+    for dummy in (2,3,7,8):
+        if q1_g2(low6,lowold,dummy)!=g20:
+            raise ArithmeticError("omitted w/x was not passive-independent")
+    g2lo=g2hi=g20
+    for j,box in enumerate(cur):
+        other=list(low6);other[j]=box[1]
+        diff=q1_g2(other,lowold)-g20
+        g2lo+=min(F(0),diff)
+        g2hi+=max(F(0),diff)
+    for j,box in enumerate(old):
+        other=list(lowold);other[j]=box[1]
+        diff=q1_g2(low6,other)-g20
+        g2lo+=min(F(0),diff)
+        g2hi+=max(F(0),diff)
+    if g2lo>g2hi:
+        raise ArithmeticError("invalid common-predecessor g2 image")
+    auth=dict(h_s=h_s,source_law_sha256=source_law_sha256,
+              source_adapter_sha256=source_adapter_sha256,
+              saved_cal_sha256=saved_cal_sha256)
+    q1w=certify_original_source_g11_w_guard(
+        leg="Q1",g_V=cur[1],d_V=cur[0],**auth)
+    q2w=certify_original_source_g11_w_guard(
+        leg="Q2",g_V=cur[4],d_V=cur[3],**auth)
+    if any(z["status"]!="ORIGINAL_SOURCE_G11_GUARDED_W_UNIQUE_LIFT"
+           for z in (q1w,q2w)):
+        raise ValueError("UNRESOLVED_SOURCE_DOMAIN: original G11 guard")
+    xrequired=[]
+    for leg,dd,ss in (("Q1",cur[0],cur[2]),("Q2",cur[3],cur[5])):
+        center=F.from_float(float.fromhex(_SOURCE_X_SPECS[leg]["x"]))
+        source_x=certify_original_source_x_kcl_outer(
+            leg=leg,d_V=dd,s_V=ss,
+            x_V=(center-radius,center+radius),**auth)
+        xrequired.append(source_x["necessary_x_V"])
+    g,d,s=cur[1],cur[0],cur[2]
+    old_g=F.from_float(float.fromhex(_SOURCE_G11_W_SPECS["Q1"]["old_g"]))
+    old_w=F.from_float(float.fromhex(_SOURCE_G11_W_SPECS["Q1"]["old_w"]))
+    old_s=F.from_float(float.fromhex(_SOURCE_X_SPECS["Q1"]["old_s"]))
+    old_u=old_g-old_w
+    bleed=F(1,10**7)
+    # On this strict original source guard the signed finite GL32
+    # effective Cbar is enclosed by [3.9,4.0]pF (ideal exact-real
+    # quadrature). Native NumPy weights/rounding are NOT outward proved.
+    kl=F("3.9e-12")/_STAGE3616_H
+    ku=F("4.0e-12")/_STAGE3616_H
+    def w_minus_d(gg,dd,k):
+        return ((bleed+k)*(gg-dd)-k*old_u)/(1+bleed+k)
+    corners=tuple(w_minus_d(gg,dd,k)
+                  for gg in g for dd in d for k in (kl,ku))
+    wdlo,wdhi=min(corners),max(corners)
+    gs_charge_S=F("1388e-12")/_STAGE3616_H
+    lower=((g[0]-g2hi)/9+bleed*(g[0]-s[1])+bleed*(g[0]-d[1])+
+           wdlo+gs_charge_S*((g[0]-s[1])-(old_g-old_s)))
+    upper=((g[1]-g2lo)/9+bleed*(g[1]-s[0])+bleed*(g[1]-d[0])+
+           wdhi+gs_charge_S*((g[1]-s[0])-(old_g-old_s)))
+    if lower>upper:
+        raise ArithmeticError("invalid original gate residual enclosure")
+    excluded=lower>0 or upper<0
+    return dict(
+        status=("SOURCE_REAL_Q1_GATE_SIX_CLOSED_CELL_EXCLUDED" if excluded
+                else "RETAIN_SOURCE_Q1_GATE_SIX_CELL_UNRESOLVED"),
+        original_gate_row=6,original_g11_row=7,
+        exact_r6_lower_A=lower,exact_r6_upper_A=upper,
+        strict_abs_r6_margin_A=(lower if lower>0
+                                else -upper if upper<0 else F(0)),
+        source_q1_g2_passive16_V=(g2lo,g2hi),
+        necessary_w_minus_d_Q1_V=(wdlo,wdhi),
+        necessary_w_Q1_Q2_V=(q1w["necessary_w_V"],q2w["necessary_w_V"]),
+        necessary_x_Q1_Q2_V=tuple(xrequired),
+        common_old_coil12_box_used=True,
+        g11_guard_and_g12_branch_qualified=True,
+        omitted_w_x_passive_coefficients_checked_zero=True,
+        original_old_g_s_w_from_frozen_hex=True,
+        physical_old_coil_predecessor_boxes_verified_in_ci=False,
+        native_ieee_gl32_hyp2f1_outward_enclosed=False,
+        complete_6d_stage_roots_certified=False,
+        full_prep_cal_history_certified=False,
+        goal27_certified=False,
+    )
+
+
+# S-L47: exact-real guarded Q1 gate root for every remaining five-node fiber.
+def certify_original_source_q1_gate_unique_bracket(
+    *,six_current_node_boxes_V,old_coil12_boxes_A,h_s,
+    source_law_sha256,source_adapter_sha256,saved_cal_sha256
+):
+    """Source n3616 six-to-five Q1 gate row lift with strict face witnesses.
+
+    G11 r7 has one smooth finite-Gauss guarded root w for every g,d in
+    chart, and its signed derivative gives dw/dg>0. Source P16 makes Q1
+    g2 affine with exact slope a_g on g, hence along r7=0:
+       d r6/dg > 1388pF/h + 2e-7 + (1-a_g)/9.
+    If BOTH full-parameter gate faces have opposite strict KCL signs,
+    the scalar root g exists and is unique for EVERY common old-coil
+    predecessor / other five coordinates. Remaining five original
+    KCL roots, other hybrid branches, PREP/CAL and native rounding OPEN.
+    """
+    boxes=tuple(map(_source_x_box,six_current_node_boxes_V))
+    olds=tuple(map(_source_x_box,old_coil12_boxes_A))
+    if len(boxes)!=6 or len(olds)!=12 or boxes[1][0]>=boxes[1][1]:
+        raise ValueError("UNRESOLVED_SOURCE_DOMAIN: gated six-cell bracket")
+    auth=dict(h_s=h_s,source_law_sha256=source_law_sha256,
+              source_adapter_sha256=source_adapter_sha256,
+              saved_cal_sha256=saved_cal_sha256)
+    g11=certify_original_source_g11_w_guard(
+        leg="Q1",g_V=boxes[1],d_V=boxes[0],**auth)
+    if (g11["status"]!="ORIGINAL_SOURCE_G11_GUARDED_W_UNIQUE_LIFT" or
+            g11["gauss_charge_derivative_lower_F_per_s"]<=0):
+        raise ValueError("UNRESOLVED_SOURCE_DOMAIN: G11 derivative sign")
+    six=tuple(v[0] for v in boxes)
+    old=tuple(v[0] for v in olds)
+    boundary=[six[0],six[1],F(0),F(0),six[2],
+              six[3],six[4],F(0),F(0),six[5]]
+    kw=dict(auth,command_V=15)
+    def q1_g2(b):
+        result=certify_original_source_passive16_port_lift(
+            retained_node10_V=b,old_coil12_A=old,**kw)
+        return result["package_voltage14_V"][_SOURCE_PACKAGE_P.index(5)]
+    before=q1_g2(boundary)
+    perturbed=list(boundary)
+    perturbed[1]+=F(1)
+    source_g2_slope=q1_g2(perturbed)-before
+    # G11 derivative adds a strictly positive dw/dg in its whole guard.
+    strict_slope_lower=(
+        F("1388e-12")/_STAGE3616_H+
+        F(2,10**7)+(1-source_g2_slope)/9)
+    if strict_slope_lower<=0:
+        return dict(status="RETAIN_Q1_GATE_MONOTONICITY_UNRESOLVED",
+                    certified_gate_slope_lower_A_per_V=strict_slope_lower,
+                    goal27_certified=False)
+    face_left=list(boxes)
+    face_right=list(boxes)
+    face_left[1]=(boxes[1][0],boxes[1][0])
+    face_right[1]=(boxes[1][1],boxes[1][1])
+    left=certify_original_source_q1_gate_six_cell(
+        six_current_node_boxes_V=face_left,
+        old_coil12_boxes_A=olds,**auth)
+    right=certify_original_source_q1_gate_six_cell(
+        six_current_node_boxes_V=face_right,
+        old_coil12_boxes_A=olds,**auth)
+    bracket=(left["exact_r6_upper_A"]<0 and
+             right["exact_r6_lower_A"]>0)
+    return dict(
+        status=("ORIGINAL_SOURCE_G11_Q1_GATE_UNIQUE_SIX_TO_FIVE_LIFT"
+                if bracket else "RETAIN_GATE_BRACKET_UNRESOLVED"),
+        necessary_q1_g_V=boxes[1],
+        left_face_r6_upper_A=left["exact_r6_upper_A"],
+        right_face_r6_lower_A=right["exact_r6_lower_A"],
+        certified_gate_slope_lower_A_per_V=strict_slope_lower,
+        exact_passive_q1_g2_vs_g_slope=source_g2_slope,
+        original_finite_G11_charge_derivative_positive=True,
+        shared_old_coil12_box_used=True,
+        original_q1_gate_root_exists_per_fiber=bracket,
+        original_q1_gate_root_unique_per_fiber=bracket,
+        conditional_source_50d_to_five_node_on_guard_preimage=False,
+        source_ten_node_chart_preimage_not_proved_by_this_operator=True,
+        every_legal_prepared_history_covered=False,
+        complete_five_kcl_source_root_cover_certified=False,
+        original_w_x_g2_chart_preimage_authenticated_in_ci=False,
+        native_ieee_outward_enclosed=False,
+        all_cal_joint_E_certified=False,
+        goal27_certified=False,
+    )
+
+
+# S-L48: rigorous independent Q1/Q2 gate fiber brackets after passive16.
+def certify_original_source_two_gate_unique_bracket(
+    *,six_current_node_boxes_V,old_coil12_boxes_A,h_s,
+    source_law_sha256,source_adapter_sha256,saved_cal_sha256
+):
+    """Original S150 n3616, paired strict gate faces yield conditional 50D->4D.
+
+    Four remaining current coordinates are Q1/Q2 (d,s). For every fixed
+    four-coordinate/one-shared-old12 predecessor fiber, P16 exact source
+    response has zero cross-gate g2 coefficients; each G11 guarded gate
+    row is independently strictly increasing in its own g. If all four
+    faces bracket, both gate roots exist uniquely. Every other KCL,
+    unknown history, native IEEE and Goal27 remain OPEN.
+    """
+    cur=tuple(map(_source_x_box,six_current_node_boxes_V))
+    old=tuple(map(_source_x_box,old_coil12_boxes_A))
+    if len(cur)!=6 or len(old)!=12 or any(
+            cur[j][0]>=cur[j][1] for j in (1,4)):
+        raise ValueError("UNRESOLVED_SOURCE_DOMAIN: source two-gate boxes")
+    auth=dict(h_s=h_s,source_law_sha256=source_law_sha256,
+              source_adapter_sha256=source_adapter_sha256,
+              saved_cal_sha256=saved_cal_sha256)
+    q1=certify_original_source_q1_gate_unique_bracket(
+        six_current_node_boxes_V=cur,old_coil12_boxes_A=old,**auth)
+    if q1["status"]=="RETAIN_Q1_GATE_MONOTONICITY_UNRESOLVED":
+        return dict(status="RETAIN_TWO_GATES_UNRESOLVED",q1_gate=q1,
+                    goal27_certified=False)
+    kw=dict(auth,command_V=15)
+    def passive_g2(six,prev,w_x_unit=None):
+        b=[six[0],six[1],F(0),F(0),six[2],
+           six[3],six[4],F(0),F(0),six[5]]
+        if w_x_unit is not None:
+            b[w_x_unit]=F(1)
+        p=certify_original_source_passive16_port_lift(
+            retained_node10_V=b,old_coil12_A=prev,**kw)
+        idx=dict(zip(_SOURCE_PACKAGE_P,p["package_voltage14_V"]))
+        return idx[5],idx[17]
+    base6=tuple(a[0] for a in cur)
+    base12=tuple(a[0] for a in old)
+    base=passive_g2(base6,base12)
+    if any(passive_g2(base6,base12,j)!=base for j in (2,3,7,8)):
+        raise ArithmeticError("original passive source g2 depends on w/x")
+    slopes=[]
+    for i in (1,4):
+        v=list(base6);v[i]+=F(1)
+        q=passive_g2(v,base12)
+        slopes.append((q[0]-base[0],q[1]-base[1]))
+    if (slopes[0][1]!=0 or slopes[1][0]!=0 or
+            not(0<=slopes[0][0]<1 and 0<=slopes[1][1]<1)):
+        raise ValueError("UNRESOLVED_SOURCE_DOMAIN: cross-coupled gates")
+    q2w=certify_original_source_g11_w_guard(
+        leg="Q2",g_V=cur[4],d_V=cur[3],**auth)
+    if (q2w["status"]!="ORIGINAL_SOURCE_G11_GUARDED_W_UNIQUE_LIFT" or
+            q2w["gauss_charge_derivative_lower_F_per_s"]<=0):
+        raise ValueError("UNRESOLVED_SOURCE_DOMAIN: Q2 G11 panel")
+    xc=F.from_float(float.fromhex(_SOURCE_X_SPECS["Q2"]["x"]))
+    q2x=certify_original_source_x_kcl_outer(
+        leg="Q2",d_V=cur[3],s_V=cur[5],
+        x_V=(xc-F(".04"),xc+F(".04")),**auth)
+    oldg=F.from_float(float.fromhex(_SOURCE_G11_W_SPECS["Q2"]["old_g"]))
+    oldw=F.from_float(float.fromhex(_SOURCE_G11_W_SPECS["Q2"]["old_w"]))
+    olds=F.from_float(float.fromhex(_SOURCE_X_SPECS["Q2"]["old_s"]))
+    old_u=oldg-oldw
+    leak=F(1,10**7)
+    gs=F("1388e-12")/_STAGE3616_H
+    k=(F("500e-12")/_STAGE3616_H,F("555e-12")/_STAGE3616_H)
+    def face_r18(g):
+        b=list(cur)
+        b[4]=(g,g)
+        lo6=list(base6);lo6[4]=g
+        baseline=passive_g2(lo6,base12)[1]
+        g2lo=g2hi=baseline
+        # One original continuous affine lift: do not independently
+        # choose nuisance currents for two rows / same world.
+        for j,box in enumerate(b):
+            v=list(lo6);v[j]=box[1]
+            diff=passive_g2(v,base12)[1]-baseline
+            g2lo+=min(F(0),diff)
+            g2hi+=max(F(0),diff)
+        for j,box in enumerate(old):
+            v=list(base12);v[j]=box[1]
+            diff=passive_g2(lo6,v)[1]-baseline
+            g2lo+=min(F(0),diff)
+            g2hi+=max(F(0),diff)
+        wds=tuple(((leak+cc)*(g-dd)-cc*old_u)/(1+leak+cc)
+                  for dd in cur[3] for cc in k)
+        lower=((g-g2hi)/9+leak*(g-cur[5][1])+
+               leak*(g-cur[3][1])+min(wds)+
+               gs*((g-cur[5][1])-(oldg-olds)))
+        upper=((g-g2lo)/9+leak*(g-cur[5][0])+
+               leak*(g-cur[3][0])+max(wds)+
+               gs*((g-cur[5][0])-(oldg-olds)))
+        if lower>upper:
+            raise ArithmeticError("source Q2 gate residual interval invalid")
+        return lower,upper,(g2lo,g2hi)
+    left=face_r18(cur[4][0])
+    right=face_r18(cur[4][1])
+    strict_slope=gs+2*leak+(1-slopes[1][1])/9
+    if strict_slope<=0:
+        return dict(status="RETAIN_TWO_GATES_UNRESOLVED",q1_gate=q1,
+                    goal27_certified=False)
+    both=(q1["status"]=="ORIGINAL_SOURCE_G11_Q1_GATE_UNIQUE_SIX_TO_FIVE_LIFT"
+          and left[1]<0<right[0])
+
+    # S-L48 fail-closed PREIMAGE: S-L40 original ten-node chart is
+    # Q1/Q2 (d,g2,g,x,s), EACH saved +/- .04V. These RATIONAL inner
+    # bands have locally authenticated original stage3616 NPZ centers;
+    # public CI validates the exact equations, not protected NPZ bytes.
+    # The w inner bands are an additional conservative source panel
+    # restriction (w is not one of the original ten chart coordinates).
+    inner_bands={
+        "Q1:g2":(F("11.386"),F("11.465")),
+        "Q2:g2":(F("17.700"),F("17.779")),
+        "Q1:w":(F("150.009"),F("150.088")),
+        "Q2:w":(F("11.495"),F("11.573")),
+    }
+    q1full=certify_original_source_q1_gate_six_cell(
+        six_current_node_boxes_V=cur,
+        old_coil12_boxes_A=old,**auth)
+    g2q1=q1full["source_q1_g2_passive16_V"]
+    # Q2 g2 is exactly affine in its own gate, so whole-box extrema
+    # occur among the lower/upper gate face affine images.
+    g2q2=(min(left[2][0],right[2][0]),
+          max(left[2][1],right[2][1]))
+    def correlated_w(leg,gbox,dbox):
+        cfg=_SOURCE_G11_W_SPECS[leg]
+        old_u=(F.from_float(float.fromhex(cfg["old_g"]))-
+               F.from_float(float.fromhex(cfg["old_w"])))
+        bleed=F(1,10**7)
+        krange=(cfg["cap_lower_pF"]/(F(10**12)*_STAGE3616_H),
+                cfg["cap_upper_pF"]/(F(10**12)*_STAGE3616_H))
+        # On original G11 panel w=((bleed+k)*g+d-k*uold)/(1+bleed+k).
+        # Exact 8 corners enclose each correlated g,d,k; partial g,d
+        # are positive and partial k has fixed sign for fixed g,d.
+        corners=[((bleed+k)*g+d-k*old_u)/(1+bleed+k)
+                 for g in gbox for d in dbox for k in krange]
+        return min(corners),max(corners)
+    wq1=correlated_w("Q1",cur[1],cur[0])
+    wq2=correlated_w("Q2",cur[4],cur[3])
+    images={"Q1:g2":g2q1,"Q2:g2":g2q2,"Q1:w":wq1,"Q2:w":wq2}
+    chart_image_inside=all(
+        limits[0]<=images[key][0]<=images[key][1]<=limits[1]
+        for key,limits in inner_bands.items())
+    ximages=q1full["necessary_x_Q1_Q2_V"]
+    for leg,xbox in zip(("Q1","Q2"),ximages):
+        xc=F.from_float(float.fromhex(_SOURCE_X_SPECS[leg]["x"]))
+        chart_image_inside &= (
+            xc-F(".04")<=xbox[0]<=xbox[1]<=xc+F(".04"))
+    original_pair_stage=both and chart_image_inside
+    return dict(
+        status=("ORIGINAL_SOURCE_BOTH_GATES_UNIQUE_SIX_TO_FOUR_LIFT"
+                if original_pair_stage else
+                "RETAIN_BOTH_GATES_SOURCE_CHART_PREIMAGE_UNRESOLVED"
+                if both else "RETAIN_TWO_GATES_UNRESOLVED"),
+        original_gate_KCL_rows=(6,18),
+        source_g11_rows=(7,19),
+        q1_gate_face_upper_lower_A=(
+            q1["left_face_r6_upper_A"],q1["right_face_r6_lower_A"]),
+        q2_gate_face_upper_lower_A=(left[1],right[0]),
+        q2_g2_face_intervals_V=(left[2],right[2]),
+        exact_passive_g2_gate_jacobian=(
+            (slopes[0][0],slopes[1][0]),
+            (slopes[0][1],slopes[1][1])),
+        certified_both_gate_slope_lower_A_per_V=(
+            q1["certified_gate_slope_lower_A_per_V"],strict_slope),
+        original_q2_w_outer_V=q2w["necessary_w_V"],
+        original_q2_x_outer_V=q2x["necessary_x_V"],
+        simultaneous_both_gate_roots_unique_per_four_fiber=both,
+        source_50d_to_four_nonlinear_nodes_conditional=original_pair_stage,
+        source_ten_node_chart_preimage_certified=chart_image_inside,
+        source_chart_declared_rational_inner_bands_V=inner_bands,
+        source_chart_eliminated_g2_w_image_V=images,
+        source_chart_original_x_Q1_Q2_image_V=ximages,
+        source_original_saved_chart_centers_authenticated_in_ci=False,
+        source_g11_w_eight_correlated_corners_checked=True,
+        original_shared_old12_predecessor_used=True,
+        all_other_source_KCL_roots_certified=False,
+        source_full_own_prep_cal_history_covered=False,
+        source_ieee_outward_certified=False,
+        goal27_certified=False,
+    )
+
+
+
+
+# S-L51: a UNIQUE certified 2x(6+12) source-affine model reused for
+# arbitrarily many closed boxes in a fail-closed interval covering.
+# All coefficients are exact Fractions of the original BE resistor/coils,
+# no source ZIP or saved NPZ bytes are present in this public module.
+@lru_cache(maxsize=1)
+def _original_source_five_kcl_cached_affine_model():
+    """Precompile literal-original n3616 2-row source flux c+A*v+B*old.
+
+    The expensive P16 exact Schur is independent of candidate boxes.
+    Deliberately instantiate all six current and all twelve old
+    predecessor basis vectors, and fail if four omitted w/x boundary
+    coefficients are nonzero. The public caller MUST verify exact law
+    SHA/adapter/SAVED SHA/h BEFORE using this result from the cache.
+    """
+    zeros6=(F(0),)*6
+    zeros12=(F(0),)*12
+    auth=dict(h_s=_STAGE3616_H,source_law_sha256=LAW_SHA,
+              source_adapter_sha256=ADAPTER_SHA,
+              saved_cal_sha256=SAVED_SHA,command_V=15)
+    def source_rows(six,predecessor,unused_wx=None):
+        b=[six[0],six[1],F(0),F(0),six[2],
+           six[3],six[4],F(0),F(0),six[5]]
+        if unused_wx is not None:
+            b[unused_wx]=F(1)
+        lift=certify_original_source_passive16_port_lift(
+            retained_node10_V=b,old_coil12_A=predecessor,**auth)
+        p=dict(zip(lift["eliminated_node_indices"],
+                   lift["port_D_sl_V"]+lift["package_voltage14_V"]))
+        h=_STAGE3616_H
+        return tuple(
+            (F(1,5)+h/F("4.3659e-9"))*(six[3*k]-p[2+12*k])
+           +(F(1,100)+h/F(".2e-9"))*(six[3*k+2]-p[10+12*k])
+           +(six[3*k+1]-p[5+12*k])/9
+           -predecessor[5*k]-predecessor[5*k+4]
+            for k in (0,1))
+    bias=source_rows(zeros6,zeros12)
+    for j in (2,3,7,8):
+        if source_rows(zeros6,zeros12,j)!=bias:
+            raise ArithmeticError("original source five-KCL flux w/x dependence")
+    A=[]
+    for j in range(6):
+        u=list(zeros6);u[j]=F(1)
+        q=source_rows(u,zeros12)
+        A.append(tuple(q[k]-bias[k] for k in (0,1)))
+    B=[]
+    for j in range(12):
+        u=list(zeros12);u[j]=F(1)
+        q=source_rows(zeros6,u)
+        B.append(tuple(q[k]-bias[k] for k in (0,1)))
+    if not(A[0][0]>0 and A[3][0]<0
+           and A[0][1]==0 and A[3][1]>0):
+        raise ArithmeticError("original source five-KCL 2x6 topology changed")
+    return (bias,tuple(A),tuple(B))
+
+# S-L49: original five-KCL conservation on the remaining four d/s nodes.
+def certify_original_source_four_node_kcl_conservation_cell(
+    *,six_current_node_boxes_V,old_coil12_boxes_A,h_s,
+    source_law_sha256,source_adapter_sha256,saved_cal_sha256,
+    require_stage_chart=True
+):
+    """Exact original n3616 BE five-KCL flux necessary test.
+
+    With require_stage_chart=False, no G11/G12/ETH/diode/thermal
+    branch qualification is needed because all their nodal currents
+    cancel when five original KCL rows are summed. Original source
+    h/BE topology and common old12 still required.
+
+    For each leg the five original KCL rows {d,g,w,x,s} sum to the
+    package-boundary flux:
+      C=(1/5+h/Ld)(d-da)+(1/100+h/Lv)(s-sv)
+        +(g-g2)/9 - old_i_Ld - old_i_Lv.
+    G2 ds, diode ds, all charge GS/GD/G12/DS, thermal and internal
+    passive resistors cancel IDENTICALLY; 150V source/BE and all old12
+    coil memories remain in the exact common-source P16 Schur lift.
+    A full source root MUST have C_Q1=C_Q2=0. A strictly signed
+    exact affine image of either leg excludes any full source root.
+    Source-chart gates are additionally checked when requested,
+    but are NOT prerequisites of the five-KCL necessary condition.
+    """
+    auth=dict(h_s=h_s,source_law_sha256=source_law_sha256,
+              source_adapter_sha256=source_adapter_sha256,
+              saved_cal_sha256=saved_cal_sha256)
+    if len(six_current_node_boxes_V)!=6 or len(old_coil12_boxes_A)!=12:
+        raise ValueError("UNRESOLVED_SOURCE_DOMAIN: six node/12 oldcoil boxes")
+    if require_stage_chart:
+        stage=certify_original_source_two_gate_unique_bracket(
+            six_current_node_boxes_V=six_current_node_boxes_V,
+            old_coil12_boxes_A=old_coil12_boxes_A,**auth)
+        if not stage["source_50d_to_four_nonlinear_nodes_conditional"]:
+            return dict(
+                status="RETAIN_SOURCE_FOUR_KCL_STAGE_GUARD_UNRESOLVED",
+                original_gate_pair_exists=stage.get(
+                    "simultaneous_both_gate_roots_unique_per_four_fiber",False),
+                original_full_ten_node_preimage_qualified=False,
+                source_four_kcl_complement_certified=False,
+                all_prep_cal_histories_covered=False,
+                goal27_certified=False)
+    boxes=tuple(map(_source_x_box,six_current_node_boxes_V))
+    old=tuple(map(_source_x_box,old_coil12_boxes_A))
+    # Prior source/step identity MUST be rechecked on every call: an
+    # in-memory cache must not mask a wrong SOURCE SHA, h, or adapter.
+    if (source_law_sha256!=LAW_SHA or
+            source_adapter_sha256!=ADAPTER_SHA or
+            saved_cal_sha256!=SAVED_SHA or
+            _fraction(h_s)!=_STAGE3616_H):
+        raise ValueError("UNRESOLVED_SOURCE_DOMAIN: source KCL coefficients")
+    bias,A,B=_original_source_five_kcl_cached_affine_model()
+    # Each support extremum is EXACT for this affine 18D box; the SAME
+    # old12 input is shared by both output rows (not split histories).
+    lower=tuple(
+        bias[k]+sum(A[j][k]*(v[0] if A[j][k]>=0 else v[1])
+                    for j,v in enumerate(boxes))
+               +sum(B[j][k]*(v[0] if B[j][k]>=0 else v[1])
+                    for j,v in enumerate(old))
+        for k in (0,1))
+    upper=tuple(
+        bias[k]+sum(A[j][k]*(v[1] if A[j][k]>=0 else v[0])
+                    for j,v in enumerate(boxes))
+               +sum(B[j][k]*(v[1] if B[j][k]>=0 else v[0])
+                    for j,v in enumerate(old))
+        for k in (0,1))
+    if any(a>b for a,b in zip(lower,upper)):
+        raise ArithmeticError("invalid source exact affine support")
+    q1_d_slope=A[0][0] if boxes[0][0]<boxes[0][1] else None
+    excluded=tuple(("Q1" if k==0 else "Q2") for k in (0,1)
+                   if lower[k]>0 or upper[k]<0)
+    margin=max((min(abs(lower[k]),abs(upper[k])) for k in (0,1)
+                if lower[k]>0 or upper[k]<0),default=F(0))
+    # Sharp projected exact outer: C_Q1(d)=a*d+b with a>0.
+    # A true source root must have d in this entire-box support.
+    q1_d_required=None
+    q1_d_retained_fraction=None
+    if q1_d_slope is not None:
+        if q1_d_slope<=0:
+            raise ArithmeticError("source Q1 drain flux not monotone")
+        dlow,dhigh=boxes[0]
+        upper_from_others=upper[0]-q1_d_slope*(dhigh-dlow)
+        projected_low=max(dlow,dlow-upper_from_others/q1_d_slope)
+        projected_high=min(dhigh,dlow-lower[0]/q1_d_slope)
+        if projected_low<=projected_high:
+            q1_d_required=(projected_low,projected_high)
+            q1_d_retained_fraction=(projected_high-projected_low)/(dhigh-dlow)
+        else:
+            q1_d_retained_fraction=F(0)
+    return dict(
+        status=("ORIGINAL_SOURCE_FOUR_NODE_KCL_CONSERVATION_CELL_EXCLUDED"
+                if excluded and require_stage_chart else
+                "ORIGINAL_SOURCE_FIVE_KCL_GLOBAL_NODAL_CELL_EXCLUDED"
+                if excluded else "RETAIN_FOUR_NODE_FLUX_ZERO_UNRESOLVED"),
+        necessary_q1_d_source_interval_V=q1_d_required,
+        exact_q1_d_five_kcl_slope_A_per_V=q1_d_slope,
+        q1_d_outer_width_retained_fraction=q1_d_retained_fraction,
+        source_q1_d_projected_contractor_verified=q1_d_slope is not None,
+        original_five_kcl_rows=((3,6,7,8,9),(15,18,19,20,21)),
+        remaining_current_four_node_indices=(3,9,15,21),
+        source_coil_old_Ld_Lv_positions=((0,4),(5,9)),
+        exact_original_five_kcl_flux_intervals_A=tuple(zip(lower,upper)),
+        strictly_excluded_leg_names=excluded,
+        strict_nonzero_flux_margin_A=margin,
+        full_four_node_source_cell_excluded=bool(excluded),
+        source_original_G2_diode_GS_GD_G12_DS_cancel_exactly=True,
+        source_old_coil12_joint_affine_extrema=True,
+        source_full_g2_w_x_ten_chart_preimage_qualified=bool(require_stage_chart),
+        original_gate_pair_unique_per_four_fiber=bool(require_stage_chart),
+        original_full50_projected_kcl_necessary_cell_excluded=bool(excluded),
+        source_nonlinear_guard_independent_conservation_qualified=True,
+        original_remaining_4D_root_existence_certified=False,
+        all_legal_old50_prep_histories_covered=False,
+        original_native_ieee_outward_enclosed=False,
+        all_cal4801_joint_e_certified=False,
+        goal27_certified=False,
+    )
+
+
+def certify_original_source_five_kcl_global_flux_outer(
+    *,six_current_node_boxes_V,old_coil12_boxes_A,h_s,
+    source_law_sha256,source_adapter_sha256,saved_cal_sha256
+):
+    """Original BE full50 KCL necessary outer; guard-agnostic and fail-closed.
+
+    Valid on the source-real n3616 law/stamp for all defined nonlinear
+    branches, but not on old_command/trapezoidal or other h histories.
+    """
+    return certify_original_source_four_node_kcl_conservation_cell(
+        six_current_node_boxes_V=six_current_node_boxes_V,
+        old_coil12_boxes_A=old_coil12_boxes_A,
+        h_s=h_s,source_law_sha256=source_law_sha256,
+        source_adapter_sha256=source_adapter_sha256,
+        saved_cal_sha256=saved_cal_sha256,
+        require_stage_chart=False)
+
+
+# S-L50: the TWO original BE leg boundary-conservation equations also
+# uniquely solve both drain voltages, independently of semiconductor laws.
+def certify_original_source_two_drain_five_kcl_linear_lift(
+    *,retained_node8_V,old_coil12_A,command_V,h_s,
+    source_law_sha256,source_adapter_sha256,saved_cal_sha256
+):
+    """Exact original n3616 2x2 affine dual-drain Schur root lift.
+
+    Retained Q1(g,w,x,s),Q2(g,w,x,s), shared full oldcoil12.
+    P16 eliminates D/sl and 14 passive package nodes; 12 coil BE rows
+    are solved. Two source five-KCL sums are affine in d_Q1,d_Q2,
+    with invertible rational 2x2. Replacing each drain KCL row by
+    its entire leg's 5-row sum is an invertible row operation once
+    g/w/x/s KCL rows are retained. This does NOT prove remaining
+    nonlinear roots, legal old-body/thermal history or Goal27.
+    """
+    if len(retained_node8_V)!=8 or len(old_coil12_A)!=12:
+        raise ValueError("UNRESOLVED_SOURCE_DOMAIN: eight nodes/12 old coils")
+    v=tuple(map(_fraction,retained_node8_V))
+    old=tuple(map(_fraction,old_coil12_A))
+    auth=dict(h_s=h_s,source_law_sha256=source_law_sha256,
+              source_adapter_sha256=source_adapter_sha256,
+              saved_cal_sha256=saved_cal_sha256,command_V=command_V)
+    def flux(d1,d2,retain=False):
+        ports=(d1,v[0],v[1],v[2],v[3],d2,v[4],v[5],v[6],v[7])
+        lift=certify_original_source_passive16_port_lift(
+            retained_node10_V=ports,old_coil12_A=old,**auth)
+        pp=dict(zip(lift["eliminated_node_indices"],
+                    lift["port_D_sl_V"]+lift["package_voltage14_V"]))
+        out=[]
+        for k in (0,1):
+            d,g,s=(d1,v[0],v[3]) if k==0 else (d2,v[4],v[7])
+            out.append(
+                (F(1,5)+_STAGE3616_H/F("4.3659e-9"))*(d-pp[2+12*k])
+               +(F(1,100)+_STAGE3616_H/F(".2e-9"))*(s-pp[10+12*k])
+               +(g-pp[5+12*k])/9-old[5*k]-old[5*k+4])
+        return (tuple(out),pp) if retain else tuple(out)
+    zero=F(0)
+    base=flux(zero,zero);one=flux(F(1),zero);two=flux(zero,F(1))
+    M=((one[0]-base[0],two[0]-base[0]),
+       (one[1]-base[1],two[1]-base[1]))
+    det=M[0][0]*M[1][1]-M[0][1]*M[1][0]
+    if not(M[0][0]>0 and M[1][0]==0 and M[0][1]<0
+           and M[1][1]>0 and det>0):
+        raise ArithmeticError("invalid original dual-drain KCL coefficient")
+    drains=_solve(M,(-base[0],-base[1]))
+    zeros,pp=flux(*drains,retain=True)
+    if zeros!=(zero,zero):
+        raise ArithmeticError("source dual-drain affine residue nonzero")
+    chart=True
+    originals=[]
+    for k,leg in enumerate(("Q1","Q2")):
+        data=_SOURCE_X_SPECS[leg]
+        gg=_SOURCE_G11_W_SPECS[leg]
+        item=(drains[k],pp[5+12*k],v[4*k],v[4*k+2],v[4*k+3])
+        originals.append(item)
+        center=(F.from_float(float.fromhex(data["d"])),None,
+                F.from_float(float.fromhex(gg["g"])),
+                F.from_float(float.fromhex(data["x"])),
+                F.from_float(float.fromhex(data["s"])))
+        for j in (0,2,3,4):
+            chart &= abs(item[j]-center[j])<=F(".04")
+        g2band=(F("11.386"),F("11.465")) if k==0 else (
+                F("17.700"),F("17.779"))
+        chart &= g2band[0]<=item[1]<=g2band[1]
+        oldu=(F.from_float(float.fromhex(gg["old_g"]))-
+              F.from_float(float.fromhex(gg["old_w"])))
+        nowu=item[2]-v[4*k+1]
+        chart &= abs(nowu-oldu)<=F(1)
+    return dict(
+        status=("ORIGINAL_SOURCE_DUAL_DRAIN_CHART_AFFINE_LIFT" if chart else
+                "RETAIN_SOURCE_DUAL_DRAIN_ALGEBRAIC_ONLY_CHART_UNRESOLVED"),
+        exact_two_drain_schur_matrix_S=M,
+        exact_two_drain_determinant_S2=det,
+        unique_original_source_drain_pair_V=drains,
+        exact_original_five_kcl_sums_A=zeros,
+        ten_source_nodes_d_g2_g_x_s=tuple(originals),
+        source_drain_pair_affine_unique_globally=True,
+        ten_node_and_g11_w_guard_source_chart_qualified=bool(chart),
+        source_original_drain_kcl_row_replacement_equivalent=True,
+        conditional_root_correspondence_needs_S_L40_body_thermal=True,
+        old_thermal_diode_predecessor_qualified_here=False,
+        other_remaining_original_nonlinear_rows_solved=False,
+        full_prep_cal_history_covered=False,
+        source_native_ieee_outward_enclosed=False,
+        goal27_certified=False
+    )
+
+
+# S-L52: an EXHAUSTIVE three-closed-slab cover of the original current
+# six-node chart, with exact source-necessary KCL complement rejection.
+def certify_original_source_three_slab_global_flux_cover(
+    *,six_current_node_boxes_V,old_coil12_boxes_A,h_s,
+    source_law_sha256,source_adapter_sha256,saved_cal_sha256,
+    left_gate_offset_V=F("-.016"),right_gate_offset_V=F(".016"),
+    max_cells=3
+):
+    """Fail-closed finite outer-cover for original S150 BE source six nodes.
+
+    Gate here denotes a geometric Q1 drain split (NOT a G11/ETH guard).
+    Let C be any six-current / common-old12 rectangle of source inputs.
+    Split ONLY Q1 drain at two exact rational offsets from the original
+    saved d_Q1 center; left, middle, right closed cells have matching
+    shared faces and union EXACTLY the parent. Exclude one child only
+    when original branch-INDEPENDENT conserved five-KCL support misses
+    zero; retain every other child, never infer root existence.
+    No search budget/guard hole: max_cells<3 returns the entire parent
+    unresolved, and no claimed stage/full-history certificate.
+    """
+    if (source_law_sha256!=LAW_SHA or
+            source_adapter_sha256!=ADAPTER_SHA or
+            saved_cal_sha256!=SAVED_SHA or
+            _fraction(h_s)!=_STAGE3616_H):
+        raise ValueError("UNRESOLVED_SOURCE_DOMAIN: wrong original S150 source")
+    boxes=tuple(map(_source_x_box,six_current_node_boxes_V))
+    prev=tuple(map(_source_x_box,old_coil12_boxes_A))
+    if len(boxes)!=6 or len(prev)!=12 or type(max_cells)!=int or max_cells<1:
+        raise ValueError("UNRESOLVED_SOURCE_DOMAIN: finite outer-cover inputs")
+    if max_cells<3:
+        return dict(
+            status="RETAIN_SOURCE_SIX_NODE_PARENT_BUDGET_UNRESOLVED",
+            cells=({"six_node_boxes_V":boxes,
+                    "status":"RETAIN_UNSPLIT_PARENT_UNRESOLVED"},),
+            exhaustive_closed_cover_of_input_box=True,
+            exact_root_excluded_fraction_of_q1_d_width=F(0),
+            original_source_allroot_in_remaining_cells_only=False,
+            source_global_goal27_certified=False,
+            all_prep_cal_history_covered=False)
+    origin=F.from_float(float.fromhex(_SOURCE_X_SPECS["Q1"]["d"]))
+    left=origin+_fraction(left_gate_offset_V)
+    right=origin+_fraction(right_gate_offset_V)
+    lo,hi=boxes[0]
+    if not(lo<left<right<hi):
+        raise ValueError("UNRESOLVED_SOURCE_DOMAIN: exact slab cuts outside parent")
+    q1segments=((lo,left),(left,right),(right,hi))
+    child=[]
+    excluded_length=F(0)
+    auth=dict(h_s=h_s,source_law_sha256=source_law_sha256,
+              source_adapter_sha256=source_adapter_sha256,
+              saved_cal_sha256=saved_cal_sha256)
+    for dspan in q1segments:
+        sub=(dspan,)+boxes[1:]
+        q=certify_original_source_five_kcl_global_flux_outer(
+            six_current_node_boxes_V=sub,
+            old_coil12_boxes_A=prev,**auth)
+        excluded=q["original_full50_projected_kcl_necessary_cell_excluded"]
+        if excluded:
+            excluded_length+=dspan[1]-dspan[0]
+        child.append(dict(
+            six_node_boxes_V=sub,
+            original_source_flux_Q1_Q2_A=
+                q["exact_original_five_kcl_flux_intervals_A"],
+            status=("STRICT_SOURCE_REAL_BE_FULL50_ROOT_EXCLUDED"
+                    if excluded else "RETAIN_SOURCE_REAL_ROOT_UNRESOLVED"),
+            strict_nonzero_flux_margin_A=q["strict_nonzero_flux_margin_A"]))
+    if not(child[0]["six_node_boxes_V"][0][1]==
+           child[1]["six_node_boxes_V"][0][0] and
+           child[1]["six_node_boxes_V"][0][1]==
+           child[2]["six_node_boxes_V"][0][0]):
+        raise ArithmeticError("source exact slab cover gap detected")
+    return dict(
+        status=("ORIGINAL_SOURCE_FINITE_SIX_NODE_OUTER_COVER_WITH_EXCLUSIONS"
+                if excluded_length>0 else
+                "RETAIN_SOURCE_FINITE_SIX_NODE_OUTER_COVER_UNRESOLVED"),
+        cells=tuple(child),
+        exhaustive_closed_cover_of_input_box=True,
+        exact_root_excluded_fraction_of_q1_d_width=excluded_length/(hi-lo),
+        original_source_allroot_in_remaining_cells_only=True,
+        source_q1_d_split_coordinates_V=(left,right),
+        source_real_BE_n3616_shared_old12_provenance_required=True,
+        other_source_guard_branch_proof_not_required_for_exclusion=True,
+        global_original_full50_root_existence_proved=False,
+        source_global_goal27_certified=False,
+        all_prep_cal_history_covered=False)

@@ -1076,3 +1076,170 @@ At the archived n3616 exact h=0x1.b7cdfd9d80000p-37s and fixed old source, local
 - At this SAME D×S×X box, frozen PR29 S-L41 independent residual enclosure crossed zero, with LOWER −1.5599999999965795A and upper positive: CANNOT_EXCLUDE. The NEW paired-monotone necessary x contractor proves full original real-law r20≥(a+b)(X_lower−joint_upper)=0.5199999999988598A>0, so **EVERY** root of the original 50D source equations is absent from that named nonzero-width cell irrespective of remaining 48 variables.
 
 This is a strict reproducible new source-subdomain ALL-ROOT exclusion, although 24/10/guarded8D remaining roots, physical joint CAL E, future signed work and actual IEEE/libm errors remain uncertified. The independent exact Fraction source regression records the old negative lower bound, the new positive 0.52A margin, wrong h/source SHA controls, and G12 signed-charge conditions. The 16-to-2 corners is an evaluation-count property of the specified contractor, not observed CI speedup. De Casteljau exact Bernstein restriction similarly cannot loosen its coefficient convex hull under subdivision, but it does NOT prove universal computational superiority over a better analytic factorization; no DPT allguard adaptive-branch complexity theorem is asserted.
+
+
+### S-L46 — 原始 Q1 gate KCL 与源 P16/G11 联动的六电压闭子盒排除（2026-10-21）
+
+Original source: ZIP SHA256 `250aa4ea17514ffdeda3a51d95bedf8e034b181f97bdc254db29ddc36281b9c8`; `actual_law.py` SHA256 `51b78f729393d29745f59ca150adfef69e1847bf26a8853c6cef3d6be9e2083d`; adapter SHA256 `7f03e36809caf3dea1295cf58d7dd70c413ef7991472a5e6eec3405da18f5669`; original Pro18E saved CAL NPZ SHA256 `baafdd8cb489adb186677658c4a8031130cc53a9a1854c4997211d437daf8b3e`. At exact archived n3616 `h=0x1.b7cdfd9d80000p-37`, Rg7.5, command15V, the new P16 source passive SPD/Schur eliminates nodes (D,sl,P14) after ALL 12 old BE coil currents and exact external D 150V offset. This is conditional equation equivalence, not source-root existence.
+
+Crucial new remaining-row test: combine original Q1 KCL rows 6 (gate) and 7 (G11 w). At a simultaneous root of the latter, signed G11 charge and the g-w bleeder cancel EXACTLY in the former:
+```text
+r6 = (g-g2)/9 + 1e-7(g-s) + 1e-7(g-d) + (w-d)
+     + (1388e-12/h) * [(g-s)-(g_old-s_old)].
+```
+The **source-passive P16 reconstruction** makes g2 an affine function of the six current Q1/Q2 (d,g,s) nodes and all 12 **joint** old coil currents, with coefficients for both w/x coordinates exactly zero. On the original guarded Q1 G11 single panel, let u=g-w, u0=g_old-w_old, k=Cbar/h in [3.9pF/h,4.0pF/h]. Literal signed G11 row 7 implies
+```text
+w-d = ((1e-7+k)*(g-d)-k*u0)/(1+1e-7+k).
+```
+Source G12 row 8/20 and full G11 guard are also checked. Thus exact Fraction affine image extrema and eight rational w-d corners provide a **whole-cell necessary r6 interval**. The public `certify_original_source_q1_gate_six_cell` returns UNKNOWN whenever zero is not strictly separated; it does not infer full CAL, native SciPy/GL32 directed roundoff or Goal27.
+
+Fresh independent read-only original saved-predecessor test: old source voltage controls n3615 held fixed, each of the twelve old coil currents varied independently by **±0.001 A around that SAME archived old current**, Q1 current g6 in [saved+0.010,saved+0.012] V, other five current (d,g,s) nodes in saved ±0.0001V. P16/G11/G12 source chart guards verified; old-coil uncertainty reduces the r6 lower by <0.000993 A. Archived-old singleton exact rational r6 interval [1.100719398908974,1.3475288710211726] A, so the stated 12-old-coil interval still excludes every exact-real source root with >1.0997A positive r6. No raw protected predecessor values are uploaded to GitHub or embedded in public tests. Separate synthetic old-coil box and a zero-crossing candidate exercise fail-closed behavior in public CI.
+
+**Evidence ceiling:** true original source expressions, finite h, a nonzero-width conditional 6D current chart plus 12D old-coil slab, original G11 guarded branch and passive lifts. The actual source ZIP and saved NPZ were only authenticated/read **locally**; public CI tests formula consequences and cannot authenticate their private bytes. Still OPEN: other guard components, old-coil PREP reachability for every slab point, complete six-KCL roots and chart complement, full 50D history and joint CAL4801×2, native IEEE enclosures, H841 goal diameter.
+
+
+### S-L47 — 原始 Q1 g6 guarded 单根：条件性源 50D→5D (2026-10-21)
+
+与上节不同，本节证明的是一条**余下 KCL 的实际存在/唯一性**，不是只排除一个候选盒。原 n3616 Q1 G11 signed finite Gauss32 的合法单一 smooth panel 有 H'(u)=1+10^{-7}+ΔQ'_{32}(u)/h>1。故沿 r7=0 的唯一 w(g,d) 有 0<dw/dg=1−1/H'(u)<1。P16 SPD 仿射 lift 对 gate 的严格原 source 斜率
+`a_g=∂g2/∂g=0.9553822356017335...`，保留其精确 Fraction 表示。对于固定的另外五个 Q1/Q2(d,g,s) 坐标及共同 old12 线圈记忆：
+
+`dr6/dg=(1−a_g)/9+2×10^(-7)+dw/dg+(1388e−12/h) > 111.04495772913411 A/V`。
+
+以原始保存 n3615 的旧 Q1 g/s/w 精确 binary64 电压为锚、12 个 old coil 电流在**各自保存值±1mA** 及其余五个 current 电压在各自保存值±0.1mV 为条件，经过本轮 read-only Pro18E NPZ SHA 校验与精确 P16/G11/G12 计算，原 Q1 gate 保存值左右 125µV 的**全 17D face slab** 给出：
+- 左 face `g=g_saved−0.000125V` 时 `r6_upper=−0.0010508671630896351A<0`；
+- 右 face `g=g_saved+0.000125V` 时 `r6_lower=+0.0010223486726103875A>0`。
+
+因此在上述声明参数盒的**每一条固定 fiber** 上，原始 gated r6=0 对 g 有且仅有一根，位于 saved±125µV。两侧是严格有向全盒端点界，导数是独立由源 G11 charge-positive 和 P16 仿射传递给出的下界，不是 Newton 保存点的一次测试。新 `certify_original_source_q1_gate_unique_bracket` 会在斜率/两端反号/原始 panel 任一不合格时 **RETAIN/UNKNOWN**，不能错误地把单个端点证书升级为根存在。因而在 source chart/guard 重构 preimage 上，先前 S-L45 条件性的六节点电路求根，还可条件性消去一个 Q1 g 自由度变成**五节点**。
+
+这并非其余五条 KCL 及 old thermal/diode/G2/ETH/ABS source branches 的全根覆盖；保存 PREP 周围任意 old coil boxes 的所有 50D history 可达性、完整 CAL E、native GL32/SciPy IEEE outward 和 H841 signed-work 直径继续 OPEN。GitHub 公开 tests 使用 synthetic old12 因而不包含任何 protected n3615 旧电流原始字节。只有原始保存 NPZ 的本地只读计算支持本节上述 ±125µV 定量值。
+
+### 原始 F122-A 思路的新 DPT 数学边界：PSD moments 的严格 slack 不可直接平移
+
+原论文 OpenAI *Uniform quasipolynomial-time trace reconstruction*，固定 `openai/math@fd4aeeb2ee4fc729c18d98444fed42fd0529eeeb`，原 TeX `build/manuscript/setup.tex` 的 `eq:moment-matrix` / `thm:separation` 和 `decoding.tex` 的 `lem:prefix-slack` / `lem:rational-feasibility`：正确二元 trace 前缀通过混入均匀符号分布获得 `M(m*)≽ζ/8 I`，在**可容纳统计误差**的可行性问题中给出 bounded rational iteration。它不自动成为精确 DPT KCL 根的内点验收法。严格反迁移定理：若非零多项式源残差 r 的度数不大于 moment degree D，并施加精确等式 `E[r²]=0`，则 PSD Gram 矩阵必有非零系数零向量，`M_D c(r)=0`，从而无任何 `M_D≻0` 的物理可行 moment completion。Exact Fraction 例：`r=x−1/2`, `E[x]=1/2,E[x²]=1/4`，其 2×2 moment matrix det=0；以 1/8 的均匀 `x∈[0,1]` 分布混合后 det>0，却造成 `E[r²]=1/96>0`，破坏原等式。此结论不否定正半定 moment outer 排除，它只阻止把 F122-A 的 strict-slack 存在保证误用到硬 KCL equality。
+
+一种互补方法是 **SOS 先排除、Bernstein 再自适应分裂**：`p(x)=x²−x+5/16=(x−1/2)²+1/16` 对 |e|≤1/32 有整个 [0,1] 的严格 gap=1/32，而原 degree-2 Bernstein parent coefficients (5/16,-3/16,5/16) 无法直接排除。Exact Fraction 及去掉常数项的真根突变均已独立通过。这目前是 source-agnostic conditional 算法，不是经 source G11/ETH native 承包的 S150 root certificate；F122 原始主论文未完成全页 DEEP_READ_V1，不移动至 literature/。
+
+
+### S-L48 — 原始 S150 Q1/Q2 两条 guarded gate KCL 的独立单根：条件性 50D→4D（2026-10-21）
+
+新操作符 `certify_original_source_two_gate_unique_bracket` 严格从 S-L45 的完整 source 被动16节点 SPD/12 个 old coil BE 方程重构两腿 `g2`。原 P16 的精确 Fraction gate 交叉矩阵（行分别 Q1:g2、Q2:g2，列分别 Q1:g、Q2:g）为
+
+```text
+[[0.9553822356017335..., 0],
+ [0, 0.9573134006235400...]]
+```
+
+**两个交叉系数严格是零，并非小数近似。** 因此对于固定的原四个当前 `(Q1:d,s,Q2:d,s)` 电压和**共同** 12 个旧线圈电流，两条已经用原 r7/r19 有限 Gauss32 消去 w 的 gate KCL 相互独立，各自对 g 严格递增，导数下界分别超过 `111.04495772913411 A/V` 与 `111.04474315524280 A/V`。Source law ZIP SHA256 `250aa4ea17514ffdeda3a51d95bedf8e034b181f97bdc254db29ddc36281b9c8`、原 `actual_law.py` SHA256 `51b78f729393d29745f59ca150adfef69e1847bf26a8853c6cef3d6be9e2083d`、保存 Pro18E NPZ SHA256 `baafdd8cb489adb186677658c4a8031130cc53a9a1854c4997211d437daf8b3e`。原 stage n3616、命令 15V、step `0x1.b7cdfd9d80000p-37` 秒，old12 电流来自 n3615 保存前驱，在所有 oldcoil 保存值±0.001A 及两个 gate 的保存值±0.000125V、四个其余 d/s 电压保存值±0.0001V 的整闭盒上，直接源 SHAs 检查及精确 Fraction 得到四个完整参数端面：
+
+```text
+Q1 gate lower face: r6 upper = -0.0010508671630896351 A < 0
+Q1 gate upper face: r6 lower = +0.0010223486726103875 A > 0
+Q2 gate lower face: r18 upper = -0.0014583722156841952 A < 0
+Q2 gate upper face: r18 lower = +0.0014637660927983114 A > 0
+```
+
+G11 signed source branch/hypothesis、G12 capacitance branch，two passive g2 的 w/x 零系数和跨 gate 零系数按源 real expression 核验。因此对每条固定四节点与 old12 的合法 guard/preimage fiber，这两条 gate 根都存在且唯一，原 50D 电路节点条件性 root correspondence 进一步到**4D**。这项证明**没有**说明剩余 4D KCL 有解、该 12D predecessor slab 都是历史可达、其他 G2/ETH/diode/thermal/ABS/clip guard 分支被覆盖，或源 NumPy GL32/SciPy 的 binary64 evaluator 被 directed outward 包住，更不是 Goal27。公开 CI 测试只能检验 source-code Fraction 定理及负控；原始 protected NPZ 在本地只读 SHA 检验，不上传。缺少对 full PREP126→CAL4800 的任意历史/共同 E 联合观测闭合证书。
+
+
+### 2026-10-21 F325 原始 nonnormal fixed-J polynomial inverse 向 DPT 的精确条件性迁移
+
+原 OpenAI 论文 *Complete Crouzeix* 两证明见 [archive pinned PDF/SHA 和 exact theorem scope](../literature_archive/README.md)。F325 原主定理对**同一固定**矩阵 J0 和 numerical range W(J0) 的解析函数给出 factor-2 norm 上界，不许当作随 x、时间、hybrid branch 改变的所有 DF(x) 共用谱域界。给定源合格同一 smooth convex closed ball C=B(a,R)，逐项源实数/IEEE outward 包围 `||DF(x)−J0||₂≤ε`，以及已独立认证 `W(J0)⊂disk(c,r)` 且 `0<r<|c|`，令
+
+```text
+P_k = (1/c) * Σ_{j=0}^{k-1} (I−J0/c)^j,
+η = 2*(r/|c|)^k + (2ε/|c|)*Σ_{j=0}^{k-1}(r/|c|)^j.
+```
+
+由原论文完整 matrix polynomial norm bound，`||I−P_k J0||₂≤2(r/|c|)^k` 且 `||P_k||₂≤(2/|c|)Σ(r/|c|)^j`，所以 `T(x)=x−P_k F(x)` 对整个 ball 的 Lipschitz≤η。**当 η<1 且 ||P_k F(a)||<(1−η)R**，T 严格内映且存在唯一 F 根（P_k 可逆由 `r<|c|` 得到）；若 `||P_k F(a)||>(1+η)R`，整个 ball 无根。其余全部 UNKNOWN。平方 Gram 有理数上界可替代较松 factor2 求更紧 η。Exact Fraction 非正规 toy `J0=[[11/10,3/2],[0,9/10]]` 满足 `(I−J0)^4=I/10000`，而单步 norm `||I−J0||₂>1`；普通单步 contraction 失败却截断阶4可收缩。反例包括仅用 eigenvalue 半径代替 numerical range、遗漏 ε 或把不同阶段矩阵乘积当成一矩阵多项式。
+
+**DPT SOURCE HAZARD：** 原 Q2 thermal ABS `|d*sense|` 对源合法 chart 存在符号变化；G2 clip/ETH、G11 Gauss32 与 G12 SciPy/native 不保证原分箱内统一 DF 光滑。未经绝对误差向外包围和所有 physical guard cells 重复覆盖，不得用 F325 推出 50D root、完整历史或 Goal27。此条件性算法的独立 exact 2×2 Gram toy 与负控只表明可行方向，并不构成 source 6D/4D original derivative halo。
+
+
+### S-L48a 独立反证触发的证据级别纠错（2026-10-21）
+
+worker 的 read-only 原始 source adversarial replay 找到**公开合成旧线圈全零**之反例：原两条 gate KCL 仍各有唯一根，但 original P16 exact Fraction 把 g2 Q1 重构到约 [12.5485045,12.6141400] V、g2 Q2 到约 [14.4656456,14.5308185] V，均与 S-L40 明确 ten-node 原始中心 ±0.04V chart 严格不相交。旧版 public checker 仅凭四个 gate face signs 错误标为原 stage **50D↔4D chart bijection**，属于真实的 source-domain 语义漏洞；不能把本应局限于“gate 方程 pair-only 单根”的结论自动升级为“原完整 stage-chart 对应”。
+
+新 S-L48 fail-closed 修复在得到 paired scalar roots 后，再使用**同一个 old12 共同前驱** exact Fraction 重算整六节点盒的两 g2 Schur 必需电压包络、两 x G12 必需包络，并用 G11 符号电荷单一 panel 的 w(g,d,k) **关联八角点**包络，而不是错误的松弛式 g−u 笛卡尔差。其源十节点的 g2 内带采用只读核验原 Pro18E NPZ 后固定的保守内部闭区间 `Q1:g2∈[11.386,11.465]V`、`Q2:g2∈[17.700,17.779]V`，分别严格包含于原保存值 ±0.04V；w 更保守的源局部内带 Q1 [150.009,150.088] V、Q2 [11.495,11.573] V，x 根据公开固定 saved 16进制源中心 ±0.04V。公开 CI 仍**不持有受保护 NPZ**，只检验 exact Fraction 公式，原 NPZ/源 SHA 由本地主控只读认证。
+
+仅在四个端面反号 **且** g2/w/x 关联重构全部包含于相应声明原源 chart 时，状态 `ORIGINAL_SOURCE_BOTH_GATES_UNIQUE_SIX_TO_FOUR_LIFT` 与 `source_50d_to_four_nonlinear_nodes_conditional=True` 才可返回；否则即使 gate-only 仍有唯一根也返回 `RETAIN_BOTH_GATES_SOURCE_CHART_PREIMAGE_UNRESOLVED`，并分开标注 `simultaneous_both_gate_roots_unique_per_four_fiber=True`、`source_ten_node_chart_preimage_certified=False`。单独 S-L47 算子不会未检查整个源十节点 chart 就将 gate-only 根提升为 source 50D↔5D。
+
+公开回归同时涵盖：旧线圈全零/两个 g2 出图严格失败、用**公开合成**两 old coil 电流 -0.288A 和 +0.843A 创造真实源方程十节点内带的正例、将 gate 扩大到 ±35mV 后，尽管相关 w 仍在合格 panel，重构 g2 的整盒外包越过更严源内带而仅保留 gate-only，以及缺少四面反号时仍 UNKNOWN。公开合成旧线圈配置不是某个合法 PREP126 历史的证明。实际保存 n3615 旧线圈各±1mA 的原 S-L48 两 gate 各±125µV 条件盒经**本地只读**原 NPZ 的前驱回归仍可成立，未上传原始 bytes。任何 `50D→4D` 声明都严格局限于这一经过交叉认证的源模型原 ten-node/guard 局部子域，剩余4D KCL/所有历史/E/Goal27继续 OPEN。
+
+
+### S-L49 — 源原始 S150 剩余 4D 的完整连续闭盒排除：五节点 KCL/BE 流量恒等式（2026-10-21）
+
+在原始 \`actual_law.py\` SHA256 \`51b78f729393d29745f59ca150adfef69e1847bf26a8853c6cef3d6be9e2083d\` 的 n3616、15V、\`h=0x1.b7cdfd9d80000p-37\` 秒、\`Rg=7.5Ω\` 源电路中，对每条腿将原 KCL 行 \`Q1=(3,6,7,8,9)\`、\`Q2=(15,18,19,20,21)\` 相加。原 source G2 电流在 d/s 反号，原 D1 diodes 的 \`-D ib\` 在 d/s 反号，原 \`charge_delta\` 的 GS、GD、G12、1pF DS 电荷在五节点内部守恒；原 G 矩阵中 d/s、g/d、g/s、g/w、w/d、x/d、x/s 电阻也内部抵消，温度只经 G2/diode 耦合而不留下直接 KCL 项。原 source Q1 150V、Q1−4V、Q2 +15V forcing 均不直接进入这五行，但保留在 P16 reconstruction。将原两只 package Ld(4.3659nH)/Lv(.2nH) 的 BE 线圈电流代回，所有 root 必须满足：
+
+\`\`\`text
+C_k = (1/5 + h/4.3659e-9)*(d_k-da_k)
+    + (1/100 + h/.2e-9)*(s_k-sv_k)
+    + (g_k-g2_k)/9 - old_i_Ld,k - old_i_Lv,k = 0 .
+\`\`\`
+
+\`da,sv,g2\` 由 S-L45 source P16 exact SPD 从**一个共享的 old12 predecessor** 矩阵求解，严格验证 w/x 四个端口在此流量上零系数；\`C_1,C_2\` 对六个 current(d,g,s) 与 old12 线圈电流均为同一个 exact Fraction affine map。新 \`certify_original_source_four_node_kcl_conservation_cell\` 先要求 S-L48a 两 gate 单根和完整 g2/w/x source chart/preimage 成立，否则直接返回 \`RETAIN\`；再对 **18 维共同闭盒**计算两行 exact rational signed support 上下界。如果任意一行严格不含零，排除所有当前余下四个 d/s 取值的完整原 source stage 根。
+
+只读本地 sha-256 已重新核验 Pro18E E NPZ \`baafdd8cb489adb186677658c4a8031130cc53a9a1854c4997211d437daf8b3e\`；实际原 n3615 old50 的 12 个 BE 电流各保存值±0.001A，Q1 current d3 在保存值+[0.013,0.039]V（**连续 26mV 非零宽**），Q1/Q2 g6/g18 在各保存值±0.001V，其他 Q1:s9,Q2:d15,s21 在各保存值±0.0001V。所有 S-L48a 两门根、原 g2/W/X/源 chart 与 guard preimage 通过。精确 Fraction 的 Q1 原始五行之和为
+
+\`\`\`text
+C_Q1 in [+0.0004495672421352916, +0.010099126376501458] A,
+C_Q2 in [-0.003106471779935494, +0.003106471729001115] A.
+\`\`\`
+
+**因此整个指定原 4D 电压盒对该真实 old-coil 条件区间都严格无 stage 根，最低带符号裕度0.449567mA。** 这是前一节 gate 单根以外，对**剩余 4D KCL/补集**的新直接 source 数学推进，不是仅重述 G11/x exclusion，也不需要以原 ETH/G2/diode/thermal 数值商替代原源表达式。独立原 native source \`make_source_operator().residual\` 在将全部 16 package 节点和 12 当前 coil currents 依原 BE 方程**同时**重构后，对五行求和的 saved/6组非零扰动验证保守绝对差小于 \`5×10^(-10)\` A。零旧电流合成 source chart 强负控、old Ld 电流符号 ±0.01A 变动和错误源 h 负控均为公开测试；公开测试使用不同的**合成** old currents，不含本地 protected old50 任何数值字节。
+
+最高证明等级仍是：**原 source 模型实数代数、原单阶段 n3616、指定旧电流/节点 guard 内连续闭子域的全根排除**。实际 old12±1mA 子域的每一点是否来自完整 PREP126 合法历史尚无证书；G11 finite Gauss32 的 NumPy 浮点权重、source SciPy \`hyp2f1\`/clip/ABS rounding 及所有 hybrid/thermal 分支并未做严格 native outward 计算；余下 4D 全体 chart 补集、完整 CAL4801×2 共同 E、H841 signed-work 目标直径均**OPEN**。Source ZIP SHA256 \`250aa4ea17514ffdeda3a51d95bedf8e034b181f97bdc254db29ddc36281b9c8\`，adapter SHA256 \`7f03e36809caf3dea1295cf58d7dd70c413ef7991472a5e6eec3405da18f5669\`，ZIP、adapter 与 protected NPZ 均不上传仓库。
+
+
+### S-L49b：原始五 KCL 守恒对所有定义良好的非线性分支都成立
+
+上节 S-L49 先认证 S-L48a 的两个 gate 和原 ten-node chart，随后用五 KCL 守恒排除剩余四维根。**新的更强适用性证明：** 原 \`actual_law.py\` 后向欧拉静态 source 对 d/g/w/x/s 五节点的 G2、diode、GS/GD/G12、1pF DS 及 thermal 电流通过 incidence stamps **恒等抵消**。只要原 50D source 根满足这个指定 BE 步（\`old_command=None\`、\`h=0x1.b7cdfd9d80000p-37\` 秒），无需先解 G11/G12、无需证明各 nonlinear/ETH/clip/ABS/switch guard 单根，必满足上一节 exact P16 五行流量等式。新 \`certify_original_source_five_kcl_global_flux_outer\` 对**原所有已定义 source nonlinear 分支**只做必要 KCL 全盒排除，不提升任何根存在性；未验证的其他 h/梯形 \`old_command\`、全 PREP/CAL 历史和 binary64 outward 仍开放。
+
+原保存 n3615 old12 线圈各保存值±0.001A，原 current 六个电压 \`(Q1:d,g,s,Q2:d,g,s)\` 中 **Q1 d 在保存+[0.016,0.040]V**，其他 **五电压各全保存±0.040V**，固定原 SHA 的完整 18D 共同区间 Exact Fraction 给出
+
+\`\`\`text
+C_Q1 >= +0.00018296416077017902 A
+C_Q1 <= +0.011177167460651302 A.
+\`\`\`
+
+原 Q1 drain 整个 ±40mV chart 上部 24mV，即其电压宽度**30%**连同其它五节点完整 chart，全在该真实保存 old-coil 允许闭盒下严格无任何原 50D stage 根。该全分支必要排除比先认证 G11/dual-gate 的狭窄 4D slice 更强，因而可用作 PREP/CAL 来源足够时的第一层廉价 outer contractor。公开 CI 用 synthetic old12 无源 chart 正例和 ±5A 超宽 oldcoils 保留零的 fail-closed 负控；真正原 archived old12 数据只在受保护本地只读 SHA 下验证，未上传。原 source ZIP SHA256 \`250aa4ea17514ffdeda3a51d95bedf8e034b181f97bdc254db29ddc36281b9c8\`；law SHA256 \`51b78f729393d29745f59ca150adfef69e1847bf26a8853c6cef3d6be9e2083d\`，E NPZ SHA256 \`baafdd8cb489adb186677658c4a8031130cc53a9a1854c4997211d437daf8b3e\`。不称 Goal27 全 root/outer。
+
+
+### S-L49c / S-L50 — 精确排除→投影收缩→双 drain 仿射反求（2026-10-21）
+
+原 source BE 的 S-L49 五节点 KCL 守恒对任何已定义的 G11/G12/ETH/G2/diode/thermal/ABS 分支为真。更强的 root-contractor：其 Q1 流量对 Q1 drain 为一元严格递增**精确仿射**函数 \`C1=a*d1+b\`，原 P16 exact Fraction 给出 \`a=0.20285950069618283… S>0\`。对输入六电压盒与共同 old12 包围，写出共享前驱其余变量对 \`b\` 的 exact affine 全盒上下界 \`b_lo,b_hi\`。任何可能原 root 必须满足 \`d1∈[-b_hi/a,-b_lo/a]\`，交回原候选 d 区间；不需要任何 G11/G12/thermal 数值求值。新全源 \`certify_original_source_five_kcl_global_flux_outer\` 输出 \`necessary_q1_d_source_interval_V\`、exact slope 与 \`q1_d_outer_width_retained_fraction\`；如果投影为空严格排除，如果仍重叠零返回 \`RETAIN\` 但精确收窄 d 投影。此 contractor 使用真正**同一** old12 盒，不给两条 KCL 独立挑旧电流。
+
+真实 n3616、old12 保存值各±0.001A、所有六个 current \`(Q1:d,g,s,Q2:d,g,s)\` 独立在 saved±0.04V 全 chart，源闭盒流量仍包含零，因此**原大盒不能判无根**；但 exact P16 线性代数给出的 Q1 drain 必要偏移是
+
+\`\`\`text
+d_Q1 - saved_d_Q1 in
+[-0.015098072421025245, +0.015098074479419136] V.
+retained width / original 0.08V = 0.37745183625555473.
+\`\`\`
+
+即只保留 **约 37.7452%** 的 Q1 drain 初始 chart，**严格排除其余62.2548%的该坐标宽度**，其他五个电压仍保留全部±0.04V。显示小数是精确有理数结果的十进制近似；公开 Fraction 执行器保留全精度，公网 CI 用带符号 oldcoil 流量近零合成控制检验收缩而不上传原 old12。
+
+**更高的源结构：** 将两腿原 KCL 五行求和作为 source 26节点方程的可逆行替换，在 P16 消去后两条流量对当前 \`(d_Q1,d_Q2)\` 的**2×2 常系数 source Schur 矩阵**为
+
+\`\`\`text
+A = [[+0.20285950069618283..., -0.01097556288519719...],
+     [ 0 exact,                +0.010975681122092008...]] S
+det(A) = +0.0022265211922281045... S^2 > 0.
+\`\`\`
+
+交叉下三角严格零来自真实原 circuit connectivity，而非数值舍入。因而给定 current Q1(g,w,x,s)、Q2(g,w,x,s) 的八个值与唯一共同 old12，源 BE 两条 KCL 总和对两只 drain 都**存在唯一实根**，可 exact Fraction 反求。新 \`certify_original_source_two_drain_five_kcl_linear_lift\` 对原保存 n3615 old12 和 n3616 其它八 current 保存节点重建两 drain，与保存节点误差仅 \`1.1547366179576273e−9V\`、\`2.320328856732381e−9V\`；公开变更 old-Ld 电流与超 chart 合成 predecessor 为强负控。只在原十节点 chart + S-L40 body/thermal 前驱限定与全部其他 source guards/preimage 通过时，才可把这个双 drain 行替换升级为**条件性 source 50D→8D 的另一种 exact root correspondence 表示**；该 8D 保留的是 Q1/Q2 (g,w,x,s)，与 S-L48 的 gated4D 表示不同，后者的其余4KCL 根仍 OPEN。
+
+本节所有式子继承原 source law SHA256 \`51b78f729393d29745f59ca150adfef69e1847bf26a8853c6cef3d6be9e2083d\`、adapter SHA256 \`7f03e36809caf3dea1295cf58d7dd70c413ef7991472a5e6eec3405da18f5669\`、原保存 E NPZ SHA256 \`baafdd8cb489adb186677658c4a8031130cc53a9a1854c4997211d437daf8b3e\`，n3616 fixed-h BE only。受保护原始输入只在本地只读哈希认证；不上传完整 old50/NPZ。原生 SciPy/GL32/NumPy IEEE outward、PREP126/CAL4800 全历史与共同 CAL4801×2 H841 Goal27 均未闭合。
+
+
+### S-L51 — 两行 18D 原 source 仿射因子缓存：自适应外包的可扩展 exact 算法
+
+上一 S-L49c 的五 KCL 双腿必要函数 \`C=(C_Q1,C_Q2)\` 对同一个原 current 六电压和旧12线圈的 18 个实有理变量，实际上是**一个固定的 source 仿射映射** \`C=c+A v+B i_old\`，其中 \`A∈Q^(2×6),B∈Q^(2×12)\`。新增受限单例（内存、无磁盘缓存）\`_original_source_five_kcl_cached_affine_model\`：只做原 P16 exact source 16×16 建立一次（零基准+六当前基向量+十二 oldcoil 基向量，并对 w/x 四个导数作零系数负控），返回完全 exact Fraction coefficients。任意 \`X×I_old\` 闭盒随后通过每个系数的正负决定端点，**两行同时共用同一个原旧电流输入的共同参数域**；每次调用仍先核对原 law/adapter/saved sha 和 \`h\`，即使已有缓存亦不绕开源身份和步长授权。凡未知原非线性分支，五KCL 必要行恒等式仍精确有效；这个加速仅用于当前固定 BE/15V original stage，非全 PREP→CAL / primitive IEEE outward 证书。
+
+本轮只读 cloud/isolated stdin \`Fraction\` 性能基线：一次构建 18 仿射基系数约0.525s，旧逐 P16 实现三盒1.606s，预计算的 450 个盒 exact support 总共0.1102s（仅统计支持端点循环、不计首次源码加载、CI调度）。公开 \`test_s150_q2_six_row_certificate.py\` 使用**独立手工从原P16代入构造**的每腿五KCL求和作 exact root-point equality oracle，并校验三档不同半径的闭盒 2 行 exact extrema、SOURCE SHA 负控和不牺牲 failclosed 状态。算法优化不改变任一边界不等式/接受阈值；尚待正式 Actions 的函数级性能对照，现阶段只宣称初步 source-proof loop 加速，不承诺 CI 全套提速。
+
+
+### S-L52 — 一阶段 source 六电压 chart 的 **完整三子盒封闭外包** (2026-10-21)
+
+在 n3616 source BE 12 oldcoil 各真实保存中心 ±0.001A 的**共同**盒上，S-L49c 投影证明了 Q1 drain root 必需位于保存±15.09808mV 的狭窄区间。新的 \`certify_original_source_three_slab_global_flux_cover\` 把六电压原闭 chart（Q1/Q2 的 d/g/s 全 saved±0.04V）按**Q1 drain 保存±0.016V** 两个 exact rational 切口拆为三个闭子盒：\`[−40,−16]mV\`、\`[−16,+16]mV\`、\`[+16,+40]mV\`。每个子盒在所有其他五个节点各全±40mV、同一旧12电流±1mA 上沿原 S-L51 固定确切仿射源五 KCL 公式独立算 support。两个外侧子盒的 Q1 flux 分别严格负与严格正，**两边各排除24mV，共排除原 Q1 drain 80mV宽度的60%**。中间闭子盒包含零，正确返回 \`RETAIN/UNKNOWN\`，不能视为已找到 root。左右子盒和中间有共同边界、无任何覆盖缺口；所有可能原50D source stage 根（若存在）均落在未排除的中盒内，这是**完整闭盒 outer-cover**，不是原50D根存在或历史级 ALL_ROOT 完成。
+
+公开原本未上传的 NPZ 旧12电流不在测试中；只读 source SHA 验证的原 archived saved predecessor 函数调用严格验证实际 \`±16mV\` 两个外侧的有向 Q1 流量，并用合成 oldcoil \`old[0]=−.000463A,old[1]=−.288A,old[5]=−1.009A,old[6]=+.843A\` 实现三格相同符号组合的公开测试，避免将任意合成旧电流错认合法 own-PREP history。预算 \`max_cells<3\` 直接输出未经细分的父盒且 \`RETAIN\`；错步长和闭区间切口错位均 \`UNRESOLVED_SOURCE_DOMAIN\`。子域证明等级：原 stage3616 exact-real source BE KCL 共同必要条件，外侧两盒全部原源 branch 无根。未证明其余未排除盒内任何源根存在、其它所有 PREP/CAL predecessor、native IEEE outward、共同 CAL E/H841 Goal27。

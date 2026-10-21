@@ -64,11 +64,11 @@
 
 ### Q1 — Original S150 合法 PREP/CAL 历史上的全根与 H841 goal outer
 
-**当前最高原source结构：S-L43 的 14D package SPD、G11 Gauss32 guarded w-KCL、原 S-L41 G12 x-KCL。** 原 ZIP SHA250aa4ea...、actual_law SHA51b78f...、E NPZ SHAbaafdd8c... 严格冻结。S-L40 已可条件性消元24个线圈/器件/热变量，S-L41 再消去 x8/x20；新证明原14个 package P 节点只受正电阻、10线圈 BE 与固定源 forcing，exact Fraction 14×14 LDL全部枢轴正（最小约0.0192181S），从原单阶段 **50D↔10D 条件根对应**，且重构 g2/x 必须仍属于原±.04V十节点chart。另证明 Q1/Q2 原**有限 GL32** G11 w7/w19 行在原 solver |Δ(g−w)|≤1V guard 内均有唯一标量根，对所有固定 g,d±.04V成立；在此guard合格分支进一步条件性 **50D↔8D**。Q2 g−w 原源必要区间宽仅4.470192mV；两个与x无关的非零宽 G11 电压角子盒的全源数学根由 w-KCL 各自严格排除（r上界 Q1<−0.0213288A、Q2<−3.102596A），而PR29的两个x-KCL角子盒仍各自排除 >700A。**没有8D残差存在性、chart补集、原生IEEE GL32/SciPy外包、完整合法历史或Goal27证书**。见 [源结构与原论文迁移](dpt_research/20261010_goal_information_solver_fidelity.md)和 [fail-closed Fraction 代码与测试](dpt_tools/s150_q2_six_row_certificate.py)。
+**S-L43 结构基底：14D package SPD、G11 Gauss32 guarded w-KCL、原 S-L41 G12 x-KCL；最新更强限域见下述 S-L48。** 原 ZIP SHA250aa4ea...、actual_law SHA51b78f...、E NPZ SHAbaafdd8c... 严格冻结。S-L40 已可条件性消元24个线圈/器件/热变量，S-L41 再消去 x8/x20；新证明原14个 package P 节点只受正电阻、10线圈 BE 与固定源 forcing，exact Fraction 14×14 LDL全部枢轴正（最小约0.0192181S），从原单阶段 **50D↔10D 条件根对应**，且重构 g2/x 必须仍属于原±.04V十节点chart。另证明 Q1/Q2 原**有限 GL32** G11 w7/w19 行在原 solver |Δ(g−w)|≤1V guard 内均有唯一标量根，对所有固定 g,d±.04V成立；在此guard合格分支进一步条件性 **50D↔8D**。Q2 g−w 原源必要区间宽仅4.470192mV；两个与x无关的非零宽 G11 电压角子盒的全源数学根由 w-KCL 各自严格排除（r上界 Q1<−0.0213288A、Q2<−3.102596A），而PR29的两个x-KCL角子盒仍各自排除 >700A。**没有8D残差存在性、chart补集、原生IEEE GL32/SciPy外包、完整合法历史或Goal27证书**。见 [源结构与原论文迁移](dpt_research/20261010_goal_information_solver_fidelity.md)和 [fail-closed Fraction 代码与测试](dpt_tools/s150_q2_six_row_certificate.py)。
 
 **S-L44 真正更强的source补集：** 原x方程在 h>0.1108ps 时全局x*(d,s,dold,sold)严格呈(+,+,+,−)坐标单调，故合法闭盒两角即可有向包住x根，不需16角或独立划分x。在原n3616 Q2同一非零宽D×S×X source chart子盒，PR29笛卡尔残差含0（下界−1.56A），新联合单调两角严格证明原source r20≥0.51999999999886A，从UNRESOLVED升级为整盒无根；这是实际可复核的**全source单阶段子域排除**，不是全50历史或原生IEEE认证。见 [S-L44细节、精确负控](dpt_research/20261010_goal_information_solver_fidelity.md)及[同一工具](dpt_tools/s150_q2_six_row_certificate.py)。
 
-**S-L40 执行域修正：** 先前 50D→26D 已消除12线圈与12双腿 D1/body/thermal 坐标，针对**固定 n3616 原始 h=0x1.b7cdfd9d80000p-37 秒、source十节点±.04V、旧两个vj∈(-1590,0]V**。理想实数全 raw-T 局部六行数学结论和目前可执行 native-boundary 证书不可混同；**已合并 PR #28 的源执行器仅接受旧8温度 [-60,260]°C**，超出一律 UNKNOWN；native SciPy/NumPy 误差未外包，源身份字符串并不证明原ZIP已在CI重演。即使有了S-L43的10D/guarded8D严格消元，剩余KCL存在/唯一性、guard外根与整个chart补集仍没有原source证书。见 [S-L40及纠错](dpt_research/20261010_goal_information_solver_fidelity.md)。
+**S-L40 执行域修正：** 先前 50D→26D 已消除12线圈与12双腿 D1/body/thermal 坐标，针对**固定 n3616 原始 h=0x1.b7cdfd9d80000p-37 秒、source十节点±.04V、旧两个vj∈(-1590,0]V**。理想实数全 raw-T 局部六行数学结论和目前可执行 native-boundary 证书不可混同；**已合并 PR #28 的源执行器仅接受旧8温度 [-60,260]°C**，超出一律 UNKNOWN；native SciPy/NumPy 误差未外包，源身份字符串并不证明原ZIP已在CI重演。对于 S-L48 已锁定的局部guard/preimage，两个 gate 标量根存在/唯一性已单独证成；剩余四维 KCL、guard外根与整个合法 chart 补集仍没有原source证书。见 [S-L40及纠错](dpt_research/20261010_goal_information_solver_fidelity.md)。
 
 **S-L42 旧thermal历史必需性：** 在同固定节点chart下，两种条件独立旧四温度全−60/全260°C 的六行热平衡解，其新T0至少相隔 Q1 319.998950381836°C、Q2 319.999685114551°C；仅当前node的旧T盲估计条件minimax至少159.999475/159.999843°C。它们不被宣称是合法同PREP或同26D KCL的两条source历史。与Q2的28D状态下界相互支持，但不自动形成目标功双世界。
 
@@ -76,7 +76,17 @@
 
 **新前沿论文迁移：** F090 的有限块/尾项 Schur 与signed Bernstein闭盒排除已由精确反例验证；新增完整审读 OpenAI *Atomic triangular-lattice* 31页原PDF+TeX，并真正运行原有限checker（20×20块及659项Bernstein均PASS，恶意枢轴阈值篡改使其FAIL）。独立移植共享nuisance精确消去、可计算几何尾项和De Casteljau闭盒分裂：合成三闭盒严格排除外两盒，保留含真root的中盒。只作为 **CONDITIONAL source-agnostic finite-cover算法**，原8D余式/GL32/guards/历史 E 仍缺原始解析包络。见 [完整证明及负控](dpt_research/20261010_goal_information_solver_fidelity.md)、[执行器](dpt_tools/s150_q2_six_row_certificate.py)、[原论文待读分类](literature_archive/README.md)。
 
-**下一唯一承重OPEN：** 从已唯一重构的P14/G12x2/guard内G11w2继续证明剩余原 **8D KCL** 全闭盒根/补集（并另行处理G11 guard外分支），外包Q1/Q2 ETH/diode/thermal/clip/ABS seam及原生求积误差；再建立每个合法 predecessor 50D 与PREP126→CAL4800全过程封闭reachability、共同 4801×2 sensor E 和H841 signed-work有向传播。输入仍只有 source-saved n3616 chart，不能称 Goal27有全域upper/lower。
+
+
+**S-L48a 严格源 chart 纠错：** 独立 agent 用合成旧线圈全零反证了把 gate-only 单根误称 50D→4D 的 source preimage；现已把两种状态拆开。只有全部原 g2/x/W 关联重构落入源 chart 内带，才保留条件性 4D；离图必须 `RETAIN/UNKNOWN`。公开旧线圈负控和移位线圈合法图内正控不包含任何受保护 NPZ 数据。详见 [S-L48a](dpt_research/20261010_goal_information_solver_fidelity.md)。
+
+**S-L45–S-L50 原 source 当前最高证据（PR #31）：** 原 n3616 P16 passive SPD 保留全部12 oldcoil及150V BE forcing；源 w/x G11/G12 guard 和原两 gate 各唯一根，在真实 saved old12±1mA、四 d/s±0.1mV、两 g±125µV 严格 chart 上条件性 50D→4D（独立 oldzero 反例触发 g2/w/x preimage fail-closed，不能在 guard 外升级）。更强的**不依赖 G11/G12/ETH/G2/diode/thermal 分支的五KCL流量必要条件**：给定旧线圈盒，原当前六电压中 Q1d saved+[16,40]mV、其余五各完整±40mV 原 chart，Q1 conserved flux≥+0.182964mA，**整块上部24mV/30% 原源 50D 阶段 root 投影排除**。在六节点完整各±40mV chart 上流量本身跨零，S-L49c 更进一步以 exact slope 0.202859500696…S 作单调投影，将 Q1d 必要范围压到 saved [−15.0980724,+15.0980745]mV，原80mV宽缩减**62.2548%**。新 S-L50 联立两腿流量的 exact 2×2 矩阵 det>0.0022265S²，两个 drain 对固定另八 current+old12 线性唯一，形成**另一种** S-L40/合法 chart 条件下的 50D→8D 变量表示；它不宣称剩余8D方程有解。所有源码真实 SHA/证书/负控见 [S-L45–50 证明](dpt_research/20261010_goal_information_solver_fidelity.md)、[Fraction代码](dpt_tools/s150_q2_six_row_certificate.py)。前沿论文 F325/F376/F140/F122 仅按条件定理和严格不适用性登记 [archive](literature_archive/README.md)；不得将这些 source 单阶段局部证明提升为所有 legal PREP/CAL history 或 Goal27。
+
+**S-L51 证书批处理能力：** 固定原 n3616 两五KCL 守恒仿射式预建 exact 2×18 系数表并内存复用，任意 18D shared-old12 闭盒对两行做严格有理数符号端点计算，三种盒与逐 source P16 重构 oracle 完全一致；原型 450 盒支持端点0.1102s（一次建立系数0.525s），比每盒重算精确16D Schur 可扩展，未宣称 native/CI 全程加速。见 [S-L51](dpt_research/20261010_goal_information_solver_fidelity.md) 与 [执行器](dpt_tools/s150_q2_six_row_certificate.py)。
+
+**S-L52 实际原六维 chart 穷尽三盒补集（新增最高阶段层）：** 原 n3616 old12 保存中心各±1mA，Q1 drain 原 ±40mV chart 闭分为 `[-40,-16]`,`[-16,+16]`,`[+16,+40]` mV（其它五个 d/g/s 全±40mV），S-L51 exact five-KCL 仿射守恒将两个外24mV盒**严格排除**，中32mV盒 fail-closed **RETAIN**；三个闭盒并集严格等于整个**指定**原 6D chart，所有可能原 stage 根均保留，排除Q1 d宽60%。不是 all old50/historical root/complement 或 Goal27。证据与 [代码](dpt_tools/s150_q2_six_row_certificate.py) 见 [S-L52](dpt_research/20261010_goal_information_solver_fidelity.md)。
+
+**下一唯一承重OPEN：** 在 S-L48 已约化并严格检验preimage的原 n3616 子域，求**剩余原4D KCL全闭盒根/补集**；对于其它源 chart/G11 guard以外节点和所有前驱情形继续 fail-closed 8D/50D cover。必须同时外包原 ETH/G2/diode/thermal/ABS/clip与 GL32/SciPy/NumPy binary64 误差，再证明 PREP126→CAL4800 的所有合法 hybrid/history、共同 4801×2 sensor E 和未来 H841 有向 signed-work 范围。不能因当前逐 fiber gate root existence 获证就宣称完整 Goal27 upper/lower。
 
 ### Q2 — 合法命令 alphabet 的 history/right-congruence 与必需记忆维数
 
